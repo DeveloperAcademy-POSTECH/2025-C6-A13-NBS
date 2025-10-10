@@ -1,5 +1,8 @@
 # 뉴BI 스TOP 📰
-> 세상을 바꾸는 작은 시작, 뉴BI 스TOP 팀의 프로젝트입니다.
+> 세상을 바꾸는 작은 시작, 뉴BI 스TOP 팀의 프로젝트입니다. <br>
+
+
+[📖 뉴BI 스TOP Wiki](https://github.com/DeveloperAcademy-POSTECH/2025-C6-A13-NBS/wiki)
 
 <br>
 
@@ -38,3 +41,4 @@
 
 ## 📚 Documentation
 👉 자세한 내용은 [Wiki](https://github.com/DeveloperAcademy-POSTECH/2025-C6-A13-NBS/wiki)를 확인하세요!
+
