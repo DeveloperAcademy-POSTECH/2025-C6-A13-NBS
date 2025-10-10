@@ -15,7 +15,7 @@ let protject = Project.project(
       name: Module.DesignSystem.rawValue,
       product: .staticFramework,
       sources: .sources,
-      resources: ["Resources/**"],
+      resources: .default,
       dependencies: [
       ]
     )

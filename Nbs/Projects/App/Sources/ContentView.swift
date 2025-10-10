@@ -1,5 +1,4 @@
 import SwiftUI
-import DesignSystem
 
 public struct ContentView: View {
   public init() {}

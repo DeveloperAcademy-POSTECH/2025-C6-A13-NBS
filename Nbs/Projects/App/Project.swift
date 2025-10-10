@@ -26,14 +26,28 @@ let appTarget = Target.target(
   ]
 )
 
-let safariTarget = Target.target (
+let safariTarget = Target.target(
   name: TargetName.SafariExtension.rawValue,
   destinations: .iOS,
   product: .appExtension,
-  bundleId: Project.bundleID + ".app".lowercased() + ".safariExtension",
+  bundleId: Project.bundleID + ".app.safariExtension",
   infoPlist: .file(path: "SafariExtension/info.plist"),
   sources: [SourceFileGlob(stringLiteral: TargetName.SafariExtension.sourcesPath)],
-  resources: [ResourceFileElement(stringLiteral: TargetName.SafariExtension.resourcesPath)]
+  resources: [ResourceFileElement(stringLiteral: TargetName.SafariExtension.resourcesPath)],
+  settings: .settings(
+    base: [
+      "CODE_SIGN_STYLE": "Automatic",
+      "DEVELOPMENT_TEAM": "WN2B884S76"
+    ],
+    configurations: [
+      .debug(name: "Debug", settings: [
+        "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.app.safariExtension"
+      ]),
+      .release(name: "Release", settings: [
+        "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.ADA.app.safariExtension"
+      ])
+    ]
+  )
 )
 
 let project = Project.project(

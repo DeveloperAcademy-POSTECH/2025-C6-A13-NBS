@@ -8,11 +8,3 @@
 import SwiftUI
 //import DesignSystem / //
 
-struct aView: View {
-  var body: some View {
-    VStack {
-      Text("hello")
-        .background(Color.testColor)
-    }
-  }
-}
