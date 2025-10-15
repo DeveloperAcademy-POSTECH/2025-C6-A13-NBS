@@ -18,22 +18,21 @@ import SwiftUI
 public struct TypeStyle {
   public let font: Font
   public let size: CGFloat
-  public let lineHeightMultiplier: CGFloat   // 1.3 = 130%
-  public let letterSpacingPercent: CGFloat   // -0.02 = -2%
+  public let lineHeight: CGFloat   // 1.3 = 130%
+  public let letterSpacing: CGFloat   // -0.02 = -2%
   
   public init(
     font: Font, size: CGFloat,
-    lineHeightMultiplier: CGFloat,
-    letterSpacingPercent: CGFloat = 0
+    lineHeight: CGFloat,
+    letterSpacing: CGFloat = 0
   ) {
     self.font = font
     self.size = size
-    self.lineHeightMultiplier = lineHeightMultiplier
-    self.letterSpacingPercent = letterSpacingPercent
+    self.lineHeight = lineHeight
+    self.letterSpacing = letterSpacing
   }
   
-  public var lineSpacing: CGFloat { size * lineHeightMultiplier - size }
-  public var tracking: CGFloat { size * letterSpacingPercent }
+  public var lineSpacing: CGFloat { (size * lineHeight) - size }
 }
 
 public extension Font {
@@ -77,8 +76,8 @@ public extension TypeStyle {
       size: 28
     ),
     size: 28,
-    lineHeightMultiplier: 1.3,
-    letterSpacingPercent: -0.04
+    lineHeight: 1.3,
+    letterSpacing: -0.04
   )
   
   /// Bold, 24
@@ -88,8 +87,8 @@ public extension TypeStyle {
       size: 24
     ),
     size: 24,
-    lineHeightMultiplier: 1.3,
-    letterSpacingPercent: -0.04
+    lineHeight: 1.3,
+    letterSpacing: -0.04
   )
   
   /// Bold, 20
@@ -99,8 +98,8 @@ public extension TypeStyle {
       size: 20
     ),
     size: 20,
-    lineHeightMultiplier: 1.4,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.4,
+    letterSpacing: -0.02
   )
   
   /// SemiBold, 18
@@ -110,8 +109,8 @@ public extension TypeStyle {
       size: 18
     ),
     size: 18,
-    lineHeightMultiplier: 1.4,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.4,
+    letterSpacing: -0.02
   )
   
   /// Medium, 18
@@ -121,8 +120,8 @@ public extension TypeStyle {
       size: 18
     ),
     size: 18,
-    lineHeightMultiplier: 1.4,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.4,
+    letterSpacing: -0.02
   )
   
   // MARK: - Body
@@ -133,8 +132,8 @@ public extension TypeStyle {
       size: 16
     ),
     size: 16,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.5,
+    letterSpacing: -0.02
   )
   
   /// Medium, 16
@@ -144,8 +143,8 @@ public extension TypeStyle {
       size: 16
     ),
     size: 16,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.5,
+    letterSpacing: -0.02
   )
   
   /// Medium, 16
@@ -155,8 +154,8 @@ public extension TypeStyle {
       size: 16
     ),
     size: 16,
-    lineHeightMultiplier: 1.7,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.7,
+    letterSpacing: -0.02
   )
   
   /// SemiBold, 14
@@ -166,8 +165,8 @@ public extension TypeStyle {
       size: 14
     ),
     size: 14,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.5,
+    letterSpacing: -0.02
   )
   
   /// Medium, 14
@@ -177,8 +176,8 @@ public extension TypeStyle {
       size: 14
     ),
     size: 14,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.5,
+    letterSpacing: -0.02
   )
   
   /// Medium, 14
@@ -188,8 +187,8 @@ public extension TypeStyle {
       size: 14
     ),
     size: 14,
-    lineHeightMultiplier: 1.7,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.7,
+    letterSpacing: -0.02
   )
   
   // MARK: - Caption
@@ -200,8 +199,8 @@ public extension TypeStyle {
       size: 16
     ),
     size: 16,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.5,
+    letterSpacing: -0.02
   )
   
   /// Regular, 14
@@ -211,8 +210,8 @@ public extension TypeStyle {
       size: 14
     ),
     size: 14,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
+    lineHeight: 1.5,
+    letterSpacing: -0.02
   )
 }
 
@@ -231,6 +230,6 @@ public extension View {
     self
       .font(style.font)
       .lineSpacing(style.lineSpacing)
-      .tracking(style.tracking)
+      .kerning(style.letterSpacing / style.size) // Figma px기준 → 비율로 보정
   }
 }
