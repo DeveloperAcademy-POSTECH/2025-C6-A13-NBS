@@ -43,16 +43,16 @@ public extension Font {
     case regular
     case medium
     
-    var value: String {
+    var convertible: DesignSystemFontConvertible {
       switch self {
       case .semibold:
-        return "PretendardVariable-SemiBold"
+        return DesignSystemFontFamily.Pretendard.semiBold
       case .bold:
-        return "PretendardVariable-Bold"
+        return DesignSystemFontFamily.Pretendard.bold
       case .regular:
-        return "PretendardVariable-Regular"
+        return DesignSystemFontFamily.Pretendard.regular
       case .medium:
-        return "PretendardVariable-Medium"
+        return DesignSystemFontFamily.Pretendard.medium
       }
     }
   }
@@ -64,7 +64,7 @@ public extension Font {
    ///   - size: 포인트 크기
    /// - Returns: SwiftUI `Font`
   static func pretendard(type: Pretendard, size: CGFloat) -> Font {
-    return .custom(type.value, size: size)
+    return type.convertible.swiftUIFont(size: size)
   }
 }
 
