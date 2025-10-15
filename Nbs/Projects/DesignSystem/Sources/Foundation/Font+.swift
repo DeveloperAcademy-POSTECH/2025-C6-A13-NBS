@@ -208,166 +208,169 @@ import UIKit
 /// Figma 스타일을 반영한 커스텀 폰트 스타일
 /// (폰트, 자간, 행간, 크기를 한 번에 관리)
 public struct FontStyle {
-    public let font: Font
-    public let kerning: CGFloat
-    public let lineHeight: CGFloat
-    public let fontSize: CGFloat
-
-    public init(font: Font, kerning: CGFloat, lineHeight: CGFloat, fontSize: CGFloat) {
-        self.font = font
-        self.kerning = kerning
-        self.lineHeight = lineHeight
-        self.fontSize = fontSize
-    }
+  public let font: Font
+  public let kerning: CGFloat
+  public let lineHeight: CGFloat
+  public let fontSize: CGFloat
+  
+  public init(font: Font, kerning: CGFloat, lineHeight: CGFloat, fontSize: CGFloat) {
+    self.font = font
+    self.kerning = kerning
+    self.lineHeight = lineHeight
+    self.fontSize = fontSize
+  }
 }
 
 // MARK: - Pretendard 폰트 타입 정의
-
 public extension Font {
-    enum Pretendard {
-        case medium
-        case semibold
-        case bold
-        case regular
-
-        var fontName: String {
-            switch self {
-            case .medium: return "Pretendard-Medium"
-            case .semibold: return "Pretendard-SemiBold"
-            case .bold: return "Pretendard-Bold"
-            case .regular: return "Pretendard-Regular"
-            }
-        }
-
-        static func customFont(type: Pretendard, size: CGFloat) -> Font {
-            .custom(type.fontName, size: size)
-        }
+  enum Pretendard {
+    case semibold
+    case bold
+    case regular
+    case medium
+    
+    /// Tuist가 생성한 DesignSystemFontFamily로부터 연결
+    var convertible: DesignSystemFontConvertible {
+      switch self {
+      case .semibold: DesignSystemFontFamily.Pretendard.semiBold
+      case .bold: DesignSystemFontFamily.Pretendard.bold
+      case .regular: DesignSystemFontFamily.Pretendard.regular
+      case .medium: DesignSystemFontFamily.Pretendard.medium
+      }
     }
+    
+    /// SwiftUI Font 반환
+    func swiftUIFont(size: CGFloat) -> Font {
+      convertible.swiftUIFont(size: size)
+    }
+  }
 }
 
 // MARK: - FontStyle 프리셋
 
 public extension FontStyle {
-    // MARK: Heading
-    static let H1 = FontStyle(
-        font: .Pretendard.customFont(type: .semibold, size: 28),
-        kerning: -0.01 * 28,
-        lineHeight: 1.3,
-        fontSize: 28
-    )
-    
-    static let H2 = FontStyle(
-        font: .Pretendard.customFont(type: .bold, size: 24),
-        kerning: -0.01 * 24,
-        lineHeight: 1.3,
-        fontSize: 24
-    )
-    
-    static let H3 = FontStyle(
-        font: .Pretendard.customFont(type: .bold, size: 20),
-        kerning: -0.01 * 20,
-        lineHeight: 1.4,
-        fontSize: 20
-    )
-    
-    static let H4_SB = FontStyle(
-        font: .Pretendard.customFont(type: .semibold, size: 18),
-        kerning: -0.01 * 18,
-        lineHeight: 1.4,
-        fontSize: 18
-    )
-    
-    static let H4_M = FontStyle(
-        font: .Pretendard.customFont(type: .medium, size: 18),
-        kerning: -0.01 * 18,
-        lineHeight: 1.4,
-        fontSize: 18
-    )
-    
-    // MARK: Body
-    static let B1_SB = FontStyle(
-        font: .Pretendard.customFont(type: .semibold, size: 16),
-        kerning: -0.01 * 16,
-        lineHeight: 1.5,
-        fontSize: 16
-    )
-    
-    static let B1_M = FontStyle(
-        font: .Pretendard.customFont(type: .medium, size: 16),
-        kerning: -0.01 * 16,
-        lineHeight: 1.5,
-        fontSize: 16
-    )
-    
-    static let B1_M_HL = FontStyle(
-        font: .Pretendard.customFont(type: .medium, size: 16),
-        kerning: -0.01 * 16,
-        lineHeight: 1.7,
-        fontSize: 16
-    )
-    
-    static let B2_SB = FontStyle(
-        font: .Pretendard.customFont(type: .semibold, size: 14),
-        kerning: -0.01 * 14,
-        lineHeight: 1.5,
-        fontSize: 14
-    )
-    
-    static let B2_M = FontStyle(
-        font: .Pretendard.customFont(type: .medium, size: 14),
-        kerning: -0.01 * 14,
-        lineHeight: 1.5,
-        fontSize: 14
-    )
-    
-    static let B3_R_HLM = FontStyle(
-        font: .Pretendard.customFont(type: .medium, size: 14),
-        kerning: -0.01 * 14,
-        lineHeight: 1.7,
-        fontSize: 14
-    )
-    
-    // MARK: Caption
-    static let C1 = FontStyle(
-        font: .Pretendard.customFont(type: .regular, size: 16),
-        kerning: -0.01 * 16,
-        lineHeight: 1.5,
-        fontSize: 16
-    )
-    
-    static let C2 = FontStyle(
-        font: .Pretendard.customFont(type: .regular, size: 14),
-        kerning: -0.01 * 14,
-        lineHeight: 1.5,
-        fontSize: 14
-    )
+  // MARK: Heading
+  static let H1 = FontStyle(
+    font: Font.Pretendard.semibold.swiftUIFont(size: 28),
+    kerning: -0.01 * 28,
+    lineHeight: 1.3,
+    fontSize: 28
+  )
+  
+  static let H2 = FontStyle(
+    font: Font.Pretendard.bold.swiftUIFont(size: 24),
+    kerning: -0.01 * 24,
+    lineHeight: 1.3,
+    fontSize: 24
+  )
+  
+  static let H3 = FontStyle(
+    font: Font.Pretendard.bold.swiftUIFont(size: 20),
+    kerning: -0.01 * 20,
+    lineHeight: 1.4,
+    fontSize: 20
+  )
+  
+  static let H4_SB = FontStyle(
+    font: Font.Pretendard.semibold.swiftUIFont(size: 18),
+    kerning: -0.01 * 18,
+    lineHeight: 1.4,
+    fontSize: 18
+  )
+  
+  static let H4_M = FontStyle(
+    font: Font.Pretendard.medium.swiftUIFont(size: 18),
+    kerning: -0.01 * 18,
+    lineHeight: 1.4,
+    fontSize: 18
+  )
+  
+  // MARK: Body
+  static let B1_SB = FontStyle(
+    font: Font.Pretendard.semibold.swiftUIFont(size: 16),
+    kerning: -0.01 * 16,
+    lineHeight: 1.5,
+    fontSize: 16
+  )
+  
+  static let B1_M = FontStyle(
+    font: Font.Pretendard.medium.swiftUIFont(size: 16),
+    kerning: -0.01 * 16,
+    lineHeight: 1.5,
+    fontSize: 16
+  )
+  
+  static let B1_M_HL = FontStyle(
+    font: Font.Pretendard.medium.swiftUIFont(size: 16),
+    kerning: -0.01 * 16,
+    lineHeight: 1.7,
+    fontSize: 16
+  )
+  
+  static let B2_SB = FontStyle(
+    font: Font.Pretendard.semibold.swiftUIFont(size: 14),
+    kerning: -0.01 * 14,
+    lineHeight: 1.5,
+    fontSize: 14
+  )
+  
+  static let B2_M = FontStyle(
+    font: Font.Pretendard.medium.swiftUIFont(size: 14),
+    kerning: -0.01 * 14,
+    lineHeight: 1.5,
+    fontSize: 14
+  )
+  
+  static let B3_R_HLM = FontStyle(
+    font: Font.Pretendard.medium.swiftUIFont(size: 14),
+    kerning: -0.01 * 14,
+    lineHeight: 1.7,
+    fontSize: 14
+  )
+  
+  // MARK: Caption
+  static let C1 = FontStyle(
+    font: Font.Pretendard.regular.swiftUIFont(size: 16),
+    kerning: -0.01 * 16,
+    lineHeight: 1.5,
+    fontSize: 16
+  )
+  
+  static let C2 = FontStyle(
+    font: Font.Pretendard.regular.swiftUIFont(size: 14),
+    kerning: -0.01 * 14,
+    lineHeight: 1.5,
+    fontSize: 14
+  )
+  
+  
 }
 
 // MARK: - ViewModifier
 
 private struct FontModifier: ViewModifier {
-    let style: FontStyle
-
-    func body(content: Content) -> some View {
-        content
-            .font(style.font)
-            .kerning(style.kerning)
-            // Figma lineHeight 대응 (시각적 보정)
-            .lineSpacing((style.fontSize * style.lineHeight) - style.fontSize)
-            .padding(.vertical, ((style.fontSize * style.lineHeight) - style.fontSize) / 2)
-    }
+  let style: FontStyle
+  
+  func body(content: Content) -> some View {
+    content
+      .font(style.font)
+      .kerning(style.kerning)
+    // Figma lineHeight 대응 (시각적 보정)
+      .lineSpacing((style.fontSize * style.lineHeight) - style.fontSize)
+      .padding(.vertical, ((style.fontSize * style.lineHeight) - style.fontSize) / 2)
+  }
 }
 
 // MARK: - View 확장
 
 public extension View {
-    /// Figma 기반 커스텀 폰트 스타일을 적용합니다.
-    ///
-    /// ```swift
-    /// Text("타이틀")
-    ///   .font(.h1)
-    /// ```
-    func font(_ style: FontStyle) -> some View {
-        self.modifier(FontModifier(style: style))
-    }
+  /// Figma 기반 커스텀 폰트 스타일을 적용합니다.
+  ///
+  /// ```swift
+  /// Text("타이틀")
+  ///   .font(.h1)
+  /// ```
+  func font(_ style: FontStyle) -> some View {
+    self.modifier(FontModifier(style: style))
+  }
 }
