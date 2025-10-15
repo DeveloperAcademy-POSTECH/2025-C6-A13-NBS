@@ -248,64 +248,98 @@ public extension Font {
 // MARK: - FontStyle 프리셋
 
 public extension FontStyle {
-    // Heading
-    static let h1 = FontStyle(
-        font: .Pretendard.customFont(type: .semibold, size: 24),
+    // MARK: Heading
+    static let H1 = FontStyle(
+        font: .Pretendard.customFont(type: .semibold, size: 28),
+        kerning: -0.01 * 28,
+        lineHeight: 1.3,
+        fontSize: 28
+    )
+    
+    static let H2 = FontStyle(
+        font: .Pretendard.customFont(type: .bold, size: 24),
         kerning: -0.01 * 24,
         lineHeight: 1.3,
         fontSize: 24
     )
-
-    static let h2 = FontStyle(
+    
+    static let H3 = FontStyle(
+        font: .Pretendard.customFont(type: .bold, size: 20),
+        kerning: -0.01 * 20,
+        lineHeight: 1.4,
+        fontSize: 20
+    )
+    
+    static let H4_SB = FontStyle(
         font: .Pretendard.customFont(type: .semibold, size: 18),
         kerning: -0.01 * 18,
-        lineHeight: 1.5,
+        lineHeight: 1.4,
         fontSize: 18
     )
-
-    static let h3 = FontStyle(
+    
+    static let H4_M = FontStyle(
+        font: .Pretendard.customFont(type: .medium, size: 18),
+        kerning: -0.01 * 18,
+        lineHeight: 1.4,
+        fontSize: 18
+    )
+    
+    // MARK: Body
+    static let B1_SB = FontStyle(
         font: .Pretendard.customFont(type: .semibold, size: 16),
         kerning: -0.01 * 16,
         lineHeight: 1.5,
         fontSize: 16
     )
-
-    // Body
-    static let b1 = FontStyle(
+    
+    static let B1_M = FontStyle(
         font: .Pretendard.customFont(type: .medium, size: 16),
         kerning: -0.01 * 16,
         lineHeight: 1.5,
         fontSize: 16
     )
-
-    static let b2 = FontStyle(
+    
+    static let B1_M_HL = FontStyle(
+        font: .Pretendard.customFont(type: .medium, size: 16),
+        kerning: -0.01 * 16,
+        lineHeight: 1.7,
+        fontSize: 16
+    )
+    
+    static let B2_SB = FontStyle(
+        font: .Pretendard.customFont(type: .semibold, size: 14),
+        kerning: -0.01 * 14,
+        lineHeight: 1.5,
+        fontSize: 14
+    )
+    
+    static let B2_M = FontStyle(
         font: .Pretendard.customFont(type: .medium, size: 14),
         kerning: -0.01 * 14,
         lineHeight: 1.5,
         fontSize: 14
     )
-
-    // Button
-    static let btn = FontStyle(
-        font: .Pretendard.customFont(type: .semibold, size: 13),
-        kerning: -0.01 * 13,
-        lineHeight: 1.5,
-        fontSize: 13
+    
+    static let B3_R_HLM = FontStyle(
+        font: .Pretendard.customFont(type: .medium, size: 14),
+        kerning: -0.01 * 14,
+        lineHeight: 1.7,
+        fontSize: 14
     )
-
-    // Caption
-    static let cap1 = FontStyle(
-        font: .Pretendard.customFont(type: .medium, size: 15),
-        kerning: -0.01 * 15,
+    
+    // MARK: Caption
+    static let C1 = FontStyle(
+        font: .Pretendard.customFont(type: .regular, size: 16),
+        kerning: -0.01 * 16,
         lineHeight: 1.5,
-        fontSize: 15
+        fontSize: 16
     )
-
-    static let cap2 = FontStyle(
-        font: .Pretendard.customFont(type: .medium, size: 13),
-        kerning: -0.01 * 13,
+    
+    static let C2 = FontStyle(
+        font: .Pretendard.customFont(type: .regular, size: 14),
+        kerning: -0.01 * 14,
         lineHeight: 1.5,
-        fontSize: 13
+        fontSize: 14
     )
 }
 
