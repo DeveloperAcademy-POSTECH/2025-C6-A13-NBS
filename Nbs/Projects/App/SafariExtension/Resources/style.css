@@ -1,0 +1,71 @@
+.highlighted-text {
+    /* 배경색은 data-attribute로 제어하므로 여기서는 제거 */
+    /* color는 아래에서 설정 */
+}
+.highlighted-text[data-highlight-type="what"] { background-color: #EBFFDC; color: black; }
+.highlighted-text[data-highlight-type="why"] { background-color: #DCF9FF; color: black; }
+.highlighted-text[data-highlight-type="detail"] { background-color: #FFDCDC; color: black; }
+
+#tulip-menu { position: absolute; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-family: sans-serif; }
+#tulip-menu:after, #tulip-menu:before { top: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; }
+#tulip-menu:after { border-color: transparent; border-top-color: #fff; border-width: 8px; margin-left: -8px; }
+#tulip-menu:before { border-color: transparent; border-top-color: #ccc; border-width: 9px; margin-left: -9px; }
+#tulip-menu button { border: 1px solid #aaa; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 14px; }
+#tulip-menu button[data-highlight-type="what"] { background-color: #EBFFDC; }
+#tulip-menu button[data-highlight-type="why"] { background-color: #DCF9FF; }
+#tulip-menu button[data-highlight-type="detail"] { background-color: #FFDCDC; }
+
+#memo-box { background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; margin-top: 10px; margin-bottom: 10px; }
+#memo-box textarea { width: 100%; min-height: 80px; border: 1px solid #ddd; border-radius: 4px; padding: 5px; font-family: sans-serif; font-size: 14px; resize: vertical; }
+#memo-box .memo-buttons { display: flex; justify-content: flex-end; gap: 10px; }
+#memo-box button { border: 1px solid #aaa; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
+
+.capsule-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+.memo-capsule { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 8px; border-radius: 14px; color: #333; font-size: 12px; height: 28px; box-sizing: border-box; cursor: pointer; overflow: hidden; width: 160px; }
+.memo-capsule[data-memo-type="what"] { background-color: #EBFFDC; }
+.memo-capsule[data-memo-type="why"] { background-color: #DCF9FF; }
+.memo-capsule[data-memo-type="detail"] { background-color: #FFDCDC; }
+
+.capsule-text { flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 4px; }
+.capsule-delete-btn { background: none; border: none; color: #555; cursor: pointer; font-weight: bold; font-size: 14px; padding: 0 4px; }
+
+/* 삭제 확인 모달 스타일 */
+#delete-confirm-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 2147483647; }
+#delete-confirm-modal .modal-content { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; width: 300px; }
+#delete-confirm-modal h3 { margin-top: 0; }
+#delete-confirm-modal p { margin-bottom: 20px; font-size: 14px; color: #555; }
+#delete-confirm-modal .modal-buttons { display: flex; justify-content: center; gap: 10px; }
+#delete-confirm-modal button { padding: 8px 16px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
+#delete-confirm-modal .delete-btn { background-color: #d9534f; color: white; border-color: #d43f3a; }
+
+/* 다크 모드 스타일 */
+@media (prefers-color-scheme: dark) {
+    .highlighted-text[data-highlight-type="what"] { background-color: #2F4F2F; color: #E0E0E0; }
+    .highlighted-text[data-highlight-type="why"] { background-color: #3A536E; color: #E0E0E0; }
+    .highlighted-text[data-highlight-type="detail"] { background-color: #6E3A3A; color: #E0E0E0; }
+
+    #tulip-menu { background: #2E2E2E; border-color: #555; }
+    #tulip-menu:after { border-top-color: #2E2E2E; }
+    #tulip-menu:before { border-top-color: #555; }
+    #tulip-menu button { color: #E0E0E0; border-color: #666; }
+    #tulip-menu button[data-highlight-type="what"] { background-color: #2F4F2F; }
+    #tulip-menu button[data-highlight-type="why"] { background-color: #3A536E; }
+    #tulip-menu button[data-highlight-type="detail"] { background-color: #6E3A3A; }
+    #tulip-menu button:not([data-highlight-type]) { background-color: #444; }
+
+
+    #memo-box { background: #2E2E2E; border-color: #555; color: #E0E0E0; }
+    #memo-box textarea { background: #333; color: #E0E0E0; border-color: #555; }
+    #memo-box button { background: #444; color: #E0E0E0; border-color: #666; }
+
+    .memo-capsule { color: #E0E0E0; }
+    .memo-capsule[data-memo-type="what"] { background-color: #2F4F2F; }
+    .memo-capsule[data-memo-type="why"] { background-color: #3A536E; }
+    .memo-capsule[data-memo-type="detail"] { background-color: #6E3A3A; }
+    .capsule-delete-btn { color: #AAA; }
+
+    #delete-confirm-modal .modal-content { background: #2E2E2E; color: #E0E0E0; }
+    #delete-confirm-modal p { color: #AAA; }
+    #delete-confirm-modal button { background: #444; color: #E0E0E0; border-color: #666; }
+    #delete-confirm-modal .delete-btn { background-color: #8B3A3A; color: white; border-color: #A54D4D; }
+}
