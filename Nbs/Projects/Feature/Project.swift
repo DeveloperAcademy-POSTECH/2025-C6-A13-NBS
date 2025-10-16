@@ -18,7 +18,7 @@ let protject = Project.project(
       resources: .default,
       dependencies: [
         .TCA(),
-        .designSystem()
+        .domain()
       ]
     )
   ]

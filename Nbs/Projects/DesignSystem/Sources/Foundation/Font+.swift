@@ -6,231 +6,235 @@
 //
 
 import SwiftUI
+import UIKit
 
 // MARK: - TypeStyle
 
-/// 텍스트 스타일 토큰
+/// 커스텀 텍스트 스타일
 ///
-/// `Font`와 함께 줄 간격(line height)과 자간(letter spacing)을 한 번에 적용하기 위한 구조체
+/// `Font`(SwiftUI) + `UIFont`(UIKit)를 함께 관리하면서,
+/// 줄간격(lineHeight), 자간(letterSpacing)을 실제 pt 단위로 자동 계산해 적용합니다.
 ///
-/// - Note: `lineHeightMultiplier`는 폰트 크기에 대한 배수(예: 1.3 = 130%)
-///         `letterSpacingPercent`는 폰트 크기에 대한 퍼센트(예: -0.02 = -2%)
+/// - Note:
+///   - `lineHeight`: Figma 기준 배수 (예: 1.5 = 150%)
+///   - `letterSpacing`: 폰트 크기에 대한 비율 (-0.02 = -2%)
+///   - `extraSpacing`: 실제 라인 간격(pt)
+///
+/// 사용 예시:
+/// ```swift
+/// Text("제목")
+///   .font(.H1)
+/// ```
 public struct TypeStyle {
-  public let font: Font
-  public let size: CGFloat
-  public let lineHeightMultiplier: CGFloat   // 1.3 = 130%
-  public let letterSpacingPercent: CGFloat   // -0.02 = -2%
+  public let font: Font             // SwiftUI 폰트 (Pretendard)
+  public let uiFont: UIFont         // 실제 UIKit 폰트
+  public let size: CGFloat          // 폰트 사이즈
+  public let lineHeight: CGFloat    // 기준 배수 (ex. 1.5)
+  public let letterSpacing: CGFloat // 퍼센트 (-0.02 = -2%)
   
   public init(
-    font: Font, size: CGFloat,
-    lineHeightMultiplier: CGFloat,
-    letterSpacingPercent: CGFloat = 0
+    font: Font,
+    uiFont: UIFont,
+    size: CGFloat,
+    lineHeight: CGFloat,
+    letterSpacing: CGFloat
   ) {
     self.font = font
+    self.uiFont = uiFont
     self.size = size
-    self.lineHeightMultiplier = lineHeightMultiplier
-    self.letterSpacingPercent = letterSpacingPercent
+    self.lineHeight = lineHeight
+    self.letterSpacing = letterSpacing
   }
   
-  public var lineSpacing: CGFloat { size * lineHeightMultiplier - size }
-  public var tracking: CGFloat { size * letterSpacingPercent }
+  /// 실제 pt 기반 보정값 계산
+  public var extraSpacing: CGFloat {
+    max((size * lineHeight) - uiFont.lineHeight, 0)
+  }
+  
+  /// 실제 pt 단위 자간 변환
+  public var letterSpacingPx: CGFloat {
+    letterSpacing * size
+  }
 }
 
+// MARK: - Pretendard 연결
+/// Pretendard 폰트를 Tuist DesignSystemFontFamily와 연결하는 Enum
+///
+/// - Example:
+/// ```swift
+/// Font.Pretendard.semibold.swiftUIFont(size: 20)
+/// UIFont.pretendard(type: .semibold, size: 20)
+/// ```
 public extension Font {
   enum Pretendard {
-    case semibold
-    case bold
-    case regular
-    case medium
+    case semibold, bold, regular, medium
     
-    var value: String {
+    var convertible: DesignSystemFontConvertible {
       switch self {
-      case .semibold:
-        return "PretendardVariable-SemiBold"
-      case .bold:
-        return "PretendardVariable-Bold"
-      case .regular:
-        return "PretendardVariable-Regular"
-      case .medium:
-        return "PretendardVariable-Medium"
+      case .semibold: DesignSystemFontFamily.Pretendard.semiBold
+      case .bold: DesignSystemFontFamily.Pretendard.bold
+      case .regular: DesignSystemFontFamily.Pretendard.regular
+      case .medium: DesignSystemFontFamily.Pretendard.medium
       }
     }
-  }
-  
-  /// Pretendard 커스텀 폰트 생성
-   ///
-   /// - Parameters:
-   ///   - type: Pretendard 가중치
-   ///   - size: 포인트 크기
-   /// - Returns: SwiftUI `Font`
-  static func pretendard(type: Pretendard, size: CGFloat) -> Font {
-    return .custom(type.value, size: size)
+    
+    /// UIKit 폰트 반환
+    func font(size: CGFloat) -> UIFont {
+      convertible.font(size: size)
+    }
+    
+    /// SwiftUI 폰트 반환
+    func swiftUIFont(size: CGFloat) -> Font {
+      convertible.swiftUIFont(size: size)
+    }
   }
 }
 
-public extension TypeStyle {
-  //MARK: - Heading
-  /// SemiBold, 28
-  static let H1 = TypeStyle(
-    font: .pretendard(
-      type: .semibold,
-      size: 28
-    ),
-    size: 28,
-    lineHeightMultiplier: 1.3,
-    letterSpacingPercent: -0.04
-  )
-  
-  /// Bold, 24
-  static let H2 = TypeStyle(
-    font: .pretendard(
-      type: .bold,
-      size: 24
-    ),
-    size: 24,
-    lineHeightMultiplier: 1.3,
-    letterSpacingPercent: -0.04
-  )
-  
-  /// Bold, 20
-  static let H3 = TypeStyle(
-    font: .pretendard(
-      type: .bold,
-      size: 20
-    ),
-    size: 20,
-    lineHeightMultiplier: 1.4,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// SemiBold, 18
-  static let H4_SB = TypeStyle(
-    font: .pretendard(
-      type: .semibold,
-      size: 18
-    ),
-    size: 18,
-    lineHeightMultiplier: 1.4,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// Medium, 18
-  static let H4_M = TypeStyle(
-    font: .pretendard(
-      type: .medium,
-      size: 18
-    ),
-    size: 18,
-    lineHeightMultiplier: 1.4,
-    letterSpacingPercent: -0.02
-  )
-  
-  // MARK: - Body
-  /// SemiBold, 16
-  static let B1_SB = TypeStyle(
-    font: .pretendard(
-      type: .semibold,
-      size: 16
-    ),
-    size: 16,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// Medium, 16
-  static let B1_M = TypeStyle(
-    font: .pretendard(
-      type: .medium,
-      size: 16
-    ),
-    size: 16,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// Medium, 16
-  static let B1_M_HL = TypeStyle(
-    font: .pretendard(
-      type: .medium,
-      size: 16
-    ),
-    size: 16,
-    lineHeightMultiplier: 1.7,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// SemiBold, 14
-  static let B2_SB = TypeStyle(
-    font: .pretendard(
-      type: .semibold,
-      size: 14
-    ),
-    size: 14,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// Medium, 14
-  static let B2_M = TypeStyle(
-    font: .pretendard(
-      type: .medium,
-      size: 14
-    ),
-    size: 14,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// Medium, 14
-  static let B3_R_HLM = TypeStyle(
-    font: .pretendard(
-      type: .medium,
-      size: 14
-    ),
-    size: 14,
-    lineHeightMultiplier: 1.7,
-    letterSpacingPercent: -0.02
-  )
-  
-  // MARK: - Caption
-  /// Regular, 16
-  static let C1 = TypeStyle(
-    font: .pretendard(
-      type: .regular,
-      size: 16
-    ),
-    size: 16,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
-  )
-  
-  /// Regular, 14
-  static let C2 = TypeStyle(
-    font: .pretendard(
-      type: .regular,
-      size: 14
-    ),
-    size: 14,
-    lineHeightMultiplier: 1.5,
-    letterSpacingPercent: -0.02
-  )
+/// UIView 폰트 변환 헬퍼
+private extension UIFont {
+  static func pretendard(type: Font.Pretendard, size: CGFloat) -> UIFont {
+    type.font(size: size)
+  }
 }
 
+// MARK: - View Extension
+/// 커스텀 폰트 스타일(`TypeStyle`)을 한 줄로 적용하는 확장 메서드
+///
+/// - Example:
+/// ```swift
+/// Text("본문 텍스트")
+///   .font(.B1_M)
+/// ```
 public extension View {
-  /// 타입 스타일을 한 줄로 적용합니다.
-  ///
-  /// 예:
-  /// ```swift
-  /// Text("예시")
-  ///   .font(.H1) // 폰트 + 줄간격 + 자간 적용
-  /// ```
-  ///
-  /// - Parameter style: `TypeStyle` 프리셋(H1/B1_M 등)
-  /// - Returns: 스타일이 적용된 뷰
   func font(_ style: TypeStyle) -> some View {
     self
       .font(style.font)
-      .lineSpacing(style.lineSpacing)
-      .tracking(style.tracking)
+      .kerning(style.letterSpacingPx)
+      .lineSpacing(style.extraSpacing)
+      .padding(.vertical, style.extraSpacing / 2)
   }
+}
+
+// MARK: - Style Presets
+/// 프로젝트 전역에서 사용 가능한 텍스트 스타일 프리셋 모음
+public extension TypeStyle {
+  // MARK: Heading
+  /// SemiBold 28pt
+  static let H1 = TypeStyle(
+    font: .Pretendard.semibold.swiftUIFont(size: 28),
+    uiFont: .pretendard(type: .semibold, size: 28),
+    size: 28,
+    lineHeight: 1.3,
+    letterSpacing: -0.04
+  )
+  
+  ///Bold 24pt
+  static let H2 = TypeStyle(
+    font: .Pretendard.bold.swiftUIFont(size: 24),
+    uiFont: .pretendard(type: .bold, size: 24),
+    size: 24,
+    lineHeight: 1.3,
+    letterSpacing: -0.04
+  )
+  
+  /// Bold 20pt
+  static let H3 = TypeStyle(
+    font: .Pretendard.bold.swiftUIFont(size: 20),
+    uiFont: .pretendard(type: .bold, size: 20),
+    size: 20,
+    lineHeight: 1.4,
+    letterSpacing: -0.02
+  )
+  
+  /// SemiBold 18pt
+  static let H4_SB = TypeStyle(
+    font: .Pretendard.semibold.swiftUIFont(size: 18),
+    uiFont: .pretendard(type: .semibold, size: 18),
+    size: 18,
+    lineHeight: 1.4,
+    letterSpacing: -0.02
+  )
+  
+  /// Medium 18pt
+  static let H4_M = TypeStyle(
+    font: .Pretendard.medium.swiftUIFont(size: 18),
+    uiFont: .pretendard(type: .medium, size: 18),
+    size: 18,
+    lineHeight: 1.4,
+    letterSpacing: -0.02
+  )
+  
+  // MARK: Body
+  /// SemiBold 16pt
+  static let B1_SB = TypeStyle(
+    font: .Pretendard.semibold.swiftUIFont(size: 16),
+    uiFont: .pretendard(type: .semibold, size: 16),
+    size: 16,
+    lineHeight: 1.5,
+    letterSpacing: -0.02
+  )
+  
+  /// Medium 16pt
+  static let B1_M = TypeStyle(
+    font: .Pretendard.medium.swiftUIFont(size: 16),
+    uiFont: .pretendard(type: .medium, size: 16),
+    size: 16,
+    lineHeight: 1.5,
+    letterSpacing: -0.02
+  )
+  
+  /// Medium 16pt
+  static let B1_M_HL = TypeStyle(
+    font: .Pretendard.medium.swiftUIFont(size: 16),
+    uiFont: .pretendard(type: .medium, size: 16),
+    size: 16,
+    lineHeight: 1.7,
+    letterSpacing: -0.02
+  )
+  
+  /// Medium 14pt
+  static let B2_SB = TypeStyle(
+    font: .Pretendard.semibold.swiftUIFont(size: 14),
+    uiFont: .pretendard(type: .semibold, size: 14),
+    size: 14,
+    lineHeight: 1.5,
+    letterSpacing: -0.02
+  )
+  
+  /// Medium 14pt
+  static let B2_M = TypeStyle(
+    font: .Pretendard.medium.swiftUIFont(size: 14),
+    uiFont: .pretendard(type: .medium, size: 14),
+    size: 14,
+    lineHeight: 1.5,
+    letterSpacing: -0.02
+  )
+  
+  /// Medium 14pt
+  static let B3_R_HLM = TypeStyle(
+    font: .Pretendard.medium.swiftUIFont(size: 14),
+    uiFont: .pretendard(type: .medium, size: 14),
+    size: 14,
+    lineHeight: 1.7,
+    letterSpacing: -0.02
+  )
+  
+  // MARK: Caption
+  /// Regular 16pt
+  static let C1 = TypeStyle(
+    font: .Pretendard.regular.swiftUIFont(size: 16),
+    uiFont: .pretendard(type: .regular, size: 16),
+    size: 16,
+    lineHeight: 1.5,
+    letterSpacing: -0.02
+  )
+  
+  /// Regular 14pt
+  static let C2 = TypeStyle(
+    font: .Pretendard.regular.swiftUIFont(size: 14),
+    uiFont: .pretendard(type: .regular, size: 14),
+    size: 14,
+    lineHeight: 1.5,
+    letterSpacing: -0.02
+  )
 }

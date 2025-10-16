@@ -24,9 +24,7 @@ let protject = Project.project(
       ]),
       sources: .sources,
       resources: .default,
-      dependencies: [
-        .domain()
-      ]
+      dependencies: []
     )
   ]
 )
