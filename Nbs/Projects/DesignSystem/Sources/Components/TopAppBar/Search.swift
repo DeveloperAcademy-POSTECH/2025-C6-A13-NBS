@@ -8,7 +8,7 @@
 import SwiftUI
 /// `TopAppBarSearch`
 ///
-/// Default 커스텀 네비게이션 바 컴포넌트입니다.
+/// Search 커스텀 네비게이션 바 컴포넌트입니다.
 ///
 /// 사용 예시:
 /// ```swift
@@ -29,25 +29,45 @@ struct TopAppBarSearch {
 
 extension TopAppBarSearch: View {
   var body: some View {
-    HStack {
+    HStack(spacing: 0) {
       Image(icon: Icon.chevronLeft)
         .resizable()
         .frame(width: 24, height: 24)
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
         .padding(.leading, 4)
-      Spacer()
-      HStack(spacing: 0) {
+      
+      ZStack {
+        RoundedRectangle(cornerRadius: 12)
+          .fill(Color(.systemGray6))
+        
         TextField("검색어를 입력해 주세요", text: $text)
-          .textFieldStyle(.plain)
+          .foregroundColor(text.isEmpty ? .caption2 : .text1)
+          .padding(.horizontal, 12)
+          .overlay(
+            HStack {
+              Spacer()
+              if !text.isEmpty {
+                Button {
+                  text = ""
+                } label: {
+                  Image(icon: Icon.smallxCircleFilled)
+                    .foregroundColor(.n80)
+                }
+                .padding(.trailing, 8)
+              }
+            }
+          )
       }
-      .padding(.trailing, 24)
+      .frame(height: 40)
+      .frame(maxWidth: .infinity)
+      .padding(.trailing, 20)
     }
-    .frame(height: 56)
+    .frame(height: 60)
     .background(DesignSystemAsset.background.swiftUIColor)
   }
 }
 
 #Preview {
-  TopAppBarSearch(text: .constant("타이틀"))
+  TopAppBarSearch(text: .constant("sdposdfp"))
 }
