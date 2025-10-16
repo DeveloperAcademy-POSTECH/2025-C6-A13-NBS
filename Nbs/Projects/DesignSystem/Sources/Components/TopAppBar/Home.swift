@@ -25,7 +25,6 @@ import SwiftUI
 struct TopAppBarHome {
   let title: String = "LOGO"
   let backgroundColor: UIColor = DesignSystemAsset.background.color
-  let backButtonColor: UIColor = DesignSystemAsset.bl1.color
   let searchButton: UIColor = DesignSystemAsset.background.color
 }
 
@@ -38,13 +37,15 @@ extension TopAppBarHome: View {
       
       Spacer()
       
-      HStack {
+      HStack(spacing: 0) {
         Button {
           print("검색 탭 클릭")
         } label: {
           Image(icon: Icon.search)
             .resizable()
             .frame(width: 24, height: 24)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
         }
         
         Button {
@@ -53,6 +54,8 @@ extension TopAppBarHome: View {
           Image(icon: Icon.settings)
             .resizable()
             .frame(width: 24, height: 24)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
         }
       }
       .padding(.trailing, 24)
