@@ -82,8 +82,8 @@ extension Target {
             "CODE_SIGN_IDENTITY": "$(CODE_SIGN_IDENTITY)"
           ]),
           .release(name: "Release", settings: [
-            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.ADA.app",
-            "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.Nbs.ADA.*",
+            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.app",
+            "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.Nbs.dev.ADA.app",
             "CODE_SIGN_IDENTITY": "Apple Distribution: Yunhong Kim (WN2B884S76)"
           ])
         ]

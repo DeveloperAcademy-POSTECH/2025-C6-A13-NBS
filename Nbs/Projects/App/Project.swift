@@ -20,6 +20,7 @@ let appTarget = Target.target(
   ),
   sources: .sources,
   resources: .default,
+  entitlements: .file(path: "App.entitlements"),
   dependencies: [
     .safariEx(),
     .actionEx(),
@@ -52,6 +53,7 @@ let safariTarget = Target.target(
   infoPlist: .file(path: "SafariExtension/info.plist"),
   sources: [SourceFileGlob(stringLiteral: TargetName.SafariExtension.sourcesPath)],
   resources: [ResourceFileElement(stringLiteral: TargetName.SafariExtension.resourcesPath)],
+  entitlements: .file(path: "SafariExtension.entitlements"),
   settings: .settings(
     base: [
       "DEVELOPMENT_TEAM": "WN2B884S76",
@@ -79,6 +81,7 @@ let actionExtensionTarget = Target.target(
   infoPlist: .file(path: "ActionExtension/info.plist"),
   sources: [SourceFileGlob(stringLiteral: TargetName.ActionExtension.sourcesPath)],
   resources: [ResourceFileElement(stringLiteral: TargetName.ActionExtension.resourcesPath)],
+  entitlements: .file(path: "ActionExtension.entitlements"),
   dependencies: [
     .sdk(name: "UniformTypeIdentifiers", type: .framework)
   ],
