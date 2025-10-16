@@ -1,10 +1,10 @@
-git_url("https://github.com/dbsghdz1/match-ADA-C6-A13.git")
+git_url("git@github.com:dbsghdz1/match-ADA-C6-A13.git")
 
 storage_mode("git")
 
 type("development") # The default type, can be: appstore, adhoc, enterprise or development
 
-# app_identifier(["com.Nbs.ADA.", "com.Nbs.dev.ADA.*"])
+# app_identifier(["com.Nbs.dev.ADA.app", "com.Nbs.ADA.app.actionExtension", "com.Nbs.dev.ADA.app.safariExtension"])
 # username("dbsghdz1.dev@gmail.com") # Your Apple Developer Portal username
 
 # For all available options run `fastlane match --help`
