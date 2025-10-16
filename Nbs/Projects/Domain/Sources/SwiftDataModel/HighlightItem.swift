@@ -25,8 +25,7 @@ public final class HighlightItem {
   @Attribute(.unique) public var id: String
   public var sentence: String // 하이라이팅 문장
   public var type: String // 하이라이팅 타입 (What/Why/Detail)
-  public var createAt: Date // 하이라이트 생성 날짜
-  public var userMemo: String = "" // 추가 메모
+  public var createdAt: Date // 하이라이트 생성 날짜
   
   @Attribute(originalName: "comments_json") private var commentsJSON: String = "[]" // JSON Comment
   
@@ -55,13 +54,13 @@ public final class HighlightItem {
     id: String,
     sentence: String,
     type: String,
-    createAt: Date,
+    createdAt: Date,
     comments: [Comment] = []
   ) {
     self.id = id
     self.sentence = sentence
     self.type = type
-    self.createAt = createAt
+    self.createdAt = createdAt
     self.comments = comments
   }
 }
