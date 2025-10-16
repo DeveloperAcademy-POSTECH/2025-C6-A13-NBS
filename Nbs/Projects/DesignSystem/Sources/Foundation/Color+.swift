@@ -43,6 +43,12 @@ public extension ShapeStyle where Self == Color {
   // MARK: Divider
   static var divider1: Color { DesignSystemAsset.divider1.swiftUIColor }
   static var divider2: Color { DesignSystemAsset.divider2.swiftUIColor }
+  
+  // MARK: IconColor
+  static var icon: Color { DesignSystemAsset.icon.swiftUIColor }
+  static var iconDisabled: Color { DesignSystemAsset.iconDisabled.swiftUIColor }
+  static var iconGray: Color { DesignSystemAsset.iconGray.swiftUIColor }
+  static var iconW: Color { DesignSystemAsset.iconW.swiftUIColor}
 
   // MARK: State
   static var success: Color { DesignSystemAsset.success.swiftUIColor }
