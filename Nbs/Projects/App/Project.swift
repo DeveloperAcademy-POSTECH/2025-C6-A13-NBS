@@ -83,7 +83,8 @@ let actionExtensionTarget = Target.target(
   resources: [ResourceFileElement(stringLiteral: TargetName.ActionExtension.resourcesPath)],
   entitlements: .file(path: "ActionExtension.entitlements"),
   dependencies: [
-    .sdk(name: "UniformTypeIdentifiers", type: .framework)
+    .sdk(name: "UniformTypeIdentifiers", type: .framework),
+    .designSystem()
   ],
   settings: .settings(
     base: [
