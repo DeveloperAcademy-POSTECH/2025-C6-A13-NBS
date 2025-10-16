@@ -26,21 +26,21 @@ function renderCapsules(span) {
     span.nextElementSibling.remove();
   }
   
-  const memos = JSON.parse(span.dataset.memos || '[]');
+  const comments = JSON.parse(span.dataset.comments || '[]');
   
-  if (memos.length > 0) {
+  if (comments.length > 0) {
     const container = document.createElement('div');
     container.className = 'capsule-container';
     span.after(container);
     
-    memos.forEach(memo => {
+    comments.forEach(comment => {
       const capsule = document.createElement('div');
       capsule.className = 'memo-capsule';
-      capsule.dataset.memoType = memo.type;
+      capsule.dataset.memoType = comment.type;
       
       const textPreview = document.createElement('span');
       textPreview.className = 'capsule-text';
-      textPreview.textContent = memo.text;
+      textPreview.textContent = comment.text;
       
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'capsule-delete-btn';
@@ -51,19 +51,19 @@ function renderCapsules(span) {
       
       capsule.addEventListener('click', (e) => {
         e.stopPropagation();
-        showMemoBox(span, memo.id);
+        showMemoBox(span, comment.id);
       });
       
       deleteBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         
         const memoBox = document.getElementById('memo-box');
-        if (memoBox && Number(memoBox.dataset.editingId) === memo.id) {
+        if (memoBox && Number(memoBox.dataset.editingId) === comment.id) {
           memoBox.remove();
         }
         
-        const updatedMemos = JSON.parse(span.dataset.memos || '[]').filter(m => m.id !== memo.id);
-        span.dataset.memos = JSON.stringify(updatedMemos);
+        const updatedComments = JSON.parse(span.dataset.comments || '[]').filter(m => m.id !== comment.id);
+        span.dataset.comments = JSON.stringify(updatedComments);
         renderCapsules(span);
         updateDraft(span);
       });
@@ -77,8 +77,8 @@ function showMemoBox(span, memoId = null) {
   const existingMemoBox = document.getElementById('memo-box');
   if (existingMemoBox) existingMemoBox.remove();
   
-  const memos = JSON.parse(span.dataset.memos || '[]');
-  const currentMemo = memoId ? memos.find(m => m.id === memoId) : null;
+  const comments = JSON.parse(span.dataset.comments || '[]');
+  const currentComment = memoId ? comments.find(m => m.id === memoId) : null;
   
   const memoBox = document.createElement('div');
   memoBox.id = 'memo-box';
@@ -87,8 +87,8 @@ function showMemoBox(span, memoId = null) {
   }
   memoBox.addEventListener('click', e => e.stopPropagation());
   
-  const currentHighlightType = currentMemo ? currentMemo.type : span.dataset.highlightType;
-  const existingText = currentMemo ? currentMemo.text : '';
+  const currentHighlightType = currentComment ? currentComment.type : span.dataset.highlightType;
+  const existingText = currentComment ? currentComment.text : '';
   
   const textarea = document.createElement('textarea');
   textarea.placeholder = `'${currentHighlightType}'에 대한 메모를 입력하세요...`;
@@ -104,30 +104,30 @@ function showMemoBox(span, memoId = null) {
   const saveButton = document.createElement('button');
   saveButton.textContent = '저장';
   saveButton.onclick = () => {
-    const memoText = textarea.value.trim();
-    let updatedMemos = JSON.parse(span.dataset.memos || '[]');
+    const commentText = textarea.value.trim();
+    let updatedComments = JSON.parse(span.dataset.comments || '[]');
     
     if (memoId) {
-      const memoIndex = updatedMemos.findIndex(m => m.id === memoId);
-      if (memoIndex > -1) {
-        if (memoText) {
-          updatedMemos[memoIndex].text = memoText;
+      const commentIndex = updatedComments.findIndex(m => m.id === memoId);
+      if (commentIndex > -1) {
+        if (commentText) {
+          updatedComments[commentIndex].text = commentText;
         } else {
-          updatedMemos.splice(memoIndex, 1);
+          updatedComments.splice(commentIndex, 1);
         }
       }
     } else {
-      if (memoText) {
-        const newMemo = {
+      if (commentText) {
+        const newComment = {
           id: Date.now(),
           type: currentHighlightType,
-          text: memoText
+          text: commentText
         };
-        updatedMemos.push(newMemo);
+        updatedComments.push(newComment);
       }
     }
     
-    span.dataset.memos = JSON.stringify(updatedMemos);
+    span.dataset.comments = JSON.stringify(updatedComments);
     memoBox.remove();
     renderCapsules(span);
     updateDraft(span);
@@ -194,10 +194,10 @@ function showTulipMenu(span) {
         const newType = buttonInfo.type;
         span.dataset.highlightType = newType;
         
-        let memos = JSON.parse(span.dataset.memos || '[]');
-        if (memos.length > 0) {
-          memos.forEach(memo => memo.type = newType);
-          span.dataset.memos = JSON.stringify(memos);
+        let comments = JSON.parse(span.dataset.comments || '[]');
+        if (comments.length > 0) {
+          comments.forEach(comment => comment.type = newType);
+          span.dataset.comments = JSON.stringify(comments);
           renderCapsules(span);
         }
         updateDraft(span);
@@ -270,7 +270,7 @@ document.addEventListener('dblclick', function(event) {
     event.preventDefault();
     event.stopPropagation();
     
-    const memos = JSON.parse(existingHighlight.dataset.memos || '[]');
+    const comments = JSON.parse(existingHighlight.dataset.comments || '[]');
     
     const deleteHighlight = () => {
       const draftId = existingHighlight.dataset.draftId;
@@ -402,9 +402,9 @@ document.addEventListener('click', function(event) {
 async function saveDraft(highlightSpan) {
   const draft = {
     id: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 고유 ID
-    text: highlightSpan.textContent,
+    sentence: highlightSpan.textContent,
     type: highlightSpan.dataset.highlightType,
-    memos: JSON.parse(highlightSpan.dataset.memos || '[]'),
+    comments: JSON.parse(highlightSpan.dataset.comments || '[]'),
     url: window.location.href,
     createdAt: new Date().toISOString(),
     isDraft: true
@@ -437,7 +437,7 @@ async function updateDraft(highlightSpan) {
     
     if (draftIndex > -1) {
       drafts[draftIndex].type = highlightSpan.dataset.highlightType;
-      drafts[draftIndex].memos = JSON.parse(highlightSpan.dataset.memos || '[]');
+      drafts[draftIndex].comments = JSON.parse(highlightSpan.dataset.comments || '[]');
       
       await browser.storage.local.set({ draftHighlights: drafts });
       console.log('하이라이트 초안을 수정했습니다:', drafts[draftIndex]);
@@ -485,11 +485,11 @@ function findAndApplyHighlights(savedHighlights) {
     for (const saved of savedHighlights) {
       if (saved.applied) continue;
       
-      const index = textNode.textContent.indexOf(saved.text);
+      const index = textNode.textContent.indexOf(saved.sentence);
       if (index !== -1) {
         const range = document.createRange();
         range.setStart(textNode, index);
-        range.setEnd(textNode, index + saved.text.length);
+        range.setEnd(textNode, index + saved.sentence.length);
         
         const span = document.createElement('span');
         span.className = 'highlighted-text';
@@ -502,7 +502,7 @@ function findAndApplyHighlights(savedHighlights) {
         
         const type = saved.type || saved.highlightType;
         span.dataset.highlightType = type;
-        span.dataset.memos = JSON.stringify(saved.memos || '[]');
+        span.dataset.comments = JSON.stringify(saved.comments || '[]');
         
         try {
           range.surroundContents(span);
@@ -567,9 +567,9 @@ async function syncHighlightsFromServer() {
       console.log("[%cSYNC%c] 서버로부터 최신 하이라이트 수신: %d개", "color: blue; font-weight: bold;", "", response.highlights.length);
       
       document.querySelectorAll('.highlighted-text, .capsule-container, #tulip-menu, #memo-box').forEach(el => el.remove());
-    
+      
       await browser.storage.local.set({ [window.location.href]: response.highlights });
-    
+      
       const data = await browser.storage.local.get('draftHighlights');
       const allDrafts = data.draftHighlights || [];
       if (allDrafts.length > 0) {
