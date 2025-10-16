@@ -21,7 +21,7 @@ import SwiftUI
 ///     .navigationBarHidden(true)
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
-/// ``
+/// ```
 struct TopAppBarHome {
   let title: String = "LOGO"
   let backgroundColor: UIColor = DesignSystemAsset.background.color
