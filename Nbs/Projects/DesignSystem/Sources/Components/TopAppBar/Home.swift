@@ -60,7 +60,7 @@ extension TopAppBarHome: View {
       }
       .padding(.trailing, 24)
     }
-    .frame(height: 56)
+    .frame(height: 60)
     .background(DesignSystemAsset.background.swiftUIColor)
   }
 }

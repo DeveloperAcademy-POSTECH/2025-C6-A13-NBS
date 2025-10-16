@@ -69,7 +69,7 @@ extension TopAppBarDefault: View {
         .multilineTextAlignment(.center)
         .foregroundStyle(.text1)
     }
-    .frame(height: 56)
+    .frame(height: 60)
     .background(DesignSystemAsset.background.swiftUIColor)
   }
 }
