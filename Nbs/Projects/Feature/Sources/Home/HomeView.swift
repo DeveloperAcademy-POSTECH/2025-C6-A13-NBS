@@ -8,8 +8,10 @@
 import SwiftUI
 
 import Domain
+import DesignSystem
 
 public struct HomeView {
+  let articles: [MockArticle] = MockArticle.mockArticles
   public init() {}
 }
 
@@ -24,16 +26,9 @@ extension HomeView: View {
       }
       
       Section {
-        ArticleCard(
-          article: Article(
-            id: UUID(),
-            url: nil,
-            imageURL: nil,
-            title: "하이",
-            createAt: .now,
-            newsCompany: "동아일보"
-          )
-        )
+        ForEach(articles) { article in
+          ArticleCard(article: article)
+        }
       } header: {
         HStack(spacing: 0) {
           Text("최근 추가한 링크")
@@ -46,6 +41,7 @@ extension HomeView: View {
         }
       }
     }
+    .listStyle(.insetGrouped)
   }
 }
 

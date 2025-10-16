@@ -14,7 +14,7 @@ public struct ArticleCard<Article: ArticleDisplayable> {
 
 extension ArticleCard: View {
   public var body: some View {
-    HStack {
+    HStack(spacing: 0) {
       VStack(alignment: .leading, spacing: 0) {
         Text(article.title)
           .font(.B1_SB)
@@ -27,30 +27,30 @@ extension ArticleCard: View {
           .foregroundStyle(.caption2)
           .padding(.top)
       }
-      .padding(.trailing, 12)
       .padding(.leading)
       AsyncImage(url: URL(string:article.imageURL!)) { image in
         switch image {
         case .empty:
           AsyncImage(url: URL(string:article.imageURL!))
-            .frame(minWidth: 112, maxHeight: 112)
+            .frame(minWidth: 84, maxHeight: 112)
         case .success(let image):
             image
                 .resizable()
                 .scaledToFill()
-                .frame(width: 112, height: 112)
+                .frame(width: 84, height: 112)
                 .clipped()
         case .failure:
             Image(systemName: "photo")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 112, height: 112)
+                .frame(width: 84, height: 112)
                 .foregroundColor(.gray)
                 .padding()
         @unknown default:
             EmptyView()
         }
       }
+      .padding(.trailing, 10)
     }
   }
 }
