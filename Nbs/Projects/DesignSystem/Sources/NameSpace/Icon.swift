@@ -5,8 +5,11 @@
 //  Created by 홍 on 10/16/25.
 //
 
+import SwiftUI
+
 enum Icon {}
 
+///Image(icon: Icon.search) 으로 사용하기
 extension Icon {
   static let chevronLeft = "chevron-left"
   static let chevronRight = "chevron-right"
@@ -18,7 +21,7 @@ extension Icon {
   static let moreVertical = "more-vertical"
   static let move = "move"
   static let trash = "trash-2"
-  static let sahre = "shared"
+  static let share = "shared"
   static let edit = "edit"
   static let calendar = "calendar"
   static let book = "book"
@@ -32,4 +35,10 @@ extension Icon {
   static let smallChevronRight = "small-chevron-right"
   static let smallChevronDown = "small-chevron-down"
   static let smallPlus = "small-plus"
+}
+
+public extension Image {
+  init(icon name: String) {
+    self.init(name, bundle: .module)
+  }
 }
