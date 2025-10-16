@@ -78,8 +78,8 @@ extension Target {
         configs: [
           .debug(name: "Debug", settings: [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.app",
-            "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.*",
-            "CODE_SIGN_IDENTITY": "Apple Development: Yunhong Kim (Q7CMJ86WZQ)"
+            "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app",
+            "CODE_SIGN_IDENTITY": "$(CODE_SIGN_IDENTITY)"
           ]),
           .release(name: "Release", settings: [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.ADA.app",
