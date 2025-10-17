@@ -6,8 +6,7 @@ import Feature
 struct NbsApp: App {
   var body: some Scene {
     WindowGroup {
-//      ContentView()
-      HomeView()
+      ContentView()
     }
   }
 }
