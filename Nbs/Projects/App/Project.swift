@@ -54,6 +54,9 @@ let safariTarget = Target.target(
   sources: [SourceFileGlob(stringLiteral: TargetName.SafariExtension.sourcesPath)],
   resources: [ResourceFileElement(stringLiteral: TargetName.SafariExtension.resourcesPath)],
   entitlements: .file(path: "SafariExtension.entitlements"),
+  dependencies: [
+    .domain()
+  ],
   settings: .settings(
     base: [
       "DEVELOPMENT_TEAM": "WN2B884S76",
