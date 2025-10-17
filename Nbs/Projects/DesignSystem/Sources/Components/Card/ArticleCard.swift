@@ -28,6 +28,7 @@ extension ArticleCard: View {
           .padding(.top)
       }
       .padding(.leading)
+      Spacer()
       AsyncImage(url: URL(string:article.imageURL!)) { image in
         switch image {
         case .empty:
