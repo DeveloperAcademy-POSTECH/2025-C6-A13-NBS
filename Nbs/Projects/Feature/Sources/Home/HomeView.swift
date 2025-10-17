@@ -21,7 +21,8 @@ extension HomeView: View {
       Section {
         HStack {
           Text("최근 추가한 링크")
-          Text("더보기")
+            .font(.B1_SB)
+            .foregroundStyle(.caption1)
         }
       }
       
@@ -38,6 +39,9 @@ extension HomeView: View {
           Text("더보기")
             .font(.B2_M)
             .foregroundStyle(.caption1)
+          Image(icon: Icon.smallChevronRight)
+            .resizable()
+            .frame(width: 20, height: 20)
         }
       }
     }
