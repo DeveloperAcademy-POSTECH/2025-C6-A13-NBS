@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-enum Icon {}
+public enum Icon {}
 
 ///Image(icon: Icon.search) 으로 사용하기
-extension Icon {
+public extension Icon {
   static let chevronLeft = "chevron-left"
   static let chevronRight = "chevron-right"
   static let arrowUp = "arrow-up"
