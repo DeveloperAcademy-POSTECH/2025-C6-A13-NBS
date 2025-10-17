@@ -20,7 +20,7 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarDefault {
+public struct TopAppBarDefault {
   let title: String
   let backgroundColor: UIColor = DesignSystemAsset.background.color
   let backButtonColor: UIColor = DesignSystemAsset.bl1.color
@@ -30,7 +30,7 @@ struct TopAppBarDefault {
 }
 
 extension TopAppBarDefault: View {
-  var body: some View {
+  public var body: some View {
     ZStack {
       HStack {
         Image(icon: Icon.chevronLeft)

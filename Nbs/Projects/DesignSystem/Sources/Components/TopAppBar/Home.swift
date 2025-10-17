@@ -22,14 +22,16 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarHome {
+public struct TopAppBarHome {
   let title: String = "LOGO"
   let backgroundColor: UIColor = DesignSystemAsset.background.color
   let searchButton: UIColor = DesignSystemAsset.background.color
+  
+  public init() {}
 }
 
 extension TopAppBarHome: View {
-  var body: some View {
+  public var body: some View {
     HStack {
       Text(title)
         .foregroundStyle(.n700)

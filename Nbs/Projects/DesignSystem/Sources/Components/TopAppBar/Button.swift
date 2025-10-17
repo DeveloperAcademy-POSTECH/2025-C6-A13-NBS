@@ -20,14 +20,14 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarButton {
+public struct TopAppBarButton {
   @State private var isEditing = false
   let backgroundColor: UIColor = DesignSystemAsset.background.color
   let backButtonColor: UIColor = DesignSystemAsset.icon.color
 }
 
 extension TopAppBarButton: View {
-  var body: some View {
+ public var body: some View {
       HStack {
         Image(icon: Icon.chevronLeft)
           .resizable()

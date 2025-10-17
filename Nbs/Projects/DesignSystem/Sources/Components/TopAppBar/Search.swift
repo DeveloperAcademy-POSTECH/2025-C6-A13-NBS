@@ -20,7 +20,7 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarSearch {
+public struct TopAppBarSearch {
   @Binding var text: String
   let backgroundColor: UIColor = DesignSystemAsset.background.color
   let backButtonColor: UIColor = DesignSystemAsset.bl1.color
@@ -28,7 +28,7 @@ struct TopAppBarSearch {
 }
 
 extension TopAppBarSearch: View {
-  var body: some View {
+  public var body: some View {
     HStack(spacing: 0) {
       Image(icon: Icon.chevronLeft)
         .resizable()
