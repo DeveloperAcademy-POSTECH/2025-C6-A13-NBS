@@ -18,6 +18,7 @@ extension ArticleCard: View {
       VStack(alignment: .leading, spacing: 0) {
         Text(article.title)
           .font(.B1_SB)
+          .foregroundStyle(.text1)
         Text(article.newsCompany)
           .font(.B2_M)
           .foregroundStyle(.caption2)
