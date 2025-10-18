@@ -14,7 +14,7 @@ import Domain
 
 // MARK: - Properties
 struct ShareBottomSheetView: View {
-  @Query private var categories: [CategoryItem]
+  @Query(sort: [SortDescriptor<CategoryItem>(\.createdAt, order: .reverse)]) private var categories: [CategoryItem]
   @State private var selectedCategory: CategoryItem? = nil
   let confirmAction: (CategoryItem?) -> Void
 }
