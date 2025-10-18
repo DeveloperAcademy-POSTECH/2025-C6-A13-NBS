@@ -36,15 +36,30 @@ extension ArticleListView: View {
         }
       }
       
-      ForEach(store.articles) { article in
+      ForEach(store.state.articles.suffix(5)) { article in
         Button {
           store.send(.listCellTapped)
         } label: {
           ArticleCard(article: article)
+            .background(.n0)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+      }
+      
+      if store.state.articles.count >= 6 {
+        Button {
+        } label: {
+          Text(ArticleNameSpace.showAllLink)
+            .font(.B1_SB)
+            .foregroundStyle(.bl6)
+            .frame(maxWidth: .infinity)
+            .frame(height: 52)
+            .background(.bl1)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
       }
     }
-    .padding(.horizontal, 24)
+    .padding(.horizontal, 20)
   }
 }
 
