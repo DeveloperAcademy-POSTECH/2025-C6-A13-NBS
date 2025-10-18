@@ -18,21 +18,29 @@ struct HomeFeature {
     var articleList = ArticleListFeature.State()
     var categoryList = CategoryListFeature.State()
     var alertBanner: AlertBannerState?
+    var path = StackState<Path.State>()
     
     struct AlertBannerState: Equatable {
       let text: String
       let message: String
     }
   }
-
+  
   enum Action {
     case onAppear
     case clipboardResponded(String?)
     case dismissAlertBanner
     case articleList(ArticleListFeature.Action)
     case categoryList(CategoryListFeature.Action)
+    case path(StackAction<Path.State, Path.Action>)
   }
-
+  
+  @Reducer
+  enum Path {
+    case linkList(LinkListFeature)
+    case linkDetail(LinkDetailFeature)
+  }
+  
   var body: some ReducerOf<Self> {
     Scope(state: \.articleList, action: \.articleList) {
       ArticleListFeature()
@@ -61,14 +69,30 @@ struct HomeFeature {
         )
         return .none
         
+        /// 더보기 -> 링크 리스트
+      case .articleList(.delegate(.openLinkList)):
+        state.path.append(.linkList(LinkListFeature.State()))
+        return .none
+        
+        /// 기사 탭 -> 링크 디테일
+      case let .articleList(.delegate(.openLinkDetail(article))):
+        state.path.append(.linkDetail(LinkDetailFeature.State(articleTitle: article.title)))
+        return .none
+       
+        /// 링크 리스트 -> 내부 기사 클릭
+      case let .path(.element(_, .linkList(.delegate(.openLinkDetail(article))))):
+        state.path.append(.linkDetail(LinkDetailFeature.State(articleTitle: article.title)))
+        return .none
+        
       case .dismissAlertBanner:
         state.alertBanner = nil
         return .none
         
-      case .articleList, .categoryList:
+      case .articleList, .categoryList, .path:
         return .none
       }
     }
+    .forEach(\.path, action: \.path)
   }
 }
 

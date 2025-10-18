@@ -12,14 +12,18 @@ import Domain
 import DesignSystem
 
 struct HomeView {
-  let store: StoreOf<HomeFeature>
+//  let store: StoreOf<HomeFeature>
+  @Bindable var store: StoreOf<HomeFeature>
   @Environment(\.scenePhase) private var scenePhase
 }
 
 extension HomeView: View {
   var body: some View {
-    NavigationStack {
-//      TopAppBarHome()
+    NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+      TopAppBarHome(
+        onTapSearchButton: { print ("")} ,
+        onTapSettingButton: { print ("")}
+      )
       ZStack(alignment: .bottom) {
         ZStack(alignment: .bottomTrailing) {
           ScrollView {
@@ -61,6 +65,13 @@ extension HomeView: View {
       }
       .background(DesignSystemAsset.background.swiftUIColor.ignoresSafeArea())
       .navigationBarHidden(true)
+    } destination: { store in
+      switch store.case {
+      case .linkList(let linkListStore):
+        LinkListView(store: linkListStore)
+      case .linkDetail(let store):
+              LinkDetailView(store: store)
+      }
     }
     .onChange(of: scenePhase) { _, newPhase in
       if newPhase == .active {
