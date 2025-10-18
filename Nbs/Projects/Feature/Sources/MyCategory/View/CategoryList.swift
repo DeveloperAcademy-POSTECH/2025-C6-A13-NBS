@@ -42,12 +42,25 @@ extension CategoryListView: View {
             Button {
               store.send(.categoryTapped(category))
             } label: {
-              Text(category.name)
-                .font(.B2_M)
-                .foregroundStyle(store.state.selectedCategory == category ? .white : .gray)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
+              HStack {
+                VStack {
+                  Text(category.name)
+                    .font(.B1_SB)
+                    .foregroundStyle(.text1)
+                    .padding(.horizontal)
+                  Text("17개")
+                    .font(.B1_SB)
+                    .foregroundStyle(.caption1)
+                }
+                Image("EmptyImage")
+                  .resizable()
+                  .frame(width: 56, height: 56)
+                  .zIndex(1)
+              }
             }
+            .frame(width: 160, height: 116)
+            .background(store.state.selectedCategory == category ? Color(DesignSystemAsset.bl1.color) : Color(.systemGray6))
+            .cornerRadius(12)
           }
         }
         .padding(.horizontal, 20)
