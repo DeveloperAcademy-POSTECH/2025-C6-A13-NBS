@@ -22,6 +22,7 @@ extension ArticleFilterList: View {
         articleList
       }
     }
+    .padding(.horizontal, 20)
   }
   
   private var infoContents: some View {
@@ -43,7 +44,6 @@ extension ArticleFilterList: View {
       
       buttonContents
     }
-    .padding(.horizontal, 20)
   }
   
   private var buttonContents: some View {
@@ -75,11 +75,13 @@ extension ArticleFilterList: View {
   }
   
   private var articleList: some View {
-    ForEach(store.articles) { article in
+    ForEach(store.state.articles) { article in
       Button {
-        store.send(.listCellTapped)
+        store.send(.listCellTapped(article))
       } label: {
         ArticleCard(article: article)
+          .background(.n0)
+          .clipShape(RoundedRectangle(cornerRadius: 12))
       }
     }
   }
