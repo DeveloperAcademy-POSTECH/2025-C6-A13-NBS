@@ -36,19 +36,18 @@ extension LinkListView: View {
   private var mainContents: some View {
     VStack(spacing: .zero) {
       // 상단 네비게이션바
-      TopAppBarDefault(title: "내 링크 모음")
-        .overlay(alignment: .leading) {
-          Button {
-            dismiss()
-          } label: {
-            Image(icon: Icon.chevronLeft)
-              .resizable()
-              .frame(width: 24, height: 24)
-              .frame(width: 44, height: 44)
-              .contentShape(Rectangle())
-              .padding(.leading, 4)
-          }
+      TopAppBarDefault(
+        title: "내 링크 모음",
+        onTapBackButton: { dismiss() },
+        onTapSearchButton: {
+          // TODO: 검색 화면 연결
+          print("검색 버튼 클릭")
+        },
+        onTapSettingButton: {
+          // TODO: 설정 화면 연결
+          print("설정 버튼 클릭")
         }
+      )
       // 하단 스크롤뷰 모음
       scrollViewContents
     }
@@ -75,7 +74,10 @@ extension LinkListView: View {
           store: store.scope(
             state: \.categoryChipList,
             action: \.categoryChipList
-          )
+          ),
+          onTap: {
+            store.send(.bottomSheetButtonTapped(true))
+          }
         )
         
         ArticleFilterList(
