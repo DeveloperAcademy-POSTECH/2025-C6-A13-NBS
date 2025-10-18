@@ -26,7 +26,7 @@ struct MockArticle: ArticleDisplayable, Identifiable {
     MockArticle(
       url: "https://biz.chosun.com/article1",
       imageURL: "https://picsum.photos/200/200?random=1",
-      title: "트럼프, 중·대형 트럭 관세 발표",
+      title: "트럼프 “11월 1일부터 중·대형 트럭에 25% 관세 부과“",
       createAt: Calendar.current.date(byAdding: .day, value: -1, to: .now)!,
       newsCompany: "조선일보"
     ),

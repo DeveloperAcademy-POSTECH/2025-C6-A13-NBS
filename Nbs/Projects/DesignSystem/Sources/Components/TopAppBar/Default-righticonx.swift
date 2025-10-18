@@ -20,24 +20,34 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarDefaultRightIconx {
-  let title: String
+public struct TopAppBarDefaultRightIconx {
+  public let title: String
+  public let onTapBackButton: () -> Void
   let backgroundColor: UIColor = DesignSystemAsset.background.color
-  let backButtonColor: UIColor = DesignSystemAsset.icon.color
-  
-  init(title: String) { self.title = title }
+
+  public init(
+    title: String,
+    onTapBackButton: @escaping () -> Void
+  ) {
+    self.title = title
+    self.onTapBackButton = onTapBackButton
+  }
 }
 
 extension TopAppBarDefaultRightIconx: View {
-  var body: some View {
+  public var body: some View {
     ZStack {
       HStack {
-        Image(icon: Icon.chevronLeft)
-          .resizable()
-          .frame(width: 24, height: 24)
-          .frame(width: 44, height: 44)
-          .contentShape(Rectangle())
-          .padding(.leading, 4)
+        Button(action: onTapBackButton) {
+          Image(icon: Icon.chevronLeft)
+            .resizable()
+            .renderingMode(.template)
+            .frame(width: 24, height: 24)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+            .padding(.leading, 4)
+            .foregroundStyle(Color.icon)
+        }
         Spacer()
       }
       .padding(.trailing, 24)
@@ -55,5 +65,5 @@ extension TopAppBarDefaultRightIconx: View {
 }
 
 #Preview {
-  TopAppBarDefaultRightIconx(title: "타이틀")
+  TopAppBarDefaultRightIconx(title: "타이틀") {} 
 }

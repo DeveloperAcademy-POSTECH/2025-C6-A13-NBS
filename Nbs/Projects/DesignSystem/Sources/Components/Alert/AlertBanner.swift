@@ -79,8 +79,9 @@ public extension AlertBanner {
           action?()
         } label: {
           Color.clear.frame(width: 40, height: 40)
-          Image(systemName: "xmark")
+          Image(icon: Icon.x)
             .resizable()
+            .renderingMode(.template)
             .scaledToFit()
             .frame(width: 24, height: 24)
             .foregroundStyle(.textw)

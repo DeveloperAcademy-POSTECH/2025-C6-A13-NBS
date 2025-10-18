@@ -20,15 +20,15 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarTitleOnly {
+public struct TopAppBarTitleOnly {
   let title: String
   let backgroundColor: UIColor = DesignSystemAsset.background.color
   
-  init(title: String) { self.title = title }
+  public init(title: String) { self.title = title }
 }
 
 extension TopAppBarTitleOnly: View {
-  var body: some View {
+  public var body: some View {
       HStack {
         Text(title)
           .font(.H4_SB)

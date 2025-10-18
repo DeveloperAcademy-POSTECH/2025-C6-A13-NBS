@@ -20,28 +20,45 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarButton {
-  @State private var isEditing = false
-  let backgroundColor: UIColor = DesignSystemAsset.background.color
-  let backButtonColor: UIColor = DesignSystemAsset.icon.color
+public struct TopAppBarButton {
+  public var isEditing: Bool
+  public var onTapChipButton: () -> Void
+  public var onTapBackButton: () -> Void
+  
+  public init(
+    isEditing: Bool,
+    onTapChipButton: @escaping () -> Void,
+    onTapBackButton: @escaping () -> Void
+  ) {
+    self.isEditing = isEditing
+    self.onTapChipButton = onTapChipButton
+    self.onTapBackButton = onTapBackButton
+  }
 }
 
 extension TopAppBarButton: View {
-  var body: some View {
+ public var body: some View {
       HStack {
-        Image(icon: Icon.chevronLeft)
-          .resizable()
-          .frame(width: 24, height: 24)
-          .frame(width: 44, height: 44)
-          .contentShape(Rectangle())
-          .padding(.leading, 4)
+        Button(action: onTapBackButton) {
+          Image(icon: Icon.chevronLeft)
+            .resizable()
+            .renderingMode(.template)
+            .frame(width: 24, height: 24)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+            .foregroundStyle(Color.icon)
+            .padding(.leading, 4)
+        }
         Spacer()
-        ChipButton(
-          title: isEditing ? ChipTitle.done : ChipTitle.edit,
-          style: .deep,
-          isOn: .constant(true)
-        )
-        .padding(.trailing, 20)
+        
+        Button(action: onTapChipButton) {
+          ChipButton(
+            title: isEditing ? ChipTitle.done : ChipTitle.edit,
+            style: .deep,
+            isOn: .constant(true)
+          )
+          .padding(.trailing, 20)
+        }
       }
       .frame(height: 60)
       .background(DesignSystemAsset.background.swiftUIColor)
@@ -49,5 +66,9 @@ extension TopAppBarButton: View {
 }
 
 #Preview {
-  TopAppBarButton()
+  TopAppBarButton(isEditing: true) {
+    
+  } onTapBackButton: {
+    
+  }
 }

@@ -20,41 +20,55 @@ import SwiftUI
 ///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
 /// }
 /// ```
-struct TopAppBarDefault {
-  let title: String
-  let backgroundColor: UIColor = DesignSystemAsset.background.color
-  let backButtonColor: UIColor = DesignSystemAsset.bl1.color
-  let searchButton: UIColor = DesignSystemAsset.background.color
+public struct TopAppBarDefault {
+  public let title: String
+  public let onTapBackButton: () -> Void
+  public let onTapSearchButton: () -> Void
+  public let onTapSettingButton: () -> Void
   
-  init(title: String) { self.title = title }
+  public init(
+    title: String,
+    onTapBackButton: @escaping () -> Void,
+    onTapSearchButton: @escaping () -> Void,
+    onTapSettingButton: @escaping () -> Void
+  ) {
+    self.title = title
+    self.onTapBackButton = onTapBackButton
+    self.onTapSearchButton = onTapSearchButton
+    self.onTapSettingButton = onTapSettingButton
+  }
 }
 
 extension TopAppBarDefault: View {
-  var body: some View {
+  public var body: some View {
     ZStack {
       HStack {
-        Image(icon: Icon.chevronLeft)
-          .resizable()
-          .frame(width: 24, height: 24)
-          .frame(width: 44, height: 44)
-          .contentShape(Rectangle())
-          .padding(.leading, 4)
+        Button(action: onTapBackButton) {
+          Image(icon: Icon.chevronLeft)
+            .resizable()
+            .renderingMode(.template)
+            .foregroundStyle(.icon)
+            .frame(width: 24, height: 24)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+            .padding(.leading, 4)
+        }
         Spacer()
         HStack(spacing: 0) {
-          Button {
-            print("검색 탭 클릭")
-          } label: {
+          Button(action: onTapSearchButton) {
             Image(icon: Icon.search)
               .resizable()
+              .renderingMode(.template)
+              .foregroundStyle(.icon)
               .frame(width: 24, height: 24)
               .frame(width: 44, height: 44)
               .contentShape(Rectangle())
           }
-          Button {
-            print("설정 탭 클릭")
-          } label: {
+          Button(action: onTapSettingButton) {
             Image(icon: Icon.moreVertical)
               .resizable()
+              .renderingMode(.template)
+              .foregroundStyle(.icon)
               .frame(width: 24, height: 24)
               .frame(width: 44, height: 44)
               .contentShape(Rectangle())
@@ -75,5 +89,10 @@ extension TopAppBarDefault: View {
 }
 
 #Preview {
-  TopAppBarDefault(title: "타이틀")
+  TopAppBarDefault(
+    title: "타이틀",
+    onTapBackButton: {},
+    onTapSearchButton: {},
+    onTapSettingButton: {}
+  )
 }

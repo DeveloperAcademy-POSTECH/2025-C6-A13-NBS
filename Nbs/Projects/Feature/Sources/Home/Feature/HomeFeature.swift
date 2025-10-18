@@ -1,0 +1,90 @@
+//
+//  HomeFeature.swift
+//  Feature
+//
+//  Created by 홍 on 10/17/25.
+//
+
+import ComposableArchitecture
+import SwiftUI
+
+@Reducer
+struct HomeFeature {
+  
+  @Dependency(\.clipboard) var clipboard
+  
+  @ObservableState
+  struct State {
+    var articleList = ArticleListFeature.State()
+    var categoryList = CategoryListFeature.State()
+    var alertBanner: AlertBannerState?
+    
+    struct AlertBannerState: Equatable {
+      let text: String
+      let message: String
+    }
+  }
+
+  enum Action {
+    case onAppear
+    case clipboardResponded(String?)
+    case dismissAlertBanner
+    case articleList(ArticleListFeature.Action)
+    case categoryList(CategoryListFeature.Action)
+  }
+
+  var body: some ReducerOf<Self> {
+    Scope(state: \.articleList, action: \.articleList) {
+      ArticleListFeature()
+    }
+    
+    Scope(state: \.categoryList, action: \.categoryList) {
+      CategoryListFeature()
+    }
+    
+    Reduce { state, action in
+      switch action {
+      case .onAppear:
+        return .run { send in
+          await send(.clipboardResponded(clipboard.getString()))
+        }
+        
+      case let .clipboardResponded(copiedText):
+        guard let copiedText,
+              let url = URL(string: copiedText),
+              let _ = url.host else {
+          return .none
+        }
+        state.alertBanner = .init(
+          text: "복사한 링크 바로 추가하기",
+          message: copiedText
+        )
+        return .none
+        
+      case .dismissAlertBanner:
+        state.alertBanner = nil
+        return .none
+        
+      case .articleList, .categoryList:
+        return .none
+      }
+    }
+  }
+}
+
+extension DependencyValues {
+  var clipboard: ClipboardClient {
+    get { self[ClipboardClient.self] }
+    set { self[ClipboardClient.self] = newValue }
+  }
+}
+
+struct ClipboardClient {
+  var getString: () -> String?
+}
+
+extension ClipboardClient: DependencyKey {
+  static let liveValue = Self(
+    getString: { UIPasteboard.general.string }
+  )
+}
