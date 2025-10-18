@@ -7,28 +7,15 @@
 
 import SwiftData
 import SafariServices
-
 import Domain
 
 final class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
   func beginRequest(with context: NSExtensionContext) {
-    guard let item = context.inputItems.first as? NSExtensionItem else {
+    guard let item = context.inputItems.first as? NSExtensionItem,
+          let userInfo = item.userInfo,
+          let message = userInfo[SFExtensionMessageKey] as? [String: Any],
+          let action = message["action"] as? String else {
       context.completeRequest(returningItems: nil, completionHandler: nil)
-      return
-    }
-    
-    guard let userInfo = item.userInfo else {
-      context.completeRequest(returningItems: nil, completionHandler: nil)
-      return
-    }
-    
-    guard let message = userInfo[SFExtensionMessageKey] as? [String: Any] else {
-      context.completeRequest(returningItems: nil, completionHandler: nil)
-      return
-    }
-    
-    guard let action = message["action"] as? String else {
-      self.sendResponse(to: context, with: ["error": "No action specified"])
       return
     }
     
@@ -48,36 +35,14 @@ final class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
   }
 }
 
-// MARK: - SwiftData
-private extension SafariWebExtensionHandler {
-  static func createSharedModelContainer() -> ModelContainer? {
-    let appGroupID = "group.com.nbs.dev.ADA.shared"
-    let schema = Schema([LinkItem.self, HighlightItem.self, Category.self])
-    
-    guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
-      return nil
-    }
-    
-    let storeURL = containerURL.appendingPathComponent("Nbs_store.sqlite")
-    let configuration = ModelConfiguration(schema: schema, url: storeURL)
-    
-    do {
-      return try ModelContainer(for: schema, configurations: [configuration])
-    } catch {
-      return nil
-    }
-  }
-}
-
 // MARK: - Communication Method
 private extension SafariWebExtensionHandler {
   func fetchHighlights(for urlString: String) -> [[String: Any]] {
-    guard let container = SafariWebExtensionHandler.createSharedModelContainer() else {
+    guard let container = AppGroupContainer.createShareModelContainer() else {
       return []
     }
     
     let context = ModelContext(container)
-    
     let fetchDescriptor = FetchDescriptor<LinkItem>(predicate: #Predicate { $0.urlString == urlString })
     
     guard let linkItem = try? context.fetch(fetchDescriptor).first else {

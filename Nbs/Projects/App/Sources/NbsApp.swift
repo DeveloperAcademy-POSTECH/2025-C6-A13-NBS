@@ -1,32 +1,18 @@
 import SwiftUI
-
 import SwiftData
-
 import Domain
 import Feature
 
 @main
 struct NbsApp: App {
-  var sharedModelContainer: ModelContainer = {
-    let schema = Schema([
-      LinkItem.self,
-      HighlightItem.self,
-      Category.self
-    ])
-    
-    let appGroupID = "group.com.nbs.dev.ADA.shared"
-    guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
-      fatalError("Could not access App Group container.")
-    }
-    let storeURL = containerURL.appendingPathComponent("Nbs_store.sqlite")
-    let configuration = ModelConfiguration(schema: schema, url: storeURL)
-    
-    do {
-      return try ModelContainer(for: schema, configurations: [configuration])
-    } catch {
-      fatalError("Could not create shared ModelContainer: \(error)")
-    }
-  }()
+  let sharedModelContainer: ModelContainer
+
+  init() {
+      guard let container = AppGroupContainer.createShareModelContainer() else {
+          fatalError("Failed to create shared ModelContainer.")
+      }
+      self.sharedModelContainer = container
+  }
   
   var body: some Scene {
     WindowGroup {

@@ -395,9 +395,6 @@ document.addEventListener('click', function(event) {
   }
 });
 
-
-
-
 // 초안 처리 로직
 async function saveDraft(highlightSpan) {
   const draft = {
