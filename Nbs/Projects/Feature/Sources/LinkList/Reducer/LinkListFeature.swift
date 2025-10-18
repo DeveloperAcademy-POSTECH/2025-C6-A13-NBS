@@ -13,11 +13,17 @@ struct LinkListFeature {
   struct State {
     var categoryChipList = CategoryChipFeature.State()
     var articleList = ArticleFilterFeature.State()
+    var showBottomSheet: Bool = false
   }
   
   enum Action {
     case categoryChipList(CategoryChipFeature.Action)
     case articleList(ArticleFilterFeature.Action)
+    case bottomSheetButtonTapped(Bool)
+    case delegate(Delegate)
+    enum Delegate {
+      case openLinkDetail(MockArticle)
+    }
   }
   
   var body: some ReducerOf<Self> {
@@ -27,6 +33,23 @@ struct LinkListFeature {
     
     Scope(state: \.articleList, action: \.articleList) {
       ArticleFilterFeature()
+    }
+    
+    Reduce { state, action in
+      switch action {
+      case .bottomSheetButtonTapped(let value):
+        state.showBottomSheet = value
+        return .none
+        
+      case let .articleList(.delegate(.openLinkDetail(article))):
+        return .send(.delegate(.openLinkDetail(article)))
+        
+      case .categoryChipList, .articleList:
+        return .none
+        
+      case .delegate:
+        return .none
+      }
     }
   }
 }

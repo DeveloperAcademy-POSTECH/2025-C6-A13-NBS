@@ -12,24 +12,30 @@ struct ArticleFilterFeature {
   @ObservableState
   struct State {
     var articles: [MockArticle] = MockArticle.mockArticles
-    var showMoreLink: Bool = false
-    var showLinkDetail: Bool = false
     var sortOrder: SortOrder = .latest
+    var selectedArticle: MockArticle? = nil
   }
   
   enum SortOrder: Equatable {
-      case latest
-      case oldest
-    }
+    case latest
+    case oldest
+  }
   
   enum Action {
-    case listCellTapped
+    case listCellTapped(MockArticle)
     case sortOrderChanged(SortOrder)
+    case delegate(Delegate)
+    enum Delegate {
+      case openLinkDetail(MockArticle)
+    }
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case let .listCellTapped(article):
+        return .send(.delegate(.openLinkDetail(article)))
+        
       case let .sortOrderChanged(order):
         state.sortOrder = order
         
@@ -41,8 +47,7 @@ struct ArticleFilterFeature {
         }
         return .none
         
-      case .listCellTapped:
-        // TODO: 상세화면 네비게이션 로직 추가 예정
+      case .delegate:
         return .none
       }
     }
