@@ -10,54 +10,80 @@ import SwiftUI
 ///
 /// Search 커스텀 네비게이션 바 컴포넌트입니다.
 ///
-/// 사용 예시:
+/// - TCA 호환: `viewStore.binding(\.$searchText)` 형태로 사용 가능.
+/// - 예시:
 /// ```swift
-/// VStack(spacing: 0) {
-///    NavigationStack {
-///     TopAppBarSearch()
-///   }
-///     .navigationBarHidden(true)
-///     기본 네비게이션 버튼을 가려줘야 합니다.!~!
+/// WithViewStore(store, observe: \.searchText) { viewStore in
+///   TopAppBarSearch(
+///     text: viewStore.binding(\.$searchText),
+///     onBack: { viewStore.send(.backTapped) }
+///   )
 /// }
 /// ```
 public struct TopAppBarSearch {
-  @Binding var text: String
-  let backgroundColor: UIColor = DesignSystemAsset.background.color
-  let backButtonColor: UIColor = DesignSystemAsset.bl1.color
-  let searchButton: UIColor = DesignSystemAsset.background.color
+  @Binding public var text: String
+
+  private let onBack: (() -> Void)?
+  private let onSubmit: (() -> Void)?
+  private let onClear: (() -> Void)?
+
+  public let backgroundColor: UIColor = DesignSystemAsset.background.color
+  public let backButtonColor: UIColor = DesignSystemAsset.bl1.color
+  public let searchButton: UIColor = DesignSystemAsset.background.color
+
+  public init(
+    text: Binding<String>,
+    onBack: (() -> Void)? = nil,
+    onSubmit: (() -> Void)? = nil,
+    onClear: (() -> Void)? = nil
+  ) {
+    self._text = text
+    self.onBack = onBack
+    self.onSubmit = onSubmit
+    self.onClear = onClear
+  }
 }
 
 extension TopAppBarSearch: View {
   public var body: some View {
     HStack(spacing: 0) {
-      Image(icon: Icon.chevronLeft)
-        .resizable()
-        .frame(width: 24, height: 24)
-        .frame(width: 44, height: 44)
-        .contentShape(Rectangle())
-        .padding(.leading, 4)
-      
+      Button(action: { onBack?() }) {
+        Image(icon: Icon.chevronLeft)
+          .resizable()
+          .renderingMode(.template)
+          .foregroundStyle(.icon)
+          .frame(width: 24, height: 24)
+          .frame(width: 44, height: 44)
+          .contentShape(Rectangle())
+          .padding(.leading, 4)
+      }
+
       ZStack {
         RoundedRectangle(cornerRadius: 12)
           .fill(Color(.systemGray6))
         
-        TextField("검색어를 입력해 주세요", text: $text)
-          .foregroundColor(text.isEmpty ? .caption2 : .text1)
-          .padding(.horizontal, 12)
-          .overlay(
-            HStack {
-              Spacer()
-              if !text.isEmpty {
-                Button {
-                  text = ""
-                } label: {
-                  Image(icon: Icon.smallxCircleFilled)
-                    .foregroundColor(.n80)
-                }
-                .padding(.trailing, 8)
+        TextField(
+          "검색어를 입력해 주세요",
+          text: $text,
+          onCommit: { onSubmit?() }
+        )
+        .foregroundColor(text.isEmpty ? .caption2 : .text1)
+        .padding(.horizontal, 12)
+        .overlay(
+          HStack {
+            Spacer()
+            if !text.isEmpty {
+              Button {
+                text = ""
+                onClear?()
+              } label: {
+                Image(icon: Icon.smallxCircleFilled)
+                  .foregroundColor(.n80)
               }
+              .padding(.trailing, 8)
             }
-          )
+          }
+        )
       }
       .frame(height: 40)
       .frame(maxWidth: .infinity)
@@ -69,5 +95,10 @@ extension TopAppBarSearch: View {
 }
 
 #Preview {
-  TopAppBarSearch(text: .constant("sdposdfp"))
+  TopAppBarSearch(
+    text: .constant("예시 검색어"),
+    onBack: { print("뒤로가기") },
+    onSubmit: { print("검색 실행") },
+    onClear: { print("입력 초기화") }
+  )
 }

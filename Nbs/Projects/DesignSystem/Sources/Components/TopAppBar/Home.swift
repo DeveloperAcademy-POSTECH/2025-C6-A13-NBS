@@ -24,10 +24,16 @@ import SwiftUI
 /// ```
 public struct TopAppBarHome {
   let title: String = "LOGO"
-  let backgroundColor: UIColor = DesignSystemAsset.background.color
-  let searchButton: UIColor = DesignSystemAsset.background.color
+  public let onTapSearchButton: () -> Void
+  public let onTapSettingButton: () -> Void
   
-  public init() {}
+  public init(
+    onTapSearchButton: @escaping () -> Void,
+    onTapSettingButton: @escaping () -> Void
+  ) {
+    self.onTapSearchButton = onTapSearchButton
+    self.onTapSettingButton = onTapSettingButton
+  }
 }
 
 extension TopAppBarHome: View {
@@ -36,25 +42,22 @@ extension TopAppBarHome: View {
       Text(title)
         .foregroundStyle(.n700)
         .padding(.leading, 24)
-      
       Spacer()
-      
       HStack(spacing: 0) {
-        Button {
-          print("검색 탭 클릭")
-        } label: {
+        Button(action: onTapSearchButton) {
           Image(icon: Icon.search)
             .resizable()
+            .renderingMode(.template)
+            .foregroundStyle(.icon)
             .frame(width: 24, height: 24)
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())
         }
-        
-        Button {
-          print("설정 탭 클릭")
-        } label: {
+        Button(action: onTapSettingButton) {
           Image(icon: Icon.settings)
             .resizable()
+            .renderingMode(.template)
+            .foregroundStyle(.icon)
             .frame(width: 24, height: 24)
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())
@@ -68,5 +71,9 @@ extension TopAppBarHome: View {
 }
 
 #Preview {
-  TopAppBarHome()
+  TopAppBarHome {
+    
+  } onTapSettingButton: {
+    
+  }
 }
