@@ -38,7 +38,7 @@ extension ArticleListView: View {
       
       ForEach(store.state.articles.suffix(5)) { article in
         Button {
-          store.send(.listCellTapped)
+          store.send(.listCellTapped(article))
         } label: {
           ArticleCard(article: article)
             .background(.n0)

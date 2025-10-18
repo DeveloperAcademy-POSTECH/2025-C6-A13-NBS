@@ -18,18 +18,25 @@ struct ArticleListFeature {
   
   enum Action {
     case moreLinkButtonTapped
-    case listCellTapped
+    case listCellTapped(MockArticle)
+    case delegate(Delegate)
+    
+    enum Delegate {
+      case openLinkDetail(MockArticle)
+      case openLinkList
+    }
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .moreLinkButtonTapped:
-        state.showMoreLink = true
-        return .none
+        return .send(.delegate(.openLinkList))
         
-      case .listCellTapped:
-        state.showLinkDetail = true
+      case let .listCellTapped(article):
+        return .send(.delegate(.openLinkDetail(article)))
+        
+      case .delegate:
         return .none
       }
     }
