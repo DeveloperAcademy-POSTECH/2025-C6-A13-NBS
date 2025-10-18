@@ -19,7 +19,7 @@ struct HomeView {
 extension HomeView: View {
   var body: some View {
     NavigationStack {
-      TopAppBarHome()
+//      TopAppBarHome()
       ZStack(alignment: .bottom) {
         ZStack(alignment: .bottomTrailing) {
           ScrollView {
@@ -30,7 +30,6 @@ extension HomeView: View {
                   action: \.categoryList
                 )
               )
-              
               ArticleListView(
                 store: store.scope(
                   state: \.articleList,
@@ -41,15 +40,7 @@ extension HomeView: View {
             .padding(.bottom, 80)
           }
           
-          Button {
-            
-          } label: {
-            Image(icon: Icon.plus)
-              .foregroundStyle(DesignSystemAsset.bl6.swiftUIColor)
-              .frame(width: 48, height: 48)
-              .background(.n0)
-              .clipShape(Circle())
-          }
+          AddFloatingButton()
           .padding(.trailing, 20)
           .padding(.bottom, 24)
         }
@@ -62,7 +53,10 @@ extension HomeView: View {
               store.send(.dismissAlertBanner)
             }
           )
-          .padding(.horizontal, 24)
+          .padding(.horizontal, 20)
+          .onTapGesture {
+            print("Toast 알림")
+          }
         }
       }
       .background(DesignSystemAsset.background.swiftUIColor.ignoresSafeArea())
