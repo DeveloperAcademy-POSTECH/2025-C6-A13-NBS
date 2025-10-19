@@ -15,12 +15,19 @@ struct AddLinkFeature {
   @Dependency(\.dismiss) var dismiss
   
   @ObservableState
-  struct State {
-    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: "링크 추가하기")
+  struct State: Equatable {
+    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: "링크 추가")
+    var linkURL: String
+    
+    init(linkURL: String = "") {
+      self.linkURL = linkURL
+    }
   }
   
   enum Action {
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
+    case setLinkURL(String)
+    case saveButtonTapped
   }
   
   var body: some ReducerOf<Self> {
@@ -35,6 +42,13 @@ struct AddLinkFeature {
         
       case .topAppBar:
         return .none
+        
+      case let .setLinkURL(url):
+        state.linkURL = url
+        return .none
+        
+      case .saveButtonTapped:
+        return .run { _ in await self.dismiss() }
       }
     }
   }
