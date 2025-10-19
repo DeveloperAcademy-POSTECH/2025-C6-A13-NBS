@@ -23,9 +23,9 @@ extension CategoryGridView: View {
     WithViewStore(store, observe: { $0 }) { viewStore in
       ScrollView {
         LazyVGrid(columns: gridItems, spacing: 10) {
-          ForEach(viewStore.categories) { category in
+          ForEach(viewStore.categories.reversed()) { category in
             Button {
-              print("")
+              viewStore.send(.selectCategory(category))
             } label: {
               ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -49,7 +49,7 @@ extension CategoryGridView: View {
                   .padding(.bottom, 12)
               }
               .frame(maxWidth: .infinity, minHeight: 116)
-              .background(Color.blue)
+              .background(viewStore.selectedCategory == category ? Color.green : Color.blue)
               .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .buttonStyle(.plain)

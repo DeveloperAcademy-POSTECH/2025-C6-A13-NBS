@@ -38,7 +38,7 @@ extension CategoryListView: View {
       .padding(.horizontal, 20)
       ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 8) {
-          ForEach(store.categories) { category in
+          ForEach(store.categories.reversed()) { category in
             Button {
               store.send(.categoryTapped(category))
             } label: {
