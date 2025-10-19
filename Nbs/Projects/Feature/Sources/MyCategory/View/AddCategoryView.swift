@@ -22,7 +22,7 @@ struct AddCategoryView: View {
       .toolbar {
         ToolbarItem(placement: .navigationBarLeading) {
           Button("Cancel") {
-            store.send(.cancelButtonTapped) // 이 액션은 AddCategoryFeature에 추가해야 합니다.
+            store.send(.cancelButtonTapped)
           }
         }
         ToolbarItem(placement: .navigationBarTrailing) {

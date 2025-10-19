@@ -16,7 +16,7 @@ struct AddLinkFeature {
   
   @ObservableState
   struct State: Equatable {
-    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: "링크 추가")
+    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: AddLinkNamespace.naviTitle)
     var linkURL: String
     
     init(linkURL: String = "") {

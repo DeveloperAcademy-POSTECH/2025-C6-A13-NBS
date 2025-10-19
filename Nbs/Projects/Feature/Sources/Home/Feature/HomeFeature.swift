@@ -44,6 +44,7 @@ struct HomeFeature {
     case linkDetail(LinkDetailFeature)
     case categoryGridView(CategoryGridFeature)
     case addLink(AddLinkFeature)
+    case addCategory(AddCategoryFeature)
   }
   
   var body: some ReducerOf<Self> {
