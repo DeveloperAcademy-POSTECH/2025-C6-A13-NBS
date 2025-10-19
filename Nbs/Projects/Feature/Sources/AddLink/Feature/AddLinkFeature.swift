@@ -28,6 +28,12 @@ struct AddLinkFeature {
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setLinkURL(String)
     case saveButtonTapped
+    case addNewCategoryButtonTapped
+    case delegate(Delegate)
+    
+    enum Delegate {
+      case goToAddCategory
+    }
   }
   
   var body: some ReducerOf<Self> {
@@ -49,6 +55,12 @@ struct AddLinkFeature {
         
       case .saveButtonTapped:
         return .run { _ in await self.dismiss() }
+        
+      case .addNewCategoryButtonTapped:
+        return .send(.delegate(.goToAddCategory))
+        
+      case .delegate:
+        return .none
       }
     }
   }

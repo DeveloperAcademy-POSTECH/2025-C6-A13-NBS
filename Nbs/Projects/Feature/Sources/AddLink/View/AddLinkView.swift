@@ -47,7 +47,9 @@ struct AddLinkView: View {
           .foregroundStyle(.caption1)
         Spacer()
         
-        AddNewCategoryButton()
+        AddNewCategoryButton(action: {
+            store.send(.addNewCategoryButtonTapped)
+        })
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.horizontal, 24)
