@@ -76,12 +76,12 @@ struct HomeFeature {
         
         /// 기사 탭 -> 링크 디테일
       case let .articleList(.delegate(.openLinkDetail(article))):
-        state.path.append(.linkDetail(LinkDetailFeature.State(articleTitle: article.title)))
+        state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
         return .none
        
         /// 링크 리스트 -> 내부 기사 클릭
       case let .path(.element(_, .linkList(.delegate(.openLinkDetail(article))))):
-        state.path.append(.linkDetail(LinkDetailFeature.State(articleTitle: article.title)))
+        state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
         return .none
         
       case .dismissAlertBanner:
