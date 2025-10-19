@@ -17,6 +17,7 @@ struct AddLinkFeature {
   struct State: Equatable {
     var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: AddLinkNamespace.naviTitle)
     var linkURL: String
+    var categoryGrid = CategoryGridFeature.State()
     
     init(linkURL: String = "") {
       self.linkURL = linkURL
@@ -28,6 +29,7 @@ struct AddLinkFeature {
     case setLinkURL(String)
     case saveButtonTapped
     case addNewCategoryButtonTapped
+    case categoryGrid(CategoryGridFeature.Action)
     case delegate(Delegate)
     
     enum Delegate {
@@ -38,6 +40,10 @@ struct AddLinkFeature {
   var body: some ReducerOf<Self> {
     Scope(state: \.topAppBar, action: \.topAppBar) {
       TopAppBarDefaultRightIconxFeature()
+    }
+    
+    Scope(state: \.categoryGrid, action: \.categoryGrid) {
+      CategoryGridFeature()
     }
     
     Reduce { state, action in
@@ -57,6 +63,9 @@ struct AddLinkFeature {
         
       case .addNewCategoryButtonTapped:
         return .send(.delegate(.goToAddCategory))
+        
+      case .categoryGrid:
+        return .none
         
       case .delegate:
         return .none

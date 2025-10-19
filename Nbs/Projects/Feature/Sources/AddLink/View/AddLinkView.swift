@@ -57,7 +57,14 @@ struct AddLinkView: View {
       .padding(.horizontal, 24)
       .padding(.top, 24)
       
+      CategoryGridView(
+        store: store.scope(
+          state: \.categoryGrid,
+          action: \.categoryGrid
+        )
+      )
       
+      Spacer()
       MainButton(AddLinkNamespace.ctaButtonTitle) {
         store.send(.saveButtonTapped)
       }
