@@ -29,7 +29,7 @@ extension CategoryChipList: View {
   private var categoryChipList: some View {
     ScrollViewReader { proxy in
       ScrollView(.horizontal, showsIndicators: false) {
-        HStack(spacing: 6) {
+        LazyHStack(spacing: 6) {
           ForEach(store.categories, id: \.self) { category in
             ChipButton(
               title: category,
