@@ -12,4 +12,5 @@ enum AddLinkNamespace {
   static let selectCategory = "카테고리 선택"
   static let newCategory = "새 카테고리"
   static let count = "개"
+  static let ctaButtonTitle = "추가하기"
 }
