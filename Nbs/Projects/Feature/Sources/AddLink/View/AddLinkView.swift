@@ -65,7 +65,10 @@ struct AddLinkView: View {
       )
       
       Spacer()
-      MainButton(AddLinkNamespace.ctaButtonTitle) {
+      MainButton(
+        AddLinkNamespace.ctaButtonTitle,
+        isDisabled: store.linkURL.isEmpty
+      ) {
         store.send(.saveButtonTapped)
       }
       .padding(.horizontal, 20)
