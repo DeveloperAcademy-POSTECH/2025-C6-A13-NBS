@@ -42,7 +42,8 @@ struct HomeFeature {
   enum Path {
     case linkList(LinkListFeature)
     case linkDetail(LinkDetailFeature)
-    case categoryGridView(CategoryGridFeature)
+//    case categoryGridView(CategoryGridFeature)
+    case myCategoryCollection(MyCategoryCollectionFeature)
     case addLink(AddLinkFeature)
     case addCategory(AddCategoryFeature)
   }
@@ -104,7 +105,7 @@ struct HomeFeature {
         return .none
         
       case .categoryList(.delegate(.goToMoreLinkButtonView)):
-        state.path.append(.categoryGridView(CategoryGridFeature.State()))
+        state.path.append(.myCategoryCollection(MyCategoryCollectionFeature.State()))
         return .none
         
       case .floatingButtonTapped:

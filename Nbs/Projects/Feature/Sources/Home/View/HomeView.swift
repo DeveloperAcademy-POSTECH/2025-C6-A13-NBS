@@ -74,8 +74,8 @@ extension HomeView: View {
         LinkListView(store: linkListStore)
       case .linkDetail(let store):
               LinkDetailView(store: store)
-      case .categoryGridView(let store):
-        CategoryGridView(store: store)
+      case .myCategoryCollection(let store):
+        MyCategoryCollectionView(store: store)
       case .addLink(let store):
         AddLinkView(store: store)
       case .addCategory(let store):
