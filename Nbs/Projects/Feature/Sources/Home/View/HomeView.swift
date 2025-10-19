@@ -12,7 +12,6 @@ import Domain
 import DesignSystem
 
 struct HomeView {
-//  let store: StoreOf<HomeFeature>
   @Bindable var store: StoreOf<HomeFeature>
   @Environment(\.scenePhase) private var scenePhase
 }
@@ -44,7 +43,9 @@ extension HomeView: View {
             .padding(.bottom, 80)
           }
           
-          AddFloatingButton()
+          AddFloatingButton {
+            store.send(.floatingButtonTapped)
+          }
           .padding(.trailing, 20)
           .padding(.bottom, 24)
         }
@@ -71,6 +72,10 @@ extension HomeView: View {
         LinkListView(store: linkListStore)
       case .linkDetail(let store):
               LinkDetailView(store: store)
+      case .categoryGridView(let store):
+        CategoryGridView(store: store)
+      case .addLink(let store):
+        AddLinkView(store: store)
       }
     }
     .onChange(of: scenePhase) { _, newPhase in

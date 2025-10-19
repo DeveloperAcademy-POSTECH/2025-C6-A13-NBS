@@ -9,20 +9,11 @@ import SwiftUI
 
 import DesignSystem
 
-struct AddFloatingButton {
+struct AddFloatingButton: View {
+  let onTap: () -> Void
   
-}
-
-extension AddFloatingButton: View {
   var body: some View {
-    if #available(iOS 26, *) {
-      
-    } else {
-      
-    }
-    Button {
-      
-    } label: {
+    Button(action: onTap) {
       Image(icon: Icon.plus)
         .foregroundStyle(DesignSystemAsset.bl6.swiftUIColor)
         .frame(width: 48, height: 48)
