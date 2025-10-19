@@ -42,21 +42,30 @@ extension CategoryListView: View {
             Button {
               store.send(.categoryTapped(category))
             } label: {
-              HStack {
-                VStack {
+              ZStack(alignment: .bottomTrailing) {
+                VStack(alignment: .leading, spacing: 4) {
                   Text(category.categoryName)
                     .font(.B1_SB)
                     .foregroundStyle(.text1)
-                    .padding(.horizontal)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
                   Text("\(category.links.count)개")
-                    .font(.B1_SB)
+                    .font(.B2_M)
                     .foregroundStyle(.caption1)
+                  Spacer()
                 }
-                Image(icon: category.icon.name)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 16)
+                .padding(.leading, 16)
+                Image(uiImage: DesignSystemAsset.emptyImage.image)
                   .resizable()
                   .frame(width: 56, height: 56)
-                  .zIndex(1)
+                  .padding(.trailing, 12)
+                  .padding(.bottom, 12)
               }
+              .frame(maxWidth: .infinity, minHeight: 116)
+              .background(Color.blue)
+              .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .frame(width: 160, height: 116)
             .background(store.selectedCategory == category ? Color.blue : Color.gray.opacity(0.2))

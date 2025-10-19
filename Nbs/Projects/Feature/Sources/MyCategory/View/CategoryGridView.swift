@@ -21,24 +21,46 @@ struct CategoryGridView {
 extension CategoryGridView: View {
   var body: some View {
     WithViewStore(store, observe: { $0 }) { viewStore in
-      LazyVGrid(columns: gridItems, spacing: 10) {
-        ForEach(viewStore.categories) { category in
-          Button {
-            print("")
-          } label: {
-            Text(category.categoryName)
-              .font(.B1_SB)
-              .foregroundStyle(.text1)
-              .frame(maxWidth: .infinity, minHeight: 50)
-              .background(Color.brown)
-              .cornerRadius(10)
+      ScrollView {
+        LazyVGrid(columns: gridItems, spacing: 10) {
+          ForEach(viewStore.categories) { category in
+            Button {
+              print("")
+            } label: {
+              ZStack(alignment: .bottomTrailing) {
+                VStack(alignment: .leading, spacing: 4) {
+                  Text(category.categoryName)
+                    .font(.B1_SB)
+                    .foregroundStyle(.text1)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                  Text("\(category.links.count)개")
+                    .font(.B2_M)
+                    .foregroundStyle(.caption1)
+                  Spacer()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 16)
+                .padding(.leading, 16)
+                Image(uiImage: DesignSystemAsset.emptyImage.image)
+                  .resizable()
+                  .frame(width: 56, height: 56)
+                  .padding(.trailing, 12)
+                  .padding(.bottom, 12)
+              }
+              .frame(maxWidth: .infinity, minHeight: 116)
+              .background(Color.blue)
+              .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .buttonStyle(.plain)
           }
         }
+        .padding(.horizontal, 20)
+        .onAppear {
+          viewStore.send(.onAppear)
+        }
       }
-      .padding(.horizontal, 20)
-      .onAppear {
-        viewStore.send(.onAppear)
-      }
+      .scrollDisabled(viewStore.categories.count < 7)
     }
   }
 }
