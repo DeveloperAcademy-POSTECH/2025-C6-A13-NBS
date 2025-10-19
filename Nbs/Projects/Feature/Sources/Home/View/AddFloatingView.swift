@@ -15,6 +15,7 @@ struct AddFloatingButton: View {
   var body: some View {
     Button(action: onTap) {
       Image(icon: Icon.plus)
+        .renderingMode(.template)
         .foregroundStyle(DesignSystemAsset.bl6.swiftUIColor)
         .frame(width: 48, height: 48)
         .background(.n0)
