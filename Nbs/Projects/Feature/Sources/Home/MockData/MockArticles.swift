@@ -8,7 +8,7 @@
 import Foundation
 import DesignSystem
 
-struct MockArticle: ArticleDisplayable, Identifiable {
+struct MockArticle: ArticleDisplayable, Identifiable, Equatable {
   var id: UUID = UUID()
   var url: String? = "https://example.com"
   var imageURL: String? = "https://example.com/image.jpg"

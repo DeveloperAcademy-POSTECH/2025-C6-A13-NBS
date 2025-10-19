@@ -25,6 +25,10 @@ public extension ShapeStyle where Self == Color {
   /// 기본 배경색
   static var background: Color { DesignSystemAsset.background.swiftUIColor }
   static var alert: Color { DesignSystemAsset.alert.swiftUIColor }
+  static var bgWhat: Color { DesignSystemAsset.bgWhat.swiftUIColor }
+  static var bgWhy: Color { DesignSystemAsset.bgWhy.swiftUIColor }
+  static var bgDetail: Color { DesignSystemAsset.bgDetail.swiftUIColor }
+  
   /// 딤(모달/시트 배경에 사용)
   static var dim: Color { DesignSystemAsset.dim.swiftUIColor }
 
@@ -39,6 +43,10 @@ public extension ShapeStyle where Self == Color {
   static var caption2: Color { DesignSystemAsset.caption2.swiftUIColor }
   /// 캡션/보조 텍스트3
   static var caption3: Color { DesignSystemAsset.caption3.swiftUIColor }
+  
+  static var textWhat: Color { DesignSystemAsset.textWhat.swiftUIColor }
+  static var textWhy: Color { DesignSystemAsset.textWhy.swiftUIColor }
+  static var textDetail: Color { DesignSystemAsset.textDetail.swiftUIColor }
 
   // MARK: Divider
   static var divider1: Color { DesignSystemAsset.divider1.swiftUIColor }
