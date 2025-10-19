@@ -76,6 +76,8 @@ struct AddCategoryView: View {
       }
     }
     .background(DesignSystemAsset.background.swiftUIColor)
+    .toolbar(.hidden)
+    .ignoresSafeArea(.keyboard)
   }
 }
 
