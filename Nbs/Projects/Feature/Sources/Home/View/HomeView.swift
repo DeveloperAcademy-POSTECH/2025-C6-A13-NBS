@@ -60,7 +60,7 @@ extension HomeView: View {
           )
           .padding(.horizontal, 20)
           .onTapGesture {
-            print("Toast 알림")
+            store.send(.alertBannerTapped)
           }
         }
       }

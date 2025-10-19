@@ -19,6 +19,7 @@ struct HomeFeature {
     var categoryList = CategoryListFeature.State()
     var alertBanner: AlertBannerState?
     var path = StackState<Path.State>()
+    var copiedLink: String? 
     
     struct AlertBannerState: Equatable {
       let text: String
@@ -34,6 +35,7 @@ struct HomeFeature {
     case categoryList(CategoryListFeature.Action)
     case path(StackAction<Path.State, Path.Action>)
     case floatingButtonTapped
+    case alertBannerTapped
   }
   
   @Reducer
@@ -70,6 +72,7 @@ struct HomeFeature {
           text: "복사한 링크 바로 추가하기",
           message: copiedText
         )
+        state.copiedLink = copiedText
         return .none
         
         /// 더보기 -> 링크 리스트
@@ -97,6 +100,12 @@ struct HomeFeature {
       
       case .floatingButtonTapped:
         state.path.append(.addLink(AddLinkFeature.State()))
+        return .none
+        
+      case .alertBannerTapped:
+        if let link = state.copiedLink {
+          state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
+        }
         return .none
         
       case .articleList, .path:

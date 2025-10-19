@@ -7,11 +7,13 @@
 //
 
 import SwiftUI
+
 import ComposableArchitecture
+import DesignSystem
 
 struct AddLinkView: View {
   
-  let store: StoreOf<AddLinkFeature>
+  @Bindable var store: StoreOf<AddLinkFeature>
   
   var body: some View {
     VStack {
@@ -25,10 +27,41 @@ struct AddLinkView: View {
       Text(AddLinkNamespace.addLink)
         .font(.B2_SB)
         .foregroundStyle(.caption1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.leading, 24)
+        .padding(.top, 8)
       
+      TextField(
+        AddLinkNamespace.placeHoler,
+        text: $store.linkURL.sending(\.setLinkURL)
+      )
+      .padding()
+      .background(DesignSystemAsset.n0.swiftUIColor)
+      .clipShape(RoundedRectangle(cornerRadius: 12))
+      .padding(.top, 8)
+      .padding(.horizontal, 20)
+      
+      HStack {
+        Text(AddLinkNamespace.selectCategory)
+          .font(.B2_SB)
+          .foregroundStyle(.caption1)
+        Spacer()
+        
+        AddNewCategoryButton()
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .padding(.horizontal, 24)
+      .padding(.top, 24)
       Spacer()
+      
+      MainButton(AddLinkNamespace.ctaButtonTitle) {
+        store.send(.saveButtonTapped)
+      }
+      .padding(.horizontal, 20)
     }
+    .ignoresSafeArea(.keyboard)
     .navigationBarHidden(true)
+    .background(DesignSystemAsset.background.swiftUIColor)
   }
 }
 
