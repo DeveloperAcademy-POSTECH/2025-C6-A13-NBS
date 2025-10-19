@@ -13,10 +13,17 @@ import Domain
 struct CategoryGridFeature {
   struct State: Equatable {
     var categories: [CategoryItem] = []
+    var selectedCategory: CategoryItem?
   }
   enum Action {
     case onAppear
     case fetchCategoriesResponse(TaskResult<[CategoryItem]>)
+    case selectCategory(CategoryItem)
+    case delegate(Delegate)
+
+    enum Delegate: Equatable {
+      case categorySelected(CategoryItem)
+    }
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -33,8 +40,13 @@ struct CategoryGridFeature {
       case let .fetchCategoriesResponse(.success(categories)):
         state.categories = categories
         return .none
-      case .fetchCategoriesResponse(.failure):
-        // Handle error if needed
+      case let .selectCategory(category):
+        state.selectedCategory = category
+        return .send(.delegate(.categorySelected(category)))
+
+      case .fetchCategoriesResponse(.failure(_)):
+        return .none
+      case .delegate(_):
         return .none
       }
     }
