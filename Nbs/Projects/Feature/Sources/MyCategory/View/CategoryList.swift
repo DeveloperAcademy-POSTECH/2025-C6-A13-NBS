@@ -38,42 +38,34 @@ extension CategoryListView: View {
       .padding(.horizontal, 20)
       ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 8) {
-          ForEach(store.state.categories) { category in
+          ForEach(store.categories) { category in
             Button {
               store.send(.categoryTapped(category))
             } label: {
               HStack {
                 VStack {
-                  Text(category.name)
+                  Text(category.categoryName)
                     .font(.B1_SB)
                     .foregroundStyle(.text1)
                     .padding(.horizontal)
-                  Text("17개")
+                  Text("\(category.links.count)개")
                     .font(.B1_SB)
                     .foregroundStyle(.caption1)
                 }
-                Image("EmptyImage")
+                Image(icon: category.icon.name)
                   .resizable()
                   .frame(width: 56, height: 56)
                   .zIndex(1)
               }
             }
             .frame(width: 160, height: 116)
-            .background(store.state.selectedCategory == category ? Color(DesignSystemAsset.bl1.color) : Color(.systemGray6))
+            .background(store.selectedCategory == category ? Color.blue : Color.gray.opacity(0.2))
             .cornerRadius(12)
           }
         }
         .padding(.horizontal, 20)
       }
     }
+    .onAppear { store.send(.onAppear) }
   }
-}
-
-#Preview {
-  CategoryListView(
-    store: Store(
-      initialState: CategoryListFeature.State()) {
-        CategoryListFeature()
-      }
-    )
 }
