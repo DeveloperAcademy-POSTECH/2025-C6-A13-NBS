@@ -76,6 +76,9 @@ extension HomeView: View {
         CategoryGridView(store: store)
       case .addLink(let store):
         AddLinkView(store: store)
+      case .addCategory(let store):
+        AddCategoryView(store: store)
+        
       }
     }
     .onChange(of: scenePhase) { _, newPhase in
