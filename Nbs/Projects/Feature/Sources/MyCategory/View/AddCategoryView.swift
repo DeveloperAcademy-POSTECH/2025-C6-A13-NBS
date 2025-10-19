@@ -31,9 +31,9 @@ struct AddCategoryView: View {
           text: $store.categoryName
         )
         .padding()
-        .background(DesignSystemAsset.n0.swiftUIColor)
-        .overlay(
+        .background(
           RoundedRectangle(cornerRadius: 12)
+            .fill(DesignSystemAsset.n0.swiftUIColor)
             .stroke(Color.divider1, lineWidth: 1)
         )
         .padding(.top, 8)

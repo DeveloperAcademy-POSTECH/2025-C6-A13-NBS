@@ -35,9 +35,9 @@ struct AddLinkView: View {
         text: $store.linkURL.sending(\.setLinkURL)
       )
       .padding()
-      .background(DesignSystemAsset.n0.swiftUIColor)
-      .overlay(
+      .background(
         RoundedRectangle(cornerRadius: 12)
+          .fill(DesignSystemAsset.n0.swiftUIColor)
           .stroke(Color.divider1, lineWidth: 1)
       )
       .padding(.top, 8)
@@ -56,7 +56,7 @@ struct AddLinkView: View {
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.horizontal, 24)
       .padding(.top, 24)
-      Spacer()
+      
       
       MainButton(AddLinkNamespace.ctaButtonTitle) {
         store.send(.saveButtonTapped)
