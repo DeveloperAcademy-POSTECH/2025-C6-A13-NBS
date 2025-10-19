@@ -33,12 +33,15 @@ struct HomeFeature {
     case articleList(ArticleListFeature.Action)
     case categoryList(CategoryListFeature.Action)
     case path(StackAction<Path.State, Path.Action>)
+    case floatingButtonTapped
   }
   
   @Reducer
   enum Path {
     case linkList(LinkListFeature)
     case linkDetail(LinkDetailFeature)
+    case categoryGridView(CategoryGridFeature)
+    case addLink(AddLinkFeature)
   }
   
   var body: some ReducerOf<Self> {
@@ -88,7 +91,15 @@ struct HomeFeature {
         state.alertBanner = nil
         return .none
         
-      case .articleList, .categoryList, .path:
+      case .categoryList:
+        state.path.append(.categoryGridView(CategoryGridFeature.State()))
+        return .none
+      
+      case .floatingButtonTapped:
+        state.path.append(.addLink(AddLinkFeature.State()))
+        return .none
+        
+      case .articleList, .path:
         return .none
       }
     }
