@@ -36,7 +36,10 @@ struct AddLinkView: View {
       )
       .padding()
       .background(DesignSystemAsset.n0.swiftUIColor)
-      .clipShape(RoundedRectangle(cornerRadius: 12))
+      .overlay(
+        RoundedRectangle(cornerRadius: 12)
+          .stroke(Color.divider1, lineWidth: 1)
+      )
       .padding(.top, 8)
       .padding(.horizontal, 20)
       
