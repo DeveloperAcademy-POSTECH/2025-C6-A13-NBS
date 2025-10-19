@@ -10,10 +10,10 @@ import SwiftUI
 import DesignSystem
 
 struct AddNewCategoryButton: View {
+  let action: () -> Void
+  
   var body: some View {
-    Button {
-//      withAnimation()
-    } label: {
+    Button(action: action) {
       HStack(spacing: 0) {
         Image(icon: Icon.smallPlus)
           .resizable()
