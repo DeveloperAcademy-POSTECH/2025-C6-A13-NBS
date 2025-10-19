@@ -19,7 +19,7 @@ struct HomeFeature {
     var categoryList = CategoryListFeature.State()
     var alertBanner: AlertBannerState?
     var path = StackState<Path.State>()
-    var copiedLink: String? 
+    var copiedLink: String?
     
     struct AlertBannerState: Equatable {
       let text: String
@@ -84,7 +84,7 @@ struct HomeFeature {
       case let .articleList(.delegate(.openLinkDetail(article))):
         state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
         return .none
-       
+        
         /// 링크 리스트 -> 내부 기사 클릭
       case let .path(.element(_, .linkList(.delegate(.openLinkDetail(article))))):
         state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
@@ -94,10 +94,10 @@ struct HomeFeature {
         state.alertBanner = nil
         return .none
         
-      case .categoryList:
+      case .categoryList(.delegate(.goToMoreLinkButtonView)):
         state.path.append(.categoryGridView(CategoryGridFeature.State()))
         return .none
-      
+        
       case .floatingButtonTapped:
         state.path.append(.addLink(AddLinkFeature.State()))
         return .none
@@ -109,6 +109,14 @@ struct HomeFeature {
         return .none
         
       case .articleList, .path:
+        return .none
+      case .categoryList(.onAppear):
+        return .none
+      case .categoryList(.categoriesResponse(_)):
+        return .none
+      case .categoryList(.moreCategoryButtonTapped):
+        return .none
+      case .categoryList(.categoryTapped(_)):
         return .none
       }
     }
