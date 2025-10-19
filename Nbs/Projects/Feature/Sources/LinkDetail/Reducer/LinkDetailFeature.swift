@@ -10,8 +10,8 @@ import ComposableArchitecture
 @Reducer
 struct LinkDetailFeature {
   @ObservableState
-  struct State {
-    var articleTitle: String = ""
+  struct State: Equatable {
+    var article: MockArticle
   }
   
   enum Action {
