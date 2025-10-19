@@ -90,6 +90,10 @@ struct HomeFeature {
       case let .path(.element(_, .linkList(.delegate(.openLinkDetail(article))))):
         state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
         return .none
+
+      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
+        return .none
         
       case .dismissAlertBanner:
         state.alertBanner = nil
