@@ -123,5 +123,21 @@ public extension ShapeStyle where Self == Color {
   static var c13:  Color { DesignSystemAsset.c13.swiftUIColor }
   static var c14:  Color { DesignSystemAsset.c14.swiftUIColor }
   static var c15: Color { DesignSystemAsset.c15.swiftUIColor }
+  
+  //MARK: Hightlight
+  static var chipBlue: Color { DesignSystemAsset.chipBlue.swiftUIColor }
+  static var chipBlueLine: Color { DesignSystemAsset.chipBlueLine.swiftUIColor }
+  static var chipMemo: Color { DesignSystemAsset.chipMemo.swiftUIColor }
+  static var chipMemoIcon: Color { DesignSystemAsset.chipMemoIcon.swiftUIColor }
+  static var chipPink: Color { DesignSystemAsset.chipPink.swiftUIColor }
+  static var chipYellow: Color { DesignSystemAsset.chipYellow.swiftUIColor }
+  static var chipPinkLine: Color { DesignSystemAsset.chipPinkLine.swiftUIColor }
+  static var chipYellowLine: Color { DesignSystemAsset.chipYellowLine.swiftUIColor }
+  static var highlightDetail: Color { DesignSystemAsset.highlightDetail.swiftUIColor }
+  static var highlightWhat: Color { DesignSystemAsset.highlightWhat.swiftUIColor }
+  static var highlightWhy: Color { DesignSystemAsset.highlightWhy.swiftUIColor }
+  static var stateDefaultLine: Color { DesignSystemAsset.stateDefaultLine.swiftUIColor }
+  static var statePressedDim: Color { DesignSystemAsset.statePressedDim.swiftUIColor }
+  static var stateTooltipbackground: Color { DesignSystemAsset.stateTooltipbackground.swiftUIColor }
 
 }
