@@ -13,7 +13,6 @@ import DesignSystem
 struct LinkListView {
   @Environment(\.dismiss) private var dismiss
   let store: StoreOf<LinkListFeature>
-  
   @State private var showScrollToTopButton: Bool = false
 }
 
@@ -30,6 +29,9 @@ extension LinkListView: View {
       }
     }
     .navigationBarHidden(true)
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
   
   /// 메인
