@@ -6,12 +6,13 @@
 //
 
 import ComposableArchitecture
+import Domain
 
 @Reducer
 struct ArticleListFeature {
   @ObservableState
   struct State {
-    let articles: [MockArticle] = MockArticle.mockArticles
+    var articles: [LinkItem] = []
     var showMoreLink: Bool = false
     var showLinkDetail: Bool = false
   }
