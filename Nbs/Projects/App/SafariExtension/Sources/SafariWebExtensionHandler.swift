@@ -59,7 +59,7 @@ private extension SafariWebExtensionHandler {
       return nil
     }
     
-    let storeURL = containerURL.appendingPathComponent("C6_Safari.sqlite")
+    let storeURL = containerURL.appendingPathComponent("Nbs_store.sqlite")
     let configuration = ModelConfiguration(schema: schema, url: storeURL)
     
     do {
