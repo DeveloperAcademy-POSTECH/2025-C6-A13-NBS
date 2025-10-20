@@ -22,6 +22,8 @@ import SwiftUI
 /// ```
 public struct TopAppBarSearch {
   @Binding public var text: String
+  
+  var isFocused: FocusState<Bool>.Binding
 
   private let onBack: (() -> Void)?
   private let onSubmit: (() -> Void)?
@@ -33,11 +35,13 @@ public struct TopAppBarSearch {
 
   public init(
     text: Binding<String>,
+    isFocused: FocusState<Bool>.Binding,
     onBack: (() -> Void)? = nil,
     onSubmit: (() -> Void)? = nil,
     onClear: (() -> Void)? = nil
   ) {
     self._text = text
+    self.isFocused = isFocused
     self.onBack = onBack
     self.onSubmit = onSubmit
     self.onClear = onClear
@@ -63,10 +67,12 @@ extension TopAppBarSearch: View {
           .fill(Color(.systemGray6))
         
         TextField(
-          "검색어를 입력해 주세요",
+          "검색어를 입력해주세요",
           text: $text,
           onCommit: { onSubmit?() }
         )
+        .focused(isFocused)
+        .font(.B1_M)
         .foregroundColor(text.isEmpty ? .caption2 : .text1)
         .padding(.horizontal, 12)
         .overlay(
@@ -94,11 +100,11 @@ extension TopAppBarSearch: View {
   }
 }
 
-#Preview {
-  TopAppBarSearch(
-    text: .constant("예시 검색어"),
-    onBack: { print("뒤로가기") },
-    onSubmit: { print("검색 실행") },
-    onClear: { print("입력 초기화") }
-  )
-}
+//#Preview {
+//  TopAppBarSearch(
+//    text: .constant("예시 검색어"),
+//    onBack: { print("뒤로가기") },
+//    onSubmit: { print("검색 실행") },
+//    onClear: { print("입력 초기화") }
+//  )
+//}

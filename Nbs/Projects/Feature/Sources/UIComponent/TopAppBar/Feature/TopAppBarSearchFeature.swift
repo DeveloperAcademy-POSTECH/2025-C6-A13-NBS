@@ -12,15 +12,25 @@ import DesignSystem
 
 @Reducer
 struct TopAppBarSearchFeature {
+  @ObservableState
   struct State: Equatable {
-    @BindingState var searchText: String = ""
+    var searchText: String = ""
+    var isSearchFieldFocused: Bool = false
   }
   
-  enum Action: BindableAction {
-    case binding(BindingAction<State>)
+  enum Action: BindableAction, Equatable {
     case backTapped
     case submit
     case clear
+    case setSearchFieldFocus(Bool)
+    case setSearchText(String)
+    
+    case delegate(DelegateAction)
+    case binding(BindingAction<State>)
+  }
+  
+  enum DelegateAction: Equatable {
+    case searchTriggered(query: String)
   }
   
   var body: some ReducerOf<Self> {
@@ -33,14 +43,21 @@ struct TopAppBarSearchFeature {
         return .none
         
       case .submit:
-        print("검색 실행: \(state.searchText)")
-        return .none
+        return .send(.delegate(.searchTriggered(query: state.searchText)))
         
       case .clear:
         state.searchText = ""
         return .none
         
-      case .binding:
+      case .setSearchFieldFocus(let isFocused):
+        state.isSearchFieldFocused = isFocused
+        return .none
+        
+      case let .setSearchText(text):
+        state.searchText = text
+        return .none
+        
+      case .delegate, .binding:
         return .none
       }
     }

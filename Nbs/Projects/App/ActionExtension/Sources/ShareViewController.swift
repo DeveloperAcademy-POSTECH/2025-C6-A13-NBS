@@ -40,10 +40,11 @@ private extension ShareViewController {
   }
   
   func configureHostingController() {
-    guard let container = AppGroupContainer.createShareModelContainer() else {
-      self.closeExtension(clearDrafts: false)
-      return
-    }
+    let container = AppGroupContainer.shared
+//    guard let container = AppGroupContainer.createShareModelContainer() else {
+//      self.closeExtension(clearDrafts: false)
+//      return
+//    }
     
     let rootView = RootWrapperView(container: container) { [weak self] selectedCategory in
       guard let self = self else { return }
@@ -177,10 +178,11 @@ private extension ShareViewController {
 private extension ShareViewController {
   func saveAllData() {
     print("saveAllData")
-    guard !self.pageURL.isEmpty,
-          let container = AppGroupContainer.createShareModelContainer() else {
+    guard !self.pageURL.isEmpty else {
       return
     }
+    
+    let container = AppGroupContainer.shared
     
     let context = container.mainContext
     let urlString = self.pageURL
@@ -231,11 +233,12 @@ private extension ShareViewController {
   }
   
   func updateLinkItem(with category: CategoryItem) {
-    guard let linkItem = self.currentLinkItem,
-          let container = AppGroupContainer.createShareModelContainer() else {
+    guard let linkItem = self.currentLinkItem else {
       self.closeExtension(clearDrafts: false)
       return
     }
+    
+    let container = AppGroupContainer.shared
     
     let context = container.mainContext
     linkItem.category = category

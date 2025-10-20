@@ -11,18 +11,20 @@ import ComposableArchitecture
 import DesignSystem
 
 struct TopAppBarSearchView {
-  let store: StoreOf<TopAppBarSearchFeature>
+  @State var store: StoreOf<TopAppBarSearchFeature>
+  
+  @FocusState private var isSearchFieldFocused: Bool
 }
 
 extension TopAppBarSearchView: View {
   var body: some View {
-    WithViewStore(store, observe: { $0 }) { viewStore in
-      TopAppBarSearch(
-        text: viewStore.$searchText,
-        onBack: { viewStore.send(.backTapped) },
-        onSubmit: { viewStore.send(.submit) },
-        onClear: { viewStore.send(.clear) }
-      )
-    }
+    TopAppBarSearch(
+      text: $store.searchText,
+      isFocused: $isSearchFieldFocused,
+      onBack: { store.send(.backTapped) },
+      onSubmit: { store.send(.submit) },
+      onClear: { store.send(.clear) }
+    )
+    .bind($store.isSearchFieldFocused, to: $isSearchFieldFocused)
   }
 }
