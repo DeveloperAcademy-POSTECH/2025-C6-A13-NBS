@@ -12,7 +12,6 @@ import Domain
 import DesignSystem
 
 struct HomeView {
-//  let store: StoreOf<HomeFeature>
   @Bindable var store: StoreOf<HomeFeature>
   @Environment(\.scenePhase) private var scenePhase
 }
@@ -20,46 +19,50 @@ struct HomeView {
 extension HomeView: View {
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-      TopAppBarHome(
-        onTapSearchButton: { print ("")} ,
-        onTapSettingButton: { print ("")}
-      )
-      ZStack(alignment: .bottom) {
-        ZStack(alignment: .bottomTrailing) {
-          ScrollView {
-            VStack(spacing: 24) {
-              CategoryListView(
-                store: store.scope(
-                  state: \.categoryList,
-                  action: \.categoryList
+      VStack {
+        TopAppBarHome(
+          onTapSearchButton: { print ("")} ,
+          onTapSettingButton: { print ("")}
+        )
+        ZStack(alignment: .bottom) {
+          ZStack(alignment: .bottomTrailing) {
+            ScrollView {
+              VStack(spacing: 24) {
+                CategoryListView(
+                  store: store.scope(
+                    state: \.categoryList,
+                    action: \.categoryList
+                  )
                 )
-              )
-              ArticleListView(
-                store: store.scope(
-                  state: \.articleList,
-                  action: \.articleList
+                ArticleListView(
+                  store: store.scope(
+                    state: \.articleList,
+                    action: \.articleList
+                  )
                 )
-              )
+              }
+              .padding(.bottom, 80)
             }
-            .padding(.bottom, 80)
+            
+            AddFloatingButton {
+              store.send(.floatingButtonTapped)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 24)
           }
           
-          AddFloatingButton()
-          .padding(.trailing, 20)
-          .padding(.bottom, 24)
-        }
-        
-        if let alertBanner = store.state.alertBanner {
-          AlertBanner(
-            text: alertBanner.text,
-            message: alertBanner.message,
-            style: .close {
-              store.send(.dismissAlertBanner)
+          if let alertBanner = store.state.alertBanner {
+            AlertBanner(
+              text: alertBanner.text,
+              message: alertBanner.message,
+              style: .close {
+                store.send(.dismissAlertBanner)
+              }
+            )
+            .padding(.horizontal, 20)
+            .onTapGesture {
+              store.send(.alertBannerTapped)
             }
-          )
-          .padding(.horizontal, 20)
-          .onTapGesture {
-            print("Toast 알림")
           }
         }
       }
@@ -71,6 +74,13 @@ extension HomeView: View {
         LinkListView(store: linkListStore)
       case .linkDetail(let store):
               LinkDetailView(store: store)
+      case .myCategoryCollection(let store):
+        MyCategoryCollectionView(store: store)
+      case .addLink(let store):
+        AddLinkView(store: store)
+      case .addCategory(let store):
+        AddCategoryView(store: store)
+        
       }
     }
     .onChange(of: scenePhase) { _, newPhase in

@@ -19,6 +19,7 @@ struct HomeFeature {
     var categoryList = CategoryListFeature.State()
     var alertBanner: AlertBannerState?
     var path = StackState<Path.State>()
+    var copiedLink: String?
     
     struct AlertBannerState: Equatable {
       let text: String
@@ -33,12 +34,18 @@ struct HomeFeature {
     case articleList(ArticleListFeature.Action)
     case categoryList(CategoryListFeature.Action)
     case path(StackAction<Path.State, Path.Action>)
+    case floatingButtonTapped
+    case alertBannerTapped
   }
   
   @Reducer
   enum Path {
     case linkList(LinkListFeature)
     case linkDetail(LinkDetailFeature)
+//    case categoryGridView(CategoryGridFeature)
+    case myCategoryCollection(MyCategoryCollectionFeature)
+    case addLink(AddLinkFeature)
+    case addCategory(AddCategoryFeature)
   }
   
   var body: some ReducerOf<Self> {
@@ -67,6 +74,7 @@ struct HomeFeature {
           text: "복사한 링크 바로 추가하기",
           message: copiedText
         )
+        state.copiedLink = copiedText
         return .none
         
         /// 더보기 -> 링크 리스트
@@ -78,17 +86,47 @@ struct HomeFeature {
       case let .articleList(.delegate(.openLinkDetail(article))):
         state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
         return .none
-       
+        
         /// 링크 리스트 -> 내부 기사 클릭
       case let .path(.element(_, .linkList(.delegate(.openLinkDetail(article))))):
         state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
+        return .none
+
+      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
+        return .none
+
+      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none
         
       case .dismissAlertBanner:
         state.alertBanner = nil
         return .none
         
-      case .articleList, .categoryList, .path:
+      case .categoryList(.delegate(.goToMoreLinkButtonView)):
+        state.path.append(.myCategoryCollection(MyCategoryCollectionFeature.State()))
+        return .none
+        
+      case .floatingButtonTapped:
+        state.path.append(.addLink(AddLinkFeature.State()))
+        return .none
+        
+      case .alertBannerTapped:
+        if let link = state.copiedLink {
+          state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
+        }
+        return .none
+        
+      case .articleList, .path:
+        return .none
+      case .categoryList(.onAppear):
+        return .none
+      case .categoryList(.categoriesResponse(_)):
+        return .none
+      case .categoryList(.moreCategoryButtonTapped):
+        return .none
+      case .categoryList(.categoryTapped(_)):
         return .none
       }
     }
