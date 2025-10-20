@@ -79,9 +79,9 @@ extension ArticleFilterList: View {
       Button {
         store.send(.listCellTapped(article))
       } label: {
-        ArticleCard(article: article)
-          .background(.n0)
-          .clipShape(RoundedRectangle(cornerRadius: 12))
+//        ArticleCard(article: article)
+//          .background(.n0)
+//          .clipShape(RoundedRectangle(cornerRadius: 12))
       }
     }
   }
