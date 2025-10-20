@@ -25,9 +25,19 @@ public extension ShapeStyle where Self == Color {
   /// 기본 배경색
   static var background: Color { DesignSystemAsset.background.swiftUIColor }
   static var alert: Color { DesignSystemAsset.alert.swiftUIColor }
-  static var bgWhat: Color { DesignSystemAsset.bgWhat.swiftUIColor }
-  static var bgWhy: Color { DesignSystemAsset.bgWhy.swiftUIColor }
+  static var alertColor: Color { DesignSystemAsset.alertColor.swiftUIColor }
+  static var bgBtn: Color { DesignSystemAsset.bgBtn.swiftUIColor }
+  static var bgButtonGrad1: Color { DesignSystemAsset.bgButtonGra1.swiftUIColor }
+  static var bgButtonGrad2: Color { DesignSystemAsset.bgButtonGra2.swiftUIColor }
+  static var bgButtonGrad3: Color { DesignSystemAsset.bgButtonGra3.swiftUIColor }
+  static var bgButtonGrad4: Color { DesignSystemAsset.bgButtonGra4.swiftUIColor }
   static var bgDetail: Color { DesignSystemAsset.bgDetail.swiftUIColor }
+  static var bgDim: Color { DesignSystemAsset.bgDim.swiftUIColor }
+  static var bgDimCard: Color { DesignSystemAsset.bgDimCard.swiftUIColor }
+  static var bgDimSelect: Color { DesignSystemAsset.bgDimSelect.swiftUIColor }
+  static var bgMemo: Color { DesignSystemAsset.bgMemo.swiftUIColor }
+  static var bgShadow1: Color { DesignSystemAsset.bgShadow1.swiftUIColor }
+  static var bgShadow2: Color { DesignSystemAsset.bgShadow2.swiftUIColor }
   
   /// 딤(모달/시트 배경에 사용)
   static var dim: Color { DesignSystemAsset.dim.swiftUIColor }
@@ -61,7 +71,8 @@ public extension ShapeStyle where Self == Color {
   // MARK: State
   static var success: Color { DesignSystemAsset.success.swiftUIColor }
   static var danger: Color { DesignSystemAsset.danger.swiftUIColor }
-
+  static var successBg: Color { DesignSystemAsset.successBg.swiftUIColor }
+  
   // MARK: Neutral scale (n0 ~ n900)
   static var n0:   Color { DesignSystemAsset.n0.swiftUIColor }
   static var n10:  Color { DesignSystemAsset.n10.swiftUIColor }
