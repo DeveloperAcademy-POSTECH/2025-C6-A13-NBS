@@ -6,14 +6,16 @@
 //
 
 import ComposableArchitecture
+import Domain
 
 @Reducer
 struct ArticleFilterFeature {
+  
   @ObservableState
   struct State {
-    var articles: [MockArticle] = MockArticle.mockArticles
+    var articles: [LinkItem] = []
     var sortOrder: SortOrder = .latest
-    var selectedArticle: MockArticle? = nil
+    var selectedLink: LinkItem? = nil
   }
   
   enum SortOrder: Equatable {
@@ -22,19 +24,20 @@ struct ArticleFilterFeature {
   }
   
   enum Action {
-    case listCellTapped(MockArticle)
+    case listCellTapped(LinkItem)
     case sortOrderChanged(SortOrder)
     case delegate(Delegate)
     enum Delegate {
-      case openLinkDetail(MockArticle)
+      case openLinkDetail(LinkItem)
     }
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case let .listCellTapped(article):
-        return .send(.delegate(.openLinkDetail(article)))
+      case let .listCellTapped(link):
+        state.selectedLink = link
+        return .send(.delegate(.openLinkDetail(link)))
         
       case let .sortOrderChanged(order):
         state.sortOrder = order
