@@ -5,13 +5,16 @@
 //  Created by 홍 on 10/17/25.
 //
 
-import ComposableArchitecture
 import SwiftUI
+
+import ComposableArchitecture
+import Domain
 
 @Reducer
 struct HomeFeature {
   
   @Dependency(\.clipboard) var clipboard
+  @Dependency(\.swiftDataClient) var swiftDataClient
   
   @ObservableState
   struct State {
@@ -36,13 +39,15 @@ struct HomeFeature {
     case path(StackAction<Path.State, Path.Action>)
     case floatingButtonTapped
     case alertBannerTapped
+    case fetchArticles
+    case articlesResponse(TaskResult<[LinkItem]>)
   }
   
   @Reducer
   enum Path {
     case linkList(LinkListFeature)
     case linkDetail(LinkDetailFeature)
-//    case categoryGridView(CategoryGridFeature)
+    //    case categoryGridView(CategoryGridFeature)
     case myCategoryCollection(MyCategoryCollectionFeature)
     case addLink(AddLinkFeature)
     case addCategory(AddCategoryFeature)
@@ -62,7 +67,22 @@ struct HomeFeature {
       case .onAppear:
         return .run { send in
           await send(.clipboardResponded(clipboard.getString()))
+          await send(.fetchArticles)
         }
+        
+      case .fetchArticles:
+        return .run { send in
+          await send(.articlesResponse(TaskResult { try swiftDataClient.fetchLinkItem() }))
+        }
+        
+      case let .articlesResponse(.success(linkItems)):
+        state.articleList.articles = linkItems
+        return .none
+        
+      case .articlesResponse(.failure(let error)):
+        // Handle error, e.g., show an alert banner
+        print("Error fetching articles: \(error)")
+        return .none
         
       case let .clipboardResponded(copiedText):
         guard let copiedText,
@@ -91,11 +111,11 @@ struct HomeFeature {
       case let .path(.element(_, .linkList(.delegate(.openLinkDetail(article))))):
         state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
         return .none
-
+        
       case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
         state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none
-
+        
       case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
         state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none

@@ -98,6 +98,7 @@ struct AddLinkFeature {
         
       case .saveLinkResponse(.failure(let error)):
         //TODO: 링크 저장 실패시 에러 알럿?
+        print("\(error)")
         return .none
         
       case .delegate:

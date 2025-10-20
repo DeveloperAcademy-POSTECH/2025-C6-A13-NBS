@@ -25,9 +25,21 @@ public extension ShapeStyle where Self == Color {
   /// 기본 배경색
   static var background: Color { DesignSystemAsset.background.swiftUIColor }
   static var alert: Color { DesignSystemAsset.alert.swiftUIColor }
+  static var alertColor: Color { DesignSystemAsset.alertColor.swiftUIColor }
+  static var bgBtn: Color { DesignSystemAsset.bgBtn.swiftUIColor }
+  static var bgButtonGrad1: Color { DesignSystemAsset.bgButtonGra1.swiftUIColor }
+  static var bgButtonGrad2: Color { DesignSystemAsset.bgButtonGra2.swiftUIColor }
+  static var bgButtonGrad3: Color { DesignSystemAsset.bgButtonGra3.swiftUIColor }
+  static var bgButtonGrad4: Color { DesignSystemAsset.bgButtonGra4.swiftUIColor }
+  static var bgDetail: Color { DesignSystemAsset.bgDetail.swiftUIColor }
+  static var bgDim: Color { DesignSystemAsset.bgDim.swiftUIColor }
+  static var bgDimCard: Color { DesignSystemAsset.bgDimCard.swiftUIColor }
+  static var bgDimSelect: Color { DesignSystemAsset.bgDimSelect.swiftUIColor }
+  static var bgMemo: Color { DesignSystemAsset.bgMemo.swiftUIColor }
+  static var bgShadow1: Color { DesignSystemAsset.bgShadow1.swiftUIColor }
+  static var bgShadow2: Color { DesignSystemAsset.bgShadow2.swiftUIColor }
   static var bgWhat: Color { DesignSystemAsset.bgWhat.swiftUIColor }
   static var bgWhy: Color { DesignSystemAsset.bgWhy.swiftUIColor }
-  static var bgDetail: Color { DesignSystemAsset.bgDetail.swiftUIColor }
   
   /// 딤(모달/시트 배경에 사용)
   static var dim: Color { DesignSystemAsset.dim.swiftUIColor }
@@ -61,7 +73,8 @@ public extension ShapeStyle where Self == Color {
   // MARK: State
   static var success: Color { DesignSystemAsset.success.swiftUIColor }
   static var danger: Color { DesignSystemAsset.danger.swiftUIColor }
-
+  static var successBg: Color { DesignSystemAsset.successBg.swiftUIColor }
+  
   // MARK: Neutral scale (n0 ~ n900)
   static var n0:   Color { DesignSystemAsset.n0.swiftUIColor }
   static var n10:  Color { DesignSystemAsset.n10.swiftUIColor }
@@ -94,4 +107,21 @@ public extension ShapeStyle where Self == Color {
   static var bl8:  Color { DesignSystemAsset.bl8.swiftUIColor }
   static var bl9:  Color { DesignSystemAsset.bl9.swiftUIColor }
   static var bl10: Color { DesignSystemAsset.bl10.swiftUIColor }
+  
+  static var c1:  Color { DesignSystemAsset.c1.swiftUIColor }
+  static var c2:  Color { DesignSystemAsset.c2.swiftUIColor }
+  static var c3:  Color { DesignSystemAsset.c3.swiftUIColor }
+  static var c4:  Color { DesignSystemAsset.c4.swiftUIColor }
+  static var c5:  Color { DesignSystemAsset.c5.swiftUIColor }
+  static var c6:  Color { DesignSystemAsset.c6.swiftUIColor }
+  static var c7:  Color { DesignSystemAsset.c7.swiftUIColor }
+  static var c8:  Color { DesignSystemAsset.c8.swiftUIColor }
+  static var c9:  Color { DesignSystemAsset.c9.swiftUIColor }
+  static var c10: Color { DesignSystemAsset.c10.swiftUIColor }
+  static var c11:  Color { DesignSystemAsset.c11.swiftUIColor }
+  static var c12:  Color { DesignSystemAsset.c12.swiftUIColor }
+  static var c13:  Color { DesignSystemAsset.c13.swiftUIColor }
+  static var c14:  Color { DesignSystemAsset.c14.swiftUIColor }
+  static var c15: Color { DesignSystemAsset.c15.swiftUIColor }
+
 }
