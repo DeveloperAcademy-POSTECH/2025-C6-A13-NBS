@@ -19,11 +19,11 @@ struct ArticleListFeature {
   
   enum Action {
     case moreLinkButtonTapped
-    case listCellTapped(MockArticle)
+    case listCellTapped(LinkItem)
     case delegate(Delegate)
     
     enum Delegate {
-      case openLinkDetail(MockArticle)
+      case openLinkDetail(LinkItem)
       case openLinkList
     }
   }
