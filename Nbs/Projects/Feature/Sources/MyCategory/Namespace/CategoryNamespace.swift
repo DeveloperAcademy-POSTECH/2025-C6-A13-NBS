@@ -18,7 +18,7 @@ enum CategoryNamespace {
   static let categoryIcon = "카테고리 아이콘"
   ///"추가하기"
   static let addCategory = "추가하기"
-//  ///"새 카테고리"
-//  static let newCategoryNavTitle = "새 카테고리"
+  ///"내 카테고리 모음"
+  static let myCategoryCollection = "내 카테고리 모음"
 
 }
