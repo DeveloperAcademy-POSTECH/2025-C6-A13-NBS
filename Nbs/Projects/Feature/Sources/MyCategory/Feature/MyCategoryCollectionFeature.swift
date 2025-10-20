@@ -18,14 +18,17 @@ struct MyCategoryCollectionFeature {
     var topAppBar = TopAppBarDefaultNoSearchFeature.State(title: CategoryNamespace.myCategoryCollection)
     var categoryGrid = CategoryGridFeature.State()
     var selectedCategory: CategoryItem?
+    var settingModal: SettingFeature.State?
   }
   
   enum Action {
     case topAppBar(TopAppBarDefaultNoSearchFeature.Action)
     case categoryGrid(CategoryGridFeature.Action)
+    case settingModal(SettingFeature.Action)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
+  
   var body: some ReducerOf<Self> {
     Scope(state: \.topAppBar, action: \.topAppBar) {
       TopAppBarDefaultNoSearchFeature()
@@ -42,8 +45,14 @@ struct MyCategoryCollectionFeature {
         }
         
       case .topAppBar(.tapSettingButton):
+        state.settingModal = SettingFeature.State()
         return .none
+
       case .categoryGrid(_):
+        return .none
+        
+      case .settingModal(.dismissButtonTapped):
+        state.settingModal = nil
         return .none
       }
     }
