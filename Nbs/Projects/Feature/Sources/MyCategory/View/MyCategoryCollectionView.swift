@@ -16,6 +16,14 @@ struct MyCategoryCollectionView {
 
 extension MyCategoryCollectionView: View {
   var body: some View {
-    Text("Hello world!")
+    VStack {
+      TopAppBarDefaultNoSearchView(
+        store: store.scope(
+          state: \.topAppBar,
+          action: \.topAppBar
+        )
+      )
+    }
+    .background(DesignSystemAsset.background.swiftUIColor)
   }
 }
