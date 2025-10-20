@@ -8,6 +8,7 @@
 import SwiftUI
 import ComposableArchitecture
 import DesignSystem
+import Domain
 
 struct LinkDetailView {
   @Environment(\.dismiss) private var dismiss
@@ -58,7 +59,7 @@ extension LinkDetailView: View {
   private var articleInfo: some View {
     VStack(alignment: .leading, spacing: 24) {
       // 기사 타이틀
-      Text(store.article.title)
+      Text(store.link.title)
         .font(.H1)
         .foregroundStyle(.text1)
         .multilineTextAlignment(.leading)
@@ -66,9 +67,9 @@ extension LinkDetailView: View {
       
       // 정보 섹션
       VStack(alignment: .leading, spacing: 12) {
-        ArticleInfoItem(icon: Icon.calendar, text: store.article.dateToString)
-        ArticleInfoItem(icon: Icon.book, text: store.article.newsCompany)
-        ArticleInfoItem(icon: Icon.tag, text: "뉴스 카테고리")
+        ArticleInfoItem(icon: Icon.calendar, text: store.link.createAt.formatted())
+        ArticleInfoItem(icon: Icon.book, text: "New BI Stop")
+        ArticleInfoItem(icon: Icon.tag, text: store.link.category?.categoryName ?? "네이버 뉴스")
       }
     }
   }
@@ -76,9 +77,8 @@ extension LinkDetailView: View {
   /// 링크 원문 보기
   private var articleLink: some View {
     Button {
-      if let url = store.article.url,
-         let link = URL(string: url) {
-        UIApplication.shared.open(link)
+      if let url = URL(string: store.link.urlString) {
+        UIApplication.shared.open(url)
       }
     } label: {
       HStack(spacing: 12) {
@@ -94,12 +94,10 @@ extension LinkDetailView: View {
             .foregroundStyle(.text1)
             .lineLimit(1)
           
-          if let url = store.article.url {
-            Text(url)
-              .lineLimit(1)
-              .font(.C2)
-              .foregroundStyle(.caption2)
-          }
+          Text(store.link.urlString)
+            .lineLimit(1)
+            .font(.C2)
+            .foregroundStyle(.caption2)
         }
         
         Spacer()
@@ -124,25 +122,13 @@ extension LinkDetailView: View {
     VStack {
       LinkDetailSegment(selectedTab: $selectedTab)
         .frame(height: 37)
-
+      
       switch selectedTab {
       case .summary:
-        SummaryView(highlights: MockHighlightItem.mockData)
+        SummaryView(link: store.link)
       case .memo:
         AddMemoView()
       }
     }
   }
-}
-
-#Preview {
-  LinkDetailView(
-    store: Store(
-      initialState: LinkDetailFeature.State(
-        article: MockArticle.mockArticles.first!
-      )
-    ) {
-      LinkDetailFeature()
-    }
-  )
 }
