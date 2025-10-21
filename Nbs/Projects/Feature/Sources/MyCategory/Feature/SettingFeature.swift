@@ -14,11 +14,14 @@ import ComposableArchitecture
 struct SettingFeature {
   @ObservableState
   struct State: Equatable {
-    var message: String = "Hello from Setting Sheet!"
+    
   }
 
   enum Action {
     case dismissButtonTapped
+    case addButtonTapped
+    case editButtonTapped
+    case deleteButtonTapped
   }
 
   @Dependency(\.dismiss) var dismiss
@@ -27,6 +30,12 @@ struct SettingFeature {
     Reduce { state, action in
       switch action {
       case .dismissButtonTapped:
+        return .none
+      case .addButtonTapped:
+        return .none
+      case .editButtonTapped:
+        return .none
+      case .deleteButtonTapped:
         return .none
       }
     }
