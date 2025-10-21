@@ -41,7 +41,7 @@ struct AddMemoView: View {
 // MARK: - Subviews
 extension AddMemoView {
   
-  /// ✏️ 작성 중 (TextEditor)
+  /// 작성 중 (TextEditor)
   private var editingView: some View {
     VStack(alignment: .leading, spacing: 8) {
       HStack {
@@ -76,7 +76,7 @@ extension AddMemoView {
     }
   }
   
-  /// 📄 읽기 모드
+  /// 읽기 모드
   private var displayView: some View {
     VStack(alignment: .leading, spacing: 8) {
       if memoText.isEmpty {

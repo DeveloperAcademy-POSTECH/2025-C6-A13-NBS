@@ -38,16 +38,16 @@ extension ArticleListView: View {
       
       ForEach(store.state.articles.suffix(5)) { article in
         Button {
-//          store.send(.listCellTapped(article))
+          store.send(.listCellTapped(article))
         } label: {
-          LinkCard(
+          ArticleCard(
             title: article.title,
-            newsCompany: article.newsCompany ?? "",
-            image: article.imageURL ?? "placeholder_image", // Use a placeholder if imageURL is nil
-            date: article.createAt.formatted(date: .numeric, time: .omitted) // Format the date
+            categoryName: article.category?.categoryName,
+            imageURL: article.imageURL ?? "placeholder_image",
+            dateString: article.createAt.formatted(date: .numeric, time: .omitted)
           )
-            .background(.n0)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+          .background(.n0)
+          .clipShape(RoundedRectangle(cornerRadius: 12))
         }
       }
       

@@ -79,9 +79,12 @@ extension ArticleFilterList: View {
       Button {
         store.send(.listCellTapped(article))
       } label: {
-//        ArticleCard(article: article)
-//          .background(.n0)
-//          .clipShape(RoundedRectangle(cornerRadius: 12))
+        ArticleCard(
+          title: article.title,
+          categoryName: article.category?.categoryName,
+          imageURL: article.imageURL ?? "photo",
+          dateString: article.createAt.formatted(date: .numeric, time: .omitted)
+        )
       }
     }
   }

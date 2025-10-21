@@ -23,6 +23,9 @@ extension CategoryChipList: View {
       bottomSheetButton
     }
     .padding(.horizontal, 20)
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
   
   /// 카테고리 칩버튼 리스트
@@ -30,9 +33,10 @@ extension CategoryChipList: View {
     ScrollViewReader { proxy in
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 6) {
-          ForEach(store.categories, id: \.self) { category in
+          ForEach(store.categories, id: \.categoryName) { category in
+            let isOn = store.selectedCategory?.categoryName == category.categoryName
             ChipButton(
-              title: category,
+              title: category.categoryName,
               style: .soft,
               isOn: .constant(store.selectedCategory == category)
             ) {
@@ -41,7 +45,7 @@ extension CategoryChipList: View {
                 proxy.scrollTo(category, anchor: .center)
               }
             }
-            .id(category)
+            .id(category.categoryName)
           }
         }
         .frame(minHeight: 36)

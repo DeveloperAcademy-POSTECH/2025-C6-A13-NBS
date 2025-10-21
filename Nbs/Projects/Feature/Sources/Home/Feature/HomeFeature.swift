@@ -103,17 +103,13 @@ struct HomeFeature {
         return .none
         
         /// 기사 탭 -> 링크 디테일
-      case let .articleList(.delegate(.openLinkDetail(article))):
-        state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
+      case let .articleList(.delegate(.openLinkDetail(link))):
+        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
         return .none
         
         /// 링크 리스트 -> 내부 기사 클릭
-      case let .path(.element(_, .linkList(.delegate(.openLinkDetail(article))))):
-        state.path.append(.linkDetail(LinkDetailFeature.State(article: article)))
-        return .none
-        
-      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
+      case let .path(.element(_, .linkList(.delegate(.openLinkDetail(link))))):
+        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
         return .none
         
       case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
@@ -146,7 +142,7 @@ struct HomeFeature {
         return .none
       case .categoryList(.moreCategoryButtonTapped):
         return .none
-      case .categoryList(.categoryTapped(_)):
+      case .categoryList:
         return .none
       }
     }

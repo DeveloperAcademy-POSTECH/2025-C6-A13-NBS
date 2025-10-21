@@ -5,24 +5,20 @@
 //  Created by 이안 on 10/19/25.
 //
 
-//
-//  SummaryView.swift
-//  Feature
-//
-
 import SwiftUI
 import Domain
 
 struct SummaryView: View {
-  let highlights: [MockHighlightItem]
+  let link: LinkItem
 }
 
 extension SummaryView {
   var body: some View {
     ScrollView {
       VStack(spacing: 32) {
-        ForEach(highlights) { item in
-          let type = SummaryTypeItem.SummaryType(rawValue: item.type) ?? .what
+        ForEach(link.highlights) { item in
+          let normalized = item.type.lowercased()
+          let type = SummaryTypeItem.SummaryType(rawValue: normalized.capitalized) ?? .what
           
           VStack(alignment: .leading, spacing: 24) {
             // 타입 라벨 (What / Why / Detail)
@@ -40,7 +36,7 @@ extension SummaryView {
   }
   
   /// 하이라이트 섹션
-  private func highlightContents(for item: MockHighlightItem, type: SummaryTypeItem.SummaryType) -> some View {
+  private func highlightContents(for item: HighlightItem, type: SummaryTypeItem.SummaryType) -> some View {
     VStack(alignment: .leading, spacing: 16) {
       // 문장 (하이라이팅)
       Text(item.sentence)
@@ -68,8 +64,4 @@ extension SummaryView {
         .frame(height: 1)
     }
   }
-}
-
-#Preview {
-  SummaryView(highlights: MockHighlightItem.mockData)
 }
