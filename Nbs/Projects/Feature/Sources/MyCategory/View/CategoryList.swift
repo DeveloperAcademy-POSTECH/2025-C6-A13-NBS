@@ -21,11 +21,12 @@ extension CategoryListView: View {
         Text(ArticleNameSpace.showCategory)
           .font(.B1_SB)
           .foregroundStyle(.caption1)
+          .padding(.leading, 6)
         Spacer()
         Button {
           store.send(.moreCategoryButtonTapped)
         } label: {
-          HStack {
+          HStack(spacing: 0) {
             Text(ArticleNameSpace.showMore)
               .font(.B2_M)
               .foregroundStyle(.caption1)
