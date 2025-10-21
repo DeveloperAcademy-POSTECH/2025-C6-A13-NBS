@@ -17,6 +17,7 @@ struct HomeFeature {
   struct State {
     var articleList = ArticleListFeature.State()
     var categoryList = CategoryListFeature.State()
+    //var searchResult: SearchResultFeature.State = .init()
     var alertBanner: AlertBannerState?
     var path = StackState<Path.State>()
     var copiedLink: String?
@@ -33,9 +34,11 @@ struct HomeFeature {
     case dismissAlertBanner
     case articleList(ArticleListFeature.Action)
     case categoryList(CategoryListFeature.Action)
+    //case searchResult(SearchResultFeature.Action)
     case path(StackAction<Path.State, Path.Action>)
     case floatingButtonTapped
     case alertBannerTapped
+    case searchButtonTapped
   }
   
   @Reducer
@@ -46,6 +49,7 @@ struct HomeFeature {
     case myCategoryCollection(MyCategoryCollectionFeature)
     case addLink(AddLinkFeature)
     case addCategory(AddCategoryFeature)
+    case search(SearchFeature)
   }
   
   var body: some ReducerOf<Self> {
@@ -56,6 +60,10 @@ struct HomeFeature {
     Scope(state: \.categoryList, action: \.categoryList) {
       CategoryListFeature()
     }
+    
+//    Scope(state: \.searchResult, action: \.searchResult) {
+//      SearchResultFeature()
+//    }
     
     Reduce { state, action in
       switch action {
@@ -95,10 +103,10 @@ struct HomeFeature {
       case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
         state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none
-
-      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
-        return .none
+      
+//      case .path(.element(_, .searchResult(.delegate(.openLinkDetail(let item))))):
+//        state.path.append(.linkDetail(LinkDetailFeature.State(linkItem: item)))
+//        return .none
         
       case .dismissAlertBanner:
         state.alertBanner = nil
@@ -117,16 +125,23 @@ struct HomeFeature {
           state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
         }
         return .none
+    
+      case .searchButtonTapped:
+        state.path.append(.search(SearchFeature.State()))
+        return .none
         
-      case .articleList, .path:
-        return .none
-      case .categoryList(.onAppear):
-        return .none
-      case .categoryList(.categoriesResponse(_)):
-        return .none
-      case .categoryList(.moreCategoryButtonTapped):
-        return .none
-      case .categoryList(.categoryTapped(_)):
+//      case .articleList, .path:
+//        return .none
+//      case .categoryList(.onAppear):
+//        return .none
+//      case .categoryList(.categoriesResponse(_)):
+//        return .none
+//      case .categoryList(.moreCategoryButtonTapped):
+//        return .none
+//      case .categoryList(.categoryTapped(_)):
+//        return .none
+        
+      case .categoryList, .articleList, .path:
         return .none
       }
     }
