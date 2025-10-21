@@ -20,7 +20,6 @@ struct HomeFeature {
   struct State {
     var articleList = ArticleListFeature.State()
     var categoryList = CategoryListFeature.State()
-    //var searchResult: SearchResultFeature.State = .init()
     var alertBanner: AlertBannerState?
     var path = StackState<Path.State>()
     var copiedLink: String?
@@ -38,13 +37,13 @@ struct HomeFeature {
     case dismissAlertBanner
     case articleList(ArticleListFeature.Action)
     case categoryList(CategoryListFeature.Action)
-    //case searchResult(SearchResultFeature.Action)
     case path(StackAction<Path.State, Path.Action>)
     case floatingButtonTapped
     case alertBannerTapped
     case fetchArticles
     case myCategoryCollection(MyCategoryCollectionFeature.Action)
     case articlesResponse(TaskResult<[LinkItem]>)
+    case searchButtonTapped
   }
   
   @Reducer
@@ -67,10 +66,6 @@ struct HomeFeature {
       CategoryListFeature()
     }
     
-//    Scope(state: \.searchResult, action: \.searchResult) {
-//      SearchResultFeature()
-//    }
-    
     Reduce { state, action in
       switch action {
       case .onAppear:
@@ -81,7 +76,7 @@ struct HomeFeature {
         
       case .fetchArticles:
         return .run { send in
-          await send(.articlesResponse(TaskResult { try swiftDataClient.fetchLinkItem() }))
+          await send(.articlesResponse(TaskResult { try swiftDataClient.fetchLinks() }))
         }
         
       case let .articlesResponse(.success(linkItems)):
@@ -136,7 +131,13 @@ struct HomeFeature {
       case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
         state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none
-        
+      
+      case .path(.element(id: _, action: .search(.delegate(.openLinkDetail(let item))))):
+        state.path.append(.linkDetail(LinkDetailFeature.State(link: item)))
+        return .run { _ in 
+          try swiftDataClient.updateLinkLastViewed(item)
+        }
+      
       case .dismissAlertBanner:
         state.alertBanner = nil
         return .none
@@ -158,17 +159,6 @@ struct HomeFeature {
       case .searchButtonTapped:
         state.path.append(.search(SearchFeature.State()))
         return .none
-        
-//      case .articleList, .path:
-//        return .none
-//      case .categoryList(.onAppear):
-//        return .none
-//      case .categoryList(.categoriesResponse(_)):
-//        return .none
-//      case .categoryList(.moreCategoryButtonTapped):
-//        return .none
-//      case .categoryList(.categoryTapped(_)):
-//        return .none
         
       case .categoryList, .articleList, .path:
         return .none
