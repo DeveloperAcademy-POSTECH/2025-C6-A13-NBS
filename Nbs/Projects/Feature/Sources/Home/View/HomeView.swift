@@ -80,7 +80,10 @@ extension HomeView: View {
         AddLinkView(store: store)
       case .addCategory(let store):
         AddCategoryView(store: store)
-        
+      case .editCategory(let store):
+        EditCategoryView(store: store)
+      case .deleteCategory(let store):
+        DeleteCategoryView(store: store)
       }
     }
     .onChange(of: scenePhase) { _, newPhase in

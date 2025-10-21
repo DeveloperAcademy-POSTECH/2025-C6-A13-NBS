@@ -53,6 +53,8 @@ struct HomeFeature {
     case myCategoryCollection(MyCategoryCollectionFeature)
     case addLink(AddLinkFeature)
     case addCategory(AddCategoryFeature)
+    case editCategory(EditCategoryFeature)
+    case deleteCategory(DeleteCategoryFeature)
   }
   
   var body: some ReducerOf<Self> {
@@ -82,7 +84,6 @@ struct HomeFeature {
         return .none
         
       case .articlesResponse(.failure(let error)):
-        // Handle error, e.g., show an alert banner
         print("Error fetching articles: \(error)")
         return .none
         
@@ -123,7 +124,7 @@ struct HomeFeature {
         return .none
         
       case .path(.element(_, .myCategoryCollection(.delegate(.editCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
+        state.path.append(.editCategory(EditCategoryFeature.State()))
         return .none
         
       case .path(.element(_, .myCategoryCollection(.delegate(.deleteCategory)))):
