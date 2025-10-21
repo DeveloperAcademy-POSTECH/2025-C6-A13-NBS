@@ -35,6 +35,7 @@ public extension Icon {
   static let smallChevronRight = "small-chevron-right"
   static let smallChevronDown = "small-chevron-down"
   static let smallPlus = "small-plus"
+  static let circlePlus = "circlePlus"
 }
 
 public extension Image {
