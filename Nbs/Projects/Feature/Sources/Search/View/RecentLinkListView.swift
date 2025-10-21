@@ -14,7 +14,7 @@ import DesignSystem
 
 // MARK: - Properties
 struct RecentLinkListView: View {
-  
+  let store: StoreOf<RecentLinkFeature>
 }
 
 // MARK: - View
@@ -27,17 +27,31 @@ extension RecentLinkListView {
       
       ScrollView(.vertical, showsIndicators: false) {
         LazyVStack {
-          ForEach(1..<6) { _ in
-            LinkCard(title: "트럼프 11월 1일부터 중대형 트럭에 25% 관세 부과", newsCompany: "조선 비즈", image: "plus", date: "2025년 10월 7일")
+          ForEach(store.recentLinkItem) { item in
+            Button {
+              store.send(.recentLinkTapped(item))
+            } label: {
+              LinkCard(
+                title: item.title,
+                newsCompany: "조선 비즈",
+                image: "plus",
+                date: item.createAt.formattedKoreanDate()
+              )
+            }
+            .buttonStyle(.plain)
           }
         }
       }
     }
+    .onAppear{ store.send(.onAppear) }
     .background(Color.background)
     .padding(.horizontal, 20)
   }
 }
 
 #Preview {
-  RecentLinkListView()
+  RecentLinkListView(
+    store: Store(initialState: RecentLinkFeature.State(), reducer: {
+    RecentLinkFeature()
+  }))
 }
