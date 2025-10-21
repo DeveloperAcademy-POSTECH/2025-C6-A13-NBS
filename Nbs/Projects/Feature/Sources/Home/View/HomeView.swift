@@ -21,7 +21,7 @@ extension HomeView: View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
       VStack {
         TopAppBarHome(
-          onTapSearchButton: { print ("")} ,
+          onTapSearchButton: { store.send(.searchButtonTapped) } ,
           onTapSettingButton: { print ("")}
         )
         ZStack(alignment: .bottom) {
@@ -80,7 +80,8 @@ extension HomeView: View {
         AddLinkView(store: store)
       case .addCategory(let store):
         AddCategoryView(store: store)
-        
+      case .search(let store):
+        SearchView(store: store)
       }
     }
     .onChange(of: scenePhase) { _, newPhase in
