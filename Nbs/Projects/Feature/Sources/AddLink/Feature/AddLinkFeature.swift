@@ -19,7 +19,7 @@ struct AddLinkFeature {
   struct State: Equatable {
     var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: AddLinkNamespace.naviTitle)
     var linkURL: String
-    var categoryGrid = CategoryGridFeature.State()
+    var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
     var selectedCategory: CategoryItem?
     
     init(linkURL: String = "") {
@@ -86,8 +86,12 @@ struct AddLinkFeature {
       case .addNewCategoryButtonTapped:
         return .send(.delegate(.goToAddCategory))
         
-      case .categoryGrid(.delegate(.categorySelected(let category))):
-        state.selectedCategory = category
+      case .categoryGrid(.delegate(.toggleCategorySelection(let category))):
+        if state.selectedCategory == category {
+          state.selectedCategory = nil
+        } else {
+          state.selectedCategory = category
+        }
         return .none
         
       case .categoryGrid:

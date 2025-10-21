@@ -18,7 +18,7 @@ struct EditCategoryFeature {
   @ObservableState
   struct State: Equatable {
     var naviTitle: String = "수정할 카테고리를 입력해주세요."
-    var categoryGrid = CategoryGridFeature.State()
+    var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
     var selectedCategory: CategoryItem?
   }
   
@@ -40,14 +40,14 @@ struct EditCategoryFeature {
     
     Reduce { state, action in
       switch action {
-      case .categoryGrid(.delegate(.categorySelected(let category))):
+      case .categoryGrid(.delegate(.toggleCategorySelection(let category))):
         state.selectedCategory = category
         return .none
       case .categoryGrid(.onAppear):
         return .none
       case .categoryGrid(.fetchCategoriesResponse(_)):
         return .none
-      case .categoryGrid(.selectCategory(_)):
+      case .categoryGrid(.toggleCategorySelection(_)):
         return .none
       case .cancelButtonTapped:
         return .run { _ in
