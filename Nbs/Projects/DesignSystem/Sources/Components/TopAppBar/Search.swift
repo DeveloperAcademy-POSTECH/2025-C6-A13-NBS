@@ -73,7 +73,7 @@ extension TopAppBarSearch: View {
         )
         .focused(isFocused)
         .font(.B1_M)
-        .foregroundColor(text.isEmpty ? .caption2 : .text1)
+        .foregroundColor(text.isEmpty ? .text1 : .caption1)
         .padding(.horizontal, 12)
         .overlay(
           HStack {
