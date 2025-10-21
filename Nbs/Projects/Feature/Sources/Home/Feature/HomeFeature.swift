@@ -137,6 +137,10 @@ struct HomeFeature {
         state.alertBanner = nil
         return .none
         
+      case .categoryList(.delegate(.goToAddCategoryView)):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
+        return .none
+        
       case .categoryList(.delegate(.goToMoreLinkButtonView)):
         state.path.append(.myCategoryCollection(MyCategoryCollectionFeature.State()))
         return .none
