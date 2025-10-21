@@ -47,6 +47,7 @@ extension LinkCard {
           .font(.B2_M)
           .foregroundStyle(.caption2)
       }
+      .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.vertical, 10)
       .padding(.leading, 16)
       
@@ -57,7 +58,6 @@ extension LinkCard {
         .padding(.vertical, 10)
         .padding(.leading, 12)
         .padding(.trailing, 10)
-
     }
     .frame(maxWidth: .infinity)
     .frame(maxHeight: 132)
@@ -67,5 +67,5 @@ extension LinkCard {
 }
 
 #Preview {
-  LinkCard(title: "트럼프 11월 1일부터 중대형 트럭에 25% 관세 부과", newsCompany: "조선비즈", image: "mockImage", date: "2025년 10월 7일")
+  LinkCard(title: "트럼프", newsCompany: "조선비즈", image: "mockImage", date: "2025년 10월 7일")
 }
