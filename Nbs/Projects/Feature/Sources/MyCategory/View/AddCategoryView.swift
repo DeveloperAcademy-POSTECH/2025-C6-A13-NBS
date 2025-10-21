@@ -48,15 +48,15 @@ struct AddCategoryView: View {
         
         ScrollView {
           LazyVGrid(columns: columns, spacing: 10) {
-            ForEach(0..<15, id: \.self) { index in
+            ForEach(1..<16, id: \.self) { index in
               Button {
                 store.selectedIcon = .init(number: index + 1)
               } label: {
                 RoundedRectangle(cornerRadius: 12)
-                  .fill(Color.blue.opacity(0.2))
+                  .fill(DesignSystemAsset.color(number: index))
                   .aspectRatio(1, contentMode: .fit)
                   .overlay(
-                    Image(uiImage: DesignSystemAsset.categoryIcon1.image)
+                    DesignSystemAsset.categoryIcon(number: index)
                       .resizable()
                       .frame(width: 45, height: 55)
                   )
