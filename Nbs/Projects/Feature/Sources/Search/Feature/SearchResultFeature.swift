@@ -23,8 +23,9 @@ struct SearchResultFeature {
     case loadSearchResult(String)
     case searchResponse([LinkItem])
     case linkCardTapped(LinkItem)
+    case categoryButtonTapped
     
-    case delegateAction(DelegateAction)
+    case delegate(DelegateAction)
   }
   
   enum DelegateAction: Equatable {
@@ -48,10 +49,12 @@ struct SearchResultFeature {
         return .none
       
       case .linkCardTapped(let item):
-        print(item.title)
+        return .send(.delegate(.openLinkDetail(item)))
+        
+      case .categoryButtonTapped:
         return .none
         
-      case .delegateAction:
+      case .delegate:
         return .none
       }
     }

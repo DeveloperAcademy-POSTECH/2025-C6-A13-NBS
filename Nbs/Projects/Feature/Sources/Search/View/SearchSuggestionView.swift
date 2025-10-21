@@ -20,7 +20,7 @@ extension SearchSuggestionView {
       LazyVStack(alignment: .leading, spacing: 16) {
         ForEach(store.suggestionItem) { result in
           Button {
-            
+            store.send(.suggestionTapped(result))
           } label: {
             Text(result.title)
               .font(.B1_M)

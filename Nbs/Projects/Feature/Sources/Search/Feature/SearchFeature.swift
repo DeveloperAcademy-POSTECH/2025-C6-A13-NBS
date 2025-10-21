@@ -8,12 +8,15 @@
 import Foundation
 import ComposableArchitecture
 
+import Domain
+
 @Reducer
 struct SearchFeature {
   @ObservableState
   struct State: Equatable {
     var topAppBar: TopAppBarSearchFeature.State = .init()
     var recentSearch: RecentSearchFeature.State = .init()
+    var recentLink: RecentLinkFeature.State = .init()
     var searchResult: SearchResultFeature.State = .init()
     var searchSuggestion: SearchSuggestionFeature.State = .init()
     var isSearchSubmitted: Bool = false
@@ -24,8 +27,15 @@ struct SearchFeature {
     case backgroundTapped
     case topAppBar(TopAppBarSearchFeature.Action)
     case recentSearch(RecentSearchFeature.Action)
+    case recentLink(RecentLinkFeature.Action)
     case searchResult(SearchResultFeature.Action)
     case searchSuggestion(SearchSuggestionFeature.Action)
+    
+    case delegate(DelegateAction)
+  }
+  
+  enum DelegateAction: Equatable {
+    case openLinkDetail(LinkItem)
   }
   
   @Dependency(\.dismiss) var dismiss
@@ -36,6 +46,9 @@ struct SearchFeature {
     }
     Scope(state: \.recentSearch, action: \.recentSearch) {
       RecentSearchFeature()
+    }
+    Scope(state: \.recentLink, action: \.recentLink) {
+      RecentLinkFeature()
     }
     Scope(state: \.searchResult, action: \.searchResult) {
       SearchResultFeature()
@@ -50,6 +63,7 @@ struct SearchFeature {
         return .run { send in
           await send(.topAppBar(.setSearchFieldFocus(true)))
           await send(.recentSearch(.onAppear))
+          await send(.recentLink(.onAppear))
         }
         
       case .backgroundTapped:
@@ -86,7 +100,28 @@ struct SearchFeature {
           }
         }
         
-      case .topAppBar, .recentSearch, .searchResult, .searchSuggestion:
+      case .searchResult(.delegate(let action)):
+        switch action {
+        case .openLinkDetail(let item):
+          return .send(.delegate(.openLinkDetail(item)))
+        }
+      
+      case .searchSuggestion(.delegate(let action)):
+        switch action {
+        case .openLinkDetail(let item):
+          return .send(.delegate(.openLinkDetail(item)))
+        }
+        
+      case .recentLink(.delegate(let action)):
+        switch action {
+        case .openLinkDetail(let item):
+          return .send(.delegate(.openLinkDetail(item)))
+        }
+        
+      case .topAppBar, .recentSearch, .recentLink, .searchResult, .searchSuggestion:
+        return .none
+      
+      case .delegate:
         return .none
       }
     }

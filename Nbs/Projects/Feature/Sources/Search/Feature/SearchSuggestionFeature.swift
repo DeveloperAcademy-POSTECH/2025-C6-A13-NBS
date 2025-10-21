@@ -21,11 +21,11 @@ struct SearchSuggestionFeature {
     case suggestionResponse([LinkItem])
     case suggestionTapped(LinkItem)
     
-    case delegateAction(DelegateAction)
+    case delegate(DelegateAction)
   }
   
   enum DelegateAction: Equatable {
-    case suggestTapped(LinkItem)
+    case openLinkDetail(LinkItem)
   }
 
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -48,9 +48,9 @@ struct SearchSuggestionFeature {
         return .none
         
       case .suggestionTapped(let item):
-        return .none
+        return .send(.delegate(.openLinkDetail(item)))
         
-      case .delegateAction:
+      case .delegate:
         return .none
       }
     }
