@@ -36,6 +36,7 @@ extension ArticleListView: View {
           }
         }
       }
+      .padding(.bottom, 4)
       
       ForEach(store.state.articles.suffix(5)) { article in
         Button {
@@ -50,6 +51,8 @@ extension ArticleListView: View {
           .background(.n0)
           .clipShape(RoundedRectangle(cornerRadius: 12))
           .padding(.vertical, 1)
+          .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
+          .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
         }
       }
       
