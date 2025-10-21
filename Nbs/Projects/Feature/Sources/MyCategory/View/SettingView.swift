@@ -77,6 +77,7 @@ extension SettingView: View {
           .font(.B1_SB)
           .foregroundStyle(.text1)
           .frame(maxWidth: .infinity, alignment: .center)
+          .padding(.vertical, 12)
         Button {
           store.send(.dismissButtonTapped)
         } label: {
@@ -85,7 +86,7 @@ extension SettingView: View {
             .renderingMode(.template)
             .frame(width: 24, height: 24)
             .foregroundStyle(.icon)
-            .padding(10)
+            .padding(12)
             .contentShape(Rectangle())
         }
       }
@@ -95,7 +96,7 @@ extension SettingView: View {
       Button {
         store.send(.editButtonTapped)
       } label: {
-        HStack {
+        HStack(spacing: 0) {
           Image(icon: Icon.edit)
             .resizable()
             .renderingMode(.template)
@@ -106,6 +107,7 @@ extension SettingView: View {
           Text("수정하기")
             .font(.B1_M)
             .foregroundStyle(.text1)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
@@ -114,7 +116,7 @@ extension SettingView: View {
       Button {
         store.send(.addButtonTapped)
       } label: {
-        HStack {
+        HStack(spacing: 0) {
           Image(icon: Icon.circlePlus)
             .resizable()
             .renderingMode(.template)
@@ -125,6 +127,7 @@ extension SettingView: View {
           Text("추가하기")
             .font(.B1_M)
             .foregroundStyle(.text1)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
@@ -133,7 +136,7 @@ extension SettingView: View {
       Button {
         store.send(.deleteButtonTapped)
       } label: {
-        HStack {
+        HStack(spacing: 0) {
           Image(icon: Icon.trash)
             .resizable()
             .renderingMode(.template)
@@ -144,6 +147,7 @@ extension SettingView: View {
           Text("삭제하기")
             .font(.B1_M)
             .foregroundStyle(.danger)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
