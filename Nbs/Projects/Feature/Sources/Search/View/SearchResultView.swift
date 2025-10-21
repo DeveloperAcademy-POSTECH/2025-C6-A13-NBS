@@ -13,7 +13,7 @@ import DesignSystem
 
 // MARK: - Properties
 struct SearchResultView: View {
-  let store: StoreOf<SearchResultFeature>
+  @Bindable var store: StoreOf<SearchResultFeature>
   
   private var truncatedQuery: String {
     let query = store.query
@@ -40,7 +40,7 @@ extension SearchResultView {
         
         if !store.searchResult.isEmpty {
           Button {
-            
+            store.send(.categoryButtonTapped)
           } label: {
             HStack(spacing: 6) {
               Text("카테고리")
@@ -72,7 +72,7 @@ extension SearchResultView {
                   title: result.title,
                   newsCompany: "조선 비즈",
                   image: "plus",
-                  date: "2025년 10월 7일"
+                  date: result.createAt.formattedKoreanDate()
                 )
               }
               .buttonStyle(.plain)
