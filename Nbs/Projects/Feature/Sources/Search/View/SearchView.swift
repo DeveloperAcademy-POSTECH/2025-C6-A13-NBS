@@ -29,10 +29,27 @@ extension SearchView {
         )
         
         if store.topAppBar.searchText.isEmpty {
-          if !store.recentSearch.searches.isEmpty {
-            RecentSearchListView(store: store.scope(state: \.recentSearch, action: \.recentSearch))
-          } else {
+          let recentSearchesExist = !store.recentSearch.searches.isEmpty
+          let recentLinksExist = !store.recentLink.recentLinkItem.isEmpty
+          
+          if !recentSearchesExist && !recentLinksExist {
             EmptySearchView()
+          } else {
+            if recentSearchesExist {
+              RecentSearchListView(store: store.scope(state: \.recentSearch, action: \.recentSearch))
+            }
+            
+            if recentSearchesExist && recentLinksExist {
+              Rectangle()
+                .frame(height: 1)
+                .foregroundStyle(.divider1)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 8)
+            }
+            
+            if recentLinksExist {
+              RecentLinkListView(store: store.scope(state: \.recentLink, action: \.recentLink))
+            }
           }
         } else {
           if store.isSearchSubmitted {
