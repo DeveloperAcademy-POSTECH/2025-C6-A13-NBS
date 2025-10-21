@@ -33,9 +33,9 @@ extension DeleteCategoryView: View {
         }
         MainButton(
           "삭제하기",
-          isDisabled: store.selectedCategory == nil
+          isDisabled: store.selectedCategories.isEmpty
         ) {
-          print("수정하기")
+          store.send(.deleteButtonTapped)
         }
       }
       .padding(.horizontal, 20)
