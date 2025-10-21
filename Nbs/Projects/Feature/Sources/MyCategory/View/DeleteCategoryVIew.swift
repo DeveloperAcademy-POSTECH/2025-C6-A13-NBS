@@ -1,5 +1,5 @@
 //
-//  EditCategoryView.swift
+//  DeleteCategoryVIew.swift
 //  Feature
 //
 //  Created by 홍 on 10/21/25.
@@ -10,11 +10,11 @@ import SwiftUI
 import ComposableArchitecture
 import DesignSystem
 
-struct EditCategoryView {
-  let store: StoreOf<EditCategoryFeature>
+struct DeleteCategoryView {
+  let store: StoreOf<DeleteCategoryFeature>
 }
 
-extension EditCategoryView: View {
+extension DeleteCategoryView: View {
   var body: some View {
     VStack {
       TopAppBarTitleOnly(title: store.naviTitle)
@@ -32,10 +32,10 @@ extension EditCategoryView: View {
           store.send(.cancelButtonTapped)
         }
         MainButton(
-          "수정하기",
-          isDisabled: store.selectedCategory == nil
+          "삭제하기",
+          isDisabled: store.selectedCategories.isEmpty
         ) {
-          store.send(.editButtonTapped)
+          store.send(.deleteButtonTapped)
         }
       }
       .padding(.horizontal, 20)
@@ -43,10 +43,4 @@ extension EditCategoryView: View {
     .background(DesignSystemAsset.background.swiftUIColor)
     .toolbar(.hidden)
   }
-}
-
-#Preview {
-  EditCategoryView(store: Store(initialState: EditCategoryFeature.State()) {
-    EditCategoryFeature()
-  })
 }
