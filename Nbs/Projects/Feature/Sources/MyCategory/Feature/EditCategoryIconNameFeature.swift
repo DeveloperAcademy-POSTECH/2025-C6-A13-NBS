@@ -1,3 +1,4 @@
+
 //
 //  EditCategoryIconNameFeature.swift
 //  Feature
@@ -14,51 +15,49 @@ import Domain
 struct EditCategoryIconNameFeature {
   
   @Dependency(\.dismiss) var dismiss
+  @Dependency(\.swiftDataClient) var swiftDataClient
   
   @ObservableState
   struct State: Equatable {
     var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: "카테고리 수정하기")
-    var categoryName: String = ""
-//    var categoryIcon: CategoryIcon
-    var categoryGrid = CategoryGridFeature.State()
-//    var selectedCategory: CategoryItem?
+    var categoryName: String
+    var category: CategoryItem
+    var selectedIcon: CategoryIcon?
+    
+    init(category: CategoryItem) {
+      self.category = category
+      self.categoryName = category.categoryName
+      self.selectedIcon = category.icon
+    }
   }
   
   enum Action {
-    case categoryGrid(CategoryGridFeature.Action)
     case compeleteButtonTapped
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setCategoryName(String)
+    case selectIcon(CategoryIcon)
   }
   
   var body: some ReducerOf<Self> {
-    Scope(state: \.categoryGrid, action: \.categoryGrid) {
-      CategoryGridFeature()
-    }
-    
     Scope(state: \.topAppBar, action: \.topAppBar) {
       TopAppBarDefaultRightIconxFeature()
     }
     
     Reduce { state, action in
       switch action {
-      case .categoryGrid(.delegate(.categorySelected(let category))):
-//        state.selectedCategory = category
-        return .none
-      case .categoryGrid(.onAppear):
-        return .none
-      case .categoryGrid(.fetchCategoriesResponse(_)):
-        return .none
       case let .setCategoryName(name):
         state.categoryName = name
         return .none
-      case .categoryGrid(.selectCategory(_)):
-        return .none
-      case let .setCategoryName(name):
-        state.categoryName = name
+      case let .selectIcon(icon):
+        state.selectedIcon = icon
         return .none
       case .compeleteButtonTapped:
-        return .run { _ in
+        return .run { [category = state.category, name = state.categoryName, icon = state.selectedIcon] _ in
+          category.categoryName = name
+          if let icon {
+            category.icon = icon
+          }
+          try await swiftDataClient.updateCategory(category)
           await self.dismiss()
         }
       case .topAppBar(.tapBackButton):
@@ -67,3 +66,4 @@ struct EditCategoryIconNameFeature {
     }
   }
 }
+

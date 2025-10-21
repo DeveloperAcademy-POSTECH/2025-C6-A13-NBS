@@ -1,3 +1,4 @@
+
 //
 //  EditCategoryIconName.swift
 //  Feature
@@ -9,6 +10,7 @@ import SwiftUI
 
 import ComposableArchitecture
 import DesignSystem
+import Domain
 
 struct EditCategoryIconNameView {
   @Bindable var store: StoreOf<EditCategoryIconNameFeature>
@@ -48,17 +50,22 @@ extension EditCategoryIconNameView: View {
 
       ScrollView {
         LazyVGrid(columns: columns, spacing: 10) {
-          ForEach(0..<15, id: \.self) { index in
+          ForEach(1..<16, id: \.self) { index in
+            let icon = CategoryIcon(number: index)
             Button {
-//              store.selectedIcon = .init(number: index + 1)
+              store.send(.selectIcon(icon))
             } label: {
               RoundedRectangle(cornerRadius: 12)
                 .fill(Color.blue.opacity(0.2))
                 .aspectRatio(1, contentMode: .fit)
                 .overlay(
-                  Image(uiImage: DesignSystemAsset.categoryIcon1.image)
+                  Image(uiImage: UIImage(named: "CategoryIcon\(index)") ?? .init())
                     .resizable()
                     .frame(width: 45, height: 55)
+                )
+                .overlay(
+                  RoundedRectangle(cornerRadius: 12)
+                    .stroke(store.selectedIcon == icon ? Color.blue : Color.clear, lineWidth: 2)
                 )
             }
             .buttonStyle(.plain)
@@ -69,7 +76,7 @@ extension EditCategoryIconNameView: View {
 
       MainButton(
         "완료",
-//        isDisabled: store.selectedCategory == nil
+        isDisabled: store.categoryName.isEmpty
       ) {
         store.send(.compeleteButtonTapped)
       }
@@ -79,3 +86,4 @@ extension EditCategoryIconNameView: View {
     .toolbar(.hidden)
   }
 }
+
