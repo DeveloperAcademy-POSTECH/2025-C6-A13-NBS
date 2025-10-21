@@ -89,6 +89,8 @@ extension SettingView: View {
             .contentShape(Rectangle())
         }
       }
+      .frame(height: 48)
+      .padding(.top, 8)
       
       Button {
         store.send(.editButtonTapped)
