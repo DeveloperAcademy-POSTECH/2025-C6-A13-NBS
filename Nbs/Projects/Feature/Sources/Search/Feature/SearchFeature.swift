@@ -14,6 +14,9 @@ struct SearchFeature {
   struct State: Equatable {
     var topAppBar: TopAppBarSearchFeature.State = .init()
     var recentSearch: RecentSearchFeature.State = .init()
+    var searchResult: SearchResultFeature.State = .init()
+    var searchSuggestion: SearchSuggestionFeature.State = .init()
+    var isSearchSubmitted: Bool = false
   }
   
   enum Action: Equatable {
@@ -21,7 +24,11 @@ struct SearchFeature {
     case backgroundTapped
     case topAppBar(TopAppBarSearchFeature.Action)
     case recentSearch(RecentSearchFeature.Action)
+    case searchResult(SearchResultFeature.Action)
+    case searchSuggestion(SearchSuggestionFeature.Action)
   }
+  
+  @Dependency(\.dismiss) var dismiss
   
   var body: some ReducerOf<Self> {
     Scope(state: \.topAppBar, action: \.topAppBar) {
@@ -30,28 +37,56 @@ struct SearchFeature {
     Scope(state: \.recentSearch, action: \.recentSearch) {
       RecentSearchFeature()
     }
+    Scope(state: \.searchResult, action: \.searchResult) {
+      SearchResultFeature()
+    }
+    Scope(state: \.searchSuggestion, action: \.searchSuggestion) {
+      SearchSuggestionFeature()
+    }
     
     Reduce { state, action in
       switch action {
       case .onAppear:
-        return .send(.topAppBar(.setSearchFieldFocus(true)))
+        return .run { send in
+          await send(.topAppBar(.setSearchFieldFocus(true)))
+          await send(.recentSearch(.onAppear))
+        }
         
       case .backgroundTapped:
         return .send(.topAppBar(.setSearchFieldFocus(false)))
-      
+        
       case .topAppBar(.delegate(let action)):
         switch action {
         case .searchTriggered(let query):
-          return .send(.recentSearch(.add(query)))
+          state.isSearchSubmitted = true
+          return .run { send in
+            await send(.recentSearch(.add(query)))
+            await send(.searchResult(.loadSearchResult(query)))
+          }
+        case .searchQueryChanged(let query):
+          state.isSearchSubmitted = false
+          return .run { send in
+            await send(.searchSuggestion(.loadSuggestionItem(query)))
+          }
+          .debounce(id: "search-debounce", for: 0.5, scheduler: RunLoop.main)
+          .cancellable(id: "search-debounce", cancelInFlight: true)
+        case .backButtonTapped:
+          return .run { _ in
+            await self.dismiss()
+          }
         }
-        
+
       case .recentSearch(.delegate(let action)):
         switch action {
         case .chipTapped(let term):
-          return .send(.topAppBar(.setSearchText(term)))
+          state.isSearchSubmitted = true
+          return .run { send in
+            await send(.topAppBar(.setSearchText(term)))
+            await send(.searchResult(.loadSearchResult(term)))
+          }
         }
         
-      case .topAppBar, .recentSearch:
+      case .topAppBar, .recentSearch, .searchResult, .searchSuggestion:
         return .none
       }
     }
