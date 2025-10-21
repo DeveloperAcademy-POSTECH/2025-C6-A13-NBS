@@ -140,6 +140,9 @@ struct HomeFeature {
       case .categoryList(.delegate(.goToAddCategoryView)):
         state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none
+      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
+        return .none
         
       case .categoryList(.delegate(.goToMoreLinkButtonView)):
         state.path.append(.myCategoryCollection(MyCategoryCollectionFeature.State()))
