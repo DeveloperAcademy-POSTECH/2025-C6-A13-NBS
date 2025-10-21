@@ -133,8 +133,8 @@ struct HomeFeature {
         state.path.append(.deleteCategory(DeleteCategoryFeature.State()))
         return .none
         
-      case .path(.element(_, .editCategory(.delegate(.editButtonTapped)))):
-        state.path.append(.editCategoryIconName(EditCategoryIconNameFeature.State()))
+      case let .path(.element(_, .editCategory(.delegate(.editButtonTapped(category))))):
+        state.path.append(.editCategoryIconName(EditCategoryIconNameFeature.State(category: category)))
         return .none
         
       case .dismissAlertBanner:

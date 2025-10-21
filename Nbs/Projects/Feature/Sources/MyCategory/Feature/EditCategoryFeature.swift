@@ -29,7 +29,7 @@ struct EditCategoryFeature {
     case delegate(Delegate)
     
     enum Delegate {
-      case editButtonTapped
+      case editButtonTapped(CategoryItem)
     }
   }
   
@@ -54,12 +54,11 @@ struct EditCategoryFeature {
           await self.dismiss()
         }
       case .editButtonTapped:
-        return .send(.delegate(.editButtonTapped))
+        guard let category = state.selectedCategory else { return .none }
+        return .send(.delegate(.editButtonTapped(category)))
       case .delegate(_):
         return .none
       }
     }
   }
 }
-
-
