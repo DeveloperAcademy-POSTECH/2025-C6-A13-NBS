@@ -23,6 +23,7 @@ struct HomeFeature {
     var alertBanner: AlertBannerState?
     var path = StackState<Path.State>()
     var copiedLink: String?
+    var myCategoryCollection = MyCategoryCollectionFeature.State()
     
     struct AlertBannerState: Equatable {
       let text: String
@@ -40,6 +41,7 @@ struct HomeFeature {
     case floatingButtonTapped
     case alertBannerTapped
     case fetchArticles
+    case myCategoryCollection(MyCategoryCollectionFeature.Action)
     case articlesResponse(TaskResult<[LinkItem]>)
   }
   
@@ -116,6 +118,18 @@ struct HomeFeature {
         state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none
         
+      case .path(.element(_, .myCategoryCollection(.delegate(.addCategory)))):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
+        return .none
+        
+      case .path(.element(_, .myCategoryCollection(.delegate(.editCategory)))):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
+        return .none
+        
+      case .path(.element(_, .myCategoryCollection(.delegate(.deleteCategory)))):
+        state.path.append(.addCategory(AddCategoryFeature.State()))
+        return .none
+        
       case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
         state.path.append(.addCategory(AddCategoryFeature.State()))
         return .none
@@ -147,6 +161,8 @@ struct HomeFeature {
       case .categoryList(.moreCategoryButtonTapped):
         return .none
       case .categoryList(.categoryTapped(_)):
+        return .none
+      case .myCategoryCollection(_):
         return .none
       }
     }
