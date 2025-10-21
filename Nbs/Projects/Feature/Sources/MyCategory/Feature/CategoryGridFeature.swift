@@ -13,16 +13,17 @@ import Domain
 struct CategoryGridFeature {
   struct State: Equatable {
     var categories: [CategoryItem] = []
-    var selectedCategory: CategoryItem?
+    var selectedCategories: Set<CategoryItem> = []
+    var allowsMultipleSelection: Bool = false
   }
   enum Action {
     case onAppear
     case fetchCategoriesResponse(TaskResult<[CategoryItem]>)
-    case selectCategory(CategoryItem)
+    case toggleCategorySelection(CategoryItem)
     case delegate(Delegate)
 
     enum Delegate: Equatable {
-      case categorySelected(CategoryItem)
+      case toggleCategorySelection(CategoryItem)
     }
   }
   
@@ -40,9 +41,17 @@ struct CategoryGridFeature {
       case let .fetchCategoriesResponse(.success(categories)):
         state.categories = categories
         return .none
-      case let .selectCategory(category):
-        state.selectedCategory = category
-        return .send(.delegate(.categorySelected(category)))
+      case let .toggleCategorySelection(category):
+        if state.allowsMultipleSelection {
+          state.selectedCategories.toggle(category)
+        } else {
+          if state.selectedCategories.contains(category) {
+            state.selectedCategories.remove(category)
+          } else {
+            state.selectedCategories = [category]
+          }
+        }
+        return .send(.delegate(.toggleCategorySelection(category)))
 
       case .fetchCategoriesResponse(.failure(_)):
         return .none

@@ -25,7 +25,7 @@ extension CategoryGridView: View {
         LazyVGrid(columns: gridItems, spacing: 10) {
           ForEach(viewStore.categories.reversed()) { category in
             Button {
-              viewStore.send(.selectCategory(category))
+              viewStore.send(.toggleCategorySelection(category))
             } label: {
               ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -49,7 +49,7 @@ extension CategoryGridView: View {
                   .padding(.bottom, 12)
               }
               .frame(maxWidth: .infinity, minHeight: 116)
-              .background(viewStore.selectedCategory == category ? Color.green : Color.blue)
+              .background(viewStore.selectedCategories.contains(category) ? Color.green : Color.blue)
               .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .buttonStyle(.plain)
