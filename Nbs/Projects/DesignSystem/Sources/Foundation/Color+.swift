@@ -141,3 +141,26 @@ public extension ShapeStyle where Self == Color {
   static var stateTooltipbackground: Color { DesignSystemAsset.stateTooltipbackground.swiftUIColor }
 
 }
+
+public extension DesignSystemAsset {
+  static func color(number: Int) -> SwiftUI.Color {
+    switch number {
+    case 1: return DesignSystemAsset.c1.swiftUIColor
+    case 2: return DesignSystemAsset.c2.swiftUIColor
+    case 3: return DesignSystemAsset.c3.swiftUIColor
+    case 4: return DesignSystemAsset.c4.swiftUIColor
+    case 5: return DesignSystemAsset.c5.swiftUIColor
+    case 6: return DesignSystemAsset.c6.swiftUIColor
+    case 7: return DesignSystemAsset.c7.swiftUIColor
+    case 8: return DesignSystemAsset.c8.swiftUIColor
+    case 9: return DesignSystemAsset.c9.swiftUIColor
+    case 10: return DesignSystemAsset.c10.swiftUIColor
+    case 11: return DesignSystemAsset.c11.swiftUIColor
+    case 12: return DesignSystemAsset.c12.swiftUIColor
+    case 13: return DesignSystemAsset.c13.swiftUIColor
+    case 14: return DesignSystemAsset.c14.swiftUIColor
+    case 15: return DesignSystemAsset.c15.swiftUIColor
+    default: return DesignSystemAsset.c1.swiftUIColor
+    }
+  }
+}
