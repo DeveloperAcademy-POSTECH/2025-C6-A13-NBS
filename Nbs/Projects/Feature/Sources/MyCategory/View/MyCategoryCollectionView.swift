@@ -57,7 +57,10 @@ extension MyCategoryCollectionView: View {
       .background(DesignSystemAsset.background.swiftUIColor)
       .toolbar(.hidden)
       
-      if let sheetStore = store.scope(state: \.settingModal, action: \.settingModal) {
+      if let sheetStore = store.scope(
+        state: \.settingModal,
+        action: \.settingModal
+      ) {
         BottomSheetContainerView(onDismiss: {
           store.send(.settingModal(.dismissButtonTapped))
         }) {
