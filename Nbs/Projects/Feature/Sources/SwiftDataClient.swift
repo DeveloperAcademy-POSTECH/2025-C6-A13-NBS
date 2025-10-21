@@ -10,6 +10,8 @@ struct SwiftDataClient {
   var fetchLinks: () throws -> [LinkItem]
   var searchLinks: (String) throws -> [LinkItem]
   var addLink: (LinkItem) throws -> Void
+  var updateLinkLastViewed: (LinkItem) throws -> Void
+  var fetchRecentLinks: () throws -> [LinkItem]
   
   // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
@@ -36,6 +38,17 @@ extension SwiftDataClient: DependencyKey {
       addLink: { link in
         modelContext.insert(link)
         try modelContext.save()
+      },
+      updateLinkLastViewed: { link in
+        link.lastViewedDate = Date()
+        try modelContext.save()
+      },
+      fetchRecentLinks: {
+        var descriptor = FetchDescriptor<LinkItem>(
+          sortBy: [SortDescriptor(\.lastViewedDate, order: .reverse)]
+        )
+        descriptor.fetchLimit = 6
+        return try modelContext.fetch(descriptor)
       },
       fetchCategories: {
         let descriptor = FetchDescriptor<CategoryItem>()
