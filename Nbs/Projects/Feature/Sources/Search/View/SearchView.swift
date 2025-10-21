@@ -16,8 +16,6 @@ import SwiftData
 // MARK: - Properties
 struct SearchView: View {
   @Bindable var store: StoreOf<SearchFeature>
-  @Query private var linkItem: [LinkItem]
-  @Query private var categoryItem: [CategoryItem]
 }
 
 // MARK: - View
