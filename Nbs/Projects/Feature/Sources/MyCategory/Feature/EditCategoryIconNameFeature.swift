@@ -1,5 +1,5 @@
 //
-//  EditCategoryFeature.swift
+//  EditCategoryIconNameFeature.swift
 //  Feature
 //
 //  Created by 홍 on 10/21/25.
@@ -11,26 +11,24 @@ import ComposableArchitecture
 import Domain
 
 @Reducer
-struct EditCategoryFeature {
+struct EditCategoryIconNameFeature {
   
   @Dependency(\.dismiss) var dismiss
   
   @ObservableState
   struct State: Equatable {
-    var naviTitle: String = "수정할 카테고리를 입력해주세요."
+    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: "카테고리 수정하기")
+    var categoryName: String = ""
+//    var categoryIcon: CategoryIcon
     var categoryGrid = CategoryGridFeature.State()
-    var selectedCategory: CategoryItem?
+//    var selectedCategory: CategoryItem?
   }
   
   enum Action {
     case categoryGrid(CategoryGridFeature.Action)
-    case cancelButtonTapped
-    case editButtonTapped
-    case delegate(Delegate)
-    
-    enum Delegate {
-      case editButtonTapped
-    }
+    case compeleteButtonTapped
+    case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
+    case setCategoryName(String)
   }
   
   var body: some ReducerOf<Self> {
@@ -38,28 +36,34 @@ struct EditCategoryFeature {
       CategoryGridFeature()
     }
     
+    Scope(state: \.topAppBar, action: \.topAppBar) {
+      TopAppBarDefaultRightIconxFeature()
+    }
+    
     Reduce { state, action in
       switch action {
       case .categoryGrid(.delegate(.categorySelected(let category))):
-        state.selectedCategory = category
+//        state.selectedCategory = category
         return .none
       case .categoryGrid(.onAppear):
         return .none
       case .categoryGrid(.fetchCategoriesResponse(_)):
         return .none
+      case let .setCategoryName(name):
+        state.categoryName = name
+        return .none
       case .categoryGrid(.selectCategory(_)):
         return .none
-      case .cancelButtonTapped:
+      case let .setCategoryName(name):
+        state.categoryName = name
+        return .none
+      case .compeleteButtonTapped:
         return .run { _ in
           await self.dismiss()
         }
-      case .editButtonTapped:
-        return .send(.delegate(.editButtonTapped))
-      case .delegate(_):
-        return .none
+      case .topAppBar(.tapBackButton):
+        return .run { _ in await self.dismiss() }
       }
     }
   }
 }
-
-

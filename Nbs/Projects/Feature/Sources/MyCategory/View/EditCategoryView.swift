@@ -35,7 +35,7 @@ extension EditCategoryView: View {
           "수정하기",
           isDisabled: store.selectedCategory == nil
         ) {
-          print("수정하기")
+          store.send(.editButtonTapped)
         }
       }
       .padding(.horizontal, 20)
