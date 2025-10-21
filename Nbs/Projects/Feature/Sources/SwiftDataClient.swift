@@ -8,6 +8,8 @@ import Domain
 struct SwiftDataClient {
   var fetchCategories: () throws -> [CategoryItem]
   var addCategory: (CategoryItem) throws -> Void
+  var updateCategory: (CategoryItem) throws -> Void
+  var deleteCategory: (CategoryItem) throws -> Void
   var addLink: (LinkItem) throws -> Void
   var fetchLinkItem: () throws -> [LinkItem]
 }
@@ -24,6 +26,13 @@ extension SwiftDataClient: DependencyKey {
       },
       addCategory: { category in
         modelContext.insert(category)
+        try modelContext.save()
+      },
+      updateCategory: { category in
+        try modelContext.save()
+      },
+      deleteCategory: { category in
+        modelContext.delete(category)
         try modelContext.save()
       },
       addLink: { link in
