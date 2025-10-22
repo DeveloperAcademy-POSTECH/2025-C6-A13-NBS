@@ -24,10 +24,6 @@ struct SelectBottomSheetItem: View {
     self.action = action
   }
   
-//  private var font: Font {
-//    isSelected ? .B1_SB : .B1_M
-//  }
-  
   private var foregroundColor: Color {
     isSelected ? .bl6 : .text1
   }
