@@ -52,7 +52,16 @@ public extension AlertBanner {
     }
     .padding(.horizontal, 24)
     .padding(.vertical, 18)
-    .background(.alert)
+    .background({
+      switch style {
+      case .close:
+        VisualEffectBlur(blurStyle: .systemUltraThinMaterialDark)
+          .background(DesignSystemAsset.alertColor.swiftUIColor)
+      default:
+        VisualEffectBlur(blurStyle: .systemUltraThinMaterialLight)
+          .background(DesignSystemAsset.alert.swiftUIColor)
+      }
+    }())
     .cornerRadius(12)
   }
   
@@ -66,6 +75,8 @@ public extension AlertBanner {
         Text(message)
           .font(.C2)
           .foregroundStyle(.caption3)
+          .lineLimit(1)
+          .truncationMode(.tail)
       }
     }
   }

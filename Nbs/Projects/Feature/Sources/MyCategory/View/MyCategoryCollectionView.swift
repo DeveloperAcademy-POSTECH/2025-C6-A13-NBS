@@ -17,7 +17,7 @@ struct MyCategoryCollectionView {
 extension MyCategoryCollectionView: View {
   var body: some View {
     ZStack {
-      VStack {
+      VStack(spacing: 0) {
         TopAppBarDefaultNoSearchView(
           store: store.scope(
             state: \.topAppBar,

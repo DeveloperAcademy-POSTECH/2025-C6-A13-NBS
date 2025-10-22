@@ -42,15 +42,14 @@ extension CategoryGridView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 16)
                 .padding(.leading, 16)
-                Image(uiImage: DesignSystemAsset.emptyImage.image)
+                DesignSystemAsset.categoryIcon(number: category.icon.number)
                   .resizable()
                   .frame(width: 56, height: 56)
                   .padding(.trailing, 12)
                   .padding(.bottom, 12)
               }
               .frame(maxWidth: .infinity, minHeight: 116)
-              .background(viewStore.selectedCategories.contains(category) ? Color.green : Color.blue)
-              .clipShape(RoundedRectangle(cornerRadius: 12))
+              .background(DesignSystemAsset.color(number: category.icon.number)) .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .buttonStyle(.plain)
           }

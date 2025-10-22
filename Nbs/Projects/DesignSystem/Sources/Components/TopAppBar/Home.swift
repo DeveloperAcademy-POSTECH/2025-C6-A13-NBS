@@ -40,6 +40,7 @@ extension TopAppBarHome: View {
   public var body: some View {
     HStack {
       Text(title)
+        .font(.B1_M)
         .foregroundStyle(.n700)
         .padding(.leading, 24)
       Spacer()
@@ -63,7 +64,7 @@ extension TopAppBarHome: View {
             .contentShape(Rectangle())
         }
       }
-      .padding(.trailing, 24)
+      .padding(.trailing, 8)
     }
     .frame(height: 60)
     .background(DesignSystemAsset.background.swiftUIColor)

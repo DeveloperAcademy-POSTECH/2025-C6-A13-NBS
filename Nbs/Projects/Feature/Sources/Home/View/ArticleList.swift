@@ -16,16 +16,17 @@ struct ArticleListView {
 
 extension ArticleListView: View {
   var body: some View {
-    VStack(spacing: 16) {
+    VStack(spacing: 8) {
       HStack(spacing: 0) {
         Text(ArticleNameSpace.recentAddLink)
           .font(.B1_SB)
           .foregroundStyle(.caption1)
+          .padding(.leading, 6)
         Spacer()
         Button {
           store.send(.moreLinkButtonTapped)
         } label: {
-          HStack {
+          HStack(spacing: 0) {
             Text(ArticleNameSpace.showMore)
               .font(.B2_M)
               .foregroundStyle(.caption1)
@@ -35,6 +36,7 @@ extension ArticleListView: View {
           }
         }
       }
+      .padding(.bottom, 4)
       
       ForEach(store.state.articles.suffix(5)) { article in
         Button {
@@ -48,6 +50,9 @@ extension ArticleListView: View {
           )
           .background(.n0)
           .clipShape(RoundedRectangle(cornerRadius: 12))
+          .padding(.vertical, 1)
+          .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
+          .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
         }
       }
       

@@ -26,9 +26,11 @@ struct CategoryListFeature {
     case moreCategoryButtonTapped
     case categoryTapped(CategoryItem)
     case delegate(Delegate)
+    case addCategoryButtonTapped
     
     enum Delegate {
       case goToMoreLinkButtonView
+      case goToAddCategoryView
     }
   }
   
@@ -52,6 +54,8 @@ struct CategoryListFeature {
         return .none
       case .delegate:
         return .none
+      case .addCategoryButtonTapped:
+        return .send(.delegate(.goToAddCategoryView))
       }
     }
   }
