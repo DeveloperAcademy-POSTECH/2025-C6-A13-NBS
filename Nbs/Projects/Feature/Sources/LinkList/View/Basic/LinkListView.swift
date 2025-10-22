@@ -42,6 +42,16 @@ extension LinkListView: View {
         }
       }
     }
+    .fullScreenCover(
+       store: store.scope(state: \.$moveLink, action: \.moveLink)
+     ) { moveStore in
+       MoveLinkView(store: moveStore)
+     }
+     .fullScreenCover(
+      store: store.scope(state: \.$deleteLink, action: \.deleteLink)
+     ) { deleteStore in
+       DeleteLinkView(store: deleteStore)
+     }
     .navigationBarHidden(true)
     .onAppear {
       store.send(.onAppear)
@@ -102,19 +112,13 @@ extension LinkListView: View {
             action: \.articleList
           )
         )
-        .simultaneousGesture(
-          LongPressGesture().onEnded { _ in
-            
-          }
-        )
       }
       .coordinateSpace(name: "scroll")
       .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offsetY in
         // 아래로 200 이상 스크롤 할 경우 보여주기
-//        withAnimation(.easeInOut(duration: 0.2)) {
-//          showScrollToTopButton = offsetY < -200
-//        }
-        showScrollToTopButton = true
+        withAnimation(.easeInOut(duration: 0.2)) {
+          showScrollToTopButton = offsetY < -200
+        }
       }
     }
   }
