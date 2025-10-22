@@ -18,8 +18,7 @@ struct SwiftDataClient {
   var addCategory: (CategoryItem) throws -> Void
   var updateCategory: (CategoryItem) throws -> Void
   var deleteCategory: (CategoryItem) throws -> Void
-  var addLink: (LinkItem) throws -> Void
-  var fetchLinkItem: () throws -> [LinkItem]
+//  var addLink: (LinkItem) throws -> Void
 }
 
 extension SwiftDataClient: DependencyKey {
@@ -38,13 +37,6 @@ extension SwiftDataClient: DependencyKey {
         }
         let descriptor = FetchDescriptor<LinkItem>(predicate: predicate)
         return try modelContext.fetch(descriptor)
-      },
-      updateCategory: { category in
-        try modelContext.save()
-      },
-      deleteCategory: { category in
-        modelContext.delete(category)
-        try modelContext.save()
       },
       addLink: { link in
         modelContext.insert(link)
@@ -68,7 +60,14 @@ extension SwiftDataClient: DependencyKey {
       addCategory: { category in
         modelContext.insert(category)
         try modelContext.save()
-      }
+      },
+      updateCategory: { category in
+        try modelContext.save()
+      },
+      deleteCategory: { category in
+        modelContext.delete(category)
+        try modelContext.save()
+      },
     )
   }()
 }

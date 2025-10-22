@@ -171,6 +171,7 @@ struct HomeFeature {
         return .none
         
       case .categoryList, .articleList, .path:
+        return .none
       case .editCategory(_):
         return .none
         
