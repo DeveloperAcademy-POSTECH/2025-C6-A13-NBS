@@ -43,6 +43,9 @@ extension HomeView: View {
               }
               .padding(.bottom, 80)
             }
+            .refreshable {
+              store.send(.refresh)
+            }
             
             AddFloatingButton {
               store.send(.floatingButtonTapped)
