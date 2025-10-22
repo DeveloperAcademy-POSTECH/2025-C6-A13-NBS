@@ -237,4 +237,13 @@ public extension TypeStyle {
     lineHeight: 1.5,
     letterSpacing: -0.02
   )
+  
+  ///Regular 12pt
+  static let C3 = TypeStyle(
+    font: .Pretendard.regular.swiftUIFont(size: 12),
+    uiFont: .pretendard(type: .regular, size: 12),
+    size: 12,
+    lineHeight: 1.7,
+    letterSpacing: 0.0
+  )
 }

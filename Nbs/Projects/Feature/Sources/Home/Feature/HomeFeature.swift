@@ -46,6 +46,7 @@ struct HomeFeature {
     case searchButtonTapped
     case editCategory(EditCategoryFeature.Action)
     case editCategoryIconName(EditCategoryIconNameFeature.Action)
+    case refresh
   }
   
   @Reducer
@@ -91,6 +92,11 @@ struct HomeFeature {
         print("Error fetching articles: \(error)")
         return .none
         
+      case .refresh:
+        return .run { send in
+          await send(.fetchArticles)
+        }
+
       case let .clipboardResponded(copiedText):
         guard let copiedText,
               let url = URL(string: copiedText),
