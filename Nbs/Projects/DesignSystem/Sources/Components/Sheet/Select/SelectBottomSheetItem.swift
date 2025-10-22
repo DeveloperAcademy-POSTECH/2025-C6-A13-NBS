@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Properties
 struct SelectBottomSheetItem: View {
   let title: String
-  @State var isSelected: Bool = false
+  let isSelected: Bool 
   
   let action: () -> Void
   
@@ -33,7 +33,7 @@ struct SelectBottomSheetItem: View {
 extension SelectBottomSheetItem {
   var body: some View {
     Button {
-      print("tap")
+      action()
     } label: {
       HStack {
         Text(title)
