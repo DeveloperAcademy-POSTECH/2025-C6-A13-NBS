@@ -33,7 +33,7 @@ extension ArticleFilterList: View {
               .font(.B1_M)
               .foregroundStyle(.caption1)
 
-            Text("\(store.articles.count)")
+            Text("\(store.link.count)")
               .font(.B1_SB)
               .foregroundStyle(.caption1)
 
@@ -76,7 +76,7 @@ extension ArticleFilterList: View {
   }
   
   private var articleList: some View {
-    ForEach(store.state.articles) { article in
+    ForEach(store.state.link) { article in
       Button {
         store.send(.listCellTapped(article))
       } label: {
