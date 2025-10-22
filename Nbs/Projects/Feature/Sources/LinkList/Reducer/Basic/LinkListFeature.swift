@@ -18,24 +18,30 @@ struct LinkListFeature {
     var articleList = ArticleFilterFeature.State()
     var allLinks: [LinkItem] = []
     var showBottomSheet: Bool = false // 카테고리 선택 시트
-//    var showEditSheet: Bool = false // 링크 편집 시트
-//    var selectedLink: LinkItem? = nil
     var selectedCategory: CategoryItem? = nil
     
     @Presents var editSheet: EditSheetFeature.State? // 링크 편집 시트
+    @Presents var moveLink: MoveLinkFeature.State?
+    @Presents var deleteLink: DeleteLinkFeature.State?
   }
   
   enum Action {
+    /// 라이프사이클
     case onAppear
+    
+    /// 자식뷰
     case categoryChipList(CategoryChipFeature.Action)
     case articleList(ArticleFilterFeature.Action)
-    /// 카테고리
-    case bottomSheetButtonTapped(Bool)
     
-    /// 시트
+    /// UI 이벤트
+    case bottomSheetButtonTapped(Bool)
     case linkLongPressed(LinkItem)
     case editButtonTapped
+    
+    /// 시트
     case editSheet(PresentationAction<EditSheetFeature.Action>)
+    case moveLink(PresentationAction<MoveLinkFeature.Action>)
+    case deleteLink(PresentationAction<DeleteLinkFeature.Action>)
     
     /// 데이터
     case fetchLinks
@@ -70,11 +76,11 @@ struct LinkListFeature {
         
       case let .fetchLinksResponse(.success(items)):
         state.allLinks = items
-        state.articleList.articles = items
-        
+        state.articleList.link = items
+        // 카테고리 필터 유지
         if let selected = state.selectedCategory {
           state.categoryChipList.selectedCategory = selected
-          state.articleList.articles = items.filter {
+          state.articleList.link = items.filter {
             $0.category?.categoryName == selected.categoryName
           }
         }
@@ -106,33 +112,33 @@ struct LinkListFeature {
         
         /// 편집 시트 - 이동하기
       case let .editSheet(.presented(.delegate(.moveLink(link)))):
-        print("이동하기: \(link?.title ?? "nil")")
+        state.moveLink = MoveLinkFeature.State(allLinks: state.allLinks)
         state.editSheet = nil
-        // TODO: 이동용 시트/화면 push
+        return .none
         
+      case .moveLink(.presented(.delegate(.dismiss))):
+        state.moveLink = nil
         return .none
         
         /// 편집 시트 - 삭제하기
       case let .editSheet(.presented(.delegate(.deleteLink(link)))):
-        print("삭제하기: \(link?.title ?? "nil")")
-        // TODO: 삭제 확인 뷰 연결
+        state.deleteLink = DeleteLinkFeature.State(allLinks: state.allLinks)
         state.editSheet = nil
+        return .none
+        
+      case .deleteLink(.presented(.delegate(.dismiss))):
+        state.deleteLink = nil
         return .none
         
       case .editSheet:
         return .none
         
-//      case let .articleList(.delegate(.longPressed(link))):
-//        state.selectedLink = link
-//        state.showEditSheet = true
-//        return .none
-        
         /// 키테고리 칩 선택
       case let .categoryChipList(.categoryTapped(category)):
         if category.categoryName == "전체" {
-          state.articleList.articles = state.allLinks
+          state.articleList.link = state.allLinks
         } else {
-          state.articleList.articles = state.allLinks.filter {
+          state.articleList.link = state.allLinks.filter {
             guard let itemCategory = $0.category else { return false }
             return itemCategory.categoryName == category.categoryName
           }
@@ -143,16 +149,16 @@ struct LinkListFeature {
       case let .articleList(.delegate(.openLinkDetail(link))):
         return .send(.delegate(.openLinkDetail(link)))
         
-      case .bottomSheetButtonTapped(let value):
-        state.showBottomSheet = value
-        return .none
+        /// 롱프레스 
+      case let .articleList(.delegate(.longPressed(link))):
+        return .send(.linkLongPressed(link))
         
-      case .categoryChipList, .articleList, .delegate:
+      case .categoryChipList, .articleList, .delegate, .moveLink, .deleteLink:
         return .none
       }
     }
-    .ifLet(\.$editSheet, action: \.editSheet) {
-      EditSheetFeature()
-    }
+    .ifLet(\.$editSheet, action: \.editSheet) { EditSheetFeature() }
+    .ifLet(\.$moveLink, action: \.moveLink) { MoveLinkFeature() }
+    .ifLet(\.$deleteLink, action: \.deleteLink) { DeleteLinkFeature() }
   }
 }
