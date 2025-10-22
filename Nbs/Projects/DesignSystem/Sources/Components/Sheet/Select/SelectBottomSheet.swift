@@ -9,10 +9,10 @@ import SwiftUI
 
 // MARK: - Model
 public struct CategoryProps: Identifiable, Equatable {
-  public let id: String
+  public let id: UUID
   public let title: String
   
-  public init(id: String, title: String) {
+  public init(id: UUID, title: String) {
     self.id = id
     self.title = title
   }
@@ -22,24 +22,25 @@ public struct CategoryProps: Identifiable, Equatable {
 public struct SelectBottomSheet: View {
   let sheetTitle: String
   let items: [CategoryProps]
-  let categoryButtonTapped: (String) -> Void 
+  let categoryButtonTapped: (String) -> Void
   let selectButtonTapped: () -> Void
   let dismissButtonTapped: () -> Void
+  let selectedCategory: String?
   
-  @State private var selectedItemID: String?
-
   public init(
     sheetTitle: String,
     items: [CategoryProps],
     categoryButtonTapped: @escaping (String) -> Void,
     selectButtonTapped: @escaping () -> Void,
-    dismissButtonTapped: @escaping () -> Void
+    dismissButtonTapped: @escaping () -> Void,
+    selectedCategory: String?
   ) {
     self.sheetTitle = sheetTitle
     self.items = items
     self.categoryButtonTapped = categoryButtonTapped
     self.selectButtonTapped = selectButtonTapped
     self.dismissButtonTapped = dismissButtonTapped
+    self.selectedCategory = selectedCategory
   }
 }
 
@@ -67,10 +68,11 @@ extension SelectBottomSheet {
       ScrollView(.vertical, showsIndicators: false) {
         LazyVStack {
           ForEach(items) { item in
-            SelectBottomSheetItem(title: item.title, isSelected: selectedItemID == item.id, action: {
-              self.selectedItemID = item.id
-              categoryButtonTapped(item.id)
-            })
+            SelectBottomSheetItem(
+              title: item.title,
+              isSelected: item.title == selectedCategory,
+              action: { categoryButtonTapped(item.title) }
+            )
           }
         }
       }
@@ -87,12 +89,13 @@ extension SelectBottomSheet {
   SelectBottomSheet(
     sheetTitle: "카테고리 필터",
     items: [
-      .init(id: "1", title: "전체"),
-      .init(id: "2", title: "정치"),
-      .init(id: "3", title: "경제")
+      .init(id: UUID(), title: "1"),
+      .init(id: UUID(), title: "2"),
+      .init(id: UUID(), title: "3"),
     ],
     categoryButtonTapped: { _ in },
     selectButtonTapped: {},
-    dismissButtonTapped: {} 
+    dismissButtonTapped: {},
+    selectedCategory: "2"
   )
 }
