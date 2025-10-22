@@ -38,21 +38,31 @@ extension ArticleListView: View {
       }
       .padding(.bottom, 4)
       
-      ForEach(store.state.articles.suffix(5)) { article in
-        Button {
-          store.send(.listCellTapped(article))
-        } label: {
-          ArticleCard(
-            title: article.title,
-            categoryName: article.category?.categoryName,
-            imageURL: article.imageURL ?? "placeholder_image",
-            dateString: article.createAt.formatted(date: .numeric, time: .omitted)
-          )
-          .background(.n0)
-          .clipShape(RoundedRectangle(cornerRadius: 12))
-          .padding(.vertical, 1)
-          .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
-          .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
+      if store.state.articles.isEmpty {
+        
+      } else {
+        ForEach(store.state.articles.reversed().suffix(5)) { article in
+          Button {
+            store.send(.listCellTapped(article))
+          } label: {
+            LinkCard(
+              title: article.title,
+              newsCompany: article.newsCompany ?? "네이버 뉴스",
+              image: article.imageURL ?? "placeholder_image",
+              date: article.createAt.formattedKoreanDate()
+            )
+            //          ArticleCard(
+            //            title: article.title,
+            //            categoryName: article.category?.categoryName,
+            //            imageURL: article.imageURL ?? "placeholder_image",
+            //            dateString: article.createAt.formatted(date: .numeric, time: .omitted)
+            //          )
+            .background(.n0)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .padding(.vertical, 1)
+            .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
+            .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
+          }
         }
       }
       
