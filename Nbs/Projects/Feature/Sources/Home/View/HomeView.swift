@@ -82,6 +82,12 @@ extension HomeView: View {
         AddCategoryView(store: store)
       case .search(let store):
         SearchView(store: store)
+      case .editCategory(let store):
+        EditCategoryView(store: store)
+      case .deleteCategory(let store):
+        DeleteCategoryView(store: store)
+      case .editCategoryIconName(let store):
+        EditCategoryIconNameView(store: store)
       }
     }
     .onChange(of: scenePhase) { _, newPhase in

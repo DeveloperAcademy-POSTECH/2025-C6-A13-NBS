@@ -44,17 +44,21 @@ struct HomeFeature {
     case myCategoryCollection(MyCategoryCollectionFeature.Action)
     case articlesResponse(TaskResult<[LinkItem]>)
     case searchButtonTapped
+    case editCategory(EditCategoryFeature.Action)
+    case editCategoryIconName(EditCategoryIconNameFeature.Action)
   }
   
   @Reducer
   enum Path {
     case linkList(LinkListFeature)
     case linkDetail(LinkDetailFeature)
-    //    case categoryGridView(CategoryGridFeature)
     case myCategoryCollection(MyCategoryCollectionFeature)
     case addLink(AddLinkFeature)
     case addCategory(AddCategoryFeature)
     case search(SearchFeature)
+    case editCategory(EditCategoryFeature)
+    case deleteCategory(DeleteCategoryFeature)
+    case editCategoryIconName(EditCategoryIconNameFeature)
   }
   
   var body: some ReducerOf<Self> {
@@ -84,7 +88,6 @@ struct HomeFeature {
         return .none
         
       case .articlesResponse(.failure(let error)):
-        // Handle error, e.g., show an alert banner
         print("Error fetching articles: \(error)")
         return .none
         
@@ -121,15 +124,15 @@ struct HomeFeature {
         return .none
         
       case .path(.element(_, .myCategoryCollection(.delegate(.editCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
+        state.path.append(.editCategory(EditCategoryFeature.State()))
         return .none
         
       case .path(.element(_, .myCategoryCollection(.delegate(.deleteCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
+        state.path.append(.deleteCategory(DeleteCategoryFeature.State()))
         return .none
         
-      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
+      case let .path(.element(_, .editCategory(.delegate(.editButtonTapped(category))))):
+        state.path.append(.editCategoryIconName(EditCategoryIconNameFeature.State(category: category)))
         return .none
       
       case .path(.element(id: _, action: .search(.delegate(.openLinkDetail(let item))))):
@@ -161,6 +164,10 @@ struct HomeFeature {
         return .none
         
       case .categoryList, .articleList, .path:
+      case .editCategory(_):
+        return .none
+        
+      case .articleList, .path:
         return .none
       case .categoryList(.onAppear):
         return .none
@@ -171,6 +178,8 @@ struct HomeFeature {
       case .categoryList:
         return .none
       case .myCategoryCollection(_):
+        return .none
+      case .editCategoryIconName(_):
         return .none
       }
     }
