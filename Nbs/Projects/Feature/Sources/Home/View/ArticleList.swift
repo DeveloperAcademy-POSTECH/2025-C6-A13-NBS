@@ -39,29 +39,36 @@ extension ArticleListView: View {
       .padding(.bottom, 4)
       
       if store.state.articles.isEmpty {
-        
+        VStack(spacing: 12) {
+          Rectangle()
+            .fill(Color.clear)
+            .frame(height: 100)
+          Image(uiImage: DesignSystemAsset.emptyLinkIcon.image)
+            .resizable()
+            .frame(width: 120, height: 120)
+          Text("아직 저장한 링크가 없어요")
+            .font(.B1_M)
+            .foregroundStyle(.caption3)
+        }
+        .padding(.vertical, 32)
       } else {
-        ForEach(store.state.articles.reversed().suffix(5)) { article in
-          Button {
-            store.send(.listCellTapped(article))
-          } label: {
-            LinkCard(
-              title: article.title,
-              newsCompany: article.newsCompany ?? "네이버 뉴스",
-              image: article.imageURL ?? "placeholder_image",
-              date: article.createAt.formattedKoreanDate()
-            )
-            //          ArticleCard(
-            //            title: article.title,
-            //            categoryName: article.category?.categoryName,
-            //            imageURL: article.imageURL ?? "placeholder_image",
-            //            dateString: article.createAt.formatted(date: .numeric, time: .omitted)
-            //          )
-            .background(.n0)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .padding(.vertical, 1)
-            .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
-            .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
+        VStack(spacing: 8) {
+          ForEach(store.state.articles.reversed().suffix(5)) { article in
+            Button {
+              store.send(.listCellTapped(article))
+            } label: {
+              LinkCard(
+                title: article.title,
+                newsCompany: article.newsCompany ?? "네이버 뉴스",
+                image: article.imageURL ?? "placeholder_image",
+                date: article.createAt.formattedKoreanDate()
+              )
+              .background(.n0)
+              .clipShape(RoundedRectangle(cornerRadius: 12))
+              .padding(.vertical, 1)
+              .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
+              .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
+            }
           }
         }
       }
