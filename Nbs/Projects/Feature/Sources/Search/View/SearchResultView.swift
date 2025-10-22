@@ -58,6 +58,7 @@ extension SearchResultView {
                 .stroke(.divider1, lineWidth: 1)
             }
           }
+          .buttonStyle(.plain)
         }
       }
       
