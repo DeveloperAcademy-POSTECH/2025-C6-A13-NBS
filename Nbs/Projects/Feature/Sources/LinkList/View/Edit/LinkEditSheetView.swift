@@ -13,12 +13,12 @@ struct LinkEditSheetView: View {
   @Bindable var store: StoreOf<EditSheetFeature>
   
   var body: some View {
-    VStack(spacing: 8) {
+    VStack(spacing: 10) {
       SheetHeader(title: "링크 편집") {
         store.send(.dismissButtonTapped)
       }
       
-      VStack(spacing: 12) {
+      VStack(spacing: 24) {
         ActionSheetButton(icon: Icon.move, title: "이동하기") {
           store.send(.moveButtonTapped)
         }
@@ -28,6 +28,6 @@ struct LinkEditSheetView: View {
         }
       }
     }
-    .padding(.bottom, 60)
+    .padding(.bottom, 80)
   }
 }
