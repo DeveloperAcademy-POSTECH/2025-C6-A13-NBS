@@ -17,17 +17,30 @@ struct LinkListFeature {
     var categoryChipList = CategoryChipFeature.State()
     var articleList = ArticleFilterFeature.State()
     var allLinks: [LinkItem] = []
-    var showBottomSheet: Bool = false
+    var showBottomSheet: Bool = false // 카테고리 선택 시트
+//    var showEditSheet: Bool = false // 링크 편집 시트
+//    var selectedLink: LinkItem? = nil
     var selectedCategory: CategoryItem? = nil
+    
+    @Presents var editSheet: EditSheetFeature.State? // 링크 편집 시트
   }
   
   enum Action {
     case onAppear
     case categoryChipList(CategoryChipFeature.Action)
     case articleList(ArticleFilterFeature.Action)
+    /// 카테고리
     case bottomSheetButtonTapped(Bool)
+    
+    /// 시트
+    case linkLongPressed(LinkItem)
+    case editButtonTapped
+    case editSheet(PresentationAction<EditSheetFeature.Action>)
+    
+    /// 데이터
     case fetchLinks
     case fetchLinksResponse(TaskResult<[LinkItem]>)
+  
     case delegate(Delegate)
     enum Delegate {
       case openLinkDetail(LinkItem)
@@ -46,9 +59,7 @@ struct LinkListFeature {
     Reduce { state, action in
       switch action {
       case .onAppear:
-        return .run { send in
-          await send(.fetchLinks)
-        }
+        return .run { send in await send(.fetchLinks) }
         
       case .fetchLinks:
         return .run { send in
@@ -67,13 +78,56 @@ struct LinkListFeature {
             $0.category?.categoryName == selected.categoryName
           }
         }
-        
         return .none
         
       case let .fetchLinksResponse(.failure(error)):
         print("LinkList fetch failed:", error)
         return .none
         
+        /// 카테고리 시트 토글
+      case let .bottomSheetButtonTapped(value):
+        state.showBottomSheet = value
+        return .none
+        
+        /// 링크 길게 눌러서 편집 시트 열기
+      case let .linkLongPressed(link):
+          state.editSheet = EditSheetFeature.State(link: link)
+          return .none
+        
+        /// 시트 열기
+      case .editButtonTapped:
+          state.editSheet = EditSheetFeature.State(link: nil)
+          return .none
+        
+        /// 시트 닫기
+      case .editSheet(.presented(.delegate(.dismissSheet))):
+        state.editSheet = nil
+        return .none
+        
+        /// 편집 시트 - 이동하기
+      case let .editSheet(.presented(.delegate(.moveLink(link)))):
+        print("이동하기: \(link?.title ?? "nil")")
+        state.editSheet = nil
+        // TODO: 이동용 시트/화면 push
+        
+        return .none
+        
+        /// 편집 시트 - 삭제하기
+      case let .editSheet(.presented(.delegate(.deleteLink(link)))):
+        print("삭제하기: \(link?.title ?? "nil")")
+        // TODO: 삭제 확인 뷰 연결
+        state.editSheet = nil
+        return .none
+        
+      case .editSheet:
+        return .none
+        
+//      case let .articleList(.delegate(.longPressed(link))):
+//        state.selectedLink = link
+//        state.showEditSheet = true
+//        return .none
+        
+        /// 키테고리 칩 선택
       case let .categoryChipList(.categoryTapped(category)):
         if category.categoryName == "전체" {
           state.articleList.articles = state.allLinks
@@ -85,6 +139,7 @@ struct LinkListFeature {
         }
         return .none
         
+        /// 링크 탭 -> 디테일 이동
       case let .articleList(.delegate(.openLinkDetail(link))):
         return .send(.delegate(.openLinkDetail(link)))
         
@@ -92,12 +147,12 @@ struct LinkListFeature {
         state.showBottomSheet = value
         return .none
         
-      case .categoryChipList, .articleList:
-        return .none
-        
-      case .delegate:
+      case .categoryChipList, .articleList, .delegate:
         return .none
       }
+    }
+    .ifLet(\.$editSheet, action: \.editSheet) {
+      EditSheetFeature()
     }
   }
 }

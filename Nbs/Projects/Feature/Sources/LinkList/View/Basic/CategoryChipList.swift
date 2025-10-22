@@ -10,6 +10,7 @@ import ComposableArchitecture
 import Domain
 import DesignSystem
 
+/// 링크 리스트의 상단 칩 리스트
 struct CategoryChipList {
   @Bindable var store: StoreOf<CategoryChipFeature>
   var onTap: (() -> Void)? = nil

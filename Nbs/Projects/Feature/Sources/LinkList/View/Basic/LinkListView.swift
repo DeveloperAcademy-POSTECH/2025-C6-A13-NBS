@@ -10,12 +10,14 @@ import ComposableArchitecture
 import Domain
 import DesignSystem
 
+/// 링크 리스트 뷰
 struct LinkListView {
   @Environment(\.dismiss) private var dismiss
   let store: StoreOf<LinkListFeature>
   @State private var showScrollToTopButton: Bool = false
 }
 
+// MARK: - Body
 extension LinkListView: View {
   var body: some View {
     ScrollViewReader { proxy in
@@ -26,6 +28,18 @@ extension LinkListView: View {
           proxy: proxy,
           targetID: "top"
         )
+        
+        IfLetStore(
+          store.scope(state: \.$editSheet, action: \.editSheet)
+        ) { editStore in
+          ActionBottomSheet(onDismiss: {
+            // 닫기 버튼이나 배경 탭 시
+            store.send(.editSheet(.dismiss))
+          }) {
+            LinkEditSheetView(store: editStore)
+          }
+          .zIndex(2)
+        }
       }
     }
     .navigationBarHidden(true)
@@ -46,8 +60,8 @@ extension LinkListView: View {
           print("검색 버튼 클릭")
         },
         onTapSettingButton: {
-          // TODO: 설정 화면 연결
-          print("설정 버튼 클릭")
+          // 링크 편집 시트 띄우기
+          store.send(.editButtonTapped)
         }
       )
       // 하단 스크롤뷰 모음
@@ -87,6 +101,11 @@ extension LinkListView: View {
             state: \.articleList,
             action: \.articleList
           )
+        )
+        .simultaneousGesture(
+          LongPressGesture().onEnded { _ in
+            
+          }
         )
       }
       .coordinateSpace(name: "scroll")
