@@ -6,6 +6,14 @@ import ComposableArchitecture
 import Domain
 
 struct SwiftDataClient {
+  // LinkItem
+  var fetchLinks: () throws -> [LinkItem]
+  var searchLinks: (String) throws -> [LinkItem]
+  var addLink: (LinkItem) throws -> Void
+  var updateLinkLastViewed: (LinkItem) throws -> Void
+  var fetchRecentLinks: () throws -> [LinkItem]
+  
+  // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
   var addCategory: (CategoryItem) throws -> Void
   var updateCategory: (CategoryItem) throws -> Void
@@ -20,13 +28,16 @@ extension SwiftDataClient: DependencyKey {
     let modelContext = ModelContext(modelContainer)
     
     return Self(
-      fetchCategories: {
-        let descriptor = FetchDescriptor<CategoryItem>()
+      fetchLinks: {
+        let descriptor = FetchDescriptor<LinkItem>()
         return try modelContext.fetch(descriptor)
       },
-      addCategory: { category in
-        modelContext.insert(category)
-        try modelContext.save()
+      searchLinks: { query in
+        let predicate = #Predicate<LinkItem> {
+          $0.title.contains(query)
+        }
+        let descriptor = FetchDescriptor<LinkItem>(predicate: predicate)
+        return try modelContext.fetch(descriptor)
       },
       updateCategory: { category in
         try modelContext.save()
@@ -39,9 +50,24 @@ extension SwiftDataClient: DependencyKey {
         modelContext.insert(link)
         try modelContext.save()
       },
-      fetchLinkItem: {
-        let descriptor = FetchDescriptor<LinkItem>()
+      updateLinkLastViewed: { link in
+        link.lastViewedDate = Date()
+        try modelContext.save()
+      },
+      fetchRecentLinks: {
+        var descriptor = FetchDescriptor<LinkItem>(
+          sortBy: [SortDescriptor(\.lastViewedDate, order: .reverse)]
+        )
+        descriptor.fetchLimit = 6
         return try modelContext.fetch(descriptor)
+      },
+      fetchCategories: {
+        let descriptor = FetchDescriptor<CategoryItem>()
+        return try modelContext.fetch(descriptor)
+      },
+      addCategory: { category in
+        modelContext.insert(category)
+        try modelContext.save()
       }
     )
   }()

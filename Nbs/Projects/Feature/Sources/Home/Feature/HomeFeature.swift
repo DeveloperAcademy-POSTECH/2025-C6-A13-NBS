@@ -43,6 +43,7 @@ struct HomeFeature {
     case fetchArticles
     case myCategoryCollection(MyCategoryCollectionFeature.Action)
     case articlesResponse(TaskResult<[LinkItem]>)
+    case searchButtonTapped
     case editCategory(EditCategoryFeature.Action)
     case editCategoryIconName(EditCategoryIconNameFeature.Action)
   }
@@ -54,6 +55,7 @@ struct HomeFeature {
     case myCategoryCollection(MyCategoryCollectionFeature)
     case addLink(AddLinkFeature)
     case addCategory(AddCategoryFeature)
+    case search(SearchFeature)
     case editCategory(EditCategoryFeature)
     case deleteCategory(DeleteCategoryFeature)
     case editCategoryIconName(EditCategoryIconNameFeature)
@@ -78,7 +80,7 @@ struct HomeFeature {
         
       case .fetchArticles:
         return .run { send in
-          await send(.articlesResponse(TaskResult { try swiftDataClient.fetchLinkItem() }))
+          await send(.articlesResponse(TaskResult { try swiftDataClient.fetchLinks() }))
         }
         
       case let .articlesResponse(.success(linkItems)):
@@ -132,7 +134,13 @@ struct HomeFeature {
       case let .path(.element(_, .editCategory(.delegate(.editButtonTapped(category))))):
         state.path.append(.editCategoryIconName(EditCategoryIconNameFeature.State(category: category)))
         return .none
-        
+      
+      case .path(.element(id: _, action: .search(.delegate(.openLinkDetail(let item))))):
+        state.path.append(.linkDetail(LinkDetailFeature.State(link: item)))
+        return .run { _ in 
+          try swiftDataClient.updateLinkLastViewed(item)
+        }
+      
       case .dismissAlertBanner:
         state.alertBanner = nil
         return .none
@@ -150,7 +158,12 @@ struct HomeFeature {
           state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
         }
         return .none
+    
+      case .searchButtonTapped:
+        state.path.append(.search(SearchFeature.State()))
+        return .none
         
+      case .categoryList, .articleList, .path:
       case .editCategory(_):
         return .none
         

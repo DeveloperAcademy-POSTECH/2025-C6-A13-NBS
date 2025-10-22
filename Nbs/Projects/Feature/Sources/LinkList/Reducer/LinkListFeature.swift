@@ -53,7 +53,7 @@ struct LinkListFeature {
       case .fetchLinks:
         return .run { send in
           await send(.fetchLinksResponse(TaskResult {
-            try swiftDataClient.fetchLinkItem()
+            try swiftDataClient.fetchLinks()
           }))
         }
         

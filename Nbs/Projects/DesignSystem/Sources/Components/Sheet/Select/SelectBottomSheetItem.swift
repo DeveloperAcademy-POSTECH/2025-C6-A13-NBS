@@ -7,12 +7,60 @@
 
 import SwiftUI
 
+// MARK: - Properties
 struct SelectBottomSheetItem: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+  let title: String
+  @State var isSelected: Bool = false
+  
+  let action: () -> Void
+  
+  init(
+    title: String,
+    isSelected: Bool,
+    action: @escaping () -> Void
+  ) {
+    self.title = title
+    self.isSelected = isSelected
+    self.action = action
+  }
+  
+//  private var font: Font {
+//    isSelected ? .B1_SB : .B1_M
+//  }
+  
+  private var foregroundColor: Color {
+    isSelected ? .bl6 : .text1
+  }
+}
+
+// MARK: - View
+extension SelectBottomSheetItem {
+  var body: some View {
+    Button {
+      print("tap")
+    } label: {
+      HStack {
+        Text(title)
+          .font(isSelected ? .B1_SB : .B1_M)
+          .foregroundStyle(foregroundColor)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .padding(.leading, 6)
+          .padding(.trailing, 12)
+          .padding(.vertical, 4)
+          
+        Image(icon: Icon.check)
+          .renderingMode(.template)
+          .frame(width: 24, height: 24)
+          .padding(4)
+          .foregroundStyle(foregroundColor)
+      }
+      .contentShape(.rect)
+      .padding(.vertical, 4)
     }
+    .buttonStyle(.plain)
+  }
 }
 
 #Preview {
-    SelectBottomSheetItem()
+  SelectBottomSheetItem(title: "전체", isSelected: true, action: {})
 }

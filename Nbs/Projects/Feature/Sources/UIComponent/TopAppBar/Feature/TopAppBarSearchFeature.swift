@@ -31,16 +31,22 @@ struct TopAppBarSearchFeature {
   
   enum DelegateAction: Equatable {
     case searchTriggered(query: String)
+    case searchQueryChanged(String)
+    case backButtonTapped
   }
   
   var body: some ReducerOf<Self> {
     BindingReducer()
+      .onChange(of: \.searchText) { oldValue, newValue in
+        Reduce { state, action in
+            .send(.delegate(.searchQueryChanged(newValue)))
+        }
+      }
     
     Reduce { state, action in
       switch action {
       case .backTapped:
-        print("뒤로가기 클릭됨")
-        return .none
+        return .send(.delegate(.backButtonTapped))
         
       case .submit:
         return .send(.delegate(.searchTriggered(query: state.searchText)))

@@ -16,8 +16,6 @@ import SwiftData
 // MARK: - Properties
 struct SearchView: View {
   @Bindable var store: StoreOf<SearchFeature>
-  @Query private var linkItem: [LinkItem]
-  @Query private var categoryItem: [CategoryItem]
 }
 
 // MARK: - View
@@ -29,63 +27,47 @@ extension SearchView {
         TopAppBarSearchView(
           store: store.scope(state: \.topAppBar, action: \.topAppBar)
         )
-        RecentSearchListView(
-          store: store.scope(state: \.recentSearch, action: \.recentSearch)
-        )
-        Rectangle()
-          .frame(maxWidth: .infinity)
-          .frame(height: 1)
-          .padding(.vertical, 12)
-          .padding(.horizontal, 20)
-          .foregroundStyle(.divider1)
-
-        RecentLinkListView()
-
-//        if !store.recentSearch.searches.isEmpty || !store.recentSearch.links.isEmpty {
-//            if !store.recentSearchReducerState.searches.isEmpty {
-//              RecentSearchListView(
-//                store: store.scope(
-//                  state: \.recentSearchReducerState,
-//                  action: \.recentSearchReducerAction
-//                )
-//              )
-//            }
-//            
-//            if !store.recentLinkReducerState.links.isEmpty {
-//              RecentLinkView(
-//                store: store.scope(
-//                  state: \.recentLinkReducerState,
-//                  action: \.recentLinkReducerAction
-//                )
-//              )
-//            }
-//        } else {
-//          EmptySearchView()
-//        }
-      }
-    }
-    .contentShape(Rectangle())
-    .onTapGesture {
-      store.send(.backgroundTapped)
-    }
-    .onAppear {
-      store.send(.onAppear)
-      linkItem.forEach {
-        print("--- LinkItem Detail ---")
-        print("Title: \($0.title)")
-        print("URL: \($0.urlString)")
-        if let category = $0.category {
-          print("Cateogry: \(category.categoryName)")
-        } else {
-          print("Category: none")
-        }
-        if !$0.highlights.isEmpty {
-          $0.highlights.forEach { item in
-            print("Type: \(item.type), Comments: \(item.comments)")
+        
+        if store.topAppBar.searchText.isEmpty {
+          let recentSearchesExist = !store.recentSearch.searches.isEmpty
+          let recentLinksExist = !store.recentLink.recentLinkItem.isEmpty
+          
+          if !recentSearchesExist && !recentLinksExist {
+            EmptySearchView()
+          } else {
+            if recentSearchesExist {
+              RecentSearchListView(store: store.scope(state: \.recentSearch, action: \.recentSearch))
+            }
+            
+            if recentSearchesExist && recentLinksExist {
+              Rectangle()
+                .frame(height: 1)
+                .foregroundStyle(.divider1)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 8)
+            }
+            
+            if recentLinksExist {
+              RecentLinkListView(store: store.scope(state: \.recentLink, action: \.recentLink))
+            }
           }
         } else {
-          print("Highlitht none")
+          if store.isSearchSubmitted {
+            SearchResultView(
+              store: store.scope(state: \.searchResult, action: \.searchResult)
+            )
+          } else {
+            SearchSuggestionView(store: store.scope(state: \.searchSuggestion, action: \.searchSuggestion))
+          }
         }
+      }
+      .navigationBarHidden(true)
+      .contentShape(Rectangle())
+      .onTapGesture {
+        store.send(.backgroundTapped)
+      }
+      .onAppear {
+        store.send(.onAppear)
       }
     }
   }
