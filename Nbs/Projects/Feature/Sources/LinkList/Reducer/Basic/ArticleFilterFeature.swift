@@ -25,10 +25,12 @@ struct ArticleFilterFeature {
   
   enum Action {
     case listCellTapped(LinkItem)
+    case listCellLongPressed(LinkItem)
     case sortOrderChanged(SortOrder)
     case delegate(Delegate)
     enum Delegate {
       case openLinkDetail(LinkItem)
+      case longPressed(LinkItem)
     }
   }
   
@@ -38,6 +40,8 @@ struct ArticleFilterFeature {
       case let .listCellTapped(link):
         state.selectedLink = link
         return .send(.delegate(.openLinkDetail(link)))
+      case let .listCellLongPressed(link):
+        return .send(.delegate(.longPressed(link)))
         
       case let .sortOrderChanged(order):
         state.sortOrder = order
