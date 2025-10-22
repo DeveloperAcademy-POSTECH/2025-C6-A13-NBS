@@ -35,7 +35,7 @@ extension SearchResultView {
           .foregroundStyle(.caption2)
           .lineLimit(1)
           .padding(.vertical, 6)
-
+        
         Spacer()
         
         if !store.searchResult.isEmpty {
@@ -43,7 +43,7 @@ extension SearchResultView {
             store.send(.categoryButtonTapped)
           } label: {
             HStack(spacing: 6) {
-              Text("카테고리")
+              Text(store.selectedCategoryTitle)
                 .padding(.leading, 18)
                 .foregroundStyle(.caption1)
                 .font(.B2_M)
@@ -65,7 +65,7 @@ extension SearchResultView {
       if !store.searchResult.isEmpty {
         ScrollView(.vertical, showsIndicators: false) {
           LazyVStack {
-            ForEach(store.searchResult) { result in
+            ForEach(store.filteredSearchResult) { result in
               Button {
                 store.send(.linkCardTapped(result))
               } label: {
@@ -86,6 +86,11 @@ extension SearchResultView {
     }
     .padding(.horizontal, 20)
     .background(Color.clear)
+    .sheet(item: $store.scope(state: \.selectBottomSheet, action: \.selectBottomSheet)) { store in
+      TCASelectBottomSheet(title: "카테고리 선택", store: store)
+        .presentationDetents([.medium])
+        .presentationCornerRadius(16)
+    }
   }
 }
 
