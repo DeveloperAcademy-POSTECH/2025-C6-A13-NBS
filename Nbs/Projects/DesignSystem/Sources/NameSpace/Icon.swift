@@ -21,7 +21,7 @@ public extension Icon {
   static let moreVertical = "more-vertical"
   static let move = "move"
   static let trash = "trash-2"
-  static let share = "shared"
+  static let share = "share"
   static let edit = "edit"
   static let calendar = "calendar"
   static let book = "book"
