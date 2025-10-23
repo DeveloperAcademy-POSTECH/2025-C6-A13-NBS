@@ -256,11 +256,17 @@ function showDeleteConfirmationModal(onConfirm) {
   modalContent.className = 'modal-content';
   
   const title = document.createElement('h3');
-  title.textContent = '하이라이트를 취소할까요?';
+  title.textContent = '메모를 삭제할까요?';
   
   const message = document.createElement('p');
-  message.innerHTML = '하이라이트 취소 시<br>하이라이트 메모도 함께 삭제되어요';
+  message.innerHTML = '삭제한 메모는 복구할 수 없어요';
   
+  const separator = document.createElement('div');
+  separator.className = 'modal-separator';
+  
+  const verticalSeparator = document.createElement('div');
+  verticalSeparator.className = 'vertical-separator';
+
   const buttonContainer = document.createElement('div');
   buttonContainer.className = 'modal-buttons';
   
@@ -278,9 +284,11 @@ function showDeleteConfirmationModal(onConfirm) {
   };
   
   buttonContainer.appendChild(cancelButton);
+  buttonContainer.appendChild(verticalSeparator);
   buttonContainer.appendChild(deleteButton);
   modalContent.appendChild(title);
   modalContent.appendChild(message);
+  modalContent.appendChild(separator);
   modalContent.appendChild(buttonContainer);
   modal.appendChild(modalContent);
   
