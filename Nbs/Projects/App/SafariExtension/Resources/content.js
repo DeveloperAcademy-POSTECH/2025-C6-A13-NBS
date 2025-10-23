@@ -1,4 +1,5 @@
 let isTulipMenuClick = false;
+let lastSelectedHighlightType = 'what'; // 기본값 설정
 
 // 페이지의 고정 헤더 높이를 계산하는 함수
 function getFixedHeaderHeight() {
@@ -222,6 +223,11 @@ function showTulipMenu(span) {
           renderCapsules(span)
         }
         updateDraft(span);
+        setTimeout(() => {
+          isTulipMenuClick = false;
+        }, 100);
+
+        lastSelectedHighlightType = newType; // 마지막으로 선택된 타입 업데이트
       }
     });
     menu.appendChild(button);
@@ -414,7 +420,7 @@ document.addEventListener('dblclick', function(event) {
   
   const span = document.createElement('span');
   span.className = 'highlighted-text';
-  span.dataset.highlightType = 'what';
+  span.dataset.highlightType = lastSelectedHighlightType;
   
   try {
     span.appendChild(sentenceRange.extractContents());
