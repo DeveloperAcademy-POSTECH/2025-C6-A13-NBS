@@ -19,13 +19,17 @@ struct CategoryChipList {
 // MARK: - Body
 extension CategoryChipList: View {
   var body: some View {
-    HStack(spacing: 8) {
-      categoryChipList
-      bottomSheetButton
-    }
-    .padding(.horizontal, 20)
-    .onAppear {
-      store.send(.onAppear)
+    ZStack {
+      Color.background
+        .ignoresSafeArea()
+      HStack(spacing: 8) {
+        categoryChipList
+        bottomSheetButton
+      }
+      .padding(.horizontal, 20)
+      .onAppear {
+        store.send(.onAppear)
+      }
     }
   }
   

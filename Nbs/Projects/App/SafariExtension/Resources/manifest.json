@@ -18,9 +18,9 @@
   
   "content_scripts": [
     {
-      "js": [ "content.js" ],
-      "css": [ "style.css" ],
-      "matches": [ "<all_urls>" ]
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "matches": ["<all_urls>"]
     }
   ],
   
@@ -32,6 +32,6 @@
     }
   },
   
-  "permissions": [ "storage" ]
+  "permissions": ["storage"]
 }
 

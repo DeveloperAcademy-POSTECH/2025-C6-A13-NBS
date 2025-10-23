@@ -56,7 +56,7 @@ extension MoveLinkView {
   }
   
   private var middleContents: some View {
-    ScrollView {
+    ScrollView() {
       VStack(spacing: 0) {
         Color.clear.frame(height: 0).id("moveTop")
         linkSelectView
@@ -73,6 +73,7 @@ extension MoveLinkView {
       }
     }
     .coordinateSpace(name: "moveScroll")
+    .scrollIndicators(.hidden)
   }
   
   /// 링크 개수 + 선택
