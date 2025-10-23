@@ -6,29 +6,37 @@
 .highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: black; }
 .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: black; }
 
-#tulip-menu { position: absolute; background: white; border: 0px solid #ccc; border-radius: 30px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-family: sans-serif; }
+#tulip-menu { position: absolute; background: white; border: 0px solid #ccc; border-radius: 30px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; font-family: sans-serif; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
 #tulip-menu:after, #tulip-menu:before { top: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; }
 #tulip-menu:after { border-color: transparent; border-top-color: #fff; border-width: 8px; margin-left: -8px; }
-#tulip-menu:before { border-color: transparent; border-top-color: #ccc; border-width: 9px; margin-left: -9px; }
+#tulip-menu:before { border-color: transparent; border-top-color: transparent; border-width: 9px; margin-left: -9px; }
 #tulip-menu button { border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 20px; padding: 5px 10px; cursor: pointer; font-size: 18px; width: 50px; height: 40px; }
 #tulip-menu button[data-highlight-type="what"] { background-color: rgba(255, 224, 247, 1); color: rgba(242, 71, 237, 1); }
 #tulip-menu button[data-highlight-type="why"] { background-color: rgba(254, 248, 205, 1); color: rgba(222, 146, 16, 1); }
 #tulip-menu button[data-highlight-type="detail"] { background-color: rgba(219, 243, 255, 1); color: rgba(21, 172, 229, 1); }
 #tulip-menu button[data-highlight-type="memo"] { background-color: rgba(222, 222, 227, 1); color: rgba(21, 172, 229, 1); }
 
-#memo-box { background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; margin-top: 10px; margin-bottom: 10px; }
-#memo-box textarea { width: 100%; min-height: 80px; border: 1px solid #ddd; border-radius: 4px; padding: 5px; font-family: sans-serif; font-size: 14px; resize: vertical; }
+#memo-box { background: rgba(246, 246, 246, 1); border-radius: 8px; display: flex; flex-direction: column; margin-top: 10px; margin-bottom: 10px; height: 113px; }
+#memo-box textarea { background: rgba(246, 246, 246, 1); border-radius: 8px; width: 100%; height: 100%; font-family: sans-serif; font-size: 14px; resize: vertical; box-sizing: border-box; border: none; padding: 16px; }
 #memo-box .memo-buttons { display: flex; justify-content: flex-end; gap: 10px; }
 #memo-box button { border: 1px solid #aaa; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
 
-.capsule-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
-.memo-capsule { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 8px; border-radius: 14px; color: #333; font-size: 12px; height: 28px; box-sizing: border-box; cursor: pointer; overflow: hidden; width: 160px; }
-.memo-capsule[data-memo-type="what"] { background-color: #EBFFDC; }
-.memo-capsule[data-memo-type="why"] { background-color: #DCF9FF; }
-.memo-capsule[data-memo-type="detail"] { background-color: #FFDCDC; }
+.capsule-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
+.memo-capsule { display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; border-radius: 24px; color: #222; font-size: 14px; height: 40px; box-sizing: border-box; cursor: pointer; overflow: hidden; width: 167px; }
+.memo-capsule[data-memo-type="what"] { background-color: rgba(255, 224, 247, 1); border: 1px solid rgba(242, 71, 237, 1); color: rgba(242, 71, 237, 1); }
+.memo-capsule[data-memo-type="why"] { background-color: rgba(254, 248, 205, 1); border: 1px solid rgba(222, 146, 16, 1); color: rgba(222, 146, 16, 1); }
+.memo-capsule[data-memo-type="detail"] { background-color: rgba(219, 243, 255, 1); border: 1px solid rgba(21, 172, 229, 1); color: rgba(21, 172, 229, 1); }
+
+.memo-capsule.clicked-what { background-color: rgba(242, 71, 237, 1); border: 1px solid rgba(242, 71, 237, 1); color: rgba(255, 255, 255, 1); }
+.memo-capsule.clicked-why { background-color: rgba(222, 146, 16, 1); border: 1px solid rgba(222, 146, 16, 1); color: rgba(255, 255, 255, 1); }
+.memo-capsule.clicked-detail { background-color: rgba(21, 172, 229, 1); border: 1px solid rgba(21, 172, 229, 1); color: rgba(255, 255, 255, 1); }
+
+.memo-capsule.clicked-what .capsule-delete-btn svg path { stroke: rgba(246, 246, 246, 1); }
+.memo-capsule.clicked-why .capsule-delete-btn svg path { stroke: rgba(246, 246, 246, 1); }
+.memo-capsule.clicked-detail .capsule-delete-btn svg path { stroke: rgba(246, 246, 246, 1); }
 
 .capsule-text { flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 4px; }
-.capsule-delete-btn { background: none; border: none; color: #555; cursor: pointer; font-weight: bold; font-size: 14px; padding: 0 4px; }
+.capsule-delete-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; }
 
 /* 삭제 확인 모달 스타일 */
 #delete-confirm-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 2147483647; }
@@ -56,7 +64,7 @@
 
 
     #memo-box { background: #2E2E2E; border-color: #555; color: #E0E0E0; }
-    #memo-box textarea { background: #333; color: #E0E0E0; border-color: #555; }
+    #memo-box textarea { background: #333; color: #E0E0E0; border: none; }
     #memo-box button { background: #444; color: #E0E0E0; border-color: #666; }
 
     .memo-capsule { color: #E0E0E0; }
@@ -70,4 +78,5 @@
     #delete-confirm-modal button { background: #444; color: #E0E0E0; border-color: #666; }
     #delete-confirm-modal .delete-btn { background-color: #8B3A3A; color: white; border-color: #A54D4D; }
 }
+
 

@@ -44,13 +44,34 @@ function renderCapsules(span) {
       
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'capsule-delete-btn';
-      deleteBtn.textContent = 'X';
+      const svgContainer = document.createElement('div');
+      svgContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 32 32"><path stroke="#71717a" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.25" d="M21 11 11 21M11 11l10 10"/></svg>';
+      deleteBtn.appendChild(svgContainer.firstChild);
       
       capsule.appendChild(textPreview);
       capsule.appendChild(deleteBtn);
       
       capsule.addEventListener('click', (e) => {
         e.stopPropagation();
+        
+        const isAlreadyClicked = capsule.classList.contains(`clicked-${comment.type}`);
+        const memoBoxOpenForThisCapsule = document.getElementById('memo-box') && Number(document.getElementById('memo-box').dataset.editingId) === comment.id;
+
+        // 이전에 클릭된 캡슐의 'clicked' 클래스 제거
+        document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+          c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+        });
+
+        if (isAlreadyClicked && memoBoxOpenForThisCapsule) {
+          // 이미 클릭된 캡슐을 다시 클릭하면 메모 상자를 닫고 캡슐 스타일을 원래대로 되돌림
+          const existingMemoBox = document.getElementById('memo-box');
+          if (existingMemoBox) existingMemoBox.remove();
+          return; // 이벤트 처리 중단
+        }
+
+        // 현재 캡슐에 'clicked' 클래스 추가
+        capsule.classList.add(`clicked-${comment.type}`);
+
         showMemoBox(span, comment.id);
       });
       
@@ -75,7 +96,12 @@ function renderCapsules(span) {
 
 function showMemoBox(span, memoId = null) {
   const existingMemoBox = document.getElementById('memo-box');
-  if (existingMemoBox) existingMemoBox.remove();
+  if (existingMemoBox) {
+    existingMemoBox.remove();
+    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+      c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+    });
+  }
   
   const comments = JSON.parse(span.dataset.comments || '[]');
   const currentComment = memoId ? comments.find(m => m.id === memoId) : null;
@@ -93,20 +119,12 @@ function showMemoBox(span, memoId = null) {
   const textarea = document.createElement('textarea');
   textarea.placeholder = `'${currentHighlightType}'에 대한 메모를 입력하세요...`;
   textarea.value = existingText;
-  
-  const buttonContainer = document.createElement('div');
-  buttonContainer.className = 'memo-buttons';
-  
-  const cancelButton = document.createElement('button');
-  cancelButton.textContent = '취소';
-  cancelButton.onclick = () => memoBox.remove();
-  
-  const saveButton = document.createElement('button');
-  saveButton.textContent = '저장';
-  saveButton.onclick = () => {
+  memoBox.appendChild(textarea);
+
+  textarea.addEventListener('blur', () => {
     const commentText = textarea.value.trim();
     let updatedComments = JSON.parse(span.dataset.comments || '[]');
-    
+
     if (memoId) {
       const commentIndex = updatedComments.findIndex(m => m.id === memoId);
       if (commentIndex > -1) {
@@ -126,17 +144,16 @@ function showMemoBox(span, memoId = null) {
         updatedComments.push(newComment);
       }
     }
-    
+
     span.dataset.comments = JSON.stringify(updatedComments);
     memoBox.remove();
     renderCapsules(span);
     updateDraft(span);
-  };
-  
-  buttonContainer.appendChild(cancelButton);
-  buttonContainer.appendChild(saveButton);
-  memoBox.appendChild(textarea);
-  memoBox.appendChild(buttonContainer);
+
+    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+      c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+    });
+  });
   
   if (memoId) {
     const capsuleContainer = span.nextElementSibling;
@@ -394,7 +411,13 @@ document.addEventListener('click', function(event) {
   
   if (!target.closest('#memo-box')) {
     const existingMemoBox = document.getElementById('memo-box');
-    if (existingMemoBox) existingMemoBox.remove();
+    if (existingMemoBox) {
+      existingMemoBox.remove();
+      // 메모 박스가 외부 클릭으로 닫힐 때 모든 캡슐에서 'clicked' 클래스 제거
+      document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+        c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+      });
+    }
   }
 });
 
