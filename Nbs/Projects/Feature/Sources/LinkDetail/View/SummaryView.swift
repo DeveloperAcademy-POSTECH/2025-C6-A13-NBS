@@ -58,11 +58,11 @@ extension SummaryView {
           }
         }
         .padding(.horizontal, 16)
+        
+        Rectangle()
+          .fill(.divider1)
+          .frame(height: 1)
       }
-      
-      Rectangle()
-        .fill(.divider1)
-        .frame(height: 1)
     }
   }
   
@@ -73,7 +73,7 @@ extension SummaryView {
     }
   }
   
-  /// 출력 순서 (What → Why → Detail)
+  /// 출력 순서 (What -> Why ->  Detail)
   private func sortOrder(lhs: String, rhs: String) -> Bool {
     let order: [String: Int] = ["What": 0, "Why": 1, "Detail": 2]
     return (order[lhs] ?? 99) < (order[rhs] ?? 99)
