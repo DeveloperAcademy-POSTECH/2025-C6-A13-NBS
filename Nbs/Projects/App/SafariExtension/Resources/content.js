@@ -168,6 +168,11 @@ function showMemoBox(span, memoId = null) {
 
 // 튤립 메뉴를 표시하는 함수
 function showTulipMenu(span) {
+  // 메모 박스가 열려 있으면 튤립 메뉴를 열지 않음
+  if (document.getElementById('memo-box')) {
+    return;
+  }
+
   const existingMenu = document.getElementById('tulip-menu');
   if (existingMenu) existingMenu.remove();
   
@@ -206,9 +211,9 @@ function showTulipMenu(span) {
         
         window.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
         
-        setTimeout(() => showMemoBox(span), 300);
+        setTimeout(() => showMemoBox(span, null), 300);
         
-        // menu.remove(); // 메모 버튼 클릭 시 툴팁 메뉴를 닫지 않음
+        menu.remove(); // 메모 버튼 클릭 시 툴팁 메뉴를 닫음
       } else {
         const newType = buttonInfo.type;
         span.dataset.highlightType = newType;
@@ -217,7 +222,7 @@ function showTulipMenu(span) {
         if (comments.length > 0) {
           comments.forEach(comment => comment.type = newType);
           span.dataset.comments = JSON.stringify(comments);
-          renderCapsules(span);
+          renderCapsules(span)
         }
         updateDraft(span);
       }
