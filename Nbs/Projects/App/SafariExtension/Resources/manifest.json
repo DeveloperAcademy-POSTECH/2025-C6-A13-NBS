@@ -1,6 +1,5 @@
 {
   "manifest_version": 3,
-  
   "name": "SafariExtension",
   "description": "SafariExtension",
   "version": "1.0",
@@ -19,9 +18,9 @@
   
   "content_scripts": [
     {
-      "js": [ "content.js" ],
-      "css": [ "style.css" ],
-      "matches": [ "<all_urls>" ]
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "matches": ["<all_urls>"]
     }
   ],
   
@@ -33,6 +32,6 @@
     }
   },
   
-  "permissions": [ "storage" ]
+  "permissions": ["storage"]
 }
 
