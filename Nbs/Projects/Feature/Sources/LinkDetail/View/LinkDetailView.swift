@@ -29,6 +29,7 @@ extension LinkDetailView: View {
             bottomContents
           }
         }
+        .scrollIndicators(.hidden)
       }
       .navigationBarHidden(true)
       .onAppear { store.send(.onAppear) }

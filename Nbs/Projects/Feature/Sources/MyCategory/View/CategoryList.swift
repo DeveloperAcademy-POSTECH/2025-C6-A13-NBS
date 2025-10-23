@@ -108,8 +108,9 @@ extension CategoryListView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
           }
           .frame(width: 160, height: 116)
-          .background(store.selectedCategory == category ? Color.blue : Color.gray.opacity(0.2))
+//          .background(store.selectedCategory == category ? Color.blue : Color.gray.opacity(0.2))
           .cornerRadius(12)
+          .buttonStyle(.plain)
         }
       }
       .padding(.horizontal, 20)
