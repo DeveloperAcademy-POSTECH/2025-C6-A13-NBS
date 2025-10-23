@@ -209,7 +209,7 @@ function showTulipMenu(span) {
         
         setTimeout(() => showMemoBox(span), 300);
         
-        menu.remove();
+        // menu.remove(); // 메모 버튼 클릭 시 툴팁 메뉴를 닫지 않음
       } else {
         const newType = buttonInfo.type;
         span.dataset.highlightType = newType;
