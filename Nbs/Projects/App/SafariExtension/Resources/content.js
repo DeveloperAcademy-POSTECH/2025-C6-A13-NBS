@@ -160,16 +160,7 @@ function showMemoBox(span, memoId = null) {
     });
   });
   
-  if (memoId) {
-    const capsuleContainer = span.nextElementSibling;
-    if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) {
-      capsuleContainer.after(memoBox);
-    } else {
-      span.after(memoBox);
-    }
-  } else {
-    span.after(memoBox);
-  }
+  span.after(memoBox);
 }
 
 // 튤립 메뉴를 표시하는 함수
