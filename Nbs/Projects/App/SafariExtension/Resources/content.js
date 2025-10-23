@@ -285,6 +285,13 @@ function showDeleteConfirmationModal(onConfirm) {
 
 // 더블탭 이벤트 처리
 document.addEventListener('dblclick', function(event) {
+  // 메모 캡슐 내부에서 더블 클릭 시 이벤트 전파 및 기본 동작 방지
+  if (event.target.closest('.memo-capsule')) {
+    event.preventDefault();
+    event.stopPropagation();
+    return;
+  }
+
   const existingHighlight = event.target.closest('.highlighted-text');
   if (existingHighlight) {
     event.preventDefault();
