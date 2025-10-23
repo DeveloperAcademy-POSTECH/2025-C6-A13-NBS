@@ -1,3 +1,5 @@
+let isTulipMenuClick = false;
+
 // 페이지의 고정 헤더 높이를 계산하는 함수
 function getFixedHeaderHeight() {
   let fixedHeaderHeight = 0;
@@ -407,7 +409,12 @@ document.addEventListener('click', function(event) {
   
   if (isClickOnHighlight) {
     event.stopPropagation();
-    showTulipMenu(target.closest('.highlighted-text'));
+    const existingMenu = document.getElementById('tulip-menu');
+    if (existingMenu) {
+      existingMenu.remove();
+    } else {
+      showTulipMenu(target.closest('.highlighted-text'));
+    }
     return;
   }
   
