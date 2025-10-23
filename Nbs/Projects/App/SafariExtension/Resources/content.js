@@ -100,9 +100,6 @@ function showMemoBox(span, memoId = null) {
   const existingMemoBox = document.getElementById('memo-box');
   if (existingMemoBox) {
     existingMemoBox.remove();
-    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
-      c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
-    });
   }
   
   const comments = JSON.parse(span.dataset.comments || '[]');
