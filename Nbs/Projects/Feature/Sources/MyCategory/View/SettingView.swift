@@ -89,6 +89,7 @@ extension SettingView: View {
             .padding(12)
             .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
       }
       .frame(height: 48)
       .padding(.top, 8)
@@ -109,6 +110,7 @@ extension SettingView: View {
             .foregroundStyle(.text1)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .buttonStyle(.plain)
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.leading, 20)

@@ -60,7 +60,7 @@ struct SafariPIP: View {
       .padding(.top, 32)
       
       Button {
-        showHome = true
+        navigateToHome()
       } label: {
         Text("건너뛰기")
           .font(.C2)
@@ -68,26 +68,35 @@ struct SafariPIP: View {
           .underline()
       }
     }
-    .fullScreenCover(isPresented: $showHome) {
-      HomeEntryView()
-    }
-    .background(DesignSystemAsset.background.swiftUIColor)
   }
   
   private func startPipThenOpenSetting() {
     pip.play()
     
-    // PiP 시작 후 설정으로 이동
     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
       self.pip.startPiP()
       
-      // PiP가 시작된 후 설정 열기
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
         if let url = URL(string: UIApplication.openSettingsURLString) {
           UIApplication.shared.open(url)
         }
       }
     }
+  }
+  
+  private func navigateToHome() {
+    guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let window = windowScene.windows.first else { return }
+    
+    let homeView = HomeEntryView()
+    let hostingController = UIHostingController(rootView: homeView)
+    
+    UIView.transition(with: window,
+                      duration: 0.3,
+                      options: .transitionCrossDissolve,
+                      animations: {
+      window.rootViewController = hostingController
+    })
   }
 }
 

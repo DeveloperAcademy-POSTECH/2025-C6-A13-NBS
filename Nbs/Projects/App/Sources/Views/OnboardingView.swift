@@ -34,13 +34,12 @@ struct OnboardingView: View {
                 .foregroundColor(.caption2)
                 .padding(.horizontal, 20)
                 .frame(maxWidth: .infinity, alignment: .leading)
-              
+              Spacer()
               Image(.onboarding)
                 .resizable()
                 .frame(width: 318, height: 315)
-                .padding(.top, 28)
                 .padding(.leading, 45)
-              Spacer()
+                .padding(.bottom, 75)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .tag(index)
