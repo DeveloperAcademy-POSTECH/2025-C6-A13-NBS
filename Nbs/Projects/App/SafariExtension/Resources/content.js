@@ -115,8 +115,14 @@ function showMemoBox(span, memoId = null) {
   const currentHighlightType = currentComment ? currentComment.type : span.dataset.highlightType;
   const existingText = currentComment ? currentComment.text : '';
   
+  const placeholders = {
+    'what': '주제, 핵심 내용을 한 줄로 정리해 보세요',
+    'why': '현상의 이유, 배경을 남겨보세요',
+    'detail': '이어지는 내용이나 생각을 입력 해주세요'
+    
+  }
   const textarea = document.createElement('textarea');
-  textarea.placeholder = `'${currentHighlightType}'에 대한 메모를 입력하세요...`;
+  textarea.placeholder = placeholders[currentHighlightType] || '메모를 입력하세요...';
   textarea.value = existingText;
   memoBox.appendChild(textarea);
 
