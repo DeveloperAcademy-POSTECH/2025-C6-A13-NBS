@@ -389,6 +389,23 @@ document.addEventListener('dblclick', function(event) {
   const sentenceRange = document.createRange();
   sentenceRange.setStart(textNode, sentenceStart);
   sentenceRange.setEnd(textNode, sentenceEnd);
+
+  const extractedText = sentenceRange.toString().trim();
+  if (extractedText.length < 3) { // 최소 3자 미만은 하이라이팅하지 않음
+    return;
+  }
+
+  // 이미 하이라이트된 영역과 겹치는지 확인
+  const allHighlights = document.querySelectorAll('.highlighted-text');
+  for (const highlight of allHighlights) {
+    const highlightRange = document.createRange();
+    highlightRange.selectNodeContents(highlight);
+    if (sentenceRange.compareBoundaryPoints(Range.END_TO_START, highlightRange) < 0 &&
+        sentenceRange.compareBoundaryPoints(Range.START_TO_END, highlightRange) > 0) {
+      // 겹치는 부분이 있으면 하이라이팅 방지
+      return;
+    }
+  }
   
   const span = document.createElement('span');
   span.className = 'highlighted-text';
