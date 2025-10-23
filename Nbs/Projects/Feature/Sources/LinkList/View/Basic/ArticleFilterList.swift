@@ -9,6 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 import DesignSystem
 
+/// 링크 리스트의 하단 필터링 된 기사리스트
 struct ArticleFilterList {
   let store: StoreOf<ArticleFilterFeature>
 }
@@ -32,7 +33,7 @@ extension ArticleFilterList: View {
               .font(.B1_M)
               .foregroundStyle(.caption1)
 
-            Text("\(store.articles.count)")
+            Text("\(store.link.count)")
               .font(.B1_SB)
               .foregroundStyle(.caption1)
 
@@ -75,7 +76,7 @@ extension ArticleFilterList: View {
   }
   
   private var articleList: some View {
-    ForEach(store.state.articles) { article in
+    ForEach(store.state.link) { article in
       Button {
         store.send(.listCellTapped(article))
       } label: {
@@ -84,6 +85,11 @@ extension ArticleFilterList: View {
           categoryName: article.category?.categoryName,
           imageURL: article.imageURL ?? "photo",
           dateString: article.createAt.formatted(date: .numeric, time: .omitted)
+        )
+        .simultaneousGesture(
+          LongPressGesture().onEnded { _ in
+            store.send(.listCellLongPressed(article))
+          }
         )
       }
     }

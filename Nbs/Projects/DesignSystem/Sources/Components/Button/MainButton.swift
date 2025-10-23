@@ -20,8 +20,9 @@ public struct MainButton: View {
   
   // MARK: - Style
   public enum Style {
-    case deep  // 진한색 버튼
-    case soft  // 연한색 버튼
+    case deep   // 진한색 버튼
+    case soft   // 연한색 버튼
+    case danger // 삭제용 빨간색
   }
   
   // MARK: - Properties
@@ -52,6 +53,9 @@ public struct MainButton: View {
     case .soft:
       return isDisabled
       ? .n30 : .bl1
+    case .danger:
+      return isDisabled
+      ? .n30 : .danger
     }
   }
   
@@ -63,6 +67,9 @@ public struct MainButton: View {
     case .soft:
       return isDisabled
       ? .caption2 : .bl6
+    case .danger:
+      return isDisabled
+      ? .caption2 : .textw
     }
   }
 }

@@ -64,7 +64,7 @@ struct AddCategoryView: View {
         ScrollView {
           LazyVGrid(columns: columns, spacing: 10) {
             ForEach(1..<16, id: \.self) { index in
-              let isSelected = store.selectedIcon.number == index + 1
+              let isSelected = store.selectedIcon.number == index
               
               Button {
                 store.selectedIcon = .init(number: index)

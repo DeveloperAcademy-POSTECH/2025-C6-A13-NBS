@@ -56,16 +56,16 @@ extension EditCategoryIconNameView: View {
               store.send(.selectIcon(icon))
             } label: {
               RoundedRectangle(cornerRadius: 12)
-                .fill(Color.blue.opacity(0.2))
+                .fill(store.selectedIcon == icon ? .bl1 : DesignSystemAsset.color(number: index))
                 .aspectRatio(1, contentMode: .fit)
                 .overlay(
-                  Image(uiImage: UIImage(named: "CategoryIcon\(index)") ?? .init())
+                  DesignSystemAsset.categoryIcon(number: index)
                     .resizable()
                     .frame(width: 45, height: 55)
                 )
                 .overlay(
                   RoundedRectangle(cornerRadius: 12)
-                    .stroke(store.selectedIcon == icon ? Color.blue : Color.clear, lineWidth: 2)
+                    .stroke(store.selectedIcon == icon ? .bl6 : Color.clear, lineWidth: 1)
                 )
             }
             .buttonStyle(.plain)

@@ -21,7 +21,8 @@ public struct CategoryIcon: Codable, Hashable {
 }
 
 @Model
-public final class CategoryItem {
+public final class CategoryItem: Identifiable {
+  @Attribute(.unique) public var id: UUID
   @Attribute(.unique) public var categoryName: String // 카테고리 이름
   public var createdAt: Date
   public var icon: CategoryIcon
@@ -32,6 +33,7 @@ public final class CategoryItem {
     categoryName: String,
     icon: CategoryIcon
   ) {
+    self.id = UUID()
     self.categoryName = categoryName
     self.createdAt = Date()
     self.icon = icon

@@ -17,9 +17,10 @@ struct MockArticle: ArticleDisplayable, Identifiable, Equatable {
   var newsCompany: String = "조선일보"
   
   var dateToString: String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy년 M월 d일"
-    return formatter.string(from: createAt)
+//    let formatter = DateFormatter()
+//    formatter.dateFormat = "yyyy년 M월 d일"
+//    return formatter.string(from: createAt)
+    return dateToString
   }
   
   static let mockArticles: [MockArticle] = [
