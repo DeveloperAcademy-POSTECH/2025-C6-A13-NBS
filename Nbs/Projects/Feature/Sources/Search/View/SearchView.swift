@@ -15,7 +15,7 @@ import SwiftData
 
 // MARK: - Properties
 struct SearchView: View {
-  @Bindable var store: StoreOf<SearchFeature>
+  let store: StoreOf<SearchFeature>
 }
 
 // MARK: - View
