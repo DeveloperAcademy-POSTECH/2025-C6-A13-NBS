@@ -53,44 +53,55 @@
 }
 .vertical-separator {
     width: 1px;
-    height: 54px; /* 버튼 높이에 맞춰 조정 */
+    height: 54px;
     background-color: rgba(236, 236, 237, 1);
 }
 
-
-#delete-confirm-modal button { color: rgba(99, 99, 108, 1); font-size: 16px; padding: 18px 16px; cursor: pointer; font-weight: bold; }
-#delete-confirm-modal .delete-btn {  color: rgba(255, 72, 72, 1); }
+#delete-confirm-modal button { color: rgba(99, 99, 108, 1); font-size: 16px; padding: 18px 16px; font-weight: bold; border: none;  }
+#delete-confirm-modal .delete-btn {  color: rgba(255, 72, 72, 1); border: none;  }
 
 /* 다크 모드 스타일 */
 @media (prefers-color-scheme: dark) {
-    .highlighted-text[data-highlight-type="what"] { rgba(255, 85, 249, 0.2); color: black; }
-    .highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: black; }
-    .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: black; }
-
-    #tulip-menu { background: #2E2E2E; border-color: #555; }
-    #tulip-menu:after { border-top-color: #2E2E2E; }
-    #tulip-menu:before { border-top-color: #555; }
-    #tulip-menu button { color: #E0E0E0; border-color: #666; }
-    #tulip-menu button[data-highlight-type="what"] { background-color: #2F4F2F; }
-    #tulip-menu button[data-highlight-type="why"] { background-color: #3A536E; }
-    #tulip-menu button[data-highlight-type="detail"] { background-color: #6E3A3A; }
+  .highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); color: white; }
+  .highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: white; }
+  .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: white; }
+    
+    #tulip-menu { background: rgba(34, 34, 42, 1); }
+    #tulip-menu:after { border-top-color: rgba(34, 34, 42, 1); }
+    #tulip-menu:before { border-top-color: rgba(34, 34, 42, 1); }
+    #tulip-menu button { border-color: rgba(255, 255, 255, 0.08); }
+    #tulip-menu button[data-highlight-type="what"] { background-color: rgba(51, 17, 50, 1); }
+    #tulip-menu button[data-highlight-type="why"] { background-color: rgba(53, 40, 6, 1); }
+    #tulip-menu button[data-highlight-type="detail"] { background-color: rgba(6, 36, 51, 1); }
+    #tulip-menu button[data-highlight-type="memo"] { background-color: rgba(27, 27, 34, 1); color: rgba(21, 172, 229, 1); }
     #tulip-menu button:not([data-highlight-type]) { background-color: #444; }
 
+    #memo-box { background: rgba(42, 42, 50, 1); color: rgba(236, 236, 237, 1); }
+    #memo-box textarea { background: rgba(42, 42, 50, 1); color: rgba(236, 236, 237, 1); border: none; }
 
-    #memo-box { background: #2E2E2E; border-color: #555; color: #E0E0E0; }
-    #memo-box textarea { background: #333; color: #E0E0E0; border: none; }
-    #memo-box button { background: #444; color: #E0E0E0; border-color: #666; }
-
-    .memo-capsule { color: #E0E0E0; }
-    .memo-capsule[data-memo-type="what"] { background-color: #2F4F2F; }
-    .memo-capsule[data-memo-type="why"] { background-color: #3A536E; }
-    .memo-capsule[data-memo-type="detail"] { background-color: #6E3A3A; }
+    .memo-capsule[data-memo-type="what"] { background-color: rgba(51, 17, 50, 1); border: 1px solid rgba(178, 60, 174, 1); color: rgba(178, 60, 174, 1); }
+    .memo-capsule[data-memo-type="why"] { background-color: rgba(53, 40, 6, 1); border: 1px solid rgba(208, 157, 0, 1); color: rgba(208, 157, 0, 1); }
+    .memo-capsule[data-memo-type="detail"] { background-color: rgba(6, 36, 51, 1); border: 1px solid rgba(16, 134, 178, 1); color: rgba(16, 134, 178, 1); }
     .capsule-delete-btn { color: #AAA; }
+    
+    .memo-capsule.clicked-what { background-color: rgba(178, 60, 174, 1); border: 1px solid rgba(178, 60, 174, 1); color: rgba(255, 255, 255, 1); }
+    .memo-capsule.clicked-why { background-color: rgba(208, 157, 0, 1); border: 1px solid rgba(208, 157, 0, 1); color: rgba(255, 255, 255, 1); }
+    .memo-capsule.clicked-detail { background-color: rgba(16, 134, 178, 1); border: 1px solid rgba(16, 134, 178, 1); color: rgba(255, 255, 255, 1); }
+    
+    .memo-capsule.clicked-what .capsule-delete-btn svg path { stroke: rgba(246, 246, 246, 1); }
+    .memo-capsule.clicked-why .capsule-delete-btn svg path { stroke: rgba(246, 246, 246, 1); }
+    .memo-capsule.clicked-detail .capsule-delete-btn svg path { stroke: rgba(246, 246, 246, 1); }
 
-    #delete-confirm-modal .modal-content { background: #2E2E2E; color: #E0E0E0; }
-    #delete-confirm-modal p { color: #AAA; }
-    #delete-confirm-modal button { background: #444; color: #E0E0E0; border-color: #666; }
-    #delete-confirm-modal .delete-btn { background-color: #8B3A3A; color: white; border-color: #A54D4D; }
+    #delete-confirm-modal .modal-content { background: rgba(28, 28, 33, 1); color: rgba(236, 236, 237, 1); }
+    #delete-confirm-modal p { color: rgba(170, 170, 175, 1); }
+    #delete-confirm-modal button { color: rgba(170, 170, 175, 1); border: none; }
+    #delete-confirm-modal .delete-btn { color: rgba(222, 67, 67, 1); border: none; }
+    .modal-separator {
+        border-bottom: 1px solid rgba(44, 44, 57, 1);
+    }
+    .vertical-separator {
+        background-color: rgba(44, 44, 57, 1);
+    }
 }
 
 
