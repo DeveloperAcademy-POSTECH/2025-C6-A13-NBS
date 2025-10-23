@@ -51,7 +51,9 @@ extension LinkCard {
       .padding(.vertical, 10)
       .padding(.leading, 16)
       
-      Image(systemName: "plus")
+      DesignSystemAsset.notImage.swiftUIImage
+        .resizable()
+        .aspectRatio(contentMode: .fit)
         .frame(width: 84, height: 112)
         .background(.gray)
         .clipShape(RoundedRectangle(cornerRadius: 6))

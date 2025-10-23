@@ -75,12 +75,18 @@ struct LinkListFeature {
         }
         
       case let .fetchLinksResponse(.success(items)):
-        state.allLinks = items
-        state.articleList.link = items
-        // 카테고리 필터 유지
+        /// 최신순 정렬 적용
+        let sorted = items.sorted { $0.createAt > $1.createAt }
+
+        /// 상태 동기화
+        state.allLinks = sorted
+        state.articleList.link = sorted
+        state.articleList.sortOrder = .latest
+
+        /// 선택된 카테고리가 있다면 필터 유지
         if let selected = state.selectedCategory {
           state.categoryChipList.selectedCategory = selected
-          state.articleList.link = items.filter {
+          state.articleList.link = sorted.filter {
             $0.category?.categoryName == selected.categoryName
           }
         }
