@@ -282,7 +282,7 @@ function showDeleteConfirmationModal(onConfirm) {
   document.body.appendChild(modal);
 }
 
-// 더블탭 이벤트 처리
+// 더블탭 이벤트 처리ㄱ
 document.addEventListener('dblclick', function(event) {
   // 메모 캡슐 내부에서 더블 클릭 시 이벤트 전파 및 기본 동작 방지
   if (event.target.closest('.memo-capsule')) {
@@ -317,7 +317,7 @@ document.addEventListener('dblclick', function(event) {
       deleteDraft(draftId);
     };
     
-    if (memos.length > 0) {
+    if (comments.length > 0) {
       showDeleteConfirmationModal(deleteHighlight);
     } else {
       deleteHighlight();
