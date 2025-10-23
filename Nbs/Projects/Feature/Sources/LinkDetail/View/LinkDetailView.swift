@@ -37,7 +37,7 @@ extension LinkDetailView: View {
   
   /// 네비게이션바
   private var navigationBar: some View {
-    TopAppBarDefault(
+    TopAppBarDefaultDetail(
       title: "",
       onTapBackButton: { dismiss() },
       onTapSearchButton: {},
@@ -66,9 +66,9 @@ extension LinkDetailView: View {
       
       // 정보 섹션
       VStack(alignment: .leading, spacing: 12) {
-        ArticleInfoItem(icon: Icon.calendar, text: store.link.createAt.formatted())
-        ArticleInfoItem(icon: Icon.book, text: "New BI Stop")
-        ArticleInfoItem(icon: Icon.tag, text: store.link.category?.categoryName ?? "네이버 뉴스")
+        ArticleInfoItem(icon: Icon.calendar, text: store.link.createAt.formattedKoreanDate())
+        ArticleInfoItem(icon: Icon.book, text: "네이버 뉴스")
+        ArticleInfoItem(icon: Icon.tag, text: store.link.category?.categoryName ?? "카테고리 없음")
       }
     }
   }
@@ -81,7 +81,7 @@ extension LinkDetailView: View {
       }
     } label: {
       HStack(spacing: 12) {
-        Image(systemName: "photo")
+        DesignSystemAsset.notImage.swiftUIImage
           .resizable()
           .scaledToFit()
           .frame(width: 48, height: 48)

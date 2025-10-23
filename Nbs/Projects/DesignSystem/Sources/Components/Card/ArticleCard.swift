@@ -109,7 +109,7 @@ private extension ArticleCard {
           .clipped()
           .clipShape(RoundedRectangle(cornerRadius: 6))
       case .failure:
-        Image(systemName: "photo")
+        DesignSystemAsset.notImage.swiftUIImage
           .resizable()
           .scaledToFit()
           .frame(width: 84, height: 112)
