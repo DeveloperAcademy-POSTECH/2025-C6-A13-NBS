@@ -14,7 +14,6 @@ struct LinkDetailView {
   @Environment(\.dismiss) private var dismiss
   @Bindable var store: StoreOf<LinkDetailFeature>
   @State private var selectedTab: LinkDetailSegment.Tab = .summary
-
 }
 
 extension LinkDetailView: View {

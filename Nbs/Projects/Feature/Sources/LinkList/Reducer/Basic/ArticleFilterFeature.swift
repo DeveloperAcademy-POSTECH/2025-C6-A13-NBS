@@ -13,7 +13,7 @@ struct ArticleFilterFeature {
   
   @ObservableState
   struct State {
-    var articles: [LinkItem] = []
+    var link: [LinkItem] = []
     var sortOrder: SortOrder = .latest
     var selectedLink: LinkItem? = nil
   }
@@ -25,10 +25,12 @@ struct ArticleFilterFeature {
   
   enum Action {
     case listCellTapped(LinkItem)
+    case listCellLongPressed(LinkItem)
     case sortOrderChanged(SortOrder)
     case delegate(Delegate)
     enum Delegate {
       case openLinkDetail(LinkItem)
+      case longPressed(LinkItem)
     }
   }
   
@@ -39,14 +41,17 @@ struct ArticleFilterFeature {
         state.selectedLink = link
         return .send(.delegate(.openLinkDetail(link)))
         
+      case let .listCellLongPressed(link):
+        return .send(.delegate(.longPressed(link)))
+        
       case let .sortOrderChanged(order):
         state.sortOrder = order
         
         switch order {
         case .latest:
-          state.articles.sort { $0.createAt > $1.createAt }
+          state.link.sort { $0.createAt > $1.createAt }
         case .oldest:
-          state.articles.sort { $0.createAt < $1.createAt }
+          state.link.sort { $0.createAt < $1.createAt }
         }
         return .none
         

@@ -10,12 +10,14 @@ import ComposableArchitecture
 import Domain
 import DesignSystem
 
+/// 링크 리스트 뷰
 struct LinkListView {
   @Environment(\.dismiss) private var dismiss
   let store: StoreOf<LinkListFeature>
   @State private var showScrollToTopButton: Bool = false
 }
 
+// MARK: - Body
 extension LinkListView: View {
   var body: some View {
     ScrollViewReader { proxy in
@@ -26,8 +28,30 @@ extension LinkListView: View {
           proxy: proxy,
           targetID: "top"
         )
+        
+        IfLetStore(
+          store.scope(state: \.$editSheet, action: \.editSheet)
+        ) { editStore in
+          ActionBottomSheet(onDismiss: {
+            // 닫기 버튼이나 배경 탭 시
+            store.send(.editSheet(.dismiss))
+          }) {
+            LinkEditSheetView(store: editStore)
+          }
+          .zIndex(2)
+        }
       }
     }
+    .fullScreenCover(
+       store: store.scope(state: \.$moveLink, action: \.moveLink)
+     ) { moveStore in
+       MoveLinkView(store: moveStore)
+     }
+     .fullScreenCover(
+      store: store.scope(state: \.$deleteLink, action: \.deleteLink)
+     ) { deleteStore in
+       DeleteLinkView(store: deleteStore)
+     }
     .navigationBarHidden(true)
     .onAppear {
       store.send(.onAppear)
@@ -46,8 +70,8 @@ extension LinkListView: View {
           print("검색 버튼 클릭")
         },
         onTapSettingButton: {
-          // TODO: 설정 화면 연결
-          print("설정 버튼 클릭")
+          // 링크 편집 시트 띄우기
+          store.send(.editButtonTapped)
         }
       )
       // 하단 스크롤뷰 모음
@@ -92,10 +116,9 @@ extension LinkListView: View {
       .coordinateSpace(name: "scroll")
       .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offsetY in
         // 아래로 200 이상 스크롤 할 경우 보여주기
-//        withAnimation(.easeInOut(duration: 0.2)) {
-//          showScrollToTopButton = offsetY < -200
-//        }
-        showScrollToTopButton = true
+        withAnimation(.easeInOut(duration: 0.2)) {
+          showScrollToTopButton = offsetY < -200
+        }
       }
     }
   }
