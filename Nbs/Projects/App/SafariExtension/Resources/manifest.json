@@ -14,20 +14,25 @@
   },
   
   "background": {
-    "scripts": [ "background.js" ],
-    "type": "module"
+    "service_worker": "background.js"
   },
   
-  "content_scripts": [{
-    "js": [ "content.js" ],
-    "css": [ "style.css" ],
-    "matches": [ "<all_urls>" ]
-  }],
+  "content_scripts": [
+    {
+      "js": [ "content.js" ],
+      "css": [ "style.css" ],
+      "matches": [ "<all_urls>" ]
+    }
+  ],
   
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "toolbar-icon.svg"
+    "default_icon": {
+      "48": "icon-48.png",
+      "96": "icon-96.png"
+    }
   },
   
-  "permissions": [ "storage", "nativeMessaging" ]
+  "permissions": [ "storage" ]
 }
+

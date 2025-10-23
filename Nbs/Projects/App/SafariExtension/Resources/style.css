@@ -2,18 +2,19 @@
     /* 배경색은 data-attribute로 제어하므로 여기서는 제거 */
     /* color는 아래에서 설정 */
 }
-.highlighted-text[data-highlight-type="what"] { background-color: #EBFFDC; color: black; }
-.highlighted-text[data-highlight-type="why"] { background-color: #DCF9FF; color: black; }
-.highlighted-text[data-highlight-type="detail"] { background-color: #FFDCDC; color: black; }
+.highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); color: black; }
+.highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: black; }
+.highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: black; }
 
-#tulip-menu { position: absolute; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-family: sans-serif; }
+#tulip-menu { position: absolute; background: white; border: 0px solid #ccc; border-radius: 30px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-family: sans-serif; }
 #tulip-menu:after, #tulip-menu:before { top: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; }
 #tulip-menu:after { border-color: transparent; border-top-color: #fff; border-width: 8px; margin-left: -8px; }
 #tulip-menu:before { border-color: transparent; border-top-color: #ccc; border-width: 9px; margin-left: -9px; }
-#tulip-menu button { border: 1px solid #aaa; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 14px; }
-#tulip-menu button[data-highlight-type="what"] { background-color: #EBFFDC; }
-#tulip-menu button[data-highlight-type="why"] { background-color: #DCF9FF; }
-#tulip-menu button[data-highlight-type="detail"] { background-color: #FFDCDC; }
+#tulip-menu button { border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 20px; padding: 5px 10px; cursor: pointer; font-size: 18px; width: 50px; height: 40px; }
+#tulip-menu button[data-highlight-type="what"] { background-color: rgba(255, 224, 247, 1); color: rgba(242, 71, 237, 1); }
+#tulip-menu button[data-highlight-type="why"] { background-color: rgba(254, 248, 205, 1); color: rgba(222, 146, 16, 1); }
+#tulip-menu button[data-highlight-type="detail"] { background-color: rgba(219, 243, 255, 1); color: rgba(21, 172, 229, 1); }
+#tulip-menu button[data-highlight-type="memo"] { background-color: rgba(222, 222, 227, 1); color: rgba(21, 172, 229, 1); }
 
 #memo-box { background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; margin-top: 10px; margin-bottom: 10px; }
 #memo-box textarea { width: 100%; min-height: 80px; border: 1px solid #ddd; border-radius: 4px; padding: 5px; font-family: sans-serif; font-size: 14px; resize: vertical; }
@@ -40,9 +41,9 @@
 
 /* 다크 모드 스타일 */
 @media (prefers-color-scheme: dark) {
-    .highlighted-text[data-highlight-type="what"] { background-color: #2F4F2F; color: #E0E0E0; }
-    .highlighted-text[data-highlight-type="why"] { background-color: #3A536E; color: #E0E0E0; }
-    .highlighted-text[data-highlight-type="detail"] { background-color: #6E3A3A; color: #E0E0E0; }
+    .highlighted-text[data-highlight-type="what"] { rgba(255, 85, 249, 0.2); color: black; }
+    .highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: black; }
+    .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: black; }
 
     #tulip-menu { background: #2E2E2E; border-color: #555; }
     #tulip-menu:after { border-top-color: #2E2E2E; }
