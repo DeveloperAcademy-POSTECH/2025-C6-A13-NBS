@@ -16,16 +16,17 @@ extension SummaryView {
   var body: some View {
     ScrollView {
       VStack(spacing: 32) {
-        ForEach(link.highlights) { item in
-          let normalized = item.type.lowercased()
-          let type = SummaryTypeItem.SummaryType(rawValue: normalized.capitalized) ?? .what
-          
-          VStack(alignment: .leading, spacing: 24) {
-            // 타입 라벨 (What / Why / Detail)
-            SummaryTypeItem(type: type)
-            
-            // 실제 하이라이트 문장 및 코멘트
-            highlightContents(for: item, type: type)
+        ForEach(groupedHighlights.keys.sorted(by: sortOrder), id: \.self) { key in
+          if let items = groupedHighlights[key],
+             let type = SummaryTypeItem.SummaryType(rawValue: key) {
+            VStack(alignment: .leading, spacing: 24) {
+              SummaryTypeItem(type: type)
+              
+              // 같은 type의 highlight를 모아서 출력
+              ForEach(items) { item in
+                highlightContents(for: item, type: type)
+              }
+            }
           }
         }
       }
@@ -63,5 +64,18 @@ extension SummaryView {
         .fill(.divider1)
         .frame(height: 1)
     }
+  }
+  
+  ///  type별 그룹핑된 highlights
+  private var groupedHighlights: [String: [HighlightItem]] {
+    Dictionary(grouping: link.highlights) { item in
+      item.type.capitalized
+    }
+  }
+  
+  /// 출력 순서 (What → Why → Detail)
+  private func sortOrder(lhs: String, rhs: String) -> Bool {
+    let order: [String: Int] = ["What": 0, "Why": 1, "Detail": 2]
+    return (order[lhs] ?? 99) < (order[rhs] ?? 99)
   }
 }
