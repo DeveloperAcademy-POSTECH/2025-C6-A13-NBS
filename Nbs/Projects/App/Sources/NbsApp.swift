@@ -16,7 +16,7 @@ struct NbsApp: App {
   
   var body: some Scene {
     WindowGroup {
-      HomeEntryView()
+      ContentView()
     }
     .modelContainer(AppGroupContainer.shared)
   }

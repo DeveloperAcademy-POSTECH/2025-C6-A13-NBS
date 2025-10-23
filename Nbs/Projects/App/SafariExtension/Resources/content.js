@@ -160,21 +160,24 @@ function showTulipMenu(span) {
   menu.addEventListener('click', e => e.stopPropagation());
   
   const buttons = [
-    { text: 'what', type: 'what' },
-    { text: 'why', type: 'why' },
-    { text: 'detail', type: 'detail' },
-    { text: '메모', type: 'memo' }
+    { text: 'W', type: 'what' },
+    { text: 'W', type: 'why' },
+    { text: 'D', type: 'detail' },
+    { text: '', type: 'memo' }
   ];
   
   buttons.forEach(buttonInfo => {
     const button = document.createElement('button');
-    button.textContent = buttonInfo.text;
-    
-    if (buttonInfo.type !== 'memo') {
-      button.dataset.highlightType = buttonInfo.type;
+    if (buttonInfo.type === 'memo') {
+      button.innerHTML = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#5c5c6e" fill-rule="evenodd" d="m12.328 7.024-6.782 6.782-.925 3.45-.608 2.273a.375.375 0 0 0 .458.458l2.272-.609 3.45-.925h.001l6.782-6.782zm7.453.785-3.59-3.59a.75.75 0 0 0-1.058 0l-1.852 1.852 4.648 4.648 1.852-1.852a.75.75 0 0 0 0-1.058" clip-rule="evenodd"/></svg>
+  `;
     } else {
-      // 메모 버튼은 별도 스타일을 가질 수 있으므로 data-attribute를 설정하지 않거나 특별한 값을 설정할 수 있습니다.
+      button.textContent = buttonInfo.text;
     }
+    
+    button.dataset.highlightType = buttonInfo.type;
+
     
     button.addEventListener('click', (event) => {
       event.stopPropagation();
