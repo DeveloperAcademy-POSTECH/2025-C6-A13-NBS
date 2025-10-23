@@ -20,41 +20,45 @@ struct LinkListView {
 // MARK: - Body
 extension LinkListView: View {
   var body: some View {
-    ScrollViewReader { proxy in
-      ZStack(alignment: .bottomTrailing) {
-        mainContents
-        ScrollFloatingButton(
-          isVisible: $showScrollToTopButton,
-          proxy: proxy,
-          targetID: "top"
-        )
-        
-        IfLetStore(
-          store.scope(state: \.$editSheet, action: \.editSheet)
-        ) { editStore in
-          ActionBottomSheet(onDismiss: {
-            // 닫기 버튼이나 배경 탭 시
-            store.send(.editSheet(.dismiss))
-          }) {
-            LinkEditSheetView(store: editStore)
+    ZStack {
+      Color.background
+        .ignoresSafeArea()
+      ScrollViewReader { proxy in
+        ZStack(alignment: .bottomTrailing) {
+          mainContents
+          ScrollFloatingButton(
+            isVisible: $showScrollToTopButton,
+            proxy: proxy,
+            targetID: "top"
+          )
+          
+          IfLetStore(
+            store.scope(state: \.$editSheet, action: \.editSheet)
+          ) { editStore in
+            ActionBottomSheet(onDismiss: {
+              // 닫기 버튼이나 배경 탭 시
+              store.send(.editSheet(.dismiss))
+            }) {
+              LinkEditSheetView(store: editStore)
+            }
+            .zIndex(2)
           }
-          .zIndex(2)
         }
       }
-    }
-    .fullScreenCover(
-       store: store.scope(state: \.$moveLink, action: \.moveLink)
-     ) { moveStore in
-       MoveLinkView(store: moveStore)
-     }
-     .fullScreenCover(
-      store: store.scope(state: \.$deleteLink, action: \.deleteLink)
-     ) { deleteStore in
-       DeleteLinkView(store: deleteStore)
-     }
-    .navigationBarHidden(true)
-    .onAppear {
-      store.send(.onAppear)
+      .fullScreenCover(
+        store: store.scope(state: \.$moveLink, action: \.moveLink)
+      ) { moveStore in
+        MoveLinkView(store: moveStore)
+      }
+      .fullScreenCover(
+        store: store.scope(state: \.$deleteLink, action: \.deleteLink)
+      ) { deleteStore in
+        DeleteLinkView(store: deleteStore)
+      }
+      .navigationBarHidden(true)
+      .onAppear {
+        store.send(.onAppear)
+      }
     }
   }
   

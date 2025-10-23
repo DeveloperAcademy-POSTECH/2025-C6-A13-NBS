@@ -17,13 +17,17 @@ struct ArticleFilterList {
 // MARK: - Body
 extension ArticleFilterList: View {
   var body: some View {
-    ScrollView {
-      VStack(spacing: 12) {
-        infoContents
-        articleList
+    ZStack {
+      Color.background
+        .ignoresSafeArea()
+      ScrollView {
+        VStack(spacing: 12) {
+          infoContents
+          articleList
+        }
       }
+      .padding(.horizontal, 20)
     }
-    .padding(.horizontal, 20)
   }
   
   private var infoContents: some View {
