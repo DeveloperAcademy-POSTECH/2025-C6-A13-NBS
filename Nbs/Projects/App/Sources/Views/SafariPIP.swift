@@ -23,6 +23,17 @@ struct SafariPIP: View {
   }()
   
   var body: some View {
+    Group {
+      if showHome {
+        HomeEntryView()
+          .background(Color.white)
+      } else {
+        pipView
+      }
+    }
+  }
+  
+  private var pipView: some View {
     VStack {
       Text(title)
         .font(.H2)
@@ -60,7 +71,7 @@ struct SafariPIP: View {
       .padding(.top, 32)
       
       Button {
-        navigateToHome()
+        showHome = true
       } label: {
         Text("건너뛰기")
           .font(.C2)
@@ -69,7 +80,7 @@ struct SafariPIP: View {
       }
     }
   }
-  
+    
   private func startPipThenOpenSetting() {
     pip.play()
     
@@ -82,21 +93,6 @@ struct SafariPIP: View {
         }
       }
     }
-  }
-  
-  private func navigateToHome() {
-    guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-          let window = windowScene.windows.first else { return }
-    
-    let homeView = HomeEntryView()
-    let hostingController = UIHostingController(rootView: homeView)
-    
-    UIView.transition(with: window,
-                      duration: 0.3,
-                      options: .transitionCrossDissolve,
-                      animations: {
-      window.rootViewController = hostingController
-    })
   }
 }
 

@@ -33,6 +33,7 @@ final class SimplePiPController: NSObject, ObservableObject {
     
     let item = AVPlayerItem(url: url)
     player = AVPlayer(playerItem: item)
+    player.isMuted = true
     playerLayer = AVPlayerLayer(player: player)
     playerLayer.videoGravity = .resizeAspect
     

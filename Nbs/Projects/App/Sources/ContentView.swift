@@ -6,7 +6,8 @@ public struct ContentView: View {
   public init() {}
   
   public var body: some View {
-    OnboardingView(isNotOnboarding: $isOnboarding)
+//    OnboardingView(isNotOnboarding: $isOnboarding)
+    SafariPIP()
   }
 }
 
