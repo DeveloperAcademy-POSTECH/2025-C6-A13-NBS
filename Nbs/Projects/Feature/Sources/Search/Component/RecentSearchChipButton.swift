@@ -44,7 +44,7 @@ extension RecentSearchChipButton {
     .clipShape(.capsule)
     .overlay {
       RoundedRectangle(cornerRadius: 100)
-        .stroke(.divider2, lineWidth: 1)
+        .strokeBorder(.divider2, lineWidth: 1)
     }
   }
 }
