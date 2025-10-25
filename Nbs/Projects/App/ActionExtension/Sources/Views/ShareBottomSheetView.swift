@@ -24,7 +24,7 @@ extension ShareBottomSheetView {
   var body: some View {
     NavigationStack {
       ZStack(alignment: .topLeading) {
-        Color.white.ignoresSafeArea()
+        Color.background.ignoresSafeArea()
         VStack(alignment: .center, spacing: 8) {
           Separator()
           HeaderView

@@ -53,7 +53,7 @@ extension ArticleListView: View {
         .padding(.vertical, 32)
       } else {
         VStack(spacing: 8) {
-          ForEach(store.state.articles.reversed().suffix(5)) { article in
+          ForEach(store.state.articles.reversed().prefix(5)) { article in
             Button {
               store.send(.listCellTapped(article))
             } label: {

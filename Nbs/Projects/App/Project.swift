@@ -16,6 +16,17 @@ let appTarget = Target.target(
         "UIColorName": "",
         "UIImageName": "",
       ],
+      "CFBundleDevelopmentRegion": "ko",
+      "CFBundleLocalizations": ["ko"],
+      "CFBundleVersion": "1",
+      "CFBundleShortVersionString": "1.0",
+      
+      "NSAppTransportSecurity": [
+        "NSAllowsArbitraryLoads": true
+      ],
+      "UIBackgroundModes": [
+        "audio"
+      ]
     ]
   ),
   sources: .sources,

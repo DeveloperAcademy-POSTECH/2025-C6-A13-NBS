@@ -24,6 +24,7 @@ struct HomeFeature {
     var path = StackState<Path.State>()
     var copiedLink: String?
     var myCategoryCollection = MyCategoryCollectionFeature.State()
+    var lastShownClipboardLink: String?
     
     struct AlertBannerState: Equatable {
       let text: String
@@ -96,19 +97,31 @@ struct HomeFeature {
         return .run { send in
           await send(.fetchArticles)
         }
-
+        
       case let .clipboardResponded(copiedText):
         guard let copiedText,
               let url = URL(string: copiedText),
               let _ = url.host else {
           return .none
         }
+        
+        guard state.lastShownClipboardLink != copiedText else {
+          return .none
+        }
+        
         state.alertBanner = .init(
           text: "복사한 링크 바로 추가하기",
           message: copiedText
         )
         state.copiedLink = copiedText
+        state.lastShownClipboardLink = copiedText
         return .none
+//        state.alertBanner = .init(
+//          text: "복사한 링크 바로 추가하기",
+//          message: copiedText
+//        )
+//        state.copiedLink = copiedText
+//        return .none
         
         /// 더보기 -> 링크 리스트
       case .articleList(.delegate(.openLinkList)):
@@ -140,13 +153,13 @@ struct HomeFeature {
       case let .path(.element(_, .editCategory(.delegate(.editButtonTapped(category))))):
         state.path.append(.editCategoryIconName(EditCategoryIconNameFeature.State(category: category)))
         return .none
-      
+        
       case .path(.element(id: _, action: .search(.delegate(.openLinkDetail(let item))))):
         state.path.append(.linkDetail(LinkDetailFeature.State(link: item)))
-        return .run { _ in 
+        return .run { _ in
           try swiftDataClient.updateLinkLastViewed(item)
         }
-      
+        
       case .dismissAlertBanner:
         state.alertBanner = nil
         return .none
@@ -171,7 +184,7 @@ struct HomeFeature {
           state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
         }
         return .none
-    
+        
       case .searchButtonTapped:
         state.path.append(.search(SearchFeature.State()))
         return .none

@@ -1,3 +1,6 @@
+let isTulipMenuClick = false;
+let lastSelectedHighlightType = 'what'; // 기본값 설정
+
 // 페이지의 고정 헤더 높이를 계산하는 함수
 function getFixedHeaderHeight() {
   let fixedHeaderHeight = 0;
@@ -44,13 +47,34 @@ function renderCapsules(span) {
       
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'capsule-delete-btn';
-      deleteBtn.textContent = 'X';
+      const svgContainer = document.createElement('div');
+      svgContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 32 32"><path stroke="#71717a" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.25" d="M21 11 11 21M11 11l10 10"/></svg>';
+      deleteBtn.appendChild(svgContainer.firstChild);
       
       capsule.appendChild(textPreview);
       capsule.appendChild(deleteBtn);
       
       capsule.addEventListener('click', (e) => {
         e.stopPropagation();
+        
+        const isAlreadyClicked = capsule.classList.contains(`clicked-${comment.type}`);
+        const memoBoxOpenForThisCapsule = document.getElementById('memo-box') && Number(document.getElementById('memo-box').dataset.editingId) === comment.id;
+
+        // 이전에 클릭된 캡슐의 'clicked' 클래스 제거
+        document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+          c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+        });
+
+        if (isAlreadyClicked && memoBoxOpenForThisCapsule) {
+          // 이미 클릭된 캡슐을 다시 클릭하면 메모 상자를 닫고 캡슐 스타일을 원래대로 되돌림
+          const existingMemoBox = document.getElementById('memo-box');
+          if (existingMemoBox) existingMemoBox.remove();
+          return; // 이벤트 처리 중단
+        }
+
+        // 현재 캡슐에 'clicked' 클래스 추가
+        capsule.classList.add(`clicked-${comment.type}`);
+
         showMemoBox(span, comment.id);
       });
       
@@ -75,7 +99,9 @@ function renderCapsules(span) {
 
 function showMemoBox(span, memoId = null) {
   const existingMemoBox = document.getElementById('memo-box');
-  if (existingMemoBox) existingMemoBox.remove();
+  if (existingMemoBox) {
+    existingMemoBox.remove();
+  }
   
   const comments = JSON.parse(span.dataset.comments || '[]');
   const currentComment = memoId ? comments.find(m => m.id === memoId) : null;
@@ -90,23 +116,21 @@ function showMemoBox(span, memoId = null) {
   const currentHighlightType = currentComment ? currentComment.type : span.dataset.highlightType;
   const existingText = currentComment ? currentComment.text : '';
   
+  const placeholders = {
+    'what': '주제, 핵심 내용을 한 줄로 정리해 보세요',
+    'why': '현상의 이유, 배경을 남겨보세요',
+    'detail': '이어지는 내용이나 생각을 입력 해주세요'
+    
+  }
   const textarea = document.createElement('textarea');
-  textarea.placeholder = `'${currentHighlightType}'에 대한 메모를 입력하세요...`;
+  textarea.placeholder = placeholders[currentHighlightType] || '메모를 입력하세요...';
   textarea.value = existingText;
-  
-  const buttonContainer = document.createElement('div');
-  buttonContainer.className = 'memo-buttons';
-  
-  const cancelButton = document.createElement('button');
-  cancelButton.textContent = '취소';
-  cancelButton.onclick = () => memoBox.remove();
-  
-  const saveButton = document.createElement('button');
-  saveButton.textContent = '저장';
-  saveButton.onclick = () => {
+  memoBox.appendChild(textarea);
+
+  textarea.addEventListener('blur', () => {
     const commentText = textarea.value.trim();
     let updatedComments = JSON.parse(span.dataset.comments || '[]');
-    
+
     if (memoId) {
       const commentIndex = updatedComments.findIndex(m => m.id === memoId);
       if (commentIndex > -1) {
@@ -126,32 +150,27 @@ function showMemoBox(span, memoId = null) {
         updatedComments.push(newComment);
       }
     }
-    
+
     span.dataset.comments = JSON.stringify(updatedComments);
     memoBox.remove();
     renderCapsules(span);
     updateDraft(span);
-  };
+
+    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+      c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+    });
+  });
   
-  buttonContainer.appendChild(cancelButton);
-  buttonContainer.appendChild(saveButton);
-  memoBox.appendChild(textarea);
-  memoBox.appendChild(buttonContainer);
-  
-  if (memoId) {
-    const capsuleContainer = span.nextElementSibling;
-    if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) {
-      capsuleContainer.after(memoBox);
-    } else {
-      span.after(memoBox);
-    }
-  } else {
-    span.after(memoBox);
-  }
+  span.after(memoBox);
 }
 
 // 튤립 메뉴를 표시하는 함수
 function showTulipMenu(span) {
+  // 메모 박스가 열려 있으면 튤립 메뉴를 열지 않음
+  if (document.getElementById('memo-box')) {
+    return;
+  }
+
   const existingMenu = document.getElementById('tulip-menu');
   if (existingMenu) existingMenu.remove();
   
@@ -160,21 +179,24 @@ function showTulipMenu(span) {
   menu.addEventListener('click', e => e.stopPropagation());
   
   const buttons = [
-    { text: 'what', type: 'what' },
-    { text: 'why', type: 'why' },
-    { text: 'detail', type: 'detail' },
-    { text: '메모', type: 'memo' }
+    { text: 'W', type: 'what' },
+    { text: 'W', type: 'why' },
+    { text: 'D', type: 'detail' },
+    { text: '', type: 'memo' }
   ];
   
   buttons.forEach(buttonInfo => {
     const button = document.createElement('button');
-    button.textContent = buttonInfo.text;
-    
-    if (buttonInfo.type !== 'memo') {
-      button.dataset.highlightType = buttonInfo.type;
+    if (buttonInfo.type === 'memo') {
+      button.innerHTML = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#5c5c6e" fill-rule="evenodd" d="m12.328 7.024-6.782 6.782-.925 3.45-.608 2.273a.375.375 0 0 0 .458.458l2.272-.609 3.45-.925h.001l6.782-6.782zm7.453.785-3.59-3.59a.75.75 0 0 0-1.058 0l-1.852 1.852 4.648 4.648 1.852-1.852a.75.75 0 0 0 0-1.058" clip-rule="evenodd"/></svg>
+  `;
     } else {
-      // 메모 버튼은 별도 스타일을 가질 수 있으므로 data-attribute를 설정하지 않거나 특별한 값을 설정할 수 있습니다.
+      button.textContent = buttonInfo.text;
     }
+    
+    button.dataset.highlightType = buttonInfo.type;
+
     
     button.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -187,9 +209,9 @@ function showTulipMenu(span) {
         
         window.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
         
-        setTimeout(() => showMemoBox(span), 300);
+        setTimeout(() => showMemoBox(span, null), 300);
         
-        menu.remove();
+        menu.remove(); // 메모 버튼 클릭 시 툴팁 메뉴를 닫음
       } else {
         const newType = buttonInfo.type;
         span.dataset.highlightType = newType;
@@ -198,9 +220,14 @@ function showTulipMenu(span) {
         if (comments.length > 0) {
           comments.forEach(comment => comment.type = newType);
           span.dataset.comments = JSON.stringify(comments);
-          renderCapsules(span);
+          renderCapsules(span)
         }
         updateDraft(span);
+        setTimeout(() => {
+          isTulipMenuClick = false;
+        }, 100);
+
+        lastSelectedHighlightType = newType; // 마지막으로 선택된 타입 업데이트
       }
     });
     menu.appendChild(button);
@@ -232,11 +259,17 @@ function showDeleteConfirmationModal(onConfirm) {
   modalContent.className = 'modal-content';
   
   const title = document.createElement('h3');
-  title.textContent = '하이라이트를 취소할까요?';
+  title.textContent = '메모를 삭제할까요?';
   
   const message = document.createElement('p');
-  message.innerHTML = '하이라이트 취소 시<br>하이라이트 메모도 함께 삭제되어요';
+  message.innerHTML = '삭제한 메모는 복구할 수 없어요';
   
+  const separator = document.createElement('div');
+  separator.className = 'modal-separator';
+  
+  const verticalSeparator = document.createElement('div');
+  verticalSeparator.className = 'vertical-separator';
+
   const buttonContainer = document.createElement('div');
   buttonContainer.className = 'modal-buttons';
   
@@ -254,17 +287,26 @@ function showDeleteConfirmationModal(onConfirm) {
   };
   
   buttonContainer.appendChild(cancelButton);
+  buttonContainer.appendChild(verticalSeparator);
   buttonContainer.appendChild(deleteButton);
   modalContent.appendChild(title);
   modalContent.appendChild(message);
+  modalContent.appendChild(separator);
   modalContent.appendChild(buttonContainer);
   modal.appendChild(modalContent);
   
   document.body.appendChild(modal);
 }
 
-// 더블탭 이벤트 처리
+// 더블탭 이벤트 처리ㄱ
 document.addEventListener('dblclick', function(event) {
+  // 메모 캡슐 내부에서 더블 클릭 시 이벤트 전파 및 기본 동작 방지
+  if (event.target.closest('.memo-capsule')) {
+    event.preventDefault();
+    event.stopPropagation();
+    return;
+  }
+
   const existingHighlight = event.target.closest('.highlighted-text');
   if (existingHighlight) {
     event.preventDefault();
@@ -291,7 +333,7 @@ document.addEventListener('dblclick', function(event) {
       deleteDraft(draftId);
     };
     
-    if (memos.length > 0) {
+    if (comments.length > 0) {
       showDeleteConfirmationModal(deleteHighlight);
     } else {
       deleteHighlight();
@@ -358,10 +400,27 @@ document.addEventListener('dblclick', function(event) {
   const sentenceRange = document.createRange();
   sentenceRange.setStart(textNode, sentenceStart);
   sentenceRange.setEnd(textNode, sentenceEnd);
+
+  const extractedText = sentenceRange.toString().trim();
+  if (extractedText.length < 3) { // 최소 3자 미만은 하이라이팅하지 않음
+    return;
+  }
+
+  // 이미 하이라이트된 영역과 겹치는지 확인
+  const allHighlights = document.querySelectorAll('.highlighted-text');
+  for (const highlight of allHighlights) {
+    const highlightRange = document.createRange();
+    highlightRange.selectNodeContents(highlight);
+    if (sentenceRange.compareBoundaryPoints(Range.END_TO_START, highlightRange) < 0 &&
+        sentenceRange.compareBoundaryPoints(Range.START_TO_END, highlightRange) > 0) {
+      // 겹치는 부분이 있으면 하이라이팅 방지
+      return;
+    }
+  }
   
   const span = document.createElement('span');
   span.className = 'highlighted-text';
-  span.dataset.highlightType = 'what';
+  span.dataset.highlightType = lastSelectedHighlightType;
   
   try {
     span.appendChild(sentenceRange.extractContents());
@@ -380,7 +439,12 @@ document.addEventListener('click', function(event) {
   
   if (isClickOnHighlight) {
     event.stopPropagation();
-    showTulipMenu(target.closest('.highlighted-text'));
+    const existingMenu = document.getElementById('tulip-menu');
+    if (existingMenu) {
+      existingMenu.remove();
+    } else {
+      showTulipMenu(target.closest('.highlighted-text'));
+    }
     return;
   }
   
@@ -391,7 +455,13 @@ document.addEventListener('click', function(event) {
   
   if (!target.closest('#memo-box')) {
     const existingMemoBox = document.getElementById('memo-box');
-    if (existingMemoBox) existingMemoBox.remove();
+    if (existingMemoBox) {
+      existingMemoBox.remove();
+      // 메모 박스가 외부 클릭으로 닫힐 때 모든 캡슐에서 'clicked' 클래스 제거
+      document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+        c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+      });
+    }
   }
 });
 

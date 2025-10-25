@@ -46,6 +46,7 @@ extension MyCategoryCollectionView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal, 20)
         .padding(.top, 8)
+        .buttonStyle(.plain)
         CategoryGridView(
           store: store.scope(
             state: \.categoryGrid,
