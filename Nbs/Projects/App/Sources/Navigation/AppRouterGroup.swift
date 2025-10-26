@@ -20,7 +20,11 @@ extension AppRouterGroup {
       HomeRouteBuilder().generate(),
       AddLinkRouteBuilder().generate(),
       MyCategoryRouteBuilder().generate(),
-      AddCategoryRouteBuilder().generate()
+      AddCategoryRouteBuilder().generate(),
+      EditCategoryRouteBuilder().generate(),
+      DeleteCategoryRouteBuilder().generate(),
+      SettingRouteBuilder().generate(),
+      
     ]
   }
 }
