@@ -25,13 +25,6 @@ struct MyCategoryCollectionFeature {
     case topAppBar(TopAppBarDefaultNoSearchFeature.Action)
     case categoryGrid(CategoryGridFeature.Action)
     case settingModal(SettingFeature.Action)
-    case delegate(Delegate)
-    
-    enum Delegate {
-      case addCategory
-      case editCategory
-      case deleteCategory
-    }
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -60,14 +53,14 @@ struct MyCategoryCollectionFeature {
       case .settingModal(.dismissButtonTapped):
         state.settingModal = nil
         return .none
-        
       case .settingModal(.addButtonTapped):
-        return .send(.delegate(.addCategory))
+        linkNavigator.push(Route.addCategory.rawValue)
+        return .none
       case .settingModal(.editButtonTapped):
-        return .send(.delegate(.editCategory))
+        linkNavigator.push(Route.editCategory.rawValue)
+        return .none
       case .settingModal(.deleteButtonTapped):
-        return .send(.delegate(.deleteCategory))
-      case .delegate(_):
+        linkNavigator.push(Route.deleteCategory.rawValue)
         return .none
       }
     }
