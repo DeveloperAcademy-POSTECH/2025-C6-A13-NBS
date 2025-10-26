@@ -13,7 +13,7 @@ import Domain
 @Reducer
 struct EditCategoryFeature {
   
-  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -26,11 +26,6 @@ struct EditCategoryFeature {
     case categoryGrid(CategoryGridFeature.Action)
     case cancelButtonTapped
     case editButtonTapped
-    case delegate(Delegate)
-    
-    enum Delegate {
-      case editButtonTapped(CategoryItem)
-    }
   }
   
   var body: some ReducerOf<Self> {
@@ -50,13 +45,11 @@ struct EditCategoryFeature {
       case .categoryGrid(.toggleCategorySelection(_)):
         return .none
       case .cancelButtonTapped:
-        return .run { _ in
-          await self.dismiss()
-        }
+        linkNavigator.pop()
+        return .none
       case .editButtonTapped:
         guard let category = state.selectedCategory else { return .none }
-        return .send(.delegate(.editButtonTapped(category)))
-      case .delegate(_):
+        linkNavigator.push(Route.editCategoryNameIcon.rawValue)
         return .none
       }
     }
