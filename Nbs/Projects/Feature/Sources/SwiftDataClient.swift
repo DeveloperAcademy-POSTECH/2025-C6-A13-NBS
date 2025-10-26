@@ -35,7 +35,7 @@ extension SwiftDataClient: DependencyKey {
         let predicate = #Predicate<LinkItem> {
           $0.title.contains(query)
         }
-        let descriptor = FetchDescriptor<LinkItem>(predicate: predicate)
+        let descriptor = FetchDescriptor<LinkItem>(predicate: predicate, sortBy: [SortDescriptor(\.createAt, order: .reverse)])
         return try modelContext.fetch(descriptor)
       },
       addLink: { link in
