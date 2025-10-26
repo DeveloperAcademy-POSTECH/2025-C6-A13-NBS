@@ -23,7 +23,7 @@ extension RecentSearchChipButton {
       chipTouchAction()
     } label: {
       HStack(spacing: 4) {
-        Text(title)
+        Text(title.truncatedString(count: 7))
           .font(.B1_M)
           .foregroundStyle(.caption1)
           .lineLimit(1)
