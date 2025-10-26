@@ -11,6 +11,7 @@ import Domain
 @Reducer
 struct CategoryListFeature {
   @Dependency(\.swiftDataClient) var swiftDataClient
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -48,7 +49,9 @@ struct CategoryListFeature {
       case .categoriesResponse(.failure):
         return .none
       case .moreCategoryButtonTapped:
-        return .send(.delegate(.goToMoreLinkButtonView))
+        linkNavigator.push("myCategory")
+        return .none
+//        return .send(.delegate(.goToMoreLinkButtonView))
       case let .categoryTapped(category):
         state.selectedCategory = category
         return .none
