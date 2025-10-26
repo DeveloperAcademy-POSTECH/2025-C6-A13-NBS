@@ -16,7 +16,7 @@ public struct AddLinkRouteBuilder {
   
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
-    let matchPath = "addLink"
+    let matchPath = Route.addLink.rawValue
     return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
       WrappingController(matchPath: matchPath) {
         AddLinkView(store: Store(initialState: AddLinkFeature.State()) {
