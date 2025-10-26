@@ -13,7 +13,7 @@ import Domain
 @Reducer
 struct AddLinkFeature {
   
-  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -54,7 +54,7 @@ struct AddLinkFeature {
     Reduce { state, action in
       switch action {
       case .topAppBar(.tapBackButton):
-        return .run { _ in await self.dismiss() }
+        return .run { _ in linkNavigator.pop() }
         
       case .topAppBar:
         return .none
@@ -75,7 +75,7 @@ struct AddLinkFeature {
           do {
             let title = try await extractTitle(from: url)
             let image = try await extractImageURL(from: url)
-            let newLink = LinkItem(urlString: linkURL, title: title, imageURL: image.absoluteString)
+            let newLink = ArticleItem(urlString: linkURL, title: title, imageURL: image.absoluteString)
             newLink.category = selectedCategory
             try swiftDataClient.addLink(newLink)
             await send(.saveLinkResponse(.success(())))
@@ -99,7 +99,7 @@ struct AddLinkFeature {
         return .none
         
       case .saveLinkResponse(.success):
-        return .run { _ in await self.dismiss() }
+        return .run { _ in linkNavigator.pop() }
         
       case .saveLinkResponse(.failure(let error)):
         //TODO: 링크 저장 실패시 에러 알럿?

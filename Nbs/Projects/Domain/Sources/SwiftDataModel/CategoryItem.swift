@@ -27,7 +27,7 @@ public final class CategoryItem: Identifiable {
   public var createdAt: Date
   public var icon: CategoryIcon
   
-  @Relationship(inverse: \LinkItem.category) public var links: [LinkItem] = []
+  @Relationship(inverse: \ArticleItem.category) public var links: [ArticleItem] = []
   
   public init(
     categoryName: String,

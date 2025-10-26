@@ -10,87 +10,65 @@ import SwiftUI
 import ComposableArchitecture
 import Domain
 import DesignSystem
+import LinkNavigator
 
 struct HomeView {
+  let navigator: SingleLinkNavigator
+  
   @Bindable var store: StoreOf<HomeFeature>
   @Environment(\.scenePhase) private var scenePhase
 }
 
 extension HomeView: View {
   var body: some View {
-    NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-      VStack {
-        TopAppBarHome(
-          onTapSearchButton: { store.send(.searchButtonTapped) } ,
-          onTapSettingButton: { print ("")}
-        )
-        ZStack(alignment: .bottom) {
-          ZStack(alignment: .bottomTrailing) {
-            ScrollView {
-              VStack(spacing: 24) {
-                CategoryListView(
-                  store: store.scope(
-                    state: \.categoryList,
-                    action: \.categoryList
-                  )
+    VStack {
+      TopAppBarHome(
+        onTapSearchButton: { store.send(.searchButtonTapped) } ,
+        onTapSettingButton: { print ("")}
+      )
+      ZStack(alignment: .bottom) {
+        ZStack(alignment: .bottomTrailing) {
+          ScrollView {
+            VStack(spacing: 24) {
+              CategoryListView(
+                store: store.scope(
+                  state: \.categoryList,
+                  action: \.categoryList
                 )
-                ArticleListView(
-                  store: store.scope(
-                    state: \.articleList,
-                    action: \.articleList
-                  )
+              )
+              ArticleListView(
+                store: store.scope(
+                  state: \.articleList,
+                  action: \.articleList
                 )
-              }
-              .padding(.bottom, 80)
+              )
             }
-            .refreshable {
-              store.send(.refresh)
-            }
-            
-            AddFloatingButton {
-              store.send(.floatingButtonTapped)
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 24)
+            .padding(.bottom, 80)
+          }
+          .refreshable {
+            store.send(.refresh)
           }
           
-          if let alertBanner = store.state.alertBanner {
-            AlertBanner(
-              text: alertBanner.text,
-              message: alertBanner.message,
-              style: .close {
-                store.send(.dismissAlertBanner)
-              }
-            )
-            .padding(.horizontal, 20)
-            .onTapGesture {
-              store.send(.alertBannerTapped)
+          AddFloatingButton {
+            store.send(.floatingButtonTapped)
+          }
+          .padding(.trailing, 20)
+          .padding(.bottom, 24)
+        }
+        
+        if let alertBanner = store.state.alertBanner {
+          AlertBanner(
+            text: alertBanner.text,
+            message: alertBanner.message,
+            style: .close {
+              store.send(.dismissAlertBanner)
             }
+          )
+          .padding(.horizontal, 20)
+          .onTapGesture {
+            store.send(.alertBannerTapped)
           }
         }
-      }
-      .background(DesignSystemAsset.background.swiftUIColor.ignoresSafeArea())
-      .navigationBarHidden(true)
-    } destination: { store in
-      switch store.case {
-      case .linkList(let linkListStore):
-        LinkListView(store: linkListStore)
-      case .linkDetail(let store):
-              LinkDetailView(store: store)
-      case .myCategoryCollection(let store):
-        MyCategoryCollectionView(store: store)
-      case .addLink(let store):
-        AddLinkView(store: store)
-      case .addCategory(let store):
-        AddCategoryView(store: store)
-      case .search(let store):
-        SearchView(store: store)
-      case .editCategory(let store):
-        EditCategoryView(store: store)
-      case .deleteCategory(let store):
-        DeleteCategoryView(store: store)
-      case .editCategoryIconName(let store):
-        EditCategoryIconNameView(store: store)
       }
     }
     .onChange(of: scenePhase) { _, newPhase in
@@ -98,11 +76,13 @@ extension HomeView: View {
         store.send(.onAppear)
       }
     }
+    .background(DesignSystemAsset.background.swiftUIColor.ignoresSafeArea())
+    .navigationBarHidden(true)
   }
 }
 
-#Preview {
-  HomeView(store: Store(initialState: HomeFeature.State()) {
-    HomeFeature()
-  })
-}
+//#Preview {
+//  HomeView(store: Store(initialState: HomeFeature.State()) {
+//    HomeFeature()
+//  })
+//}

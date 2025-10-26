@@ -9,7 +9,7 @@ import SwiftUI
 import Domain
 
 struct SummaryView: View {
-  let link: LinkItem
+  let link: ArticleItem
 }
 
 extension SummaryView {

@@ -27,7 +27,7 @@ import SwiftData
 public enum AppGroupContainer {
   public static let shared: ModelContainer = {
     let appGroupID = "group.com.nbs.dev.ADA.shared"
-    let schema = Schema([LinkItem.self, HighlightItem.self, CategoryItem.self])
+    let schema = Schema([ArticleItem.self, HighlightItem.self, CategoryItem.self])
     
     guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
       fatalError()

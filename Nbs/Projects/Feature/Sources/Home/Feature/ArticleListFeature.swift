@@ -12,18 +12,18 @@ import Domain
 struct ArticleListFeature {
   @ObservableState
   struct State {
-    var articles: [LinkItem] = []
+    var articles: [ArticleItem] = []
     var showMoreLink: Bool = false
     var showLinkDetail: Bool = false
   }
   
   enum Action {
     case moreLinkButtonTapped
-    case listCellTapped(LinkItem)
+    case listCellTapped(ArticleItem)
     case delegate(Delegate)
     
     enum Delegate {
-      case openLinkDetail(LinkItem)
+      case openLinkDetail(ArticleItem)
       case openLinkList
     }
   }

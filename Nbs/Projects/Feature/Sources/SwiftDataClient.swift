@@ -7,11 +7,11 @@ import Domain
 
 struct SwiftDataClient {
   // LinkItem
-  var fetchLinks: () throws -> [LinkItem]
-  var searchLinks: (String) throws -> [LinkItem]
-  var addLink: (LinkItem) throws -> Void
-  var updateLinkLastViewed: (LinkItem) throws -> Void
-  var fetchRecentLinks: () throws -> [LinkItem]
+  var fetchLinks: () throws -> [ArticleItem]
+  var searchLinks: (String) throws -> [ArticleItem]
+  var addLink: (ArticleItem) throws -> Void
+  var updateLinkLastViewed: (ArticleItem) throws -> Void
+  var fetchRecentLinks: () throws -> [ArticleItem]
   
   // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
@@ -28,14 +28,14 @@ extension SwiftDataClient: DependencyKey {
     
     return Self(
       fetchLinks: {
-        let descriptor = FetchDescriptor<LinkItem>()
+        let descriptor = FetchDescriptor<ArticleItem>()
         return try modelContext.fetch(descriptor)
       },
       searchLinks: { query in
-        let predicate = #Predicate<LinkItem> {
+        let predicate = #Predicate<ArticleItem> {
           $0.title.contains(query)
         }
-        let descriptor = FetchDescriptor<LinkItem>(predicate: predicate)
+        let descriptor = FetchDescriptor<ArticleItem>(predicate: predicate)
         return try modelContext.fetch(descriptor)
       },
       addLink: { link in
@@ -47,7 +47,7 @@ extension SwiftDataClient: DependencyKey {
         try modelContext.save()
       },
       fetchRecentLinks: {
-        var descriptor = FetchDescriptor<LinkItem>(
+        var descriptor = FetchDescriptor<ArticleItem>(
           sortBy: [SortDescriptor(\.lastViewedDate, order: .reverse)]
         )
         descriptor.fetchLimit = 6

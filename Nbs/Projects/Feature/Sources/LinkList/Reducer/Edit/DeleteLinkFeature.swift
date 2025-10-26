@@ -13,7 +13,7 @@ import Domain
 struct DeleteLinkFeature {
   @ObservableState
   struct State: Equatable {
-    var allLinks: [LinkItem] = []
+    var allLinks: [ArticleItem] = []
     var selectedLinks: Set<String> = []
     var isSelectAll: Bool = false
   }
@@ -21,14 +21,14 @@ struct DeleteLinkFeature {
   enum Action: BindableAction {
     case binding(BindingAction<State>)
     case onAppear
-    case toggleSelect(LinkItem)
+    case toggleSelect(ArticleItem)
     case cancelTapped
     case confirmDeleteTapped
     case delegate(Delegate)
     
     enum Delegate {
       case dismiss
-      case confirmDelete(selected: [LinkItem])
+      case confirmDelete(selected: [ArticleItem])
     }
   }
   
