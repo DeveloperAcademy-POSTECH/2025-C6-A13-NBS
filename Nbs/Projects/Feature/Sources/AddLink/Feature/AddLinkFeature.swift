@@ -85,7 +85,8 @@ struct AddLinkFeature {
         }
         
       case .addNewCategoryButtonTapped:
-        return .send(.delegate(.goToAddCategory))
+        linkNavigator.push("addCategory")
+        return .none
         
       case .categoryGrid(.delegate(.toggleCategorySelection(let category))):
         if state.selectedCategory == category {
