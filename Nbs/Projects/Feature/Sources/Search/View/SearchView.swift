@@ -28,36 +28,40 @@ extension SearchView {
           store: store.scope(state: \.topAppBar, action: \.topAppBar)
         )
         
-        if store.topAppBar.searchText.isEmpty {
-          let recentSearchesExist = !store.recentSearch.searches.isEmpty
-          let recentLinksExist = !store.recentLink.recentLinkItem.isEmpty
-          
-          if !recentSearchesExist && !recentLinksExist {
-            EmptySearchView(type: .emptyRecentSearch)
-          } else {
-            if recentSearchesExist {
-              RecentSearchListView(store: store.scope(state: \.recentSearch, action: \.recentSearch))
+        ScrollView(.vertical, showsIndicators: false) {
+          VStack(alignment: .leading) {
+            if store.topAppBar.searchText.isEmpty {
+              let recentSearchesExist = !store.recentSearch.searches.isEmpty
+              let recentLinksExist = !store.recentLink.recentLinkItem.isEmpty
+              
+              if !recentSearchesExist && !recentLinksExist {
+                EmptySearchView(type: .emptyRecentSearch)
+              } else {
+                if recentSearchesExist {
+                  RecentSearchListView(store: store.scope(state: \.recentSearch, action: \.recentSearch))
+                }
+                
+                if recentSearchesExist && recentLinksExist {
+                  Rectangle()
+                    .frame(height: 1)
+                    .foregroundStyle(.divider1)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
+                }
+                
+                if recentLinksExist {
+                  RecentLinkListView(store: store.scope(state: \.recentLink, action: \.recentLink))
+                }
+              }
+            } else {
+              if store.isSearchSubmitted {
+                SearchResultView(
+                  store: store.scope(state: \.searchResult, action: \.searchResult)
+                )
+              } else {
+                SearchSuggestionView(store: store.scope(state: \.searchSuggestion, action: \.searchSuggestion))
+              }
             }
-            
-            if recentSearchesExist && recentLinksExist {
-              Rectangle()
-                .frame(height: 1)
-                .foregroundStyle(.divider1)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 8)
-            }
-            
-            if recentLinksExist {
-              RecentLinkListView(store: store.scope(state: \.recentLink, action: \.recentLink))
-            }
-          }
-        } else {
-          if store.isSearchSubmitted {
-            SearchResultView(
-              store: store.scope(state: \.searchResult, action: \.searchResult)
-            )
-          } else {
-            SearchSuggestionView(store: store.scope(state: \.searchSuggestion, action: \.searchSuggestion))
           }
         }
       }
