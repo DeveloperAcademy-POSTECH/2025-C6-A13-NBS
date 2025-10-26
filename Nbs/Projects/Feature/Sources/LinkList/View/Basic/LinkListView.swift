@@ -55,6 +55,14 @@ extension LinkListView: View {
       ) { deleteStore in
         DeleteLinkView(store: deleteStore)
       }
+      .sheet(
+        store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
+      ) { selectStore in
+        TCASelectBottomSheet(title: "카테고리 선택", store: selectStore)
+          .presentationDetents([.medium])
+          .presentationCornerRadius(16)
+      }
+      
       .navigationBarHidden(true)
       .onAppear {
         store.send(.onAppear)
@@ -106,7 +114,7 @@ extension LinkListView: View {
             action: \.categoryChipList
           ),
           onTap: {
-            store.send(.bottomSheetButtonTapped(true))
+            store.send(.bottomSheetButtonTapped)
           }
         )
         
