@@ -34,7 +34,7 @@ extension SearchResultView {
             store.send(.categoryButtonTapped)
           } label: {
             HStack(spacing: 6) {
-              Text(store.selectedCategoryTitle)
+              Text(store.selectedCategoryTitle.truncatedString(count: 5))
                 .padding(.leading, 18)
                 .foregroundStyle(.caption1)
                 .font(.B2_M)
