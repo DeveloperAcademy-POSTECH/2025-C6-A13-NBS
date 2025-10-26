@@ -54,6 +54,8 @@ struct LinkListFeature {
     case moveLink(PresentationAction<MoveLinkFeature.Action>)
     case deleteLink(PresentationAction<DeleteLinkFeature.Action>)
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
+    case openDeleteLink
+    case closeEditSheet
     
     /// 데이터 로드 관련
     case fetchLinks
@@ -67,18 +69,18 @@ struct LinkListFeature {
       case openLinkDetail(LinkItem)
     }
   }
-
+  
   // MARK: - Body
   var body: some ReducerOf<Self> {
     /// 자식 리듀서 연결
     Scope(state: \.categoryChipList, action: \.categoryChipList) {
       CategoryChipFeature()
     }
-
+    
     Scope(state: \.articleList, action: \.articleList) {
       ArticleFilterFeature()
     }
-
+    
     /// UI 처리 전용 Reducer
     Reduce(self.uiReducer)
     
@@ -86,10 +88,10 @@ struct LinkListFeature {
     Reduce(self.dataReducer)
     
     /// 시트 Reducer 연결
-    .ifLet(\.$editSheet, action: \.editSheet) { EditSheetFeature() }
-    .ifLet(\.$moveLink, action: \.moveLink) { MoveLinkFeature() }
-    .ifLet(\.$deleteLink, action: \.deleteLink) { DeleteLinkFeature() }
-    .ifLet(\.$selectBottomSheet, action: \.selectBottomSheet) { SelectBottomSheetFeature() }
+      .ifLet(\.$editSheet, action: \.editSheet) { EditSheetFeature() }
+      .ifLet(\.$moveLink, action: \.moveLink) { MoveLinkFeature() }
+      .ifLet(\.$deleteLink, action: \.deleteLink) { DeleteLinkFeature() }
+      .ifLet(\.$selectBottomSheet, action: \.selectBottomSheet) { SelectBottomSheetFeature() }
   }
 }
 
@@ -97,26 +99,26 @@ struct LinkListFeature {
 private extension LinkListFeature {
   func uiReducer(state: inout State, action: Action) -> Effect<Action> {
     switch action {
-        
-    /// 초기 진입 시 링크 데이터 요청
+      
+      /// 초기 진입 시 링크 데이터 요청
     case .onAppear:
       return .send(.fetchLinks)
       
-    /// 편집 버튼 탭 -> 편집 시트 표시
+      /// 편집 버튼 탭 -> 편집 시트 표시
     case .editButtonTapped:
       state.editSheet = EditSheetFeature.State(link: nil)
       return .none
       
-    /// 링크 롱프레스 -> 해당 링크의 편집 시트 표시
+      /// 링크 롱프레스 -> 해당 링크의 편집 시트 표시
     case let .linkLongPressed(link):
       state.editSheet = EditSheetFeature.State(link: link)
       return .none
-
-    /// 카테고리 버튼 클릭 -> 카테고리 목록 요청
+      
+      /// 카테고리 버튼 클릭 -> 카테고리 목록 요청
     case .bottomSheetButtonTapped:
       return .send(.fetchCategories)
       
-    /// 카테고리 칩 선택 시 필터링
+      /// 카테고리 칩 선택 시 필터링
     case let .categoryChipList(.categoryTapped(category)):
       if category.categoryName == "전체" {
         state.articleList.link = state.allLinks
@@ -127,38 +129,50 @@ private extension LinkListFeature {
       }
       return .none
       
-    /// 편집 시트 내부에서 닫기
+      /// 편집 시트 내부에서 닫기
     case .editSheet(.presented(.delegate(.dismissSheet))):
       state.editSheet = nil
       return .none
       
-    /// 편집 시트 -> 이동하기
+      /// 편집 시트 -> 이동하기
     case .editSheet(.presented(.delegate(.moveLink))):
       state.moveLink = MoveLinkFeature.State(allLinks: state.allLinks)
       state.editSheet = nil
       return .none
       
-    /// 편집 시트 -> 삭제하기
+      /// 편집 시트 -> 삭제하기
     case .editSheet(.presented(.delegate(.deleteLink))):
+      return .run { send in
+        // Step 1: deleteLink 시트 열기
+        await send(.openDeleteLink)
+        // Step 2: 한 프레임 뒤 editSheet 닫기 (경고 방지)
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1초
+        await send(.closeEditSheet)
+      }
+      
+    case .openDeleteLink:
       state.deleteLink = DeleteLinkFeature.State(allLinks: state.allLinks)
+      return .none
+      
+    case .closeEditSheet:
       state.editSheet = nil
       return .none
       
-    /// 이동 / 삭제 시트 닫기
+      /// 이동 / 삭제 시트 닫기
     case .moveLink(.presented(.delegate(.dismiss))),
-         .deleteLink(.presented(.delegate(.dismiss))):
+        .deleteLink(.presented(.delegate(.dismiss))):
       state.moveLink = nil
       state.deleteLink = nil
       return .none
       
-    /// 카테고리 바텀시트에서 카테고리 선택
+      /// 카테고리 바텀시트에서 카테고리 선택
     case .selectBottomSheet(.presented(.delegate(.categorySelected(let name)))):
       if let name {
         if name == "전체" {
           // 필터 해제
           state.selectedCategory = nil
           state.articleList.link = state.allLinks
-
+          
           // 칩 하이라이트는 전체 항목으로 맞춰주기
           if let allChip = state.categoryChipList.categories.first(where: { $0.categoryName == "전체" }) {
             state.categoryChipList.selectedCategory = allChip
@@ -176,31 +190,31 @@ private extension LinkListFeature {
             state.selectedCategory = CategoryItem(categoryName: name, icon: .init(number: 1))
             state.categoryChipList.selectedCategory = nil
           }
-
+          
           // 리스트 필터 적용
           state.articleList.link = state.allLinks.filter { $0.category?.categoryName == name }
         }
       }
       return .none
       
-    /// 카테고리 시트 닫기
+      /// 카테고리 시트 닫기
     case .selectBottomSheet(.presented(.delegate(.dismiss))):
       state.selectBottomSheet = nil
       return .none
-
-    /// 링크 탭 -> 상세화면으로 Delegate 전달
+      
+      /// 링크 탭 -> 상세화면으로 Delegate 전달
     case let .articleList(.delegate(.openLinkDetail(link))):
       return .send(.delegate(.openLinkDetail(link)))
       
-    /// 링크 롱프레스 -> 편집 시트 표시로 연결
+      /// 링크 롱프레스 -> 편집 시트 표시로 연결
     case let .articleList(.delegate(.longPressed(link))):
       return .send(.linkLongPressed(link))
       
-    /// 그 외 단순 전달 케이스
+      /// 그 외 단순 전달 케이스
     case .categoryChipList, .articleList, .editSheet, .moveLink, .deleteLink, .selectBottomSheet, .delegate:
       return .none
-
-    /// 데이터 관련 케이스는 아래 dataReducer에서 처리
+      
+      /// 데이터 관련 케이스는 아래 dataReducer에서 처리
     default:
       return .none
     }
@@ -211,8 +225,8 @@ private extension LinkListFeature {
 private extension LinkListFeature {
   func dataReducer(state: inout State, action: Action) -> Effect<Action> {
     switch action {
-        
-    /// 링크 데이터 불러오기
+      
+      /// 링크 데이터 불러오기
     case .fetchLinks:
       return .run { (send: Send<Action>) in
         let result: TaskResult<[LinkItem]> = await TaskResult {
@@ -220,14 +234,14 @@ private extension LinkListFeature {
         }
         await send(.fetchLinksResponse(result))
       }
-
-    /// 링크 데이터 성공적으로 로드됨
+      
+      /// 링크 데이터 성공적으로 로드됨
     case let .fetchLinksResponse(.success(items)):
       let sorted = items.sorted { $0.createAt > $1.createAt }
       state.allLinks = sorted
       state.articleList.link = sorted
       state.articleList.sortOrder = .latest
-
+      
       if let selected = state.selectedCategory {
         // 목록도 필터
         state.articleList.link = sorted.filter { $0.category?.categoryName == selected.categoryName }
@@ -248,20 +262,20 @@ private extension LinkListFeature {
         }
       }
       return .none
-
-    /// 데이터 로드 실패
+      
+      /// 데이터 로드 실패
     case let .fetchLinksResponse(.failure(error)):
       print("LinkList fetch failed:", error)
       return .none
-
-    /// 카테고리 목록 불러오기
+      
+      /// 카테고리 목록 불러오기
     case .fetchCategories:
       return .run { (send: Send<Action>) in
         let items = try swiftDataClient.fetchCategories()
         await send(.responseCategoryItems(items))
       }
-
-    /// 카테고리 목록 로드 후 바텀시트 표시
+      
+      /// 카테고리 목록 로드 후 바텀시트 표시
     case .responseCategoryItems(let items):
       /// 전체 카테고리 + 실제 카테고리 목록 구성
       let allCategory = CategoryProps(id: uuid(), title: "전체")
