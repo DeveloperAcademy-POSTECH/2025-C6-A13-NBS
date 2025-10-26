@@ -117,6 +117,7 @@ extension LinkListView: View {
             store.send(.bottomSheetButtonTapped)
           }
         )
+        .padding(.bottom, 16)
         
         ArticleFilterList(
           store: store.scope(
