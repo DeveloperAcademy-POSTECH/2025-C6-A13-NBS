@@ -11,7 +11,7 @@ import Domain
 @Reducer
 struct MyCategoryCollectionFeature {
   
-  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -47,9 +47,8 @@ struct MyCategoryCollectionFeature {
     Reduce { state, action in
       switch action {
       case .topAppBar(.tapBackButton):
-        return .run { _ in
-          await self.dismiss()
-        }
+        linkNavigator.pop()
+        return .none
         
       case .topAppBar(.tapSettingButton):
         state.settingModal = SettingFeature.State()
