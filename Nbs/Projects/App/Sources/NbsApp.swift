@@ -2,9 +2,14 @@ import SwiftUI
 import SwiftData
 import Domain
 import Feature
+import LinkNavigator
 
 @main
 struct NbsApp: App {
+  let singleNavigator = SingleLinkNavigator(
+    routeBuilderItemList: AppRouterGroup().routers(),
+    dependency: AppDependency()
+  )
 //  let sharedModelContainer: ModelContainer
 //
 //  init() {
@@ -16,7 +21,10 @@ struct NbsApp: App {
   
   var body: some Scene {
     WindowGroup {
-      HomeEntryView()
+      LinkNavigationView(
+        linkNavigator: singleNavigator,
+        item: .init(path: "home"))
+      .ignoresSafeArea()
     }
     .modelContainer(AppGroupContainer.shared)
   }
