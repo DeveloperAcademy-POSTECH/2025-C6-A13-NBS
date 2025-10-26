@@ -70,7 +70,7 @@ extension TopAppBarSearch: View {
         )
         .focused(isFocused)
         .font(.B1_M)
-        .foregroundColor(text.isEmpty ? .text1 : .caption1)
+        .foregroundColor(.text1)
         
         if !text.isEmpty {
           Button {
