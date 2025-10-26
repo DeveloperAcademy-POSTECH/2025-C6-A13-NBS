@@ -62,10 +62,7 @@ extension TopAppBarSearch: View {
           .padding(.leading, 4)
       }
 
-      ZStack {
-        RoundedRectangle(cornerRadius: 12)
-          .fill(Color(.systemGray6))
-        
+      HStack(spacing: 0) {
         TextField(
           "검색어를 입력해주세요",
           text: $text,
@@ -74,24 +71,24 @@ extension TopAppBarSearch: View {
         .focused(isFocused)
         .font(.B1_M)
         .foregroundColor(text.isEmpty ? .text1 : .caption1)
-        .padding(.horizontal, 12)
-        .overlay(
-          HStack {
-            Spacer()
-            if !text.isEmpty {
-              Button {
-                text = ""
-                onClear?()
-              } label: {
-                Image(icon: Icon.smallxCircleFilled)
-                  .foregroundColor(.n80)
-              }
-              .padding(.trailing, 8)
-            }
+        
+        if !text.isEmpty {
+          Button {
+            text = ""
+            onClear?()
+          } label: {
+            Image(icon: Icon.smallxCircleFilled)
+              .foregroundColor(.n80)
           }
-        )
+          .padding(.trailing, 8)
+        }
       }
+      .padding(.leading, 8)
       .frame(height: 40)
+      .background(
+        RoundedRectangle(cornerRadius: 12)
+          .fill(Color(.systemGray6))
+      )
       .frame(maxWidth: .infinity)
       .padding(.trailing, 20)
     }
