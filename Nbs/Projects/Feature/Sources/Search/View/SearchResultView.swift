@@ -46,7 +46,7 @@ extension SearchResultView {
             .clipShape(.capsule)
             .overlay {
               RoundedRectangle(cornerRadius: 1000)
-                .stroke(.divider1, lineWidth: 1)
+                .strokeBorder(.divider1, lineWidth: 1)
             }
           }
           .buttonStyle(.plain)
