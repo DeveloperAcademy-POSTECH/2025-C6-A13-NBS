@@ -14,7 +14,7 @@ import Domain
 @Reducer
 struct EditCategoryIconNameFeature {
   
-  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.linkNavigator) var linkNavigator
   @Dependency(\.swiftDataClient) var swiftDataClient
   
   @ObservableState
@@ -58,10 +58,11 @@ struct EditCategoryIconNameFeature {
             category.icon = icon
           }
           try await swiftDataClient.updateCategory(category)
-          await self.dismiss()
+          linkNavigator.pop()
         }
       case .topAppBar(.tapBackButton):
-        return .run { _ in await self.dismiss() }
+        linkNavigator.pop()
+        return .none
       }
     }
   }
