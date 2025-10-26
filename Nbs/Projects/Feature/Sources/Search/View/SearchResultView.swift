@@ -21,7 +21,7 @@ extension SearchResultView {
   var body: some View {
     VStack(alignment: .leading) {
       HStack(alignment: .center) {
-        Text("'\(store.query.truncatedString(count: 7))' 관련 결과 \(store.searchResult.count)개")
+        Text("'\(store.query.truncatedString(count: 7))' 관련 결과 \(store.filteredSearchResult.count)개")
           .font(.B2_M)
           .foregroundStyle(.caption2)
           .lineLimit(1)
