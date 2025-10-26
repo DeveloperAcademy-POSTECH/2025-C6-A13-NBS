@@ -14,15 +14,6 @@ import DesignSystem
 // MARK: - Properties
 struct SearchResultView: View {
   @Bindable var store: StoreOf<SearchResultFeature>
-  
-  private var truncatedQuery: String {
-    let query = store.query
-    if query.count > 10 {
-      return String(query.prefix(10)) + "..."
-    } else {
-      return query
-    }
-  }
 }
 
 // MARK: - View
@@ -30,7 +21,7 @@ extension SearchResultView {
   var body: some View {
     VStack(alignment: .leading) {
       HStack(alignment: .center) {
-        Text("'\(truncatedQuery)' 관련 결과 \(store.searchResult.count)개")
+        Text("'\(store.query.truncatedString(count: 7))' 관련 결과 \(store.searchResult.count)개")
           .font(.B2_M)
           .foregroundStyle(.caption2)
           .lineLimit(1)
@@ -81,7 +72,7 @@ extension SearchResultView {
           }
         }
       } else {
-        EmptySearchView()
+        EmptySearchView(type: .emptyResult(searchTerm: store.query))
       }
     }
     .padding(.horizontal, 20)

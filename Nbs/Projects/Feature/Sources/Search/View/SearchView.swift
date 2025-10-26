@@ -33,7 +33,7 @@ extension SearchView {
           let recentLinksExist = !store.recentLink.recentLinkItem.isEmpty
           
           if !recentSearchesExist && !recentLinksExist {
-            EmptySearchView()
+            EmptySearchView(type: .emptyRecentSearch)
           } else {
             if recentSearchesExist {
               RecentSearchListView(store: store.scope(state: \.recentSearch, action: \.recentSearch))
