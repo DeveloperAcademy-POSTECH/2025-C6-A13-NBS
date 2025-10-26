@@ -1,5 +1,5 @@
 {
-  "originHash" : "fecbf70a57598a37d6f90d4c95830d0a967cd629a7cc8c3d1a5372e8f2abc054",
+  "originHash" : "8b691e0a6cba99fedb3880700e5c66599ddeb8ba554bb816b0131142e46c961e",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "5928286acce13def418ec36d05a001a9641086f2",
         "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "linknavigator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/interactord/LinkNavigator.git",
+      "state" : {
+        "revision" : "94b8d60b604f37e544e1e24eafe6b0684a3057b1",
+        "version" : "1.4.1"
       }
     },
     {
@@ -116,6 +125,15 @@
       "state" : {
         "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
         "version" : "602.0.0"
+      }
+    },
+    {
+      "identity" : "urlencodedform",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/interactord/URLEncodedForm",
+      "state" : {
+        "revision" : "cd690e95f0df333293ec3f9fa9c2c7322ef54bbf",
+        "version" : "1.0.9"
       }
     },
     {
