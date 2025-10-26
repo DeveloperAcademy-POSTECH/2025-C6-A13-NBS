@@ -66,6 +66,7 @@ extension TopAppBarDefaultNoSearch: View {
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())
         }
+        .padding(.trailing, 8)
       }
     .frame(height: 60)
     .background(DesignSystemAsset.background.swiftUIColor)
