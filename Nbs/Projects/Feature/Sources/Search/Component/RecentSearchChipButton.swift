@@ -23,7 +23,7 @@ extension RecentSearchChipButton {
       chipTouchAction()
     } label: {
       HStack(spacing: 4) {
-        Text(title)
+        Text(title.truncatedString(count: 7))
           .font(.B1_M)
           .foregroundStyle(.caption1)
           .lineLimit(1)
@@ -44,7 +44,7 @@ extension RecentSearchChipButton {
     .clipShape(.capsule)
     .overlay {
       RoundedRectangle(cornerRadius: 100)
-        .stroke(.divider2, lineWidth: 1)
+        .strokeBorder(.divider2, lineWidth: 1)
     }
   }
 }
