@@ -49,7 +49,7 @@ struct CategoryListFeature {
       case .categoriesResponse(.failure):
         return .none
       case .moreCategoryButtonTapped:
-        linkNavigator.push("myCategory")
+        linkNavigator.push(.myCategory, nil)
         return .none
 //        return .send(.delegate(.goToMoreLinkButtonView))
       case let .categoryTapped(category):

@@ -54,7 +54,7 @@ struct AddLinkFeature {
     Reduce { state, action in
       switch action {
       case .topAppBar(.tapBackButton):
-        return .run { _ in linkNavigator.pop() }
+        return .run { _ in await linkNavigator.pop() }
         
       case .topAppBar:
         return .none
@@ -85,7 +85,7 @@ struct AddLinkFeature {
         }
         
       case .addNewCategoryButtonTapped:
-        linkNavigator.push("addCategory")
+        linkNavigator.push(.addCategory, nil)
         return .none
         
       case .categoryGrid(.delegate(.toggleCategorySelection(let category))):
@@ -100,7 +100,7 @@ struct AddLinkFeature {
         return .none
         
       case .saveLinkResponse(.success):
-        return .run { _ in linkNavigator.pop() }
+        return .run { _ in await linkNavigator.pop() }
         
       case .saveLinkResponse(.failure(let error)):
         //TODO: 링크 저장 실패시 에러 알럿?

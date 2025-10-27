@@ -9,11 +9,13 @@ import SwiftUI
 
 import ComposableArchitecture
 import Domain
+import LinkNavigator
 
 @Reducer
 struct EditCategoryFeature {
-  
+
   @Dependency(\.linkNavigator) var linkNavigator
+//  let naviagtor: SingleLinkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -45,11 +47,12 @@ struct EditCategoryFeature {
       case .categoryGrid(.toggleCategorySelection(_)):
         return .none
       case .cancelButtonTapped:
-        linkNavigator.pop()
-        return .none
+        return .run { _ in await linkNavigator.pop() }
       case .editButtonTapped:
-        guard let category = state.selectedCategory else { return .none }
-        linkNavigator.push(Route.editCategoryNameIcon.rawValue)
+        guard
+          let category = state.selectedCategory
+        else { return .none }
+        linkNavigator.push(.editCategoryNameIcon, category)
         return .none
       }
     }

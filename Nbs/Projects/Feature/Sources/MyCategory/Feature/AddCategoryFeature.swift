@@ -31,11 +31,10 @@ struct AddCategoryFeature {
         return .run {
           send in
           try await swiftDataClient.addCategory(newCategory)
-          linkNavigator.pop()
+          await linkNavigator.pop()
         }
       case .cancelButtonTapped:
-        linkNavigator.pop()
-        return .none
+        return .run { _ in await linkNavigator.pop() }
       case .binding:
         return .none
       }

@@ -40,8 +40,7 @@ struct MyCategoryCollectionFeature {
     Reduce { state, action in
       switch action {
       case .topAppBar(.tapBackButton):
-        linkNavigator.pop()
-        return .none
+        return .run { _ in await linkNavigator.pop() }
         
       case .topAppBar(.tapSettingButton):
         state.settingModal = SettingFeature.State()
@@ -54,13 +53,13 @@ struct MyCategoryCollectionFeature {
         state.settingModal = nil
         return .none
       case .settingModal(.addButtonTapped):
-        linkNavigator.push(Route.addCategory.rawValue)
+        linkNavigator.push(.addCategory, nil)
         return .none
       case .settingModal(.editButtonTapped):
-        linkNavigator.push(Route.editCategory.rawValue)
+        linkNavigator.push(.editCategory, nil)
         return .none
       case .settingModal(.deleteButtonTapped):
-        linkNavigator.push(Route.deleteCategory.rawValue)
+        linkNavigator.push(.deleteCategory, nil)
         return .none
       }
     }

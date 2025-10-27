@@ -21,13 +21,13 @@ struct EditCategoryIconNameFeature {
   struct State: Equatable {
     var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: "카테고리 수정하기")
     var categoryName: String
-    var category: CategoryItem
+    var category: CategoryItem?
     var selectedIcon: CategoryIcon?
     
-    init(category: CategoryItem) {
+    init(category: CategoryItem?) {
       self.category = category
-      self.categoryName = category.categoryName
-      self.selectedIcon = category.icon
+      self.categoryName = category?.categoryName ?? ""
+      self.selectedIcon = category?.icon ?? .init(number: 1)
     }
   }
   
@@ -53,16 +53,17 @@ struct EditCategoryIconNameFeature {
         return .none
       case .compeleteButtonTapped:
         return .run { [category = state.category, name = state.categoryName, icon = state.selectedIcon] _ in
-          category.categoryName = name
+          category?.categoryName = name
           if let icon {
-            category.icon = icon
+            category?.icon = icon
           }
-          try await swiftDataClient.updateCategory(category)
-          linkNavigator.pop()
+          if let categoryToUpdate = category {
+            try? await swiftDataClient.updateCategory(categoryToUpdate)
+          }
+          await linkNavigator.pop()
         }
       case .topAppBar(.tapBackButton):
-        linkNavigator.pop()
-        return .none
+        return .run { _ in await linkNavigator.pop() }
       }
     }
   }
