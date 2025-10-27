@@ -11,7 +11,7 @@ import DesignSystem
 
 /// 링크 리스트의 하단 필터링 된 기사리스트
 struct ArticleFilterList {
-  let store: StoreOf<ArticleFilterFeature>
+  @Bindable var store: StoreOf<ArticleFilterFeature>
 }
 
 // MARK: - Body
@@ -79,22 +79,14 @@ extension ArticleFilterList: View {
     }
   }
   
+  @ViewBuilder
   private var articleList: some View {
-    ForEach(store.state.link) { article in
-      Button {
-        store.send(.listCellTapped(article))
-      } label: {
-        ArticleCard(
-          title: article.title,
-          categoryName: article.category?.categoryName,
-          imageURL: article.imageURL ?? "photo",
-          dateString: article.createAt.formatted(date: .numeric, time: .omitted)
-        )
-        .simultaneousGesture(
-          LongPressGesture().onEnded { _ in
-            store.send(.listCellLongPressed(article))
-          }
-        )
+    if store.link.isEmpty {
+      EmptyLinkView()
+        .padding(.top, 140)
+    } else {
+      ForEach(store.link) { article in
+        ArticleRowView(article: article, store: store)
       }
     }
   }

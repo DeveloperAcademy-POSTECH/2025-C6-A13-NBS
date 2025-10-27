@@ -95,6 +95,7 @@ struct SearchFeature {
         case .chipTapped(let term):
           state.isSearchSubmitted = true
           return .run { send in
+            await send(.topAppBar(.setSearchFieldFocus(false)))
             await send(.topAppBar(.setSearchText(term)))
             await send(.searchResult(.loadSearchResult(term)))
           }

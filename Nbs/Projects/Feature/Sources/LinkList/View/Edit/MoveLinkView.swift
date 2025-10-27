@@ -107,7 +107,7 @@ extension MoveLinkView {
           title: link.title,
           categoryName: link.category?.categoryName,
           imageURL: link.imageURL,
-          dateString: link.createAt.formatted(DateFormatter.date),
+          dateString: link.createAt.formattedKoreanDate(),
           isSelected: binding,
           editMode: .active
         )
