@@ -19,4 +19,18 @@ public extension String {
       return self
     }
   }
+  
+  /// HTML 엔티티를 디코딩하는 메소드
+  ///
+  /// 예시: '&quot'; -> "
+  /// - Returns: HTML 엔티티가 디코딩된 문자열.
+  func decodeHtmlEntities() -> String {
+    guard let data = self.data(using: .utf8) else { return self }
+    let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+      .documentType: NSAttributedString.DocumentType.html,
+      .characterEncoding: String.Encoding.utf8.rawValue
+    ]
+    guard let attributedString = try? NSAttributedString(data: data, options: options, documentAttributes: nil) else { return self }
+    return attributedString.string
+  }
 }
