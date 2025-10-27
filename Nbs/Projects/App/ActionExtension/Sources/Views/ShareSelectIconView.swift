@@ -71,8 +71,9 @@ extension ShareSelectIconView {
       
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 16) {
-          ForEach(0..<15, id: \.self) { icon in
+          ForEach(1..<16, id: \.self) { icon in
             let icon = CategoryIcon(number: icon)
+            
             CategoryButton(
               type: .nontitle,
               icon: icon.name,
