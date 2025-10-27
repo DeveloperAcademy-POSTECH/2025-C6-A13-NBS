@@ -106,7 +106,7 @@ extension DeleteLinkView {
           title: link.title,
           categoryName: link.category?.categoryName,
           imageURL: link.imageURL,
-          dateString: link.createAt.formatted(DateFormatter.date),
+          dateString: link.createAt.formattedKoreanDate(),
           isSelected: binding,
           editMode: .active
         )
@@ -123,7 +123,10 @@ extension DeleteLinkView {
         store.send(.cancelTapped)
       }
       
-      MainButton("삭제하기", style: .danger, isDisabled: store.selectedLinks.isEmpty
+      MainButton(
+        "\(store.selectedLinks.isEmpty ? "" : "(\(store.selectedLinks.count)) " )삭제하기",
+        style: .danger,
+        isDisabled: store.selectedLinks.isEmpty
       ) {
         store.send(.confirmDeleteTapped)
       }
