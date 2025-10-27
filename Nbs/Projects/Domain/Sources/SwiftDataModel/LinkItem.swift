@@ -9,9 +9,9 @@ import Foundation
 import SwiftData
 
 @Model
-public final class LinkItem {
+public final class LinkItem: Codable {
   @Attribute(.unique) public var id: String
-  public var urlString: String // URL
+  @Attribute(.unique) public var urlString: String // URL
   public var title: String // 기사 제목
   public var createAt: Date // 링크 저장 날짜
   public var lastViewedDate: Date // 마지막으로 본 날짜
