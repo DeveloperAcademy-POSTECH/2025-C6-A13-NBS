@@ -23,7 +23,7 @@ extension LinkDetailView: View {
         .ignoresSafeArea()
       VStack {
         navigationBar
-        ScrollView {
+        ScrollView(.vertical, showsIndicators: false) {
           LazyVStack(spacing: 24) {
             articleContensts
             bottomContents
@@ -121,13 +121,19 @@ extension LinkDetailView: View {
   private var bottomContents: some View {
     VStack {
       LinkDetailSegment(selectedTab: $selectedTab)
-        .frame(height: 37)
+        .frame(height: 45)
       
       switch selectedTab {
       case .summary:
-        SummaryView(link: store.link)
+        if store.link.highlights.isEmpty {
+          EmptyLinkDetailView()
+            .padding(.top, 80)
+        } else {
+          SummaryView(link: store.link)
+        }
       case .memo:
         AddMemoView()
+          .padding(20)
       }
     }
   }
