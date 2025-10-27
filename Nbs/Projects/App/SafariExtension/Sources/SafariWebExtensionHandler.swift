@@ -40,8 +40,11 @@ final class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
         return
       }
       
-      let highlights = self.fetchHighlights(for: url)
-      self.sendResponse(to: context, with: ["highlights": highlights])
+      if let highlights = self.fetchHighlights(for: url) {
+          self.sendResponse(to: context, with: ["highlights": highlights])
+      } else {
+          self.sendResponse(to: context, with: ["highlights": []]) 
+      }
       
     default:
       self.sendResponse(to: context, with: ["error": "Unknown action"])
@@ -72,9 +75,9 @@ private extension SafariWebExtensionHandler {
 
 // MARK: - Communication Method
 private extension SafariWebExtensionHandler {
-  func fetchHighlights(for urlString: String) -> [[String: Any]] {
+  func fetchHighlights(for urlString: String) -> Any? {
     guard let container = SafariWebExtensionHandler.createSharedModelContainer() else {
-      return []
+      return nil
     }
     
     let context = ModelContext(container)
@@ -82,25 +85,21 @@ private extension SafariWebExtensionHandler {
     let fetchDescriptor = FetchDescriptor<LinkItem>(predicate: #Predicate { $0.urlString == urlString })
     
     guard let linkItem = try? context.fetch(fetchDescriptor).first else {
-      return []
+      return nil
     }
     
     let highlights = linkItem.highlights
-  
-    let serializableHighlights: [[String: Any]] = highlights.map { highlight in
-      let commentData = highlight.comments.map { comment in
-        return ["id": comment.id, "text": comment.text, "type": comment.type]
-      }
-      return [
-        "id": highlight.id,
-        "sentence": highlight.sentence,
-        "type": highlight.type,
-        "createdAt": highlight.createdAt.timeIntervalSince1970,
-        "comments": commentData
-      ]
-    }
     
-    return serializableHighlights
+    do {
+      let encoder = JSONEncoder()
+      encoder.dateEncodingStrategy = .secondsSince1970
+      let jsonData = try encoder.encode(highlights)
+      let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: .allowFragments)
+      return jsonObject
+    } catch {
+      print("하이라이트 인코딩 실패: \(error)")
+      return nil
+    }
   }
   
   func sendResponse(to context: NSExtensionContext, with message: [String: Any]) {
@@ -109,3 +108,5 @@ private extension SafariWebExtensionHandler {
     context.completeRequest(returningItems: [response], completionHandler: nil)
   }
 }
+
+
