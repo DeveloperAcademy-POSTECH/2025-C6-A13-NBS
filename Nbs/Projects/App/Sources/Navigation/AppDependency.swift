@@ -6,5 +6,13 @@
 //
 
 import LinkNavigator
+import SwiftData
+import Domain
 
-struct AppDependency: DependencyType { }
+public struct AppDependency: DependencyType, HasModelContainer {
+  public let modelContainer: ModelContainer
+
+  public init(modelContainer: ModelContainer) {
+    self.modelContainer = modelContainer
+  }
+}

@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+
 import Domain
 import Feature
 import LinkNavigator
@@ -8,7 +9,7 @@ import LinkNavigator
 struct NbsApp: App {
   let singleNavigator = SingleLinkNavigator(
     routeBuilderItemList: AppRouterGroup().routers(),
-    dependency: AppDependency()
+    dependency: AppDependency(modelContainer: AppGroupContainer.shared)
   )
 //  let sharedModelContainer: ModelContainer
 //
