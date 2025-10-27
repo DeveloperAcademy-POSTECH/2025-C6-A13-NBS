@@ -26,7 +26,7 @@ struct ShareSelectIconView: View {
 extension ShareSelectIconView {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      Color.white.ignoresSafeArea()
+      Color.background.ignoresSafeArea()
       VStack(alignment: .center, spacing: 0) {
         Separator()
           .padding(.bottom, 8)
