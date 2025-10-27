@@ -83,15 +83,13 @@ struct LinkListFeature {
     
     /// UI 처리 전용 Reducer
     Reduce(self.uiReducer)
-    
-    /// 데이터 로드 전용 Reducer
-    Reduce(self.dataReducer)
-    
-    /// 시트 Reducer 연결
       .ifLet(\.$editSheet, action: \.editSheet) { EditSheetFeature() }
       .ifLet(\.$moveLink, action: \.moveLink) { MoveLinkFeature() }
       .ifLet(\.$deleteLink, action: \.deleteLink) { DeleteLinkFeature() }
       .ifLet(\.$selectBottomSheet, action: \.selectBottomSheet) { SelectBottomSheetFeature() }
+    
+    /// 데이터 로드 전용 Reducer
+    Reduce(self.dataReducer)
   }
 }
 
