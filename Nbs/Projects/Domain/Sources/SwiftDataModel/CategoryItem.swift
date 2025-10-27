@@ -21,7 +21,7 @@ public struct CategoryIcon: Codable, Hashable {
 }
 
 @Model
-public final class CategoryItem: Identifiable {
+public final class CategoryItem: Identifiable, Codable {
   @Attribute(.unique) public var id: UUID
   @Attribute(.unique) public var categoryName: String // 카테고리 이름
   public var createdAt: Date
@@ -37,5 +37,25 @@ public final class CategoryItem: Identifiable {
     self.categoryName = categoryName
     self.createdAt = Date()
     self.icon = icon
+  }
+  
+  enum CodingKeys: CodingKey {
+    case id, categoryName, createAt, icon
+  }
+  
+  public required init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.id = try container.decode(UUID.self, forKey: .id)
+    self.categoryName = try container.decode(String.self, forKey: .categoryName)
+    self.createdAt = try container.decode(Date.self, forKey: .createAt)
+    self.icon = try container.decode(CategoryIcon.self, forKey: .icon)
+  }
+  
+  public func encode(to encoder: any Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(id, forKey: .id)
+    try container.encode(categoryName, forKey: .categoryName)
+    try container.encode(createdAt, forKey: .createAt)
+    try container.encode(icon, forKey: .icon)
   }
 }
