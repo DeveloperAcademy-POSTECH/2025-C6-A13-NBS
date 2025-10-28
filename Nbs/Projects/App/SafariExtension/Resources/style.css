@@ -1,10 +1,11 @@
 .highlighted-text {
     /* 배경색은 data-attribute로 제어하므로 여기서는 제거 */
     /* color는 아래에서 설정 */
+    all: revert;
 }
-.highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); color: inherit; }
-.highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: inherit; }
-.highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: inherit; }
+.highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); }
+.highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); }
+.highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); }
 
 #tulip-menu { position: absolute; background: white; border: 0px solid #ccc; border-radius: 30px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; font-family: sans-serif; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
 #tulip-menu:after, #tulip-menu:before { top: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; }
