@@ -12,6 +12,8 @@ struct SwiftDataClient {
   var addLink: (ArticleItem) throws -> Void
   var updateLinkLastViewed: (ArticleItem) throws -> Void
   var fetchRecentLinks: () throws -> [ArticleItem]
+  var deleteLink: (ArticleItem) throws -> Void
+  var deleteLinks: ([ArticleItem]) throws -> Void
   
   // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
@@ -53,6 +55,14 @@ extension SwiftDataClient: DependencyKey {
         )
         descriptor.fetchLimit = 6
         return try modelContext.fetch(descriptor)
+      },
+      deleteLink: { link in
+        modelContext.delete(link)
+        try modelContext.save()
+      },
+      deleteLinks: { links in
+        links.forEach { modelContext.delete($0) }
+        try modelContext.save()
       },
       fetchCategories: {
         let descriptor = FetchDescriptor<CategoryItem>()
