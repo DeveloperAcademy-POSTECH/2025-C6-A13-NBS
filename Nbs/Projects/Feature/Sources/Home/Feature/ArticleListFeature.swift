@@ -39,8 +39,8 @@ struct ArticleListFeature {
           linkNavigator.push(.linkList, nil)
         }
         
-      case .listCellTapped(_):
-        linkNavigator.push(.linkDetail, state.articles[0])
+      case .listCellTapped(let article):
+        linkNavigator.push(.linkDetail, article)
         return .none
 //        return .send(.delegate(.openLinkDetail(article)))
         

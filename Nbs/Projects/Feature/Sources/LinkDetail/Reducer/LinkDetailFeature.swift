@@ -14,7 +14,7 @@ struct LinkDetailFeature {
   
   @ObservableState
   struct State: Equatable {
-    var id: String { link.id }
+//    var id: String { link.id }
     var link: ArticleItem
   }
   
