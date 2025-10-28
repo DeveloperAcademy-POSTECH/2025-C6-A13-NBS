@@ -35,11 +35,12 @@ struct ArticleListFeature {
     Reduce { state, action in
       switch action {
       case .moreLinkButtonTapped:
-          return .none
-//        return /*.send(.delegate(.openLinkList))*/.none
+        return .run { _ in
+          linkNavigator.push(.linkList, nil)
+        }
         
-      case let .listCellTapped(article):
-        linkNavigator.push(.addCategory, nil)
+      case .listCellTapped(let article):
+        linkNavigator.push(.linkDetail, article)
         return .none
 //        return .send(.delegate(.openLinkDetail(article)))
         

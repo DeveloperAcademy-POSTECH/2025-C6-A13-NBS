@@ -8,12 +8,14 @@
 import ComposableArchitecture
 import Domain
 import DesignSystem
+import LinkNavigator
 
 @Reducer
 struct LinkListFeature {
   // MARK: - Dependencies
   @Dependency(\.swiftDataClient) var swiftDataClient
   @Dependency(\.uuid) var uuid
+  @Dependency(\.linkNavigator) var linkNavigator
   
   // MARK: - State
   @ObservableState
@@ -110,7 +112,7 @@ private extension LinkListFeature {
       state.editSheet = EditSheetFeature.State(link: link)
       return .none
       
-      /// 카테고리 버튼 클릭 -> 카테고리 목록 요청
+      /// 카테고리 시트 클릭 -> 카테고리 목록 요청
     case .bottomSheetButtonTapped:
       return .send(.fetchCategories)
       
@@ -198,9 +200,6 @@ private extension LinkListFeature {
       state.selectBottomSheet = nil
       return .none
       
-      /// 링크 탭 -> 상세화면으로 Delegate 전달
-    case let .articleList(.delegate(.openLinkDetail(link))):
-      return .send(.delegate(.openLinkDetail(link)))
       
       /// 링크 롱프레스 -> 편집 시트 표시로 연결
     case let .articleList(.delegate(.longPressed(link))):
@@ -210,7 +209,6 @@ private extension LinkListFeature {
     case .categoryChipList, .articleList, .editSheet, .moveLink, .deleteLink, .selectBottomSheet, .delegate:
       return .none
       
-      /// 데이터 관련 케이스는 아래 dataReducer에서 처리
     default:
       return .none
     }

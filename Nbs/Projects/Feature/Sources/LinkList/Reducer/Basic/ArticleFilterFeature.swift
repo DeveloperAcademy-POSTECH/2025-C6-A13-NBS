@@ -10,6 +10,7 @@ import Domain
 
 @Reducer
 struct ArticleFilterFeature {
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State {
@@ -37,9 +38,9 @@ struct ArticleFilterFeature {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case let .listCellTapped(link):
-        state.selectedLink = link
-        return .send(.delegate(.openLinkDetail(link)))
+      case .listCellTapped(let article):
+        linkNavigator.push(.linkDetail, article)
+        return .none
         
       case let .listCellLongPressed(link):
         return .send(.delegate(.longPressed(link)))
