@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import Domain
 import LinkNavigator
 
 public struct LinkDetailRouteBuilder {
@@ -15,9 +16,12 @@ public struct LinkDetailRouteBuilder {
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
     let matchPath = Route.linkDetail.rawValue
-    return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
-      WrappingController(matchPath: matchPath) {
-        LinkDetailView(store: Store(initialState: LinkDetailFeature.State(link: <#ArticleItem#>)) {
+    return .init(matchPath: matchPath) { navigator, item, _ -> RouteViewController? in
+      
+      let query: ArticleItem? = item.decoded()
+  
+      return WrappingController(matchPath: matchPath) {
+        LinkDetailView(store: Store(initialState: LinkDetailFeature.State(link: query!)) {
           LinkDetailFeature()
             .dependency(\.linkNavigator, .init(navigator: navigator))
         })
