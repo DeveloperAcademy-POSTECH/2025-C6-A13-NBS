@@ -44,7 +44,7 @@ struct LinkListFeature {
     case articleList(ArticleFilterFeature.Action)
     
     /// UI 이벤트
-    case bottomSheetButtonTapped(Bool)
+    case bottomSheetButtonTapped
     case linkLongPressed(ArticleItem)
     case editButtonTapped
     
@@ -59,6 +59,8 @@ struct LinkListFeature {
     /// 데이터 로드 관련
     case fetchLinks
     case fetchLinksResponse(TaskResult<[ArticleItem]>)
+    case fetchCategories
+    case responseCategoryItems([CategoryItem])
   
     case delegate(Delegate)
     enum Delegate {
@@ -223,7 +225,7 @@ private extension LinkListFeature {
       /// 링크 데이터 불러오기
     case .fetchLinks:
       return .run { (send: Send<Action>) in
-        let result: TaskResult<[LinkItem]> = await TaskResult {
+        let result: TaskResult<[ArticleItem]> = await TaskResult {
           try swiftDataClient.fetchLinks()
         }
         await send(.fetchLinksResponse(result))
