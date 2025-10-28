@@ -9,10 +9,4 @@ import LinkNavigator
 import SwiftData
 import Domain
 
-public struct AppDependency: DependencyType, HasModelContainer {
-  public let modelContainer: ModelContainer
-
-  public init(modelContainer: ModelContainer) {
-    self.modelContainer = modelContainer
-  }
-}
+public struct AppDependency: DependencyType {}

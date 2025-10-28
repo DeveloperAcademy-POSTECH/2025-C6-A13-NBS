@@ -9,7 +9,8 @@ import LinkNavigator
 struct NbsApp: App {
   let singleNavigator = SingleLinkNavigator(
     routeBuilderItemList: AppRouterGroup().routers(),
-    dependency: AppDependency(modelContainer: AppGroupContainer.shared)
+    dependency: AppDependency()
+//    dependency: AppDependency(modelContainer: AppGroupContainer.shared)
   )
 //  let sharedModelContainer: ModelContainer
 //
