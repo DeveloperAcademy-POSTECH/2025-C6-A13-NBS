@@ -231,9 +231,29 @@ function showTulipMenu(span) {
   
   const spanRect = span.getBoundingClientRect();
   const menuRect = menu.getBoundingClientRect();
+  const fixedHeaderHeight = getFixedHeaderHeight();
+
   menu.style.position = 'absolute';
-  menu.style.top = `${window.scrollY + spanRect.top - menuRect.height - 10}px`;
-  menu.style.left = `${window.scrollX + spanRect.left + (spanRect.width / 2) - (menuRect.width / 2)}px`;
+  
+  // 메뉴의 가로 위치 계산 및 화면 벗어남 방지
+  let left = window.scrollX + spanRect.left + (spanRect.width / 2) - (menuRect.width / 2);
+  if (left < window.scrollX) {
+    left = window.scrollX + 10; // 화면 왼쪽에 여백
+  }
+  if (left + menuRect.width > window.scrollX + window.innerWidth) {
+    left = window.scrollX + window.innerWidth - menuRect.width - 10; // 화면 오른쪽에 여백
+  }
+
+  // 메뉴의 세로 위치 계산 (기본적으로 하이라이트 위에 표시)
+  let top = window.scrollY + spanRect.top - menuRect.height - 10;
+  
+  // 메뉴가 화면 상단 또는 고정 헤더 뒤로 갈 경우, 하이라이트 아래에 표시
+  if (top < window.scrollY + fixedHeaderHeight) {
+    top = window.scrollY + spanRect.bottom + 10;
+  }
+
+  menu.style.left = `${left}px`;
+  menu.style.top = `${top}px`;
 }
 
 // 삭제 확인 모달을 표시하는 함수
@@ -292,7 +312,7 @@ function showDeleteConfirmationModal(onConfirm) {
   document.body.appendChild(modal);
 }
 
-// 더블탭 이벤트 처리ㄱ
+// 더블탭 이벤트 처리
 document.addEventListener('dblclick', function(event) {
   // 메모 캡슐 내부에서 더블 클릭 시 이벤트 전파 및 기본 동작 방지
   if (event.target.closest('.memo-capsule')) {
@@ -594,7 +614,11 @@ async function loadHighlights() {
     
     const highlightsToApply = [...officialHighlights, ...draftsForThisPage];
     
-    findAndApplyHighlights(highlightsToApply);
+    // React와 같은 서버 사이드 렌더링 라이브러리와의 충돌(Hydration 오류)을 피하기 위해
+    // 하이라이트 적용을 1초 지연시킵니다.
+    setTimeout(() => {
+      findAndApplyHighlights(highlightsToApply);
+    }, 1000);
   } catch (e) {
     console.error("하이라이트 로딩 중 오류 발생:", e);
   }
