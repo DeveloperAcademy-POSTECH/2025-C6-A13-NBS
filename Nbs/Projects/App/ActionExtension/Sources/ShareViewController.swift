@@ -41,10 +41,6 @@ private extension ShareViewController {
   
   func configureHostingController() {
     let container = AppGroupContainer.shared
-//    guard let container = AppGroupContainer.createShareModelContainer() else {
-//      self.closeExtension(clearDrafts: false)
-//      return
-//    }
     
     let rootView = RootWrapperView(container: container) { [weak self] selectedCategory in
       guard let self = self else { return }

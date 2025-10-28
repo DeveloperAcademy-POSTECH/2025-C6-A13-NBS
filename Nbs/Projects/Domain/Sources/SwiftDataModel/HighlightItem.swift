@@ -21,7 +21,7 @@ public struct Comment: Codable, Hashable {
 }
 
 @Model
-public final class HighlightItem {
+public final class HighlightItem: Codable, Identifiable {
   @Attribute(.unique) public var id: String
   public var sentence: String // 하이라이팅 문장
   public var type: String // 하이라이팅 타입 (What/Why/Detail)
@@ -62,5 +62,27 @@ public final class HighlightItem {
     self.type = type
     self.createdAt = createdAt
     self.comments = comments
+  }
+  
+  enum CodingKeys: CodingKey {
+    case id, sentence, type, createAt, commentsJSON
+  }
+  
+  public required init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.id = try container.decode(String.self, forKey: .id)
+    self.sentence = try container.decode(String.self, forKey: .sentence)
+    self.type = try container.decode(String.self, forKey: .type)
+    self.createdAt = try container.decode(Date.self, forKey: .createAt)
+    self.commentsJSON = try container.decode(String.self, forKey: .commentsJSON)
+  }
+  
+  public func encode(to encoder: any Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(id, forKey: .id)
+    try container.encode(sentence, forKey: .sentence)
+    try container.encode(type, forKey: .type)
+    try container.encode(createdAt, forKey: .createAt)
+    try container.encode(commentsJSON, forKey: .commentsJSON)
   }
 }
