@@ -2,9 +2,9 @@
     /* 배경색은 data-attribute로 제어하므로 여기서는 제거 */
     /* color는 아래에서 설정 */
 }
-.highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); color: black; }
-.highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: black; }
-.highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: black; }
+.highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); color: inherit; }
+.highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: inherit; }
+.highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: inherit; }
 
 #tulip-menu { position: absolute; background: white; border: 0px solid #ccc; border-radius: 30px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; font-family: sans-serif; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
 #tulip-menu:after, #tulip-menu:before { top: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; }
@@ -17,12 +17,12 @@
 #tulip-menu button[data-highlight-type="memo"] { background-color: rgba(222, 222, 227, 1); color: rgba(21, 172, 229, 1); }
 
 #memo-box { background: rgba(246, 246, 246, 1); border-radius: 8px; display: flex; flex-direction: column; margin-top: 10px; margin-bottom: 10px; height: 113px; }
-#memo-box textarea { background: rgba(246, 246, 246, 1); border-radius: 8px; width: 100%; height: 100%; font-family: sans-serif; font-size: 14px; resize: vertical; box-sizing: border-box; border: none; padding: 16px; }
+#memo-box textarea { background: rgba(246, 246, 246, 1); border-radius: 8px; width: 100%; height: 100%; font-family: sans-serif; font-size: 16px; resize: vertical; box-sizing: border-box; border: none; padding: 16px; }
 #memo-box .memo-buttons { display: flex; justify-content: flex-end; gap: 10px; }
 #memo-box button { border: 1px solid #aaa; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
 
 .capsule-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
-.memo-capsule { display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; border-radius: 24px; color: #222; font-size: 14px; height: 40px; box-sizing: border-box; cursor: pointer; overflow: hidden; width: 167px; }
+.memo-capsule { display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; border-radius: 24px; color: #222; font-size: 16px; height: 40px; box-sizing: border-box; cursor: pointer; overflow: hidden; width: 167px; }
 .memo-capsule[data-memo-type="what"] { background-color: rgba(255, 224, 247, 1); border: 1px solid rgba(242, 71, 237, 1); color: rgba(242, 71, 237, 1); }
 .memo-capsule[data-memo-type="why"] { background-color: rgba(254, 248, 205, 1); border: 1px solid rgba(222, 146, 16, 1); color: rgba(222, 146, 16, 1); }
 .memo-capsule[data-memo-type="detail"] { background-color: rgba(219, 243, 255, 1); border: 1px solid rgba(21, 172, 229, 1); color: rgba(21, 172, 229, 1); }
@@ -62,9 +62,9 @@
 
 /* 다크 모드 스타일 */
 @media (prefers-color-scheme: dark) {
-  .highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); color: white; }
-  .highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: white; }
-  .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: white; }
+  .highlighted-text[data-highlight-type="what"] { background-color: rgba(255, 85, 249, 0.2); color: inherit; }
+  .highlighted-text[data-highlight-type="why"] { background-color: rgba(255, 241, 39, 0.2); color: inherit; }
+  .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: inherit; }
     
     #tulip-menu { background: rgba(34, 34, 42, 1); }
     #tulip-menu:after { border-top-color: rgba(34, 34, 42, 1); }
