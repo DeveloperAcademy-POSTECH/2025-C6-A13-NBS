@@ -11,7 +11,7 @@ import Domain
 import DesignSystem
 
 struct ArticleRowView: View {
-  let article: LinkItem
+  let article: ArticleItem
   @Bindable var store: StoreOf<ArticleFilterFeature>
   @State private var didLongPress = false
 

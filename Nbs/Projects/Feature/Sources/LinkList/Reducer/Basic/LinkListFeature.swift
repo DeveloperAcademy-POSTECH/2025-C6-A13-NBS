@@ -8,12 +8,14 @@
 import ComposableArchitecture
 import Domain
 import DesignSystem
+import LinkNavigator
 
 @Reducer
 struct LinkListFeature {
   // MARK: - Dependencies
   @Dependency(\.swiftDataClient) var swiftDataClient
   @Dependency(\.uuid) var uuid
+  @Dependency(\.linkNavigator) var linkNavigator
   
   // MARK: - State
   @ObservableState
@@ -59,7 +61,9 @@ struct LinkListFeature {
     /// 데이터 로드 관련
     case fetchLinks
     case fetchLinksResponse(TaskResult<[ArticleItem]>)
-  
+    case fetchCategories
+    case responseCategoryItems([CategoryItem])
+    
     case delegate(Delegate)
     enum Delegate {
       case openLinkDetail(ArticleItem)
@@ -108,7 +112,7 @@ private extension LinkListFeature {
       state.editSheet = EditSheetFeature.State(link: link)
       return .none
       
-      /// 카테고리 버튼 클릭 -> 카테고리 목록 요청
+      /// 카테고리 시트 클릭 -> 카테고리 목록 요청
     case .bottomSheetButtonTapped:
       return .send(.fetchCategories)
       
@@ -223,7 +227,7 @@ private extension LinkListFeature {
       /// 링크 데이터 불러오기
     case .fetchLinks:
       return .run { (send: Send<Action>) in
-        let result: TaskResult<[LinkItem]> = await TaskResult {
+        let result: TaskResult<[ArticleItem]> = await TaskResult {
           try swiftDataClient.fetchLinks()
         }
         await send(.fetchLinksResponse(result))
