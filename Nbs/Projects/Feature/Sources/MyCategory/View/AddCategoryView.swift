@@ -110,7 +110,7 @@ struct AddCategoryView: View {
         .padding(.horizontal, 20)
       }
     }
-    .background(DesignSystemAsset.background.swiftUIColor)
+    .background(Color.background)
     .onTapGesture {
       isFocused = false
     }
