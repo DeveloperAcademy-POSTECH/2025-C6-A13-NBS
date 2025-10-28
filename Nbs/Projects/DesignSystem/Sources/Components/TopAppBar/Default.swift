@@ -61,20 +61,20 @@ extension TopAppBarDefault: View {
               .renderingMode(.template)
               .foregroundStyle(.icon)
               .frame(width: 24, height: 24)
-              .frame(width: 44, height: 44)
               .contentShape(Rectangle())
           }
+          .frame(width: 44, height: 44)
           Button(action: onTapSettingButton) {
             Image(icon: Icon.moreVertical)
               .resizable()
               .renderingMode(.template)
               .foregroundStyle(.icon)
               .frame(width: 24, height: 24)
-              .frame(width: 44, height: 44)
               .contentShape(Rectangle())
           }
+          .frame(width: 44, height: 44)
         }
-        .padding(.trailing, 24)
+        .padding(.trailing, 8)
       }
       Text(title)
         .font(.H4_SB)

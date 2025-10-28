@@ -21,13 +21,13 @@ public struct CategoryIcon: Codable, Hashable {
 }
 
 @Model
-public final class CategoryItem: Identifiable, Codable {
+public final class CategoryItem: Identifiable, Codable, Equatable {
   @Attribute(.unique) public var id: UUID
   @Attribute(.unique) public var categoryName: String // 카테고리 이름
   public var createdAt: Date
   public var icon: CategoryIcon
   
-  @Relationship(inverse: \LinkItem.category) public var links: [LinkItem] = []
+  @Relationship(inverse: \ArticleItem.category) public var links: [ArticleItem] = []
   
   public init(
     categoryName: String,
@@ -39,23 +39,23 @@ public final class CategoryItem: Identifiable, Codable {
     self.icon = icon
   }
   
-  enum CodingKeys: CodingKey {
-    case id, categoryName, createAt, icon
+  enum CodingKeys: String, CodingKey {
+    case id, categoryName, createdAt, icon
   }
   
-  public required init(from decoder: any Decoder) throws {
+  public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     self.id = try container.decode(UUID.self, forKey: .id)
     self.categoryName = try container.decode(String.self, forKey: .categoryName)
-    self.createdAt = try container.decode(Date.self, forKey: .createAt)
+    self.createdAt = try container.decode(Date.self, forKey: .createdAt)
     self.icon = try container.decode(CategoryIcon.self, forKey: .icon)
   }
   
-  public func encode(to encoder: any Encoder) throws {
+  public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(id, forKey: .id)
     try container.encode(categoryName, forKey: .categoryName)
-    try container.encode(createdAt, forKey: .createAt)
+    try container.encode(createdAt, forKey: .createdAt)
     try container.encode(icon, forKey: .icon)
   }
 }

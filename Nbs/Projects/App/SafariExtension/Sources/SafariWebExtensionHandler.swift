@@ -56,7 +56,7 @@ final class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
 private extension SafariWebExtensionHandler {
   static func createSharedModelContainer() -> ModelContainer? {
     let appGroupID = "group.com.nbs.dev.ADA.shared"
-    let schema = Schema([LinkItem.self, HighlightItem.self, CategoryItem.self])
+    let schema = Schema([ArticleItem.self, HighlightItem.self, CategoryItem.self])
     
     guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
       return nil
@@ -82,7 +82,7 @@ private extension SafariWebExtensionHandler {
     
     let context = ModelContext(container)
     
-    let fetchDescriptor = FetchDescriptor<LinkItem>(predicate: #Predicate { $0.urlString == urlString })
+    let fetchDescriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.urlString == urlString })
     
     guard let linkItem = try? context.fetch(fetchDescriptor).first else {
       return nil

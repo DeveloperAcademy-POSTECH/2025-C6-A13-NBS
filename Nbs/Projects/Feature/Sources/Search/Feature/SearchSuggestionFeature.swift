@@ -13,19 +13,19 @@ import Domain
 struct SearchSuggestionFeature {
   @ObservableState
   struct State: Equatable {
-    var suggestionItem: [LinkItem] = []
+    var suggestionItem: [ArticleItem] = []
   }
   
   enum Action: Equatable {
     case loadSuggestionItem(String)
-    case suggestionResponse([LinkItem])
-    case suggestionTapped(LinkItem)
+    case suggestionResponse([ArticleItem])
+    case suggestionTapped(ArticleItem)
     
     case delegate(DelegateAction)
   }
   
   enum DelegateAction: Equatable {
-    case openLinkDetail(LinkItem)
+    case openLinkDetail(ArticleItem)
   }
 
   @Dependency(\.swiftDataClient) var swiftDataClient

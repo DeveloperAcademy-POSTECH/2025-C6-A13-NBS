@@ -13,7 +13,7 @@ import Domain
 @Reducer
 struct AddLinkFeature {
   
-  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -54,7 +54,7 @@ struct AddLinkFeature {
     Reduce { state, action in
       switch action {
       case .topAppBar(.tapBackButton):
-        return .run { _ in await self.dismiss() }
+        return .run { _ in await linkNavigator.pop() }
         
       case .topAppBar:
         return .none
@@ -74,7 +74,8 @@ struct AddLinkFeature {
         return .run { [linkURL = state.linkURL, selectedCategory = state.selectedCategory] send in
           do {
             let title = try await extractTitle(from: url)
-            let newLink = LinkItem(urlString: linkURL, title: title)
+            let image = try await extractImageURL(from: url)
+            let newLink = ArticleItem(urlString: linkURL, title: title, imageURL: image.absoluteString)
             newLink.category = selectedCategory
             try swiftDataClient.addLink(newLink)
             await send(.saveLinkResponse(.success(())))
@@ -84,7 +85,8 @@ struct AddLinkFeature {
         }
         
       case .addNewCategoryButtonTapped:
-        return .send(.delegate(.goToAddCategory))
+        linkNavigator.push(.addCategory, nil)
+        return .none
         
       case .categoryGrid(.delegate(.toggleCategorySelection(let category))):
         if state.selectedCategory == category {
@@ -98,7 +100,7 @@ struct AddLinkFeature {
         return .none
         
       case .saveLinkResponse(.success):
-        return .run { _ in await self.dismiss() }
+        return .run { _ in await linkNavigator.pop() }
         
       case .saveLinkResponse(.failure(let error)):
         //TODO: 링크 저장 실패시 에러 알럿?
@@ -111,7 +113,6 @@ struct AddLinkFeature {
     }
   }
   
-  //URL로 제목 추출하는 함수!
   private func extractTitle(from url: URL) async throws -> String {
     let (data, _) = try await URLSession.shared.data(from: url)
     guard let htmlString = String(data: data, encoding: .utf8) else {
@@ -127,4 +128,37 @@ struct AddLinkFeature {
     }
     throw URLError(.cannotParseResponse)
   }
+}
+
+private func extractImageURL(from url: URL) async throws -> URL {
+  let (data, _) = try await URLSession.shared.data(from: url)
+  guard let htmlString = String(data: data, encoding: .utf8) else {
+    throw URLError(.cannotDecodeContentData)
+  }
+  
+  let ogImageRegex = try NSRegularExpression(
+    pattern: "<meta[^>]*property=[\"']og:image[\"'][^>]*content=[\"']([^\"']+)[\"'][^>]*>",
+    options: [.caseInsensitive, .dotMatchesLineSeparators]
+  )
+  if let match = ogImageRegex.firstMatch(in: htmlString, options: [], range: NSRange(location: 0, length: htmlString.utf16.count)),
+     let range = Range(match.range(at: 1), in: htmlString) {
+    let imageUrlString = String(htmlString[range])
+    if let imageUrl = URL(string: imageUrlString, relativeTo: url) {
+      return imageUrl
+    }
+  }
+  
+  let imgRegex = try NSRegularExpression(
+    pattern: "<img[^>]*src=[\"']([^\"']+)[\"'][^>]*>",
+    options: [.caseInsensitive, .dotMatchesLineSeparators]
+  )
+  if let match = imgRegex.firstMatch(in: htmlString, options: [], range: NSRange(location: 0, length: htmlString.utf16.count)),
+     let range = Range(match.range(at: 1), in: htmlString) {
+    let imageUrlString = String(htmlString[range])
+    if let imageUrl = URL(string: imageUrlString, relativeTo: url) {
+      return imageUrl
+    }
+  }
+  
+  throw URLError(.fileDoesNotExist)
 }

@@ -11,7 +11,7 @@ import Domain
 @Reducer
 struct MyCategoryCollectionFeature {
   
-  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -25,13 +25,6 @@ struct MyCategoryCollectionFeature {
     case topAppBar(TopAppBarDefaultNoSearchFeature.Action)
     case categoryGrid(CategoryGridFeature.Action)
     case settingModal(SettingFeature.Action)
-    case delegate(Delegate)
-    
-    enum Delegate {
-      case addCategory
-      case editCategory
-      case deleteCategory
-    }
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -47,9 +40,7 @@ struct MyCategoryCollectionFeature {
     Reduce { state, action in
       switch action {
       case .topAppBar(.tapBackButton):
-        return .run { _ in
-          await self.dismiss()
-        }
+        return .run { _ in await linkNavigator.pop() }
         
       case .topAppBar(.tapSettingButton):
         state.settingModal = SettingFeature.State()
@@ -61,14 +52,14 @@ struct MyCategoryCollectionFeature {
       case .settingModal(.dismissButtonTapped):
         state.settingModal = nil
         return .none
-        
       case .settingModal(.addButtonTapped):
-        return .send(.delegate(.addCategory))
+        linkNavigator.push(.addCategory, nil)
+        return .none
       case .settingModal(.editButtonTapped):
-        return .send(.delegate(.editCategory))
+        linkNavigator.push(.editCategory, nil)
+        return .none
       case .settingModal(.deleteButtonTapped):
-        return .send(.delegate(.deleteCategory))
-      case .delegate(_):
+        linkNavigator.push(.deleteCategory, nil)
         return .none
       }
     }

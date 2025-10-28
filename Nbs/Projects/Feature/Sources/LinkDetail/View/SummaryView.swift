@@ -9,12 +9,11 @@ import SwiftUI
 import Domain
 
 struct SummaryView: View {
-  let link: LinkItem
+  let link: ArticleItem
 }
 
 extension SummaryView {
   var body: some View {
-    ScrollView {
       VStack(spacing: 32) {
         ForEach(groupedHighlights.keys.sorted(by: sortOrder), id: \.self) { key in
           if let items = groupedHighlights[key],
@@ -32,8 +31,7 @@ extension SummaryView {
       }
       .padding(.horizontal, 20)
       .padding(.vertical, 24)
-    }
-    .background(Color.background)
+      .background(Color.background)
   }
   
   /// 하이라이트 섹션

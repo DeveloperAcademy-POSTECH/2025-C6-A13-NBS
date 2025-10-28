@@ -16,8 +16,8 @@ import Domain
 struct SearchResultFeature {
   @ObservableState
   struct State: Equatable {
-    var searchResult: [LinkItem] = []
-    var filteredSearchResult: [LinkItem] = []
+    var searchResult: [ArticleItem] = []
+    var filteredSearchResult: [ArticleItem] = []
     var query: String = ""
     var selectedCategoryTitle: String = "카테고리"
     
@@ -26,8 +26,8 @@ struct SearchResultFeature {
   
   enum Action: Equatable {
     case loadSearchResult(String)
-    case searchResponse([LinkItem])
-    case linkCardTapped(LinkItem)
+    case searchResponse([ArticleItem])
+    case linkCardTapped(ArticleItem)
     case categoryButtonTapped
     
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
@@ -38,7 +38,7 @@ struct SearchResultFeature {
   }
   
   enum DelegateAction: Equatable {
-    case openLinkDetail(LinkItem)
+    case openLinkDetail(ArticleItem)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient

@@ -51,15 +51,46 @@ extension LinkCard {
       .padding(.vertical, 10)
       .padding(.leading, 16)
       
-      DesignSystemAsset.notImage.swiftUIImage
-        .resizable()
-        .aspectRatio(contentMode: .fit)
-        .frame(width: 84, height: 112)
-        .background(.gray)
-        .clipShape(RoundedRectangle(cornerRadius: 6))
-        .padding(.vertical, 10)
-        .padding(.leading, 12)
-        .padding(.trailing, 10)
+      if let url = URL(string: image) {
+        AsyncImage(url: url) { phase in
+          switch phase {
+          case .empty:
+            ProgressView()
+          case .success(let image):
+            image
+              .resizable()
+              .aspectRatio(contentMode: .fill)
+              .frame(width: 84, height: 112)
+              .background(.gray)
+              .clipShape(RoundedRectangle(cornerRadius: 6))
+              .padding(.vertical, 10)
+              .padding(.leading, 12)
+              .padding(.trailing, 10)
+          case .failure:
+            DesignSystemAsset.notImage.swiftUIImage
+              .resizable()
+              .aspectRatio(contentMode: .fit)
+              .frame(width: 84, height: 112)
+              .background(.gray)
+              .clipShape(RoundedRectangle(cornerRadius: 6))
+              .padding(.vertical, 10)
+              .padding(.leading, 12)
+              .padding(.trailing, 10)
+          @unknown default:
+            EmptyView()
+          }
+        }
+      } else {
+        DesignSystemAsset.notImage.swiftUIImage
+          .resizable()
+          .aspectRatio(contentMode: .fit)
+          .frame(width: 84, height: 112)
+          .background(.gray)
+          .clipShape(RoundedRectangle(cornerRadius: 6))
+          .padding(.vertical, 10)
+          .padding(.leading, 12)
+          .padding(.trailing, 10)
+      }
     }
     .frame(maxWidth: .infinity)
     .frame(maxHeight: 132)

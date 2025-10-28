@@ -13,7 +13,7 @@ import Domain
 struct MoveLinkFeature {
   @ObservableState
   struct State: Equatable {
-    var allLinks: [LinkItem] = []
+    var allLinks: [ArticleItem] = []
     var selectedLinks: Set<String> = []
     var isSelectAll: Bool = false
   }
@@ -21,14 +21,14 @@ struct MoveLinkFeature {
   enum Action: BindableAction {
     case binding(BindingAction<State>)
     case onAppear
-    case toggleSelect(LinkItem)
+    case toggleSelect(ArticleItem)
     case cancelTapped
     case confirmMoveTapped
     case delegate(Delegate)
     
     enum Delegate {
       case dismiss
-      case confirmMove(selected: [LinkItem])
+      case confirmMove(selected: [ArticleItem])
     }
   }
   

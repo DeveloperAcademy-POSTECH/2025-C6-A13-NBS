@@ -33,6 +33,7 @@ struct SelectBottomSheetFeature {
   
   enum DelegateAction: Equatable {
     case categorySelected(String?)
+    case dismiss
   }
   
   @Dependency(\.dismiss) var dismiss

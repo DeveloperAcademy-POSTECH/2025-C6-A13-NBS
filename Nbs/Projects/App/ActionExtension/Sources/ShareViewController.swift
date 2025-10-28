@@ -22,7 +22,7 @@ final class ShareViewController: UIViewController {
   private var pageTitle: String = ""
   private var pageURL: String = ""
   private var draftHighlights: [[String: Any]]? = []
-  private var currentLinkItem: LinkItem?
+  private var currentLinkItem: ArticleItem?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -182,13 +182,13 @@ private extension ShareViewController {
     
     let context = container.mainContext
     let urlString = self.pageURL
-    let fetchDescriptor = FetchDescriptor<LinkItem>(predicate: #Predicate { $0.urlString == urlString })
+    let fetchDescriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.urlString == urlString })
     
-    let linkItem: LinkItem
+    let linkItem: ArticleItem
     if let existingLink = try? context.fetch(fetchDescriptor).first {
       linkItem = existingLink
     } else {
-      linkItem = LinkItem(urlString: self.pageURL, title: self.pageTitle)
+      linkItem = ArticleItem(urlString: self.pageURL, title: self.pageTitle)
       context.insert(linkItem)
     }
     self.currentLinkItem = linkItem
