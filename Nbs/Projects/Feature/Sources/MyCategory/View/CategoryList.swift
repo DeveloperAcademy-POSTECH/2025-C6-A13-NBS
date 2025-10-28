@@ -95,8 +95,8 @@ extension CategoryListView: View {
                 Spacer()
               }
               .frame(maxWidth: .infinity, alignment: .leading)
-              .padding(.top, 16)
-              .padding(.leading, 16)
+              .padding(.top)
+              .padding(.leading)
               DesignSystemAsset.categoryIcon(number: category.icon.number)
                 .resizable()
                 .frame(width: 56, height: 56)
@@ -108,13 +108,13 @@ extension CategoryListView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
           }
           .frame(width: 160, height: 116)
-//          .background(store.selectedCategory == category ? Color.blue : Color.gray.opacity(0.2))
           .cornerRadius(12)
           .buttonStyle(.plain)
         }
       }
       .padding(.horizontal, 20)
     }
+    .ignoresSafeArea(.keyboard)
   }
 }
 

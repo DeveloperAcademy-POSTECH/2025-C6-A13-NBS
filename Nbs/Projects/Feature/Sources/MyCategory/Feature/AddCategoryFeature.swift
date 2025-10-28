@@ -16,7 +16,7 @@ struct AddCategoryFeature {
     case cancelButtonTapped
   }
   
-  @Dependency(\.dismiss) var dismiss
+  @Dependency(\.linkNavigator) var linkNavigator
   @Dependency(\.swiftDataClient) var swiftDataClient
   
   var body: some ReducerOf<Self> {
@@ -31,10 +31,10 @@ struct AddCategoryFeature {
         return .run {
           send in
           try await swiftDataClient.addCategory(newCategory)
-          await self.dismiss()
+          await linkNavigator.pop()
         }
       case .cancelButtonTapped:
-        return .run { _ in await self.dismiss() }
+        return .run { _ in await linkNavigator.pop() }
       case .binding:
         return .none
       }

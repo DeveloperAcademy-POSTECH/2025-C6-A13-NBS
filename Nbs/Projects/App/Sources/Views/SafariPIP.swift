@@ -25,8 +25,7 @@ struct SafariPIP: View {
   var body: some View {
     Group {
       if showHome {
-        HomeEntryView()
-          .background(Color.white)
+//        HomeEntryView()
       } else {
         pipView
       }

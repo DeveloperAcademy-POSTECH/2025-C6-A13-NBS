@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public final class LinkItem {
+public final class ArticleItem {
   @Attribute(.unique) public var id: String
   public var urlString: String // URL
   public var title: String // 기사 제목

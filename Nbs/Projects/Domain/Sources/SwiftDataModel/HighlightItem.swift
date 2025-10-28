@@ -48,7 +48,7 @@ public final class HighlightItem {
     }
   }
   
-  public var link: LinkItem? // 어떤 linkItem에 속해있는지 구분을 위한 구분자
+  public var link: ArticleItem? // 어떤 linkItem에 속해있는지 구분을 위한 구분자
   
   public init(
     id: String,

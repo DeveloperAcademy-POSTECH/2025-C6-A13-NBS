@@ -9,7 +9,8 @@ let packageSettings = PackageSettings(
   // Default is .staticFramework
   // productTypes: ["Alamofire": .framework,]
   productTypes: [
-    "ComposableArchitecture": .framework
+    "ComposableArchitecture": .framework,
+    "LinkNavigator": .framework
   ]
 )
 #endif
@@ -23,6 +24,7 @@ let package = Package(
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture.git",
       from: "1.10.0"
-    )
+    ),
+    .package(url: "https://github.com/interactord/LinkNavigator.git", from: "1.3.1")
   ]
 )

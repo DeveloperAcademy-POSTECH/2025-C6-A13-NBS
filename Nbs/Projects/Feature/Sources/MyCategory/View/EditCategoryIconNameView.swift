@@ -14,6 +14,7 @@ import Domain
 
 struct EditCategoryIconNameView {
   @Bindable var store: StoreOf<EditCategoryIconNameFeature>
+  @FocusState private var isFocused: Bool
   
   let columns = [
     GridItem(.flexible(), spacing: 10),
@@ -39,6 +40,7 @@ extension EditCategoryIconNameView: View {
         "카테고리명을 입력해주세요",
         text: $store.categoryName.sending(\.setCategoryName)
       )
+      .focused($isFocused)
       .padding()
       .background(
         RoundedRectangle(cornerRadius: 12)
@@ -47,6 +49,13 @@ extension EditCategoryIconNameView: View {
       )
       .padding(.top, 8)
       .padding(.horizontal, 20)
+      
+      Text("카테고리 아이콘")
+        .font(.B2_SB)
+        .foregroundStyle(.caption1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.leading, 24)
+        .padding(.top, 24)
 
       ScrollView {
         LazyVGrid(columns: columns, spacing: 10) {
@@ -61,18 +70,20 @@ extension EditCategoryIconNameView: View {
                 .overlay(
                   DesignSystemAsset.categoryIcon(number: index)
                     .resizable()
-                    .frame(width: 45, height: 55)
+                    .frame(width: 45, height: 45)
                 )
                 .overlay(
                   RoundedRectangle(cornerRadius: 12)
-                    .stroke(store.selectedIcon == icon ? .bl6 : Color.clear, lineWidth: 1)
+                    .strokeBorder(store.selectedIcon == icon ? .bl6 : Color.clear, lineWidth: 1.25)
                 )
             }
             .buttonStyle(.plain)
+            .disabled(isFocused)
           }
         }
         .padding(.horizontal, 20)
       }
+      .scrollDisabled(isFocused)
 
       MainButton(
         "완료",
@@ -83,7 +94,10 @@ extension EditCategoryIconNameView: View {
       .padding(.horizontal, 20)
     }
     .background(DesignSystemAsset.background.swiftUIColor)
+    .onTapGesture {
+      isFocused = false
+    }
     .toolbar(.hidden)
+    .ignoresSafeArea(.keyboard)
   }
 }
-

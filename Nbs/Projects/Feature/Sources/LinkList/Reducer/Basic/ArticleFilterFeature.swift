@@ -13,9 +13,9 @@ struct ArticleFilterFeature {
   
   @ObservableState
   struct State {
-    var link: [LinkItem] = []
+    var link: [ArticleItem] = []
     var sortOrder: SortOrder = .latest
-    var selectedLink: LinkItem? = nil
+    var selectedLink: ArticleItem? = nil
   }
   
   enum SortOrder: Equatable {
@@ -24,13 +24,13 @@ struct ArticleFilterFeature {
   }
   
   enum Action {
-    case listCellTapped(LinkItem)
-    case listCellLongPressed(LinkItem)
+    case listCellTapped(ArticleItem)
+    case listCellLongPressed(ArticleItem)
     case sortOrderChanged(SortOrder)
     case delegate(Delegate)
     enum Delegate {
-      case openLinkDetail(LinkItem)
-      case longPressed(LinkItem)
+      case openLinkDetail(ArticleItem)
+      case longPressed(ArticleItem)
     }
   }
   

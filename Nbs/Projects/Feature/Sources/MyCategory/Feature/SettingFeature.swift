@@ -12,6 +12,9 @@ import ComposableArchitecture
 
 @Reducer
 struct SettingFeature {
+  
+  @Dependency(\.linkNavigator) var linkNavigator
+  
   @ObservableState
   struct State: Equatable {
     

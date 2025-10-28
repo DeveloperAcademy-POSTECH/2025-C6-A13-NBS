@@ -10,35 +10,41 @@ import Domain
 
 @Reducer
 struct ArticleListFeature {
+  
+  @Dependency(\.linkNavigator) var linkNavigator
+  
   @ObservableState
   struct State {
-    var articles: [LinkItem] = []
+    var articles: [ArticleItem] = []
     var showMoreLink: Bool = false
     var showLinkDetail: Bool = false
   }
   
   enum Action {
     case moreLinkButtonTapped
-    case listCellTapped(LinkItem)
-    case delegate(Delegate)
-    
-    enum Delegate {
-      case openLinkDetail(LinkItem)
-      case openLinkList
-    }
+    case listCellTapped(ArticleItem)
+//    case delegate(Delegate)
+//    
+//    enum Delegate {
+//      case openLinkDetail(ArticleItem)
+//      case openLinkList
+//    }
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .moreLinkButtonTapped:
-        return .send(.delegate(.openLinkList))
+          return .none
+//        return /*.send(.delegate(.openLinkList))*/.none
         
       case let .listCellTapped(article):
-        return .send(.delegate(.openLinkDetail(article)))
-        
-      case .delegate:
+        linkNavigator.push(.addCategory, nil)
         return .none
+//        return .send(.delegate(.openLinkDetail(article)))
+        
+//      case .delegate:
+//        return .none
       }
     }
   }

@@ -13,7 +13,7 @@ import Domain
 struct EditSheetFeature {
   @ObservableState
   struct State: Equatable {
-    var link: LinkItem?
+    var link: ArticleItem?
   }
   
   enum Action {
@@ -24,8 +24,8 @@ struct EditSheetFeature {
     
     enum Delegate {
       case dismissSheet
-      case moveLink(LinkItem?)
-      case deleteLink(LinkItem?)
+      case moveLink(ArticleItem?)
+      case deleteLink(ArticleItem?)
     }
   }
 

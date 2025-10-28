@@ -18,7 +18,8 @@ let protject = Project.project(
       resources: .default,
       dependencies: [
         .TCA(),
-        .domain()
+        .domain(),
+        .LinkNavigator()
       ]
     )
   ]

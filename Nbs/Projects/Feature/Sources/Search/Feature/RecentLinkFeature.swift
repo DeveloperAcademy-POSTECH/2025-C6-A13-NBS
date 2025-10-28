@@ -13,19 +13,19 @@ import Domain
 struct RecentLinkFeature {
   @ObservableState
   struct State: Equatable {
-    var recentLinkItem: [LinkItem] = []
+    var recentLinkItem: [ArticleItem] = []
   }
   
   enum Action: Equatable {
     case onAppear
-    case recentLinkResponse([LinkItem])
-    case recentLinkTapped(LinkItem)
+    case recentLinkResponse([ArticleItem])
+    case recentLinkTapped(ArticleItem)
     
     case delegate(DelegateAction)
   }
   
   enum DelegateAction: Equatable {
-    case openLinkDetail(LinkItem)
+    case openLinkDetail(ArticleItem)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient

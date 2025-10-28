@@ -9,12 +9,14 @@ import SwiftUI
 
 import ComposableArchitecture
 import Domain
+import LinkNavigator
 
 @Reducer
 struct HomeFeature {
   
   @Dependency(\.clipboard) var clipboard
   @Dependency(\.swiftDataClient) var swiftDataClient
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State {
@@ -43,7 +45,7 @@ struct HomeFeature {
     case alertBannerTapped
     case fetchArticles
     case myCategoryCollection(MyCategoryCollectionFeature.Action)
-    case articlesResponse(TaskResult<[LinkItem]>)
+    case articlesResponse(TaskResult<[ArticleItem]>)
     case searchButtonTapped
     case editCategory(EditCategoryFeature.Action)
     case editCategoryIconName(EditCategoryIconNameFeature.Action)
@@ -116,71 +118,40 @@ struct HomeFeature {
         state.copiedLink = copiedText
         state.lastShownClipboardLink = copiedText
         return .none
-//        state.alertBanner = .init(
-//          text: "복사한 링크 바로 추가하기",
-//          message: copiedText
-//        )
-//        state.copiedLink = copiedText
-//        return .none
         
         /// 더보기 -> 링크 리스트
-      case .articleList(.delegate(.openLinkList)):
-        state.path.append(.linkList(LinkListFeature.State()))
-        return .none
+//      case .articleList(.delegate(.openLinkList)):
+////        state.path.append(.linkList(LinkListFeature.State()))
+//        return .run { _ in
+//        }
         
-        /// 기사 탭 -> 링크 디테일
-      case let .articleList(.delegate(.openLinkDetail(link))):
-        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
-        return .none
+//      case let .articleList(.delegate(.openLinkDetail(link))):
+//        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
+//        return .none
         
         /// 링크 리스트 -> 내부 기사 클릭
-      case let .path(.element(_, .linkList(.delegate(.openLinkDetail(link))))):
-        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
-        return .none
+//      case let .path(.element(_, .linkList(.delegate(.openLinkDetail(link))))):
+//        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
+//        return .none
         
-      case .path(.element(_, .myCategoryCollection(.delegate(.addCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
-        return .none
-        
-      case .path(.element(_, .myCategoryCollection(.delegate(.editCategory)))):
-        state.path.append(.editCategory(EditCategoryFeature.State()))
-        return .none
-        
-      case .path(.element(_, .myCategoryCollection(.delegate(.deleteCategory)))):
-        state.path.append(.deleteCategory(DeleteCategoryFeature.State()))
-        return .none
-        
-      case let .path(.element(_, .editCategory(.delegate(.editButtonTapped(category))))):
-        state.path.append(.editCategoryIconName(EditCategoryIconNameFeature.State(category: category)))
-        return .none
-        
-      case .path(.element(id: _, action: .search(.delegate(.openLinkDetail(let item))))):
-        state.path.append(.linkDetail(LinkDetailFeature.State(link: item)))
-        return .run { _ in
-          try swiftDataClient.updateLinkLastViewed(item)
-        }
+//      case .path(.element(id: _, action: .search(.delegate(.openLinkDetail(let item))))):
+//        state.path.append(.linkDetail(LinkDetailFeature.State(link: item)))
+//        return .run { _ in
+//          try swiftDataClient.updateLinkLastViewed(item)
+//        }
         
       case .dismissAlertBanner:
         state.alertBanner = nil
         return .none
         
-      case .categoryList(.delegate(.goToAddCategoryView)):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
-        return .none
-      case .path(.element(_, .addLink(.delegate(.goToAddCategory)))):
-        state.path.append(.addCategory(AddCategoryFeature.State()))
-        return .none
-        
-      case .categoryList(.delegate(.goToMoreLinkButtonView)):
-        state.path.append(.myCategoryCollection(MyCategoryCollectionFeature.State()))
-        return .none
-        
       case .floatingButtonTapped:
-        state.path.append(.addLink(AddLinkFeature.State()))
-        return .none
+        return .run { _ in
+          linkNavigator.push(.addLink, nil)
+        }
         
       case .alertBannerTapped:
         if let link = state.copiedLink {
+          //TODO: addLink로 이동
           state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
         }
         return .none
@@ -192,17 +163,6 @@ struct HomeFeature {
       case .categoryList, .articleList, .path:
         return .none
       case .editCategory(_):
-        return .none
-        
-      case .articleList, .path:
-        return .none
-      case .categoryList(.onAppear):
-        return .none
-      case .categoryList(.categoriesResponse(_)):
-        return .none
-      case .categoryList(.moreCategoryButtonTapped):
-        return .none
-      case .categoryList:
         return .none
       case .myCategoryCollection(_):
         return .none

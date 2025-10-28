@@ -21,9 +21,8 @@ struct LinkListFeature {
     // 자식 Feature 상태
     var categoryChipList = CategoryChipFeature.State()
     var articleList = ArticleFilterFeature.State()
-    
-    // 링크 데이터
-    var allLinks: [LinkItem] = []
+    var allLinks: [ArticleItem] = []
+    var showBottomSheet: Bool = false // 카테고리 선택 시트
     var selectedCategory: CategoryItem? = nil
     
     var selectedCategoryTitle: String = "카테고리"
@@ -45,8 +44,8 @@ struct LinkListFeature {
     case articleList(ArticleFilterFeature.Action)
     
     /// UI 이벤트
-    case bottomSheetButtonTapped
-    case linkLongPressed(LinkItem)
+    case bottomSheetButtonTapped(Bool)
+    case linkLongPressed(ArticleItem)
     case editButtonTapped
     
     /// 시트 관련 액션
@@ -59,14 +58,11 @@ struct LinkListFeature {
     
     /// 데이터 로드 관련
     case fetchLinks
-    case fetchLinksResponse(TaskResult<[LinkItem]>)
-    case fetchCategories
-    case responseCategoryItems([CategoryItem])
-    
-    /// 외부로 전달되는 Delegate
+    case fetchLinksResponse(TaskResult<[ArticleItem]>)
+  
     case delegate(Delegate)
     enum Delegate {
-      case openLinkDetail(LinkItem)
+      case openLinkDetail(ArticleItem)
     }
   }
   

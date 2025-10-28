@@ -6,6 +6,7 @@ import DesignSystem
 
 struct AddCategoryView: View {
   @Bindable var store: StoreOf<AddCategoryFeature>
+  @FocusState private var isFocused: Bool
   
   let columns = [
     GridItem(.flexible(), spacing: 10),
@@ -31,7 +32,8 @@ struct AddCategoryView: View {
             CategoryNamespace.categoryTextfieldPlaceHolder,
             text: $store.categoryName
           )
-          .onChange(of: store.categoryName) { newValue in
+          .focused($isFocused)
+          .onChange(of: store.categoryName) { _, newValue in
             if newValue.count > 14 {
               store.categoryName = String(newValue.prefix(14))
             }
@@ -77,25 +79,27 @@ struct AddCategoryView: View {
                   )
                   .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                      .stroke(
+                      .strokeBorder(
                         isSelected
-                        ? DesignSystemAsset.bl3.swiftUIColor
+                        ? DesignSystemAsset.bl6.swiftUIColor
                         : Color.clear,
-                        lineWidth: 2
+                        lineWidth: 1.25
                       )
                   )
                   .aspectRatio(1, contentMode: .fit)
                   .overlay(
                     DesignSystemAsset.categoryIcon(number: index)
                       .resizable()
-                      .frame(width: 45, height: 55)
+                      .frame(width: 45, height: 45)
                   )
               }
               .buttonStyle(.plain)
+              .disabled(isFocused)
             }
           }
           .padding(.horizontal, 20)
         }
+        .scrollDisabled(isFocused)
         .padding(.top, 4)
         MainButton(
           CategoryNamespace.addCategory,
@@ -107,6 +111,9 @@ struct AddCategoryView: View {
       }
     }
     .background(DesignSystemAsset.background.swiftUIColor)
+    .onTapGesture {
+      isFocused = false
+    }
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
   }

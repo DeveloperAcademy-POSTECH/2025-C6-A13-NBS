@@ -35,7 +35,7 @@ struct SearchFeature {
   }
   
   enum DelegateAction: Equatable {
-    case openLinkDetail(LinkItem)
+    case openLinkDetail(ArticleItem)
   }
   
   @Dependency(\.dismiss) var dismiss
