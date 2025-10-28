@@ -28,12 +28,18 @@ struct LinkListFeature {
     var selectedCategory: CategoryItem? = nil
     
     var selectedCategoryTitle: String = "카테고리"
+    var alert: AlertBannerState? = nil
     
     // 시트 상태 관리
     @Presents var editSheet: EditSheetFeature.State?
     @Presents var moveLink: MoveLinkFeature.State?
     @Presents var deleteLink: DeleteLinkFeature.State?
     @Presents var selectBottomSheet: SelectBottomSheetFeature.State?
+  }
+  
+  struct AlertBannerState: Equatable {
+    let title: String
+    let icon: String
   }
   
   // MARK: - Action
@@ -57,6 +63,8 @@ struct LinkListFeature {
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
     case openDeleteLink
     case closeEditSheet
+    case deleteLinksResponse(TaskResult<Void>)
+    case hideAlertBanner
     
     /// 데이터 로드 관련
     case fetchLinks
@@ -141,12 +149,14 @@ private extension LinkListFeature {
       /// 편집 시트 -> 삭제하기
     case .editSheet(.presented(.delegate(.deleteLink))):
       return .run { send in
-        // Step 1: deleteLink 시트 열기
         await send(.openDeleteLink)
-        // Step 2: 한 프레임 뒤 editSheet 닫기 (경고 방지)
         try? await Task.sleep(nanoseconds: 100_000_000) // 0.1초
         await send(.closeEditSheet)
       }
+      
+    case .hideAlertBanner:
+      state.alert = nil
+      return .none
       
     case .openDeleteLink:
       state.deleteLink = DeleteLinkFeature.State(allLinks: state.allLinks)
@@ -199,7 +209,6 @@ private extension LinkListFeature {
     case .selectBottomSheet(.presented(.delegate(.dismiss))):
       state.selectBottomSheet = nil
       return .none
-      
       
       /// 링크 롱프레스 -> 편집 시트 표시로 연결
     case let .articleList(.delegate(.longPressed(link))):
@@ -288,6 +297,34 @@ private extension LinkListFeature {
         selectedCategory: currentSelectedTitle
       )
       return .none
+      
+    case .deleteLink(.presented(.delegate(.confirmDelete(let selected)))):
+      return .run { send in
+        await send(.deleteLinksResponse(TaskResult {
+          try swiftDataClient.deleteLinks(selected)
+        }))
+      }
+
+    case .deleteLinksResponse(.success):
+      state.alert = .init(
+        title: "\(state.deleteLink?.selectedLinks.count ?? 0)개의 링크를 삭제했어요",
+        icon: "exclamationmark.circle"
+      )
+
+      return .merge(
+        .send(.fetchLinks),
+        .send(.deleteLink(.presented(.delegate(.dismiss)))),
+        // ✅ 1.2초 후 배너 자동 숨김
+        .run { send in
+          try? await Task.sleep(nanoseconds: 3_000_000_000)
+          await send(.hideAlertBanner)
+        }
+      )
+
+    case .deleteLinksResponse(.failure(let error)):
+      print("deleteLinks failed:", error)
+      return .none
+      
     default:
       return .none
     }
