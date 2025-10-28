@@ -76,13 +76,7 @@ extension HomeView: View {
         store.send(.onAppear)
       }
     }
-    .background(DesignSystemAsset.background.swiftUIColor.ignoresSafeArea())
+    .background(Color.background)
     .navigationBarHidden(true)
   }
 }
-
-//#Preview {
-//  HomeView(store: Store(initialState: HomeFeature.State()) {
-//    HomeFeature()
-//  })
-//}

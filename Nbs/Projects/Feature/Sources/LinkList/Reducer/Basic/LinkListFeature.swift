@@ -63,7 +63,7 @@ struct LinkListFeature {
     case fetchLinksResponse(TaskResult<[ArticleItem]>)
     case fetchCategories
     case responseCategoryItems([CategoryItem])
-    
+  
     case delegate(Delegate)
     enum Delegate {
       case openLinkDetail(ArticleItem)

@@ -17,6 +17,7 @@ struct SwiftDataClient {
   var fetchCategories: () throws -> [CategoryItem]
   var addCategory: (CategoryItem) throws -> Void
   var updateCategory: (CategoryItem) throws -> Void
+  var updateCategoryItem: (UUID, String, CategoryIcon) throws -> Void
   var deleteCategory: (CategoryItem) throws -> Void
 //  var addLink: (LinkItem) throws -> Void
 }
@@ -63,6 +64,14 @@ extension SwiftDataClient: DependencyKey {
       },
       updateCategory: { category in
         try modelContext.save()
+      },
+      updateCategoryItem: { id, name, icon in
+        let descriptor = FetchDescriptor<CategoryItem>(predicate: #Predicate { $0.id == id })
+        if let categoryToUpdate = try modelContext.fetch(descriptor).first {
+          categoryToUpdate.categoryName = name
+          categoryToUpdate.icon = icon
+          try modelContext.save()
+        }
       },
       deleteCategory: { category in
         modelContext.delete(category)

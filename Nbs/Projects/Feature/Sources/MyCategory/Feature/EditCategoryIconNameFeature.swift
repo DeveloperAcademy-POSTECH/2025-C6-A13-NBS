@@ -52,13 +52,14 @@ struct EditCategoryIconNameFeature {
         state.selectedIcon = icon
         return .none
       case .compeleteButtonTapped:
-        return .run { [category = state.category, name = state.categoryName, icon = state.selectedIcon] _ in
-          category?.categoryName = name
-          if let icon {
-            category?.icon = icon
-          }
-          if let categoryToUpdate = category {
-            try? await swiftDataClient.updateCategory(categoryToUpdate)
+        return .run { [id = state.category?.id, name = state.categoryName, icon = state.selectedIcon] _ in
+          guard let id, let icon else { return }
+          await MainActor.run {
+            do {
+              try swiftDataClient.updateCategoryItem(id, name, icon)
+            } catch {
+              print("카테고리 업데이트 실패 \(error)")
+            }
           }
           await linkNavigator.pop()
         }
