@@ -96,6 +96,7 @@ extension ShareInputTitleView {
           }
           .font(.B1_M)
           .padding(16)
+
         
         HStack(spacing: 0) {
           Text("\(title.count)")
@@ -110,6 +111,7 @@ extension ShareInputTitleView {
       .frame(maxWidth: .infinity)
       .frame(height: 56)
       .background(.n0)
+      .clipShape(RoundedRectangle(cornerRadius: 12))
       .overlay {
         RoundedRectangle(cornerRadius: 12)
           .stroke(.divider1, lineWidth: 1)
