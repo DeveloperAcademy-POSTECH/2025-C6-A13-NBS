@@ -69,6 +69,17 @@ extension LinkListView: View {
         store.send(.onAppear)
       }
     }
+    .overlay(alignment: .bottom) {
+      if let alert = store.alert {
+        AlertIconBanner(
+          icon: Image(systemName: alert.icon),
+          title: alert.title,
+          iconColor: .danger
+        )
+        .padding(.horizontal, 20)
+        .padding(.bottom, 20)
+      }
+    }
   }
   
   /// 메인
