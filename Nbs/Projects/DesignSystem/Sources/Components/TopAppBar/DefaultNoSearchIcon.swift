@@ -69,7 +69,7 @@ extension TopAppBarDefaultNoSearch: View {
         .padding(.trailing, 8)
       }
     .frame(height: 60)
-    .background(DesignSystemAsset.background.swiftUIColor)
+    .background(Color.background)
   }
 }
 
