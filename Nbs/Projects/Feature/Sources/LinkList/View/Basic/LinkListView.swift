@@ -106,7 +106,7 @@ extension LinkListView: View {
             action: \.categoryChipList
           ),
           onTap: {
-//            store.send(.bottomSheetButtonTapped)
+            store.send(.bottomSheetButtonTapped)
           }
         )
         .padding(.bottom, 16)

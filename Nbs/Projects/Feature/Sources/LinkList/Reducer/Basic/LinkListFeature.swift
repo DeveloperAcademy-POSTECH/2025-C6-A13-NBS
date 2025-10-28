@@ -46,7 +46,7 @@ struct LinkListFeature {
     case articleList(ArticleFilterFeature.Action)
     
     /// UI 이벤트
-    case bottomSheetButtonTapped(Bool)
+    case bottomSheetButtonTapped
     case linkLongPressed(ArticleItem)
     case editButtonTapped
     
@@ -200,9 +200,6 @@ private extension LinkListFeature {
       state.selectBottomSheet = nil
       return .none
       
-      /// 링크 탭 -> 상세화면으로 Delegate 전달
-    case let .articleList(.delegate(.openLinkDetail(link))):
-      return .send(.delegate(.openLinkDetail(link)))
       
       /// 링크 롱프레스 -> 편집 시트 표시로 연결
     case let .articleList(.delegate(.longPressed(link))):
@@ -212,7 +209,6 @@ private extension LinkListFeature {
     case .categoryChipList, .articleList, .editSheet, .moveLink, .deleteLink, .selectBottomSheet, .delegate:
       return .none
       
-      /// 데이터 관련 케이스는 아래 dataReducer에서 처리
     default:
       return .none
     }
