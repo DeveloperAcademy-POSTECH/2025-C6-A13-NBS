@@ -617,6 +617,14 @@ async function loadHighlights() {
     // React와 같은 서버 사이드 렌더링 라이브러리와의 충돌(Hydration 오류)을 피하기 위해
     // 하이라이트 적용을 1초 지연시킵니다.
     setTimeout(() => {
+      // 중복 적용을 막기 위해 기존 하이라이트를 모두 제거합니다.
+      document.querySelectorAll('.highlighted-text').forEach(span => {
+        if (span.parentNode) {
+            span.replaceWith(...span.childNodes);
+        }
+      });
+      document.querySelectorAll('.capsule-container, #tulip-menu, #memo-box').forEach(el => el.remove());
+
       findAndApplyHighlights(highlightsToApply);
     }, 1000);
   } catch (e) {
@@ -679,11 +687,10 @@ window.addEventListener('pageshow', function(event) {
   }
 });
 
-// 탭이 다시 활성화될 때 서버와 동기화
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
-    console.log('Tab is now visible. Syncing with server.');
-    syncHighlightsFromServer();
+    console.log('Tab is now visible. Reloading highlights from local storage.');
+    loadHighlights();
   }
 });
 
