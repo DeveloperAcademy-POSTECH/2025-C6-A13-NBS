@@ -63,7 +63,6 @@ extension LinkListView: View {
           .presentationDetents([.medium])
           .presentationCornerRadius(16)
       }
-      
       .navigationBarHidden(true)
       .onAppear {
         store.send(.onAppear)
@@ -72,9 +71,9 @@ extension LinkListView: View {
     .overlay(alignment: .bottom) {
       if let alert = store.alert {
         AlertIconBanner(
-          icon: Image(systemName: alert.icon),
+          icon: alert.icon,
           title: alert.title,
-          iconColor: .danger
+          iconColor: bannerColor(alert.tint)
         )
         .padding(.horizontal, 20)
         .padding(.bottom, 20)
@@ -148,6 +147,15 @@ extension LinkListView: View {
           showScrollToTopButton = false
         }
       }
+    }
+  }
+  
+  private func bannerColor(_ tint: LinkListFeature.AlertBannerState.Tint) -> Color {
+    switch tint {
+    case .danger:
+      return .danger
+    case .info:
+      return .bl3
     }
   }
 }
