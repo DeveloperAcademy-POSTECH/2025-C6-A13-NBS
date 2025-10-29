@@ -13,7 +13,7 @@ import Domain
 // MARK: - Properties
 struct ShareInputTitleView: View {
   @Query private var categories: [CategoryItem]
-  
+
   @Environment(\.dismiss) var dismiss
   @FocusState private var isTitleFieldFocused: Bool
   @State var title: String = ""
@@ -58,9 +58,10 @@ extension ShareInputTitleView {
       Button {
         dismiss()
       } label: {
-        Image(systemName: "chevron.left")
+        Image(icon: Icon.chevronLeft)
+          .renderingMode(.template)
           .frame(width: 24, height: 24)
-          .foregroundStyle(.black)
+          .tint(.icon)
       }
       .padding(10)
       Spacer()
@@ -95,6 +96,7 @@ extension ShareInputTitleView {
           }
           .font(.B1_M)
           .padding(16)
+
         
         HStack(spacing: 0) {
           Text("\(title.count)")
@@ -109,6 +111,7 @@ extension ShareInputTitleView {
       .frame(maxWidth: .infinity)
       .frame(height: 56)
       .background(.n0)
+      .clipShape(RoundedRectangle(cornerRadius: 12))
       .overlay {
         RoundedRectangle(cornerRadius: 12)
           .stroke(.divider1, lineWidth: 1)

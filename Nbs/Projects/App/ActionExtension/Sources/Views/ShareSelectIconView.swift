@@ -26,7 +26,7 @@ struct ShareSelectIconView: View {
 extension ShareSelectIconView {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      Color.white.ignoresSafeArea()
+      Color.background.ignoresSafeArea()
       VStack(alignment: .center, spacing: 0) {
         Separator()
           .padding(.bottom, 8)
@@ -46,9 +46,10 @@ extension ShareSelectIconView {
       Button {
         dismiss()
       } label: {
-        Image(systemName: "chevron.left")
+        Image(icon: Icon.chevronLeft)
+          .renderingMode(.template)
           .frame(width: 24, height: 24)
-          .foregroundStyle(.black)
+          .tint(.icon)
       }
       .padding(10)
       Spacer()
@@ -71,8 +72,9 @@ extension ShareSelectIconView {
       
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 16) {
-          ForEach(0..<15, id: \.self) { icon in
+          ForEach(1..<16, id: \.self) { icon in
             let icon = CategoryIcon(number: icon)
+            
             CategoryButton(
               type: .nontitle,
               icon: icon.name,

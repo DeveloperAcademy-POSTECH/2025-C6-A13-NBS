@@ -123,7 +123,7 @@ struct AddLinkFeature {
     if let match = regex.firstMatch(in: htmlString, options: [], range: NSRange(location: 0, length: htmlString.utf16.count)) {
       if let titleRange = Range(match.range(at: 1), in: htmlString) {
         let title = String(htmlString[titleRange]).trimmingCharacters(in: .whitespacesAndNewlines)
-        return title
+        return title.decodeHtmlEntities()
       }
     }
     throw URLError(.cannotParseResponse)
