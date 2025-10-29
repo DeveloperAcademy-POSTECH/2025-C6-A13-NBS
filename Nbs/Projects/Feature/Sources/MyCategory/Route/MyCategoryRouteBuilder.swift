@@ -14,7 +14,7 @@ public struct MyCategoryRouteBuilder {
   
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
-    let matchPath = "myCategory"
+    let matchPath = Route.myCategory.rawValue
     return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
       WrappingController(matchPath: matchPath) {
         MyCategoryCollectionView(store: Store(initialState: MyCategoryCollectionFeature.State()) {
