@@ -14,6 +14,8 @@ struct LinkDetailView {
   @Environment(\.dismiss) private var dismiss
   @Bindable var store: StoreOf<LinkDetailFeature>
   @State private var selectedTab: LinkDetailSegment.Tab = .summary
+  @FocusState private var titleFocused: Bool
+  @State private var showAlertDialog = false
 }
 
 extension LinkDetailView: View {
@@ -33,6 +35,28 @@ extension LinkDetailView: View {
       }
       .navigationBarHidden(true)
       .onAppear { store.send(.onAppear) }
+      .onChange(of: titleFocused) { _, hasFocus in
+        store.send(.titleFocusChanged(hasFocus))
+      }
+      .onChange(of: store.isDeleted) { _, deleted in
+        if deleted { dismiss() }
+      }
+      if showAlertDialog {
+        Color.dim
+          .ignoresSafeArea()
+          .onTapGesture { showAlertDialog = false }
+        
+        AlertDialog(
+          title: "이 링크를 삭제하시겠어요?",
+          subtitle: "삭제한 링크는 복구할 수 없어요",
+          cancelTitle: "취소",
+          onCancel: { showAlertDialog = false },
+          buttonType: .delete(title: "삭제") {
+            showAlertDialog = false
+            store.send(.deleteTapped)
+          }
+        )
+      }
     }
   }
   
@@ -42,7 +66,7 @@ extension LinkDetailView: View {
       title: "",
       onTapBackButton: { dismiss() },
       onTapSearchButton: {},
-      onTapSettingButton: {}
+      onTapSettingButton: { showAlertDialog = true }
     )
   }
   
@@ -59,11 +83,42 @@ extension LinkDetailView: View {
   private var articleInfo: some View {
     VStack(alignment: .leading, spacing: 24) {
       // 기사 타이틀
-      Text(store.link.title)
-        .font(.H1)
-        .foregroundStyle(.text1)
-        .multilineTextAlignment(.leading)
-        .lineLimit(nil)
+      HStack(alignment: .firstTextBaseline, spacing: 12) {
+        if store.isEditingTitle || titleFocused {
+          TextField(
+            "제목",
+            text: Binding(
+              get: { store.editedTitle },
+              set: { store.send(.titleChanged($0)) }
+            )
+          )
+          .focused($titleFocused)
+          .submitLabel(.done)
+          .onSubmit { titleFocused = false }
+        } else {
+          Text(store.link.title)
+            .font(.H1)
+            .foregroundStyle(.text1)
+            .multilineTextAlignment(.leading)
+            .lineLimit(nil)
+        }
+        
+        Spacer()
+        
+        Button {
+          store.send(.editButtonTapped)
+          DispatchQueue.main.async { titleFocused = true }
+        } label: {
+          Image(icon: Icon.edit)
+            .resizable()
+            .renderingMode(.template)
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 24, height: 24)
+            .contentShape(Rectangle())
+            .foregroundStyle(.iconGray)
+        }
+        .buttonStyle(.plain)
+      }
       
       // 정보 섹션
       VStack(alignment: .leading, spacing: 12) {
@@ -132,8 +187,16 @@ extension LinkDetailView: View {
           SummaryView(link: store.link)
         }
       case .memo:
-        AddMemoView()
-          .padding(20)
+        AddMemoView(
+          text: Binding(
+            get: { store.editedMemo },
+            set: { store.send(.memoChanged($0)) }
+          ),
+          onFocusChanged: { hasFocus in
+            store.send(.memoFocusChanged(hasFocus))
+          }
+        )
+        .padding(20)
       }
     }
   }
