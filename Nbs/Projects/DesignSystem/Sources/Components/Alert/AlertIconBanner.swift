@@ -41,6 +41,7 @@ public extension AlertIconBanner {
     HStack(spacing: 8) {
       icon
         .resizable()
+        .renderingMode(.template)
         .scaledToFit()
         .frame(width: 24, height: 24)
         .foregroundStyle(iconColor)
