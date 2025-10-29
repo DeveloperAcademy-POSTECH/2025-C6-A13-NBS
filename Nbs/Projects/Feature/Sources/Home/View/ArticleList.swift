@@ -44,11 +44,12 @@ extension ArticleListView: View {
             Button {
               store.send(.listCellTapped(article))
             } label: {
-              LinkCard(
+              ArticleCard(
                 title: article.title,
-                newsCompany: article.newsCompany ?? "네이버 뉴스",
-                image: article.imageURL ?? "placeholder_image",
-                date: article.createAt.formattedKoreanDate()
+                categoryName: article.category?.categoryName,
+                imageURL: article.imageURL,
+                dateString: article.createAt.formattedKoreanDate(),
+                newsCompany: article.newsCompany
               )
               .background(.n0)
               .clipShape(RoundedRectangle(cornerRadius: 12))
