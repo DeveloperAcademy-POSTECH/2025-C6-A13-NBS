@@ -17,6 +17,7 @@ struct SwiftDataClient {
   var moveLinks: (_ links: [ArticleItem], _ category: CategoryItem?) throws -> Void
   var editLinkTitle: (_ id: String, _ newTitle: String) throws -> Void
   var updateLinkMemo: (_ id: String, _ memo: String) throws -> Void
+  var deleteLinkById: (_ id: String) throws -> Void
   
   // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
@@ -24,7 +25,7 @@ struct SwiftDataClient {
   var updateCategory: (CategoryItem) throws -> Void
   var updateCategoryItem: (UUID, String, CategoryIcon) throws -> Void
   var deleteCategory: (CategoryItem) throws -> Void
-//  var addLink: (LinkItem) throws -> Void
+  //  var addLink: (LinkItem) throws -> Void
 }
 
 extension SwiftDataClient: DependencyKey {
@@ -89,6 +90,15 @@ extension SwiftDataClient: DependencyKey {
         }
         target.userMemo = memo
         try modelContext.save()
+      },
+      deleteLinkById: { id in                     
+        let descriptor = FetchDescriptor<ArticleItem>(
+          predicate: #Predicate { $0.id == id }
+        )
+        if let target = try modelContext.fetch(descriptor).first {
+          modelContext.delete(target)
+          try modelContext.save()
+        }
       },
       fetchCategories: {
         let descriptor = FetchDescriptor<CategoryItem>()
