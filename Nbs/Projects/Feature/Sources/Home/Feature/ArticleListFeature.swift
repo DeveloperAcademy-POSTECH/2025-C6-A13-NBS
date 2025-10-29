@@ -23,12 +23,6 @@ struct ArticleListFeature {
   enum Action {
     case moreLinkButtonTapped
     case listCellTapped(ArticleItem)
-//    case delegate(Delegate)
-//    
-//    enum Delegate {
-//      case openLinkDetail(ArticleItem)
-//      case openLinkList
-//    }
   }
   
   var body: some ReducerOf<Self> {
@@ -42,10 +36,6 @@ struct ArticleListFeature {
       case .listCellTapped(let article):
         linkNavigator.push(.linkDetail, article)
         return .none
-//        return .send(.delegate(.openLinkDetail(article)))
-        
-//      case .delegate:
-//        return .none
       }
     }
   }
