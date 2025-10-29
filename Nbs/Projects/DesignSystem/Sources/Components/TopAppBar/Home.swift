@@ -59,15 +59,13 @@ extension TopAppBarHome: View {
             .resizable()
             .renderingMode(.template)
             .foregroundStyle(.icon)
-            .frame(width: 24, height: 24)
             .frame(width: 44, height: 44)
-            .contentShape(Rectangle())
         }
       }
       .padding(.trailing, 8)
     }
     .frame(height: 60)
-    .background(DesignSystemAsset.background.swiftUIColor)
+    .background(Color.background)
   }
 }
 
