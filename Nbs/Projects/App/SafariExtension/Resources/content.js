@@ -60,21 +60,17 @@ function renderCapsules(span) {
         const isAlreadyClicked = capsule.classList.contains(`clicked-${comment.type}`);
         const memoBoxOpenForThisCapsule = document.getElementById('memo-box') && Number(document.getElementById('memo-box').dataset.editingId) === comment.id;
 
-        // 이전에 클릭된 캡슐의 'clicked' 클래스 제거
         document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
           c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
         });
 
         if (isAlreadyClicked && memoBoxOpenForThisCapsule) {
-          // 이미 클릭된 캡슐을 다시 클릭하면 메모 상자를 닫고 캡슐 스타일을 원래대로 되돌림
           const existingMemoBox = document.getElementById('memo-box');
           if (existingMemoBox) existingMemoBox.remove();
-          return; // 이벤트 처리 중단
+          return;
         }
 
-        // 현재 캡슐에 'clicked' 클래스 추가
         capsule.classList.add(`clicked-${comment.type}`);
-
         showMemoBox(span, comment.id);
       });
       
@@ -160,11 +156,7 @@ function showMemoBox(span, memoId = null) {
 
 // 튤립 메뉴를 표시하는 함수
 function showTulipMenu(span) {
-  // 메모 박스가 열려 있으면 튤립 메뉴를 열지 않음
-  if (document.getElementById('memo-box')) {
-    return;
-  }
-
+  if (document.getElementById('memo-box')) return;
   const existingMenu = document.getElementById('tulip-menu');
   if (existingMenu) existingMenu.remove();
   
@@ -173,43 +165,34 @@ function showTulipMenu(span) {
   menu.addEventListener('click', e => e.stopPropagation());
   
   const buttons = [
-    { text: 'W', type: 'what' },
-    { text: 'W', type: 'why' },
-    { text: 'D', type: 'detail' },
+    { text: '', type: 'what' },
+    { text: '', type: 'why' },
+    { text: '', type: 'detail' },
     { text: '', type: 'memo' }
   ];
   
   buttons.forEach(buttonInfo => {
     const button = document.createElement('button');
     if (buttonInfo.type === 'memo') {
-      button.innerHTML = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#5c5c6e" fill-rule="evenodd" d="m12.328 7.024-6.782 6.782-.925 3.45-.608 2.273a.375.375 0 0 0 .458.458l2.272-.609 3.45-.925h.001l6.782-6.782zm7.453.785-3.59-3.59a.75.75 0 0 0-1.058 0l-1.852 1.852 4.648 4.648 1.852-1.852a.75.75 0 0 0 0-1.058" clip-rule="evenodd"/></svg>
-  `;
+      button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="#5c5c6e" fill-rule="evenodd" d="m12.328 7.024-6.782 6.782-.925 3.45-.608 2.273a.375.375 0 0 0 .458.458l2.272-.609 3.45-.925h.001l6.782-6.782zm7.453.785-3.59-3.59a.75.75 0 0 0-1.058 0l-1.852 1.852 4.648 4.648 1.852-1.852a.75.75 0 0 0 0-1.058" clip-rule="evenodd"/></svg>`;
     } else {
       button.textContent = buttonInfo.text;
     }
     
     button.dataset.highlightType = buttonInfo.type;
-
-    
     button.addEventListener('click', (event) => {
       event.stopPropagation();
-      
       if (buttonInfo.type === 'memo') {
         const headerHeight = getFixedHeaderHeight();
         const spanRect = span.getBoundingClientRect();
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const targetScrollTop = scrollTop + spanRect.top - headerHeight - 10;
-        
         window.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
-        
         setTimeout(() => showMemoBox(span, null), 300);
-        
-        menu.remove(); // 메모 버튼 클릭 시 툴팁 메뉴를 닫음
+        menu.remove();
       } else {
         const newType = buttonInfo.type;
         span.dataset.highlightType = newType;
-        
         let comments = JSON.parse(span.dataset.comments || '[]');
         if (comments.length > 0) {
           comments.forEach(comment => comment.type = newType);
@@ -217,11 +200,8 @@ function showTulipMenu(span) {
           renderCapsules(span)
         }
         updateDraft(span);
-        setTimeout(() => {
-          isTulipMenuClick = false;
-        }, 100);
-
-        lastSelectedHighlightType = newType; // 마지막으로 선택된 타입 업데이트
+        setTimeout(() => { isTulipMenuClick = false; }, 100);
+        lastSelectedHighlightType = newType;
       }
     });
     menu.appendChild(button);
@@ -232,89 +212,32 @@ function showTulipMenu(span) {
   const spanRect = span.getBoundingClientRect();
   const menuRect = menu.getBoundingClientRect();
   const fixedHeaderHeight = getFixedHeaderHeight();
-
   menu.style.position = 'absolute';
   
-  // 메뉴의 가로 위치 계산 및 화면 벗어남 방지
   let left = window.scrollX + spanRect.left + (spanRect.width / 2) - (menuRect.width / 2);
-  if (left < window.scrollX) {
-    left = window.scrollX + 10; // 화면 왼쪽에 여백
-  }
-  if (left + menuRect.width > window.scrollX + window.innerWidth) {
-    left = window.scrollX + window.innerWidth - menuRect.width - 10; // 화면 오른쪽에 여백
-  }
-
-  // 메뉴의 세로 위치 계산 (기본적으로 하이라이트 위에 표시)
+  if (left < window.scrollX) left = window.scrollX + 10;
+  if (left + menuRect.width > window.scrollX + window.innerWidth)
+    left = window.scrollX + window.innerWidth - menuRect.width - 10;
   let top = window.scrollY + spanRect.top - menuRect.height - 10;
-  
-  // 메뉴가 화면 상단 또는 고정 헤더 뒤로 갈 경우, 하이라이트 아래에 표시
-  if (top < window.scrollY + fixedHeaderHeight) {
+  if (top < window.scrollY + fixedHeaderHeight)
     top = window.scrollY + spanRect.bottom + 10;
-  }
-
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
 }
 
-// 삭제 확인 모달을 표시하는 함수
-function showDeleteConfirmationModal(onConfirm) {
-  const existingModal = document.getElementById('delete-confirm-modal');
-  if (existingModal) existingModal.remove();
-  
-  const modal = document.createElement('div');
-  modal.id = 'delete-confirm-modal';
-  modal.addEventListener('click', (e) => {
-    if (e.target.id === 'delete-confirm-modal') {
-      modal.remove();
-    }
-  });
-  
-  const modalContent = document.createElement('div');
-  modalContent.className = 'modal-content';
-  
-  const title = document.createElement('h3');
-  title.textContent = '메모를 삭제할까요?';
-  
-  const message = document.createElement('p');
-  message.innerHTML = '삭제한 메모는 복구할 수 없어요';
-  
-  const separator = document.createElement('div');
-  separator.className = 'modal-separator';
-  
-  const verticalSeparator = document.createElement('div');
-  verticalSeparator.className = 'vertical-separator';
-
-  const buttonContainer = document.createElement('div');
-  buttonContainer.className = 'modal-buttons';
-  
-  const cancelButton = document.createElement('button');
-  cancelButton.textContent = '취소';
-  cancelButton.className = 'cancel-btn';
-  cancelButton.onclick = () => modal.remove();
-  
-  const deleteButton = document.createElement('button');
-  deleteButton.textContent = '삭제';
-  deleteButton.className = 'delete-btn';
-  deleteButton.onclick = () => {
-    onConfirm();
-    modal.remove();
-  };
-  
-  buttonContainer.appendChild(cancelButton);
-  buttonContainer.appendChild(verticalSeparator);
-  buttonContainer.appendChild(deleteButton);
-  modalContent.appendChild(title);
-  modalContent.appendChild(message);
-  modalContent.appendChild(separator);
-  modalContent.appendChild(buttonContainer);
-  modal.appendChild(modalContent);
-  
-  document.body.appendChild(modal);
+// 🔹 여기에 따옴표 무시 헬퍼 추가
+function isInsideQuotes(text, index) {
+  const quoteChars = ['"', "'", '“', '”', '‘', '’'];
+  let count = 0;
+  for (let i = 0; i < index; i++) {
+    if (quoteChars.includes(text[i])) count++;
+  }
+  return count % 2 === 1;
 }
 
-// 더블탭 이벤트 처리
+// 🔹 아래부터는 dblclick 이벤트 전체 교체 버전 (따옴표 무시 로직 포함)
 document.addEventListener('dblclick', function(event) {
-  // 메모 캡슐 내부에서 더블 클릭 시 이벤트 전파 및 기본 동작 방지
+  // 메모 캡슐 더블탭 방지
   if (event.target.closest('.memo-capsule')) {
     event.preventDefault();
     event.stopPropagation();
@@ -325,52 +248,34 @@ document.addEventListener('dblclick', function(event) {
   if (existingHighlight) {
     event.preventDefault();
     event.stopPropagation();
-    
     const comments = JSON.parse(existingHighlight.dataset.comments || '[]');
-    
     const deleteHighlight = () => {
       const draftId = existingHighlight.dataset.draftId;
-      
       const existingMenu = document.getElementById('tulip-menu');
       if (existingMenu) existingMenu.remove();
-      
       const existingMemoBox = document.getElementById('memo-box');
       if (existingMemoBox) existingMemoBox.remove();
-      
       const capsuleContainer = existingHighlight.nextElementSibling;
-      if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) {
-        capsuleContainer.remove();
-      }
-      
+      if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) capsuleContainer.remove();
       existingHighlight.replaceWith(...existingHighlight.childNodes);
-      
       deleteDraft(draftId);
     };
-    
-    if (comments.length > 0) {
-      showDeleteConfirmationModal(deleteHighlight);
-    } else {
-      deleteHighlight();
-    }
-    
+    if (comments.length > 0) showDeleteConfirmationModal(deleteHighlight);
+    else deleteHighlight();
     return;
   }
-  
-  if (event.target.closest('#tulip-menu') || event.target.closest('#memo-box') || event.target.closest('#delete-confirm-modal')) {
-    return;
-  }
-  
+
+  if (event.target.closest('#tulip-menu') || event.target.closest('#memo-box') || event.target.closest('#delete-confirm-modal')) return;
+
   const selection = window.getSelection();
   if (!selection.rangeCount) return;
-  
   const range = selection.getRangeAt(0);
   const clickedElement = range.commonAncestorContainer;
-  
   let textNode = clickedElement;
   if (textNode.nodeType !== Node.TEXT_NODE) {
     const treeWalker = document.createTreeWalker(clickedElement, NodeFilter.SHOW_TEXT);
     let currentNode;
-    while(currentNode = treeWalker.nextNode()) {
+    while (currentNode = treeWalker.nextNode()) {
       const nodeRange = document.createRange();
       nodeRange.selectNodeContents(currentNode);
       if (range.intersectsNode(nodeRange)) {
@@ -380,62 +285,56 @@ document.addEventListener('dblclick', function(event) {
     }
     if (textNode.nodeType !== Node.TEXT_NODE) return;
   }
-  
+
   const text = textNode.textContent;
   const clickPosition = range.startOffset;
-  
+
   let sentenceStart = 0;
   for (let i = clickPosition - 1; i >= 0; i--) {
     const char = text[i];
     if ('.?!'.includes(char)) {
-      if (char === '.' && /\d/.test(text[i-1]) && /\d/.test(text[i+1])) {
-        continue;
-      }
+      if (char === '.' && /\d/.test(text[i - 1]) && /\d/.test(text[i + 1])) continue;
+      if (char === '.' && i > 0 && /[A-Z]/.test(text[i - 1]) && (i === 1 || text[i - 2] === ' ')) continue;
+      if (isInsideQuotes(text, i)) continue;
       sentenceStart = i + 1;
-      if (i + 1 < text.length && /\s/.test(text[i + 1])) {
-        sentenceStart++;
-      }
+      if (i + 1 < text.length && /\s/.test(text[i + 1])) sentenceStart++;
       break;
     }
   }
-  
+
   let sentenceEnd = text.length;
   for (let i = clickPosition; i < text.length; i++) {
     const char = text[i];
     if ('.?!'.includes(char)) {
-      if (char === '.' && /\d/.test(text[i-1]) && /\d/.test(text[i+1])) {
-        continue;
-      }
+      if (char === '.' && /\d/.test(text[i - 1]) && /\d/.test(text[i + 1])) continue;
+      if (char === '.' && i > 0 && /[A-Z]/.test(text[i - 1]) && (i === 1 || text[i - 2] === ' ')) continue;
+      if (isInsideQuotes(text, i)) continue;
+      const nextChar = text[i + 1];
+      if ([])
       sentenceEnd = i + 1;
       break;
     }
   }
-  
+
   const sentenceRange = document.createRange();
   sentenceRange.setStart(textNode, sentenceStart);
   sentenceRange.setEnd(textNode, sentenceEnd);
 
   const extractedText = sentenceRange.toString().trim();
-  if (extractedText.length < 3) { // 최소 3자 미만은 하이라이팅하지 않음
-    return;
-  }
+  if (extractedText.length < 3) return;
 
-  // 이미 하이라이트된 영역과 겹치는지 확인
   const allHighlights = document.querySelectorAll('.highlighted-text');
   for (const highlight of allHighlights) {
     const highlightRange = document.createRange();
     highlightRange.selectNodeContents(highlight);
     if (sentenceRange.compareBoundaryPoints(Range.END_TO_START, highlightRange) < 0 &&
-        sentenceRange.compareBoundaryPoints(Range.START_TO_END, highlightRange) > 0) {
-      // 겹치는 부분이 있으면 하이라이팅 방지
-      return;
-    }
+        sentenceRange.compareBoundaryPoints(Range.START_TO_END, highlightRange) > 0) return;
   }
-  
+
   const span = document.createElement('span');
   span.className = 'highlighted-text';
   span.dataset.highlightType = lastSelectedHighlightType;
-  
+
   try {
     span.appendChild(sentenceRange.extractContents());
     sentenceRange.insertNode(span);
@@ -446,46 +345,13 @@ document.addEventListener('dblclick', function(event) {
   }
 });
 
-// 페이지 내 클릭 이벤트 처리
-document.addEventListener('click', function(event) {
-  const target = event.target;
-  const isClickOnHighlight = target.closest('.highlighted-text') && !target.closest('#tulip-menu') && !target.closest('#memo-box') && !target.closest('.capsule-container');
-  
-  if (isClickOnHighlight) {
-    event.stopPropagation();
-    const existingMenu = document.getElementById('tulip-menu');
-    if (existingMenu) {
-      existingMenu.remove();
-    } else {
-      showTulipMenu(target.closest('.highlighted-text'));
-    }
-    return;
-  }
-  
-  if (!target.closest('#tulip-menu')) {
-    const existingMenu = document.getElementById('tulip-menu');
-    if (existingMenu) existingMenu.remove();
-  }
-  
-  if (!target.closest('#memo-box')) {
-    const existingMemoBox = document.getElementById('memo-box');
-    if (existingMemoBox) {
-      existingMemoBox.remove();
-      // 메모 박스가 외부 클릭으로 닫힐 때 모든 캡슐에서 'clicked' 클래스 제거
-      document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
-        c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
-      });
-    }
-  }
-});
-
 // 초안 처리 로직
 async function saveDraft(highlightSpan) {
   const draft = {
     id: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 고유 ID
     sentence: highlightSpan.textContent,
     type: highlightSpan.dataset.highlightType,
-    comments: JSON.parse(highlightSpan.dataset.comments || '[]'),
+    comments: JSON.parse(span.dataset.comments || '[]'),
     url: window.location.href,
     createdAt: new Date().toISOString(),
     isDraft: true
@@ -693,4 +559,3 @@ document.addEventListener('visibilitychange', () => {
     loadHighlights();
   }
 });
-
