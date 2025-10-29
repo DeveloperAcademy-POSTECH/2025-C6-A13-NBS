@@ -5,8 +5,10 @@
 //  Created by 이안 on 10/19/25.
 //
 
+import SwiftUI
 import ComposableArchitecture
 import Domain
+import DesignSystem
 
 @Reducer
 struct LinkDetailFeature {
@@ -18,6 +20,7 @@ struct LinkDetailFeature {
     var isEditingTitle = false
     var editedTitle = ""
     var editedMemo = ""
+    var isDeleted = false
   }
   
   enum Action {
@@ -35,6 +38,10 @@ struct LinkDetailFeature {
     case memoFocusChanged(Bool)
     case saveMemoIfNeeded
     case saveMemoResponse(TaskResult<Void>)
+    
+    /// 삭제
+    case deleteTapped
+    case deleteResponse(TaskResult<Void>)
   }
   
   var body: some ReducerOf<Self> {
@@ -112,6 +119,24 @@ struct LinkDetailFeature {
         
       case .saveMemoResponse(.failure(let error)):
         print("save memo failed:", error)
+        return .none
+        
+        /// 삭제
+      case .deleteTapped:
+        let id = state.link.id
+        return .run { send in
+          await send(.deleteResponse(TaskResult {
+            try swiftDataClient.deleteLinkById(id)
+          }))
+        }
+        
+      case .deleteResponse(.success):
+        state.isDeleted = true
+        return .none
+        
+        
+      case .deleteResponse(.failure(let error)):
+        print("링크 삭제 실패:", error)
         return .none
       }
     }
