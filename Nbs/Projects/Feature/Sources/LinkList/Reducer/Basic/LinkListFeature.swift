@@ -5,6 +5,7 @@
 //  Created by 이안 on 10/18/25.
 //
 
+import SwiftUI
 import ComposableArchitecture
 import Domain
 import DesignSystem
@@ -39,7 +40,9 @@ struct LinkListFeature {
   
   struct AlertBannerState: Equatable {
     let title: String
-    let icon: String
+    let icon: Image
+    let tint: Tint
+    enum Tint: Equatable { case danger, info }
   }
   
   // MARK: - Action
@@ -65,6 +68,7 @@ struct LinkListFeature {
     case closeEditSheet
     case deleteLinksResponse(TaskResult<Void>)
     case hideAlertBanner
+    case moveLinksResponse(TaskResult<Void>)
     
     /// 데이터 로드 관련
     case fetchLinks
@@ -146,11 +150,18 @@ private extension LinkListFeature {
       state.editSheet = nil
       return .none
       
+    case .moveLink(.presented(.delegate(.confirmMove(let selected, let target)))):
+      return .run { send in
+        await send(.moveLinksResponse(TaskResult {
+          try swiftDataClient.moveLinks(selected, target)
+        }))
+      }
+      
       /// 편집 시트 -> 삭제하기
     case .editSheet(.presented(.delegate(.deleteLink))):
       return .run { send in
         await send(.openDeleteLink)
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1초
+        try? await Task.sleep(nanoseconds: 100_000_000)
         await send(.closeEditSheet)
       }
       
@@ -308,18 +319,38 @@ private extension LinkListFeature {
     case .deleteLinksResponse(.success):
       state.alert = .init(
         title: "\(state.deleteLink?.selectedLinks.count ?? 0)개의 링크를 삭제했어요",
-        icon: "exclamationmark.circle"
+        icon: Image(icon: Icon.alertCircle),
+        tint: .danger
       )
 
       return .merge(
         .send(.fetchLinks),
         .send(.deleteLink(.presented(.delegate(.dismiss)))),
-        // ✅ 1.2초 후 배너 자동 숨김
         .run { send in
           try? await Task.sleep(nanoseconds: 3_000_000_000)
           await send(.hideAlertBanner)
         }
       )
+      
+    case .moveLinksResponse(.success):
+      state.alert = .init(
+        title: "\(state.moveLink?.selectedLinks.count ?? 0)개의 링크를 이동했어요",
+        icon: Image(icon: Icon.badgeCheck),
+        tint: .info
+      )
+      
+      return .merge(
+        .send(.fetchLinks),
+        .send(.moveLink(.presented(.delegate(.dismiss)))),
+        .run { send in
+          try? await Task.sleep(nanoseconds: 3_000_000_000)
+          await send(.hideAlertBanner)
+        }
+      )
+      
+    case .moveLinksResponse(.failure(let error)):
+      print("moveLinks failed", error)
+      return .none
 
     case .deleteLinksResponse(.failure(let error)):
       print("deleteLinks failed:", error)
