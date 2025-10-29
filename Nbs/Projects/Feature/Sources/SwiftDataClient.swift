@@ -14,6 +14,7 @@ struct SwiftDataClient {
   var fetchRecentLinks: () throws -> [ArticleItem]
   var deleteLink: (ArticleItem) throws -> Void
   var deleteLinks: ([ArticleItem]) throws -> Void
+  var moveLinks: (_ links: [ArticleItem], _ category: CategoryItem?) throws -> Void
   
   // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
@@ -62,6 +63,10 @@ extension SwiftDataClient: DependencyKey {
       },
       deleteLinks: { links in
         links.forEach { modelContext.delete($0) }
+        try modelContext.save()
+      },
+      moveLinks: { links, category in
+        links.forEach { $0.category = category }
         try modelContext.save()
       },
       fetchCategories: {
