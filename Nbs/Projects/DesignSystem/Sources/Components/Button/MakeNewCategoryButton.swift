@@ -39,10 +39,9 @@ extension MakeNewCategoryButton: View {
           .foregroundStyle(.text1)
           .frame(minHeight: 36)
         Spacer()
-        Image(systemName: "arrow")
-          .resizable()
-          .frame(width: 15, height: 24)
-          .padding(.trailing, 20)
+        Text("→")
+          .font(.B1_SB)
+          .foregroundStyle(.text1)
       }
       .padding(.leading)
       .padding(.vertical, 12)
