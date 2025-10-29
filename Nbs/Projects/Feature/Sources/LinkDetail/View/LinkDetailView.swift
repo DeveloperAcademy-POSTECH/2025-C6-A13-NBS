@@ -14,6 +14,7 @@ struct LinkDetailView {
   @Environment(\.dismiss) private var dismiss
   @Bindable var store: StoreOf<LinkDetailFeature>
   @State private var selectedTab: LinkDetailSegment.Tab = .summary
+  @FocusState private var titleFocused: Bool
 }
 
 extension LinkDetailView: View {
@@ -33,6 +34,9 @@ extension LinkDetailView: View {
       }
       .navigationBarHidden(true)
       .onAppear { store.send(.onAppear) }
+      .onChange(of: titleFocused) { _, hasFocus in
+        store.send(.titleFocusChanged(hasFocus))
+      }
     }
   }
   
@@ -59,11 +63,42 @@ extension LinkDetailView: View {
   private var articleInfo: some View {
     VStack(alignment: .leading, spacing: 24) {
       // 기사 타이틀
-      Text(store.link.title)
-        .font(.H1)
-        .foregroundStyle(.text1)
-        .multilineTextAlignment(.leading)
-        .lineLimit(nil)
+      HStack(alignment: .firstTextBaseline, spacing: 12) {
+        if store.isEditingTitle || titleFocused {
+          TextField(
+            "제목",
+            text: Binding(
+              get: { store.editedTitle },
+              set: { store.send(.titleChanged($0)) }
+            )
+          )
+          .focused($titleFocused)
+          .submitLabel(.done)
+          .onSubmit { titleFocused = false }
+        } else {
+          Text(store.link.title)
+            .font(.H1)
+            .foregroundStyle(.text1)
+            .multilineTextAlignment(.leading)
+            .lineLimit(nil)
+        }
+        
+        Spacer()
+        
+        Button {
+          store.send(.editButtonTapped)
+          DispatchQueue.main.async { titleFocused = true }
+        } label: {
+          Image(icon: Icon.edit)
+            .resizable()
+            .renderingMode(.template)
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 24, height: 24)
+            .contentShape(Rectangle())
+            .foregroundStyle(.iconGray)
+        }
+        .buttonStyle(.plain)
+      }
       
       // 정보 섹션
       VStack(alignment: .leading, spacing: 12) {
