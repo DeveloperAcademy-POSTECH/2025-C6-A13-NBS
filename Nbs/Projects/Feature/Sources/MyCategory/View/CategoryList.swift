@@ -20,6 +20,7 @@ extension CategoryListView: View {
       ScrollViewHeader(
         headerTitle: .showCategory,
         buttonTitle: .showMore,
+        showButton: !store.categories.isEmpty,
         onTap: {
           store.send(.moreCategoryButtonTapped)
         }
