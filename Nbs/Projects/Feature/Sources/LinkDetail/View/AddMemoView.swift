@@ -10,14 +10,16 @@ import DesignSystem
 
 /// 추가 메모뷰
 struct AddMemoView: View {
-  @State private var memoText: String = ""
+//  @State private var memoText: String = ""
   @FocusState private var isFocused: Bool
+  @Binding var text: String
+  var onFocusChanged: (Bool) -> Void = { _ in }
 }
 
 extension AddMemoView {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      if memoText.isEmpty && !isFocused {
+      if text.isEmpty && !isFocused {
         Text("추가할 메모를 입력해주세요")
           .font(.B1_M_HL)
           .foregroundStyle(.caption2)
@@ -25,7 +27,7 @@ extension AddMemoView {
           .padding(.top, 16)
       }
       
-      TextEditor(text: $memoText)
+      TextEditor(text: $text)
         .focused($isFocused)
         .font(.B1_M_HL)
         .foregroundStyle(.text1)
@@ -46,9 +48,8 @@ extension AddMemoView {
         isFocused = false
       }
     }
+    .onChange(of: isFocused) { _, newValue in
+      onFocusChanged(newValue)
+    }
   }
-}
-
-#Preview {
-  AddMemoView()
 }
