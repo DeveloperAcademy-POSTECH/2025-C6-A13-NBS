@@ -16,6 +16,7 @@ struct SwiftDataClient {
   var deleteLinks: ([ArticleItem]) throws -> Void
   var moveLinks: (_ links: [ArticleItem], _ category: CategoryItem?) throws -> Void
   var editLinkTitle: (_ id: String, _ newTitle: String) throws -> Void
+  var updateLinkMemo: (_ id: String, _ memo: String) throws -> Void
   
   // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
@@ -78,6 +79,16 @@ extension SwiftDataClient: DependencyKey {
           article.title = newTitle
           try modelContext.save()
         }
+      },
+      updateLinkMemo: { id, memo in
+        let descriptor = FetchDescriptor<ArticleItem>(
+          predicate: #Predicate { $0.id == id }
+        )
+        guard let target = try modelContext.fetch(descriptor).first else {
+          throw NSError(domain: "SwiftDataClient", code: 404, userInfo: [NSLocalizedDescriptionKey: "ArticleItem not found"])
+        }
+        target.userMemo = memo
+        try modelContext.save()
       },
       fetchCategories: {
         let descriptor = FetchDescriptor<CategoryItem>()
