@@ -33,7 +33,7 @@ struct AddLinkFeature {
     case saveButtonTapped
     case addNewCategoryButtonTapped
     case categoryGrid(CategoryGridFeature.Action)
-    case saveLinkResponse(TaskResult<Void>)
+    case saveLinkResponse(Result<Void, Error>)
     case delegate(Delegate)
     
     enum Delegate {
