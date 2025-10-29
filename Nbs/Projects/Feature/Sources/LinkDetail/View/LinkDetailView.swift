@@ -15,6 +15,7 @@ struct LinkDetailView {
   @Bindable var store: StoreOf<LinkDetailFeature>
   @State private var selectedTab: LinkDetailSegment.Tab = .summary
   @FocusState private var titleFocused: Bool
+  @State private var showAlertDialog = false
 }
 
 extension LinkDetailView: View {
@@ -37,6 +38,25 @@ extension LinkDetailView: View {
       .onChange(of: titleFocused) { _, hasFocus in
         store.send(.titleFocusChanged(hasFocus))
       }
+      .onChange(of: store.isDeleted) { _, deleted in
+        if deleted { dismiss() }
+      }
+      if showAlertDialog {
+        Color.dim
+          .ignoresSafeArea()
+          .onTapGesture { showAlertDialog = false }
+        
+        AlertDialog(
+          title: "이 링크를 삭제하시겠어요?",
+          subtitle: "삭제한 링크는 복구할 수 없어요",
+          cancelTitle: "취소",
+          onCancel: { showAlertDialog = false },
+          buttonType: .delete(title: "삭제") {
+            showAlertDialog = false
+            store.send(.deleteTapped)
+          }
+        )
+      }
     }
   }
   
@@ -46,7 +66,7 @@ extension LinkDetailView: View {
       title: "",
       onTapBackButton: { dismiss() },
       onTapSearchButton: {},
-      onTapSettingButton: {}
+      onTapSettingButton: { showAlertDialog = true }
     )
   }
   
@@ -176,7 +196,7 @@ extension LinkDetailView: View {
             store.send(.memoFocusChanged(hasFocus))
           }
         )
-          .padding(20)
+        .padding(20)
       }
     }
   }
