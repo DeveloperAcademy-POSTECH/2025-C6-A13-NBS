@@ -167,7 +167,15 @@ extension LinkDetailView: View {
           SummaryView(link: store.link)
         }
       case .memo:
-        AddMemoView()
+        AddMemoView(
+          text: Binding(
+            get: { store.editedMemo },
+            set: { store.send(.memoChanged($0)) }
+          ),
+          onFocusChanged: { hasFocus in
+            store.send(.memoFocusChanged(hasFocus))
+          }
+        )
           .padding(20)
       }
     }
