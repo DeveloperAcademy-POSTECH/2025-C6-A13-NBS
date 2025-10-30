@@ -20,8 +20,9 @@ public struct JNTextFieldLink: View {
   
   @State var style: JNTextFieldStyle
   let placeholder: String
-  let caption: String
+  @State var internalCaption: String
   let header: String
+  @Binding var isValidURL: Bool
   
   @FocusState private var isFocused: Bool
   
@@ -30,13 +31,15 @@ public struct JNTextFieldLink: View {
     style: JNTextFieldStyle = .default,
     placeholder: String = "링크를 입력해주세요",
     caption: String = "",
-    header: String = ""
+    header: String = "",
+    isValidURL: Binding<Bool> = .constant(true)
   ) {
     self._text = text
     self._style = State(initialValue: style)
     self.placeholder = placeholder
-    self.caption = caption
+    self._internalCaption = State(initialValue: caption)
     self.header = header
+    self._isValidURL = isValidURL
   }
   
   private var textProxy: Binding<String> {
@@ -52,6 +55,24 @@ public struct JNTextFieldLink: View {
       return true
     default:
       return false
+    }
+  }
+  
+  private func validateURL() {
+    let urlRegex = """
+    ^(https?|ftp)://([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$\\-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])|([a-zA-Z0-9-]+\\.)*[a-zA-Z0-9-]+\\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\\/($|[a-zA-Z0-9.,?'\\+&%$#=~_\\-]+))*$
+    """
+    let urlTest = NSPredicate(format: "SELF MATCHES %@", urlRegex)
+    
+    if text.isEmpty {
+      isValidURL = true
+      internalCaption = ""
+    } else if urlTest.evaluate(with: text) {
+      isValidURL = true
+      internalCaption = ""
+    } else {
+      isValidURL = false
+      internalCaption = "유효하지 않은 URL"
     }
   }
   
@@ -76,11 +97,16 @@ public struct JNTextFieldLink: View {
           .cornerRadius(12)
           .overlay(
             RoundedRectangle(cornerRadius: 12)
-              .stroke(isFocused ? JNTextFieldStyle.foucsed.strokeColor : style.strokeColor, lineWidth: 1)
+              .stroke(style == .errorCaption ? JNTextFieldStyle.errorCaption.strokeColor : (isFocused ? JNTextFieldStyle.foucsed.strokeColor : style.strokeColor), lineWidth: 1)
           )
           .onChange(of: text) { _, newValue in
-            if !newValue.isEmpty && style == .default {
+            validateURL()
+            if !isValidURL {
+              style = .errorCaption
+            } else if !newValue.isEmpty {
               style = .filled
+            } else {
+              style = .default
             }
           }
         
@@ -92,13 +118,14 @@ public struct JNTextFieldLink: View {
         }
       }
       
-      if style == .errorCaption {
-        Text(caption)
-          .font(.C3)
-          .foregroundColor(.danger)
-      }
+//      if style == .errorCaption {
+//        Text(internalCaption)
+//          .font(.C3)
+//          .foregroundColor(.danger)
+//      }
     }
     .padding(.horizontal, 20)
+    .onAppear(perform: validateURL)
   }
 }
 
