@@ -26,6 +26,7 @@ public struct SelectBottomSheet: View {
   let selectButtonTapped: () -> Void
   let dismissButtonTapped: () -> Void
   let selectedCategory: String?
+  let buttonTitle: String
   
   public init(
     sheetTitle: String,
@@ -33,7 +34,8 @@ public struct SelectBottomSheet: View {
     categoryButtonTapped: @escaping (String) -> Void,
     selectButtonTapped: @escaping () -> Void,
     dismissButtonTapped: @escaping () -> Void,
-    selectedCategory: String?
+    selectedCategory: String?,
+    buttonTitle: String = "선택하기"
   ) {
     self.sheetTitle = sheetTitle
     self.items = items
@@ -41,6 +43,7 @@ public struct SelectBottomSheet: View {
     self.selectButtonTapped = selectButtonTapped
     self.dismissButtonTapped = dismissButtonTapped
     self.selectedCategory = selectedCategory
+    self.buttonTitle = buttonTitle
   }
 }
 
@@ -78,7 +81,10 @@ extension SelectBottomSheet {
       }
       .padding(.horizontal, 20)
       
-      MainButton("선택하기", action: { selectButtonTapped() })
+      MainButton(
+        buttonTitle,
+        action: { selectButtonTapped() }
+      )
         .padding(.horizontal, 20)
     }
     .padding(.top, 8)
@@ -96,6 +102,7 @@ extension SelectBottomSheet {
     categoryButtonTapped: { _ in },
     selectButtonTapped: {},
     dismissButtonTapped: {},
-    selectedCategory: "2"
+    selectedCategory: "2",
+    buttonTitle: "이동하기"
   )
 }
