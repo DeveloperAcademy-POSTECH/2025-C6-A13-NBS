@@ -72,9 +72,9 @@ extension ArticleCard {
         .foregroundStyle(.text1)
         .lineLimit(2)
         .multilineTextAlignment(.leading)
-        .padding(.leading, 2)
+        .padding(.leading, 4)
       HStack(spacing: 0) {
-        Text("\(dateString)  ·   ")
+        Text("\(dateString) ·   ")
           .font(.B2_M)
           .foregroundStyle(.caption2)
         
@@ -82,7 +82,6 @@ extension ArticleCard {
           .font(.B2_M)
           .foregroundStyle(.caption2)
       }
-      .padding(.leading, 2)
       .padding(.bottom, 12)
       
       Text(categoryName ?? "전체")
