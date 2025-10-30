@@ -351,7 +351,7 @@ async function saveDraft(highlightSpan) {
     id: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 고유 ID
     sentence: highlightSpan.textContent,
     type: highlightSpan.dataset.highlightType,
-    comments: JSON.parse(span.dataset.comments || '[]'),
+    comments: JSON.parse(highlightSpan.dataset.comments || '[]'),
     url: window.location.href,
     createdAt: new Date().toISOString(),
     isDraft: true
