@@ -74,7 +74,7 @@ public extension CategoryButton {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay {
           RoundedRectangle(cornerRadius: 12)
-            .stroke(strokeColor, lineWidth: 1.04)
+            .strokeBorder(strokeColor, lineWidth: 1.04)
         }
       }
       .buttonStyle(.plain)
