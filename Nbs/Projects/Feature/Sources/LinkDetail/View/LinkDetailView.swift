@@ -168,6 +168,7 @@ extension LinkDetailView: View {
       .background {
         RoundedRectangle(cornerRadius: 12)
           .fill(.n0)
+          .allowsHitTesting(false)
       }
     }
     .buttonStyle(.plain)
