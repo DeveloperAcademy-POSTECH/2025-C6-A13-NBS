@@ -147,11 +147,6 @@ private extension ShareInputTitleView {
   }
 }
 
-// MARK: - Notification Name
-fileprivate extension Notification.Name {
-  static let dismissKeyboard = Notification.Name("dismissKeyboardNotification")
-}
-
 #Preview {
   ShareInputTitleView()
 }

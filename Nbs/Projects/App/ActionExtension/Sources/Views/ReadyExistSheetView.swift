@@ -27,8 +27,8 @@ extension ReadyExistSheetView {
         }
         headerView
         Spacer()
-        MainButton("링크 바로가기") {
-          
+        MainButton("닫기") {
+          NotificationCenter.default.post(name: .closeShareExtension, object: nil)
         }
         .buttonStyle(.plain)
         .padding(.vertical, 8)
@@ -50,7 +50,7 @@ extension ReadyExistSheetView {
   }
 }
 
-#Preview {
-  ReadyExistSheetView()
-}
 
+#Preview {
+    ReadyExistSheetView()
+}

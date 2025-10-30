@@ -267,7 +267,7 @@ private extension ShareViewController {
   }
 }
 
-fileprivate extension Notification.Name {
+extension Notification.Name {
   static let dismissKeyboard = Notification.Name("dismissKeyboardNotification")
   static let newCategoryDidSave = Notification.Name("newCategoryDidSave")
   static let closeShareExtension = Notification.Name("closeShareExtension")

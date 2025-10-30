@@ -119,12 +119,6 @@ private extension ShareSelectIconView {
   }
 }
 
-// MARK: - Notification Name
-fileprivate extension Notification.Name {
-  static let newCategoryDidSave = Notification.Name("newCategoryDidSave")
-  static let closeShareExtension = Notification.Name("closeShareExtension")
-}
-
 // MARK: - Preview
 private struct ShareSelectIconViewPreviw: View {
   @State private var title: String = ""
