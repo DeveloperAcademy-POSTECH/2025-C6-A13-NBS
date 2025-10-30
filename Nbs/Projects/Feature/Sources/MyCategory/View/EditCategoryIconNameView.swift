@@ -56,7 +56,7 @@ extension EditCategoryIconNameView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.leading, 24)
         .padding(.top, 24)
-
+      
       ScrollView {
         LazyVGrid(columns: columns, spacing: 10) {
           ForEach(1..<16, id: \.self) { index in
@@ -65,10 +65,14 @@ extension EditCategoryIconNameView: View {
               store.send(.selectIcon(icon))
             } label: {
               RoundedRectangle(cornerRadius: 12)
-                .fill(store.selectedIcon == icon ? .bl1 : DesignSystemAsset.color(number: index))
+                .fill(
+                  store.selectedIcon == icon
+                  ? .bl1
+                  : .clear
+                )
                 .aspectRatio(1, contentMode: .fit)
                 .overlay(
-                  DesignSystemAsset.categoryIcon(number: index)
+                  DesignSystemAsset.primaryCategoryIcon(number: index)
                     .resizable()
                     .frame(width: 45, height: 45)
                 )
@@ -84,7 +88,7 @@ extension EditCategoryIconNameView: View {
         .padding(.horizontal, 20)
       }
       .scrollDisabled(isFocused)
-
+      
       MainButton(
         "완료",
         isDisabled: store.categoryName.isEmpty
