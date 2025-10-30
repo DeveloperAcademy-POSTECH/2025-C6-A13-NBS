@@ -4,7 +4,7 @@ import SwiftUI
 import ComposableArchitecture
 import DesignSystem
 
-struct AddCategoryView: View {
+struct AddCategoryView {
   @Bindable var store: StoreOf<AddCategoryFeature>
   @FocusState private var isFocused: Bool
   
@@ -13,7 +13,9 @@ struct AddCategoryView: View {
     GridItem(.flexible(), spacing: 16),
     GridItem(.flexible(), spacing: 16)
   ]
+}
   
+extension AddCategoryView: View {
   var body: some View {
     VStack {
       TopAppBarDefaultRightIconx(title: CategoryNamespace.newCategoryNavTitle) {
@@ -21,39 +23,13 @@ struct AddCategoryView: View {
         store.send(.cancelButtonTapped)
       }
       VStack {
-        Text(CategoryNamespace.categoryName)
-          .font(.B2_SB)
-          .foregroundStyle(.caption1)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.leading, 24)
-          .padding(.top, 8)
         VStack(alignment: .leading, spacing: 4) {
-          TextField(
-            CategoryNamespace.categoryTextfieldPlaceHolder,
-            text: $store.categoryName
+          JNTextField(
+            text: $store.categoryName,
+            style: .default,
+            placeholder: "카테고리명을 입력해주세요",
+            header: "카테고리명"
           )
-          .focused($isFocused)
-          .onChange(of: store.categoryName) { _, newValue in
-            if newValue.count > 14 {
-              store.categoryName = String(newValue.prefix(14))
-            }
-          }
-          .padding()
-          .background(
-            RoundedRectangle(cornerRadius: 12)
-              .fill(DesignSystemAsset.n0.swiftUIColor)
-              .stroke(Color.divider1, lineWidth: 1)
-          )
-          .padding(.top, 8)
-          .padding(.horizontal, 20)
-          
-          HStack {
-            Spacer()
-            Text("\(store.categoryName.count)/14")
-              .font(.C3)
-              .foregroundStyle(store.categoryName.count == 14 ? .caption3 : .caption2)
-              .padding(.trailing, 24)
-          }
         }
         
         Text(CategoryNamespace.categoryIcon)
@@ -65,7 +41,7 @@ struct AddCategoryView: View {
         
         ScrollView {
           LazyVGrid(columns: columns, spacing: 16) {
-            ForEach(1..<15, id: \.self) { index in
+            ForEach(1..<16, id: \.self) { index in
               let isSelected = store.selectedIcon.number == index
               Button {
                 store.selectedIcon = .init(number: index)
