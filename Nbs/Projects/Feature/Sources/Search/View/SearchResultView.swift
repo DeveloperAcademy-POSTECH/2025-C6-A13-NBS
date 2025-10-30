@@ -78,9 +78,13 @@ extension SearchResultView {
     .padding(.horizontal, 20)
     .background(Color.clear)
     .sheet(item: $store.scope(state: \.selectBottomSheet, action: \.selectBottomSheet)) { store in
-      TCASelectBottomSheet(title: "카테고리 선택", store: store)
-        .presentationDetents([.medium])
-        .presentationCornerRadius(16)
+      TCASelectBottomSheet(
+        title: "카테고리 선택",
+        buttonTitle: "선택하기",
+        store: store
+      )
+      .presentationDetents([.medium])
+      .presentationCornerRadius(16)
     }
   }
 }

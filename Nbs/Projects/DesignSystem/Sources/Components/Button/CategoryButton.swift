@@ -66,7 +66,7 @@ public extension CategoryButton {
         onTap?()
       } label: {
         ZStack {
-          Image(systemName: icon)
+          Image(icon: icon)
             .frame(width: 45, height: 45)
         }
         .frame(width: 80, height: 80)
@@ -74,7 +74,7 @@ public extension CategoryButton {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay {
           RoundedRectangle(cornerRadius: 12)
-            .stroke(strokeColor, lineWidth: 1.04)
+            .strokeBorder(strokeColor, lineWidth: 1.04)
         }
       }
       .buttonStyle(.plain)

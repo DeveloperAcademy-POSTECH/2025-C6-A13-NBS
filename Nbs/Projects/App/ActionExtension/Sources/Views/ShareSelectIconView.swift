@@ -26,37 +26,45 @@ struct ShareSelectIconView: View {
 extension ShareSelectIconView {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      Color.white.ignoresSafeArea()
+      Color.background.ignoresSafeArea()
       VStack(alignment: .center, spacing: 0) {
         Separator()
           .padding(.bottom, 8)
         HeaderView
           .padding(.bottom, 8)
         selectCategoryIconView
+        MainButton("추가하기", isDisabled: isSaveButtonDisabled) {
+          saveCategory()
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 16)
       }
       .padding(.top, 8)
     }
     .navigationBarBackButtonHidden()
-    .frame(minHeight: 258)
+    .frame(minHeight: 308)
     .clipShape(RoundedRectangle(cornerRadius: 16))
   }
   
   private var HeaderView: some View {
-    HStack {
-      Button {
-        dismiss()
-      } label: {
-        Image(systemName: "chevron.left")
-          .frame(width: 24, height: 24)
-          .foregroundStyle(.black)
+    ZStack{
+      HStack {
+        Button {
+          dismiss()
+        } label: {
+          Image(icon: Icon.chevronLeft)
+            .renderingMode(.template)
+            .frame(width: 24, height: 24)
+            .tint(.icon)
+        }
+        .padding(10)
+        Spacer()
       }
-      .padding(10)
-      Spacer()
-      Text("카테고리 추가")
+      Text("새 카테고리")
         .font(.H4_SB)
         .foregroundStyle(.text1)
       Spacer()
-      ConfirmButton(title: "저장", isOn: !isSaveButtonDisabled, action: saveCategory)
     }
     .padding(.vertical, 8)
     .padding(.leading, 4)
@@ -71,8 +79,9 @@ extension ShareSelectIconView {
       
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 16) {
-          ForEach(0..<15, id: \.self) { icon in
+          ForEach(1..<16, id: \.self) { icon in
             let icon = CategoryIcon(number: icon)
+            
             CategoryButton(
               type: .nontitle,
               icon: icon.name,
@@ -87,7 +96,6 @@ extension ShareSelectIconView {
         }
       }
     }
-    .padding(.bottom, 32)
     .padding(.horizontal, 20)
   }
 }
@@ -109,12 +117,6 @@ private extension ShareSelectIconView {
       print("새 카테고리 저장 실패")
     }
   }
-}
-
-// MARK: - Notification Name
-fileprivate extension Notification.Name {
-  static let newCategoryDidSave = Notification.Name("newCategoryDidSave")
-  static let closeShareExtension = Notification.Name("closeShareExtension")
 }
 
 // MARK: - Preview

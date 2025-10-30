@@ -91,11 +91,11 @@ extension EditCategoryIconNameView: View {
       
       MainButton(
         "완료",
-        isDisabled: store.categoryName.isEmpty
+        isDisabled: store.categoryName.isEmpty,
+        hasGradient: true
       ) {
         store.send(.compeleteButtonTapped)
       }
-      .padding(.horizontal, 20)
     }
     .background(DesignSystemAsset.background.swiftUIColor)
     .onTapGesture {

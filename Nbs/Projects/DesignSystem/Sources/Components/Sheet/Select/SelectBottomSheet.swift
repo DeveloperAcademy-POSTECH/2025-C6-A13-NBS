@@ -26,6 +26,7 @@ public struct SelectBottomSheet: View {
   let selectButtonTapped: () -> Void
   let dismissButtonTapped: () -> Void
   let selectedCategory: String?
+  let buttonTitle: String
   
   public init(
     sheetTitle: String,
@@ -33,7 +34,8 @@ public struct SelectBottomSheet: View {
     categoryButtonTapped: @escaping (String) -> Void,
     selectButtonTapped: @escaping () -> Void,
     dismissButtonTapped: @escaping () -> Void,
-    selectedCategory: String?
+    selectedCategory: String?,
+    buttonTitle: String = "선택하기"
   ) {
     self.sheetTitle = sheetTitle
     self.items = items
@@ -41,47 +43,54 @@ public struct SelectBottomSheet: View {
     self.selectButtonTapped = selectButtonTapped
     self.dismissButtonTapped = dismissButtonTapped
     self.selectedCategory = selectedCategory
+    self.buttonTitle = buttonTitle
   }
 }
 
 // MARK: - View
 extension SelectBottomSheet {
   public var body: some View {
-    VStack {
-      HStack(alignment: .center, spacing: 8) {
-        Text(sheetTitle)
-          .font(.B1_SB)
-          .lineLimit(1)
-          .foregroundStyle(.text1)
-          .frame(maxWidth: .infinity, alignment: .center)
-          .padding(.leading, 48)
-        Button {
-          dismissButtonTapped() // 닫기 버튼 액션 연결
-        } label: {
-          Image(icon: Icon.x)
-            .frame(width: 24, height: 24)
-            .padding(.trailing, 20)
-        }
-      }
-      .padding(.vertical, 20)
-      
-      ScrollView(.vertical, showsIndicators: false) {
-        LazyVStack {
-          ForEach(items) { item in
-            SelectBottomSheetItem(
-              title: item.title,
-              isSelected: item.title == selectedCategory,
-              action: { categoryButtonTapped(item.title) }
-            )
+    ZStack {
+      Color.background.ignoresSafeArea()
+      VStack {
+        HStack(alignment: .center, spacing: 8) {
+          Text(sheetTitle)
+            .font(.B1_SB)
+            .lineLimit(1)
+            .foregroundStyle(.text1)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.leading, 48)
+          Button {
+            dismissButtonTapped() // 닫기 버튼 액션 연결
+          } label: {
+            Image(icon: Icon.x)
+              .frame(width: 24, height: 24)
+              .padding(.trailing, 20)
           }
         }
-      }
-      .padding(.horizontal, 20)
-      
-      MainButton("선택하기", action: { selectButtonTapped() })
+        .padding(.vertical, 20)
+        
+        ScrollView(.vertical, showsIndicators: false) {
+          LazyVStack {
+            ForEach(items) { item in
+              SelectBottomSheetItem(
+                title: item.title,
+                isSelected: item.title == selectedCategory,
+                action: { categoryButtonTapped(item.title) }
+              )
+            }
+          }
+        }
         .padding(.horizontal, 20)
+        
+        MainButton(
+          buttonTitle,
+          hasGradient: true,
+          action: { selectButtonTapped() }
+        )
+      }
+      .padding(.top, 8)
     }
-    .padding(.top, 8)
   }
 }
 
@@ -96,6 +105,7 @@ extension SelectBottomSheet {
     categoryButtonTapped: { _ in },
     selectButtonTapped: {},
     dismissButtonTapped: {},
-    selectedCategory: "2"
+    selectedCategory: "2",
+    buttonTitle: "이동하기"
   )
 }

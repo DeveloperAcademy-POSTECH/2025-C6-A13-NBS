@@ -54,8 +54,7 @@ struct AddLinkView: View {
             state: \.categoryGrid,
             action: \.categoryGrid
           )
-        )
-        
+        )        
         Spacer()
         MainButton(
           AddLinkNamespace.ctaButtonTitle,

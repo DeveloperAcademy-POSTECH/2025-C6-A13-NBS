@@ -13,6 +13,7 @@ import DesignSystem
 struct DeleteLinkView: View {
   @Bindable var store: StoreOf<DeleteLinkFeature>
   @State private var showScrollToTopButton = false
+  @State private var showAlertDialog = false
 }
 
 extension DeleteLinkView {
@@ -36,13 +37,33 @@ extension DeleteLinkView {
       .onPreferenceChange(MoveScrollOffsetKey.self) { offsetY in
         withAnimation(.easeInOut(duration: 0.2)) {
           showScrollToTopButton = offsetY < -200
-//          showScrollToTopButton = true
         }
       }
+      .overlay {
+        if showAlertDialog {
+          Color.dim
+            .ignoresSafeArea()
+            .onTapGesture { showAlertDialog = false }
+          
+          AlertDialog(
+            title: "선택한 링크를 삭제할까요?",
+            subtitle: "삭제한 링크는 복구할 수 없어요",
+            cancelTitle: "취소",
+            onCancel: {
+              showAlertDialog = false
+            },
+            buttonType: .delete(title: "삭제") {
+              showAlertDialog = false
+              store.send(.confirmDeleteTapped)
+            }
+          )
+        }
+      }
+      .animation(.easeInOut(duration: 0.25), value: showAlertDialog)
     }
   }
   
-  /// 이동할 링크 선택 텍스트
+  /// 삭제할 링크 선택 텍스트
   private var topContents: some View {
     Text(
       store.selectedLinks.isEmpty
@@ -129,7 +150,7 @@ extension DeleteLinkView {
         style: .danger,
         isDisabled: store.selectedLinks.isEmpty
       ) {
-        store.send(.confirmDeleteTapped)
+        showAlertDialog = true
       }
     }
     .padding(.horizontal, 20)

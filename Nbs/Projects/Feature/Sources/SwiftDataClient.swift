@@ -12,6 +12,12 @@ struct SwiftDataClient {
   var addLink: (ArticleItem) throws -> Void
   var updateLinkLastViewed: (ArticleItem) throws -> Void
   var fetchRecentLinks: () throws -> [ArticleItem]
+  var deleteLink: (ArticleItem) throws -> Void
+  var deleteLinks: ([ArticleItem]) throws -> Void
+  var moveLinks: (_ links: [ArticleItem], _ category: CategoryItem?) throws -> Void
+  var editLinkTitle: (_ id: String, _ newTitle: String) throws -> Void
+  var updateLinkMemo: (_ id: String, _ memo: String) throws -> Void
+  var deleteLinkById: (_ id: String) throws -> Void
   
   // CategoryItem
   var fetchCategories: () throws -> [CategoryItem]
@@ -19,7 +25,7 @@ struct SwiftDataClient {
   var updateCategory: (CategoryItem) throws -> Void
   var updateCategoryItem: (UUID, String, CategoryIcon) throws -> Void
   var deleteCategory: (CategoryItem) throws -> Void
-//  var addLink: (LinkItem) throws -> Void
+  //  var addLink: (LinkItem) throws -> Void
 }
 
 extension SwiftDataClient: DependencyKey {
@@ -53,6 +59,46 @@ extension SwiftDataClient: DependencyKey {
         )
         descriptor.fetchLimit = 6
         return try modelContext.fetch(descriptor)
+      },
+      deleteLink: { link in
+        modelContext.delete(link)
+        try modelContext.save()
+      },
+      deleteLinks: { links in
+        links.forEach { modelContext.delete($0) }
+        try modelContext.save()
+      },
+      moveLinks: { links, category in
+        links.forEach { $0.category = category }
+        try modelContext.save()
+      },
+      editLinkTitle: { id, newTitle in
+        let descriptor = FetchDescriptor<ArticleItem>(
+          predicate: #Predicate { $0.id == id }
+        )
+        if let article = try modelContext.fetch(descriptor).first {
+          article.title = newTitle
+          try modelContext.save()
+        }
+      },
+      updateLinkMemo: { id, memo in
+        let descriptor = FetchDescriptor<ArticleItem>(
+          predicate: #Predicate { $0.id == id }
+        )
+        guard let target = try modelContext.fetch(descriptor).first else {
+          throw NSError(domain: "SwiftDataClient", code: 404, userInfo: [NSLocalizedDescriptionKey: "ArticleItem not found"])
+        }
+        target.userMemo = memo
+        try modelContext.save()
+      },
+      deleteLinkById: { id in                     
+        let descriptor = FetchDescriptor<ArticleItem>(
+          predicate: #Predicate { $0.id == id }
+        )
+        if let target = try modelContext.fetch(descriptor).first {
+          modelContext.delete(target)
+          try modelContext.save()
+        }
       },
       fetchCategories: {
         let descriptor = FetchDescriptor<CategoryItem>()

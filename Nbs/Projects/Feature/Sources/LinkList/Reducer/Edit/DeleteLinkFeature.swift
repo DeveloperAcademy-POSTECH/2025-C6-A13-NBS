@@ -16,6 +16,7 @@ struct DeleteLinkFeature {
     var allLinks: [ArticleItem] = []
     var selectedLinks: Set<String> = []
     var isSelectAll: Bool = false
+    var hideSelectControls: Bool = false
   }
   
   enum Action: BindableAction {
@@ -37,6 +38,10 @@ struct DeleteLinkFeature {
     Reduce { state, action in
       switch action {
       case .onAppear:
+        if state.hideSelectControls {
+          state.selectedLinks = Set(state.allLinks.map(\.id))
+          state.isSelectAll = true
+        }
         return .none
         
         /// 전체 선택 or 해제

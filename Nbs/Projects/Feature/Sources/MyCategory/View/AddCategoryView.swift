@@ -79,11 +79,11 @@ extension AddCategoryView: View {
         .padding(.top, 4)
         MainButton(
           CategoryNamespace.addCategory,
-          isDisabled: store.categoryName.isEmpty
+          isDisabled: store.categoryName.isEmpty,
+          hasGradient: true
         ) {
           store.send(.saveButtonTapped)
         }
-        .padding(.horizontal, 20)
       }
     }
     .background(Color.background)

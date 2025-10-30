@@ -29,6 +29,7 @@ public struct MainButton: View {
   let title: String
   let style: Style
   let isDisabled: Bool
+  let hasGradient: Bool
   let action: () -> Void
   
   // MARK: - Init
@@ -36,11 +37,13 @@ public struct MainButton: View {
     _ title: String,
     style: Style = .deep,
     isDisabled: Bool = false,
+    hasGradient: Bool = false,
     action: @escaping () -> Void
   ) {
     self.title = title
     self.style = style
     self.isDisabled = isDisabled
+    self.hasGradient = hasGradient
     self.action = action
   }
   
@@ -85,7 +88,34 @@ extension MainButton {
         .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
+    .padding(.horizontal, 20)
+    .overlay(alignment: .top) {
+      if hasGradient { gradientPart }
+    }
     .disabled(isDisabled)
+  }
+  
+  /// 그라데이션 파트
+  private var gradientPart: some View {
+    Rectangle()
+      .foregroundColor(.clear)
+      .frame(height: 32)
+      .overlay(
+        LinearGradient(
+          stops: [
+            Gradient.Stop(color: .bgButtonGrad1, location: 0.00),
+            Gradient.Stop(color: .bgButtonGrad2, location: 0.16),
+            Gradient.Stop(color: .bgButtonGrad3, location: 0.73),
+            Gradient.Stop(color: .bgButtonGrad4, location: 1.00),
+          ],
+          startPoint: UnitPoint(x: 0.47, y: 1),
+          endPoint: UnitPoint(x: 0.47, y: 0.15)
+        )
+      )
+      .blur(radius: 0)
+      .frame(height: 32)
+      .offset(y: -40)
+      .allowsHitTesting(false)
   }
 }
 
@@ -94,6 +124,7 @@ extension MainButton {
   MainButton(
     "BUTTON",
     style: .deep,
-    isDisabled: false
+    isDisabled: false,
+    hasGradient: true
   ) { print("버튼입니다") }
 }

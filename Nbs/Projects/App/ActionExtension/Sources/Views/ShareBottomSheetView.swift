@@ -16,7 +16,7 @@ import Domain
 struct ShareBottomSheetView: View {
   @Query(sort: [SortDescriptor<CategoryItem>(\.createdAt, order: .reverse)]) private var categories: [CategoryItem]
   @State private var selectedCategory: CategoryItem? = nil
-  let confirmAction: (CategoryItem?) -> Void
+  let saveAction: (CategoryItem?) -> Void
 }
 
 // MARK: - View
@@ -25,74 +25,83 @@ extension ShareBottomSheetView {
     NavigationStack {
       ZStack(alignment: .topLeading) {
         Color.background.ignoresSafeArea()
-        VStack(alignment: .center, spacing: 8) {
+        VStack(alignment: .center, spacing: 0) {
           Separator()
           HeaderView
-          SelectCategoryView
+          CategoryListView
+            .padding(.horizontal, 20)
+            .padding(.bottom, 16)
+          MainButton("저장") {
+            saveAction(selectedCategory)
+          }
+          .padding(.horizontal, 20)
+          .padding(.vertical, 8)
+          .padding(.bottom, 16)
         }
         .padding(.top, 8)
       }
     }
-    .frame(minHeight: 258)
+    .frame(minHeight: 308)
     .clipShape(RoundedRectangle(cornerRadius: 16))
   }
   
   private var HeaderView: some View {
     HStack {
-      HStack(spacing: 2) {
-        Text("저장 완료")
-          .font(.B1_SB)
-          .foregroundStyle(.bl6)
-      }
+      Text("카테고리 선택해주세요")
+        .font(.B1_SB)
+        .foregroundStyle(.text1)
       Spacer()
-      HStack(spacing: 8) {
+      HStack {
         NavigationLink {
           ShareInputTitleView()
         } label: {
-          Text("+ 카테고리 추가")
-            .font(.B2_SB)
-            .foregroundStyle(.bl6)
-            .frame(width: 119, height: 36)
-            .background(.bl1)
-            .clipShape(.capsule)
+          HStack(spacing: 4) {
+            Image(icon: Icon.plus)
+              .renderingMode(.template)
+              .resizable()
+              .frame(width: 15, height: 15)
+              .foregroundStyle(.bl6)
+              .padding(.leading, 10)
+            
+            Text("새 카테고리")
+              .font(.B2_SB)
+              .foregroundStyle(.bl6)
+              .padding(.trailing, 16)
+          }
+          .frame(width: 113)
+          .padding(.vertical, 6)
+          .background(.bl1)
+          .clipShape(.capsule)
         }
-        ConfirmButton(action: { confirmAction(selectedCategory) })
       }
     }
-    .padding(.vertical, 8)
+    .padding(.vertical, 16)
     .padding(.horizontal, 20)
-  }
-  
-  private var EmptyCategoryView: some View {
-    VStack(alignment: .center, spacing: 4) {
-      Text("아무 카테고리도 존재하지 않아요")
-        .font(.C1)
-        .foregroundStyle(.caption1)
-      Text("카테고리를 추가하고\n원하는 주제별로 링크를 정리해봐요")
-        .font(.C2)
-        .multilineTextAlignment(.center)
-        .foregroundStyle(.caption2)
-    }
-    .frame(height: 116)
-    .frame(maxWidth: .infinity)
-    .background(.n20)
-    .clipShape(RoundedRectangle(cornerRadius: 12))
   }
   
   private var CategoryListView: some View {
     ScrollView(.horizontal, showsIndicators: false) {
       LazyHStack(spacing: 16) {
+        CategoryButton(
+          title: "전체",
+          icon: "primaryCategory14",
+          isOn: Binding(
+            get: { self.selectedCategory == nil},
+            set: { isOn in
+            if isOn {
+              self.selectedCategory = nil
+            }
+          })
+        )
         ForEach(categories) { category in
           CategoryButton(
             title: category.categoryName,
             icon: category.icon.name,
             isOn: Binding(
-              get: { selectedCategory == category },
+              get: { self.selectedCategory == category },
               set: { isOn in
                 if isOn {
-                  selectedCategory = category
-                } else if selectedCategory == category {
-                  selectedCategory = nil
+                  self.selectedCategory = category
                 }
               }
             )
@@ -101,22 +110,4 @@ extension ShareBottomSheetView {
       }
     }
   }
-  
-  private var SelectCategoryView: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      Text("카테고리 선택하기")
-        .font(.B2_SB)
-        .foregroundStyle(.text1)
-        .padding(.bottom, 8)
-      
-      if categories.isEmpty {
-        EmptyCategoryView
-      } else {
-        CategoryListView
-      }
-    }
-    .padding(.bottom, 32)
-    .padding(.horizontal, 20)
-  }
 }
-

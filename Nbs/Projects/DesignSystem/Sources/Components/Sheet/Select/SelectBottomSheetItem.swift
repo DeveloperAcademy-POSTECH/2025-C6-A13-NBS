@@ -44,11 +44,13 @@ extension SelectBottomSheetItem {
           .padding(.trailing, 12)
           .padding(.vertical, 4)
           
-        Image(icon: Icon.check)
-          .renderingMode(.template)
-          .frame(width: 24, height: 24)
-          .padding(4)
-          .foregroundStyle(foregroundColor)
+        if isSelected {
+          Image(icon: Icon.check)
+            .renderingMode(.template)
+            .frame(width: 24, height: 24)
+            .padding(4)
+            .foregroundStyle(foregroundColor)
+        }
       }
       .contentShape(.rect)
       .padding(.vertical, 4)

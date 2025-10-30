@@ -36,9 +36,19 @@ extension MoveLinkView {
       .onPreferenceChange(MoveScrollOffsetKey.self) { offsetY in
         withAnimation(.easeInOut(duration: 0.2)) {
           showScrollToTopButton = offsetY < -200
-//          showScrollToTopButton = true
         }
       }
+      .sheet(
+         store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
+       ) { selectStore in
+         TCASelectBottomSheet(
+          title: "카테고리 이동",
+          buttonTitle: "이동하기",
+          store: selectStore
+         )
+         .presentationDetents([.medium])
+         .presentationCornerRadius(16)
+       }
     }
   }
   
