@@ -133,7 +133,7 @@ extension LinkDetailView: View {
   private var articleLink: some View {
     Button {
       if let url = URL(string: store.link.urlString) {
-        UIApplication.shared.open(url)
+        store.send(.originalArticleTapped(url))
       }
     } label: {
       HStack(spacing: 12) {
