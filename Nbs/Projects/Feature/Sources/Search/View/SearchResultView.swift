@@ -62,8 +62,8 @@ extension SearchResultView {
               } label: {
                 LinkCard(
                   title: result.title,
-                  newsCompany: "조선 비즈",
-                  image: "plus",
+                  newsCompany: result.newsCompany ?? "언론사 정보 없음",
+                  image: result.imageURL ?? "placeholder_image",
                   date: result.createAt.formattedKoreanDate()
                 )
               }

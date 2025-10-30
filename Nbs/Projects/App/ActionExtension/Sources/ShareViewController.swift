@@ -21,6 +21,8 @@ final class ShareViewController: UIViewController {
   
   private var pageTitle: String = ""
   private var pageURL: String = ""
+  private var pageImageURL: String?
+  private var pageMediaCompany: String? 
   private var draftHighlights: [[String: Any]]? = []
   private var currentLinkItem: ArticleItem?
   private var categoryToSave: CategoryItem? = nil
@@ -45,11 +47,11 @@ private extension ShareViewController {
     let container = AppGroupContainer.shared
     
     let rootView = RootWrapperView(container: container, isURLExisting: isURLExisting) { [weak self] selectedCategory in
-        guard let self = self else { return }
-        self.categoryToSave = selectedCategory
-        self.saveActionTriggered = true
-        
-        self.saveAllData()
+      guard let self = self else { return }
+      self.categoryToSave = selectedCategory
+      self.saveActionTriggered = true
+      
+      self.saveAllData()
     }
     
     DispatchQueue.main.async { [weak self] in
@@ -127,6 +129,14 @@ private extension ShareViewController {
               self.pageURL = url
             }
             
+            if let imageURL = results["imageURL"] as? String {
+              self.pageImageURL = imageURL
+            }
+            
+            if let mediaCompany = results["mediaCompany"] as? String {
+              self.pageMediaCompany = mediaCompany
+            }
+            
             if let drafts = results["drafts"] as? [[String: Any]] {
               self.draftHighlights = drafts
             }
@@ -159,19 +169,19 @@ private extension ShareViewController {
       }
     }
   }
-    
+  
   func checkIfURLExistsAndConfigure() {
-      let container = AppGroupContainer.shared
-      let context = container.mainContext
-      let urlString = self.pageURL
-      let fetchDescriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.urlString == urlString })
-      
-      if let _ = try? context.fetch(fetchDescriptor).first {
-          self.isURLExisting = true
-      } else {
-          self.isURLExisting = false
-      }
-      configureHostingController()
+    let container = AppGroupContainer.shared
+    let context = container.mainContext
+    let urlString = self.pageURL
+    let fetchDescriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.urlString == urlString })
+    
+    if let _ = try? context.fetch(fetchDescriptor).first {
+      self.isURLExisting = true
+    } else {
+      self.isURLExisting = false
+    }
+    configureHostingController()
   }
   
   private func closeExtension(clearDrafts: Bool) {
@@ -200,13 +210,15 @@ private extension ShareViewController {
     let linkItem: ArticleItem
     if let existingLink = try? context.fetch(fetchDescriptor).first {
       linkItem = existingLink
+      linkItem.imageURL = self.pageImageURL
+      linkItem.newsCompany = self.pageMediaCompany
     } else {
-      linkItem = ArticleItem(urlString: self.pageURL, title: self.pageTitle)
+      linkItem = ArticleItem(urlString: self.pageURL, title: self.pageTitle, imageURL: self.pageImageURL, newsCompany: self.pageMediaCompany)
       context.insert(linkItem)
     }
     
     if self.saveActionTriggered {
-        linkItem.category = self.categoryToSave
+      linkItem.category = self.categoryToSave
     }
     
     self.currentLinkItem = linkItem
