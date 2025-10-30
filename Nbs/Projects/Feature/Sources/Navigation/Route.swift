@@ -15,6 +15,8 @@ public enum Route: String {
   case editCategoryNameIcon
   case deleteCategory
   
+  case search
+  
   case linkList    // 홈 -> 링크 리스트
   case linkDetail  // 카드 -> 링크 디테일
 }
