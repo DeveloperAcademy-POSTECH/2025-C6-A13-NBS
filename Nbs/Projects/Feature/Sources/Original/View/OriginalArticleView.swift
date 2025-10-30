@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
-
+import ComposableArchitecture
 import DesignSystem
+
 
 // MARK: - Properties
 struct OriginalArticleView: View {
-  let url: URL
+  let store: StoreOf<OriginalArticleFeature>
 }
 
 // MARK: - View
@@ -20,16 +21,12 @@ extension OriginalArticleView {
     ZStack(alignment: .topLeading) {
       Color.background.ignoresSafeArea()
       VStack {
-        OriginalHeaderView()
-
-        OriginalWebView(url: url)
+        OriginalHeaderView(headerType: .article, onEditTapped: {
+          store.send(.editButtonTapped)
+        })
+        OriginalWebView(url: store.url)
           .ignoresSafeArea(edges: .bottom)
       }
     }
   }
-}
-
-#Preview {
-  
-  OriginalArticleView(url: URL(string: "https://www.google.com")!)
 }

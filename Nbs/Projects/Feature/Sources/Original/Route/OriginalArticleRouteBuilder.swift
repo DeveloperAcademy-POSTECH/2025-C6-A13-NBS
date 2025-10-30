@@ -10,7 +10,7 @@ import Domain
 import LinkNavigator
 import SwiftUI
 
-public struct OriginalRouteBuilder {
+public struct OriginalArticleRouteBuilder {
   public init() { }
   
   @MainActor
@@ -34,7 +34,11 @@ public struct OriginalRouteBuilder {
       }
       
       return WrappingController(matchPath: matchPath) {
-        OriginalArticleView(url: url)
+        OriginalArticleView(
+          store: Store(initialState: OriginalArticleFeature.State(url: url), reducer: {
+          OriginalArticleFeature()
+              .dependency(\.linkNavigator, .init(navigator: navigator))
+        }))
       }
     }
   }
