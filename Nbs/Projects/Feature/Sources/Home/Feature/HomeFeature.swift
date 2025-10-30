@@ -131,7 +131,7 @@ struct HomeFeature {
       case .alertBannerTapped:
         if let link = state.copiedLink {
           //TODO: addLink로 이동
-          state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
+          linkNavigator.push(.addLink, link)
         }
         return .none
         
