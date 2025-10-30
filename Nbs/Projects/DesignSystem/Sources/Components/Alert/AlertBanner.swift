@@ -90,7 +90,7 @@ public extension AlertBanner {
         Button {
           action?()
         } label: {
-          Color.clear.frame(width: 40, height: 40)
+          Color.clear.frame(width: 44, height: 44)
           Image(icon: Icon.x)
             .resizable()
             .renderingMode(.template)
