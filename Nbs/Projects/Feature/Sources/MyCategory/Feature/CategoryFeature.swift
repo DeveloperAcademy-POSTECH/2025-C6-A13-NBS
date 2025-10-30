@@ -46,7 +46,7 @@ struct CategoryListFeature {
         linkNavigator.push(.myCategory, nil)
         return .none
       case let .categoryTapped(category):
-        state.selectedCategory = category
+        linkNavigator.push(.linkList, category)
         return .none
       case .addCategoryButtonTapped:
         linkNavigator.push(.addCategory, nil)

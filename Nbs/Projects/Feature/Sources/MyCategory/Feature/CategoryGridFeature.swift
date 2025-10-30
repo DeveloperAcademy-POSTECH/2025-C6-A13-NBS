@@ -40,8 +40,7 @@ struct CategoryGridFeature {
           }))
         }
       case let .fetchCategoriesResponse(.success(categories)):
-        let allCategory = CategoryItem(categoryName: "전체", icon: .init(number: 16))
-        state.categories = [allCategory] + categories
+        state.categories = categories
         return .none
       case let .toggleCategorySelection(category):
         if state.allowsMultipleSelection {

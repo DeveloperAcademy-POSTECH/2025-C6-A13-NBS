@@ -19,12 +19,15 @@ struct MyCategoryCollectionFeature {
     var categoryGrid = CategoryGridFeature.State()
     var selectedCategory: CategoryItem?
     var settingModal: SettingFeature.State?
+    var myCategoryGrid = MyCategoryGridFeature.State()
   }
   
   enum Action {
     case topAppBar(TopAppBarDefaultNoSearchFeature.Action)
     case categoryGrid(CategoryGridFeature.Action)
     case settingModal(SettingFeature.Action)
+    case totalLinkTapped
+    case myCategoryGrid(MyCategoryGridFeature.Action)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -37,8 +40,15 @@ struct MyCategoryCollectionFeature {
     Scope(state: \.categoryGrid, action: \.categoryGrid) {
       CategoryGridFeature()
     }
+    
+    Scope(state: \.myCategoryGrid, action: \.myCategoryGrid) {
+         MyCategoryGridFeature()
+       }
     Reduce { state, action in
       switch action {
+      case .totalLinkTapped:
+        linkNavigator.push(.linkList, nil)
+        return .none
       case .topAppBar(.tapBackButton):
         return .run { _ in await linkNavigator.pop() }
         
@@ -60,6 +70,8 @@ struct MyCategoryCollectionFeature {
         return .none
       case .settingModal(.deleteButtonTapped):
         linkNavigator.push(.deleteCategory, nil)
+        return .none
+      case .myCategoryGrid(_):
         return .none
       }
     }
