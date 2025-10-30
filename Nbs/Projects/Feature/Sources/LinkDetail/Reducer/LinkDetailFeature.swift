@@ -13,6 +13,7 @@ import DesignSystem
 @Reducer
 struct LinkDetailFeature {
   @Dependency(\.swiftDataClient) var swiftDataClient
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State {
@@ -42,6 +43,9 @@ struct LinkDetailFeature {
     /// 삭제
     case deleteTapped
     case deleteResponse(TaskResult<Void>)
+    
+    /// 원문보기
+    case originalArticleTapped(URL)
   }
   
   var body: some ReducerOf<Self> {
@@ -137,6 +141,11 @@ struct LinkDetailFeature {
         
       case .deleteResponse(.failure(let error)):
         print("링크 삭제 실패:", error)
+        return .none
+        
+      /// 원문보기
+      case .originalArticleTapped(let url):
+        linkNavigator.push(Route.originalArticle, url.absoluteString)
         return .none
       }
     }

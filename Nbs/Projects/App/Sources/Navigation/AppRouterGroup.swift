@@ -26,7 +26,9 @@ extension AppRouterGroup {
       SettingRouteBuilder().generate(),
       EditCategoryIconNameRouteBuilder().generate(),
       LinkListRouteBuilder().generate(),
-      LinkDetailRouteBuilder().generate()
+      LinkDetailRouteBuilder().generate(),
+      OriginalArticleRouteBuilder().generate(),
+      OriginalEditRouteBuilder().generate()
     ]
   }
 }
