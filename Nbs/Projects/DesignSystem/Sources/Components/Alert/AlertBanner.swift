@@ -52,16 +52,17 @@ public extension AlertBanner {
     }
     .padding(.horizontal, 24)
     .padding(.vertical, 18)
-    .background({
-      switch style {
-      case .close:
-        VisualEffectBlur(blurStyle: .systemUltraThinMaterialDark)
-          .background(DesignSystemAsset.alertColor.swiftUIColor)
-      default:
-        VisualEffectBlur(blurStyle: .systemUltraThinMaterialLight)
-          .background(DesignSystemAsset.alert.swiftUIColor)
-      }
-    }())
+    .background(DesignSystemAsset.alertColor.swiftUIColor)
+//    .background({
+//      switch style {
+//      case .close:
+////        VisualEffectBlur(blurStyle: .systemUltraThinMaterialDark)
+//          .backgro(DesignSystemAsset.alertColor.swiftUIColor)
+//      default:
+////        VisualEffectBlur(blurStyle: .systemUltraThinMaterialLight)
+//          .background(DesignSystemAsset.alert.swiftUIColor)
+//      }
+//    }())
     .cornerRadius(12)
   }
   
