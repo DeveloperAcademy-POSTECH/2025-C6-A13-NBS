@@ -8,34 +8,26 @@
 import SwiftUI
 import DesignSystem
 
-/// 요약 아이템 (What / Why / Detail)
+/// 하이라이트 아이템 (Pink / Yellow / Blue)
 struct SummaryTypeItem: View {
   enum SummaryType: String {
-    case what = "What"
-    case why = "Why"
-    case detail = "Detail"
+    case pink = "Pink"
+    case yellow = "Yellow"
+    case blue = "Blue"
     
     var textColor: Color {
       switch self {
-      case .what: return .textWhat
-      case .why: return .textWhy
-      case .detail: return .textDetail
+      case .pink: return .textWhat
+      case .yellow: return .textWhy
+      case .blue: return .textDetail
       }
     }
     
     var backgroundColor: Color {
       switch self {
-      case .what: return .bgWhat
-      case .why: return .bgWhy
-      case .detail: return .bgDetail
-      }
-    }
-    
-    var shortLabel: String {
-      switch self {
-      case .what: return "W"
-      case .why: return "W"
-      case .detail: return "D"
+      case .pink: return .bgWhat
+      case .yellow: return .bgWhy
+      case .blue: return .bgDetail
       }
     }
   }
@@ -46,12 +38,9 @@ struct SummaryTypeItem: View {
 extension SummaryTypeItem {
   var body: some View {
     HStack(spacing: 8) {
-      Text(type.shortLabel)
-        .font(.B2_M)
-        .foregroundStyle(type.textColor)
+      RoundedRectangle(cornerRadius: 4)
+        .fill(type.backgroundColor)
         .frame(width: 24, height: 24)
-        .background(type.backgroundColor)
-        .cornerRadius(4)
       
       Text(type.rawValue)
         .font(.B1_M)
@@ -62,8 +51,8 @@ extension SummaryTypeItem {
 
 #Preview {
   VStack(spacing: 16) {
-    SummaryTypeItem(type: .what)
-    SummaryTypeItem(type: .why)
-    SummaryTypeItem(type: .detail)
+    SummaryTypeItem(type: .pink)
+    SummaryTypeItem(type: .yellow)
+    SummaryTypeItem(type: .blue)
   }
 }

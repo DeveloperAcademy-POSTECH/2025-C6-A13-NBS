@@ -14,7 +14,7 @@ struct LinkDetailSegment: View {
   @Binding var selectedTab: Tab
   
   enum Tab: String, CaseIterable, Identifiable {
-    case summary = "요약"
+    case summary = "하이라이트"
     case memo = "추가 메모"
     var id: String { rawValue }
   }
@@ -28,10 +28,10 @@ struct LinkDetailSegment: View {
 
 extension LinkDetailSegment {
   var body: some View {
-    VStack(spacing: 0) {
+    VStack(spacing: .zero) {
       contents
-      
-      Divider()
+        .padding(.bottom, -underlineHeight)
+      Rectangle()
         .frame(height: 1)
         .foregroundStyle(.divider1)
     }

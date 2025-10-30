@@ -74,7 +74,7 @@ extension TopAppBarDefaultDetail: View {
               .contentShape(Rectangle())
           }
         }
-        .padding(.trailing, 24)
+        .padding(.trailing, 10)
       }
       Text(title)
         .font(.H4_SB)

@@ -67,11 +67,11 @@ struct AddLinkView: View {
       Spacer()
       MainButton(
         AddLinkNamespace.ctaButtonTitle,
-        isDisabled: store.linkURL.isEmpty
+        isDisabled: store.linkURL.isEmpty,
+        hasGradient: true
       ) {
         store.send(.saveButtonTapped)
       }
-      .padding(.horizontal, 20)
     }
     .ignoresSafeArea(.keyboard)
     .navigationBarHidden(true)

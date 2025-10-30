@@ -17,13 +17,13 @@ extension SummaryView {
       VStack(spacing: 32) {
         ForEach(groupedHighlights.keys.sorted(by: sortOrder), id: \.self) { key in
           if let items = groupedHighlights[key],
-             let type = SummaryTypeItem.SummaryType(rawValue: key) {
+             let displayType = displayType(forModelKey: key) {
             VStack(alignment: .leading, spacing: 24) {
-              SummaryTypeItem(type: type)
+              SummaryTypeItem(type: displayType)
               
-              // 같은 type의 highlight를 모아서 출력
+              // 같은 모델 타입에 묶인 하이라이트들
               ForEach(items) { item in
-                highlightContents(for: item, type: type)
+                highlightContents(for: item, type: displayType)
               }
             }
           }
@@ -63,6 +63,16 @@ extension SummaryView {
       }
     }
   }
+  
+  /// 보여줄 타입
+  private func displayType(forModelKey key: String) -> SummaryTypeItem.SummaryType? {
+     switch key.lowercased() {
+     case "what":   return .pink
+     case "why":    return .yellow
+     case "detail": return .blue
+     default:       return nil
+     }
+   }
   
   ///  type별 그룹핑된 highlights
   private var groupedHighlights: [String: [HighlightItem]] {
