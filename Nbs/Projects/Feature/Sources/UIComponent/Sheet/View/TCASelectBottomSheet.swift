@@ -13,6 +13,7 @@ import ComposableArchitecture
 // MARK: - Properties
 struct TCASelectBottomSheet: View {
   let title: String
+  let buttonTitle: String
   let store: StoreOf<SelectBottomSheetFeature>
 }
 
@@ -24,7 +25,9 @@ extension TCASelectBottomSheet {
       items: store.categories.elements,
       categoryButtonTapped: { category in store.send(.categoryTapped(category)) },
       selectButtonTapped: { store.send(.selectButtonTapped) },
-      dismissButtonTapped: { store.send(.closeTapped) }, selectedCategory: store.selectedCategory
+      dismissButtonTapped: { store.send(.closeTapped) },
+      selectedCategory: store.selectedCategory,
+      buttonTitle: buttonTitle
     )
     .onAppear {
       
@@ -35,6 +38,7 @@ extension TCASelectBottomSheet {
 #Preview {
   TCASelectBottomSheet(
     title: "카테고리 선택",
+    buttonTitle: "선택하기",
     store: Store(
       initialState: SelectBottomSheetFeature.State(),
       reducer: { SelectBottomSheetFeature() }
