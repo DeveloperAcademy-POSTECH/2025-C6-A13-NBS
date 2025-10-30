@@ -159,7 +159,7 @@ struct HomeFeature {
         return .none
         
       case .searchButtonTapped:
-        state.path.append(.search(SearchFeature.State()))
+        linkNavigator.push(.search, nil)
         return .none
         
       case .categoryList, .articleList, .path:

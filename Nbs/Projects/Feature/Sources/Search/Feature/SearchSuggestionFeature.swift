@@ -20,15 +20,10 @@ struct SearchSuggestionFeature {
     case loadSuggestionItem(String)
     case suggestionResponse([ArticleItem])
     case suggestionTapped(ArticleItem)
-    
-    case delegate(DelegateAction)
-  }
-  
-  enum DelegateAction: Equatable {
-    case openLinkDetail(ArticleItem)
   }
 
   @Dependency(\.swiftDataClient) var swiftDataClient
+  @Dependency(\.linkNavigator) var linkNavigator
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
@@ -48,9 +43,7 @@ struct SearchSuggestionFeature {
         return .none
         
       case .suggestionTapped(let item):
-        return .send(.delegate(.openLinkDetail(item)))
-        
-      case .delegate:
+        linkNavigator.push(.linkDetail, item)
         return .none
       }
     }

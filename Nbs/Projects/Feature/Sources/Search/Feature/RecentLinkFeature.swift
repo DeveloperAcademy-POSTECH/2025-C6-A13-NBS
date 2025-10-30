@@ -20,15 +20,10 @@ struct RecentLinkFeature {
     case onAppear
     case recentLinkResponse([ArticleItem])
     case recentLinkTapped(ArticleItem)
-    
-    case delegate(DelegateAction)
-  }
-  
-  enum DelegateAction: Equatable {
-    case openLinkDetail(ArticleItem)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
+  @Dependency(\.linkNavigator) var linkNavigator
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
@@ -44,9 +39,7 @@ struct RecentLinkFeature {
         return .none
       
       case .recentLinkTapped(let item):
-        return .send(.delegate(.openLinkDetail(item)))
-        
-      case .delegate:
+        linkNavigator.push(.linkDetail, item)
         return .none
       }
     }
