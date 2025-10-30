@@ -23,35 +23,22 @@ struct AddLinkView: View {
         )
       )
       
-      Text(AddLinkNamespace.addLink)
-        .font(.B2_SB)
-        .foregroundStyle(.caption1)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading, 24)
-        .padding(.top, 8)
-      
-      TextField(
-        AddLinkNamespace.placeHoler,
-        text: $store.linkURL.sending(\.setLinkURL)
+      JNTextFieldLink(
+        text: $store.linkURL.sending(\.setLinkURL),
+        style: .default,
+        placeholder: "링크를 입력해주세요",
+        header: "추가할 링크"
       )
-      .padding()
-      .background(
-        RoundedRectangle(cornerRadius: 12)
-          .fill(DesignSystemAsset.n0.swiftUIColor)
-          .stroke(Color.divider1, lineWidth: 1)
-      )
-      .padding(.top, 8)
-      .padding(.horizontal, 20)
-      
+            
       HStack {
         Text(AddLinkNamespace.selectCategory)
           .font(.B2_SB)
           .foregroundStyle(.caption1)
         Spacer()
         
-        AddNewCategoryButton(action: {
-            store.send(.addNewCategoryButtonTapped)
-        })
+        AddNewCategoryButton{
+          store.send(.addNewCategoryButtonTapped)
+        }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.horizontal, 24)
@@ -76,6 +63,15 @@ struct AddLinkView: View {
     .ignoresSafeArea(.keyboard)
     .navigationBarHidden(true)
     .background(DesignSystemAsset.background.swiftUIColor)
+        .alert($store.scope(state: \.alert, action: \.alert))
+    .highPriorityGesture(
+      DragGesture(minimumDistance: 25, coordinateSpace: .local)
+        .onEnded { value in
+          if value.startLocation.x < 50 && value.translation.width > 80 {
+            store.send(.backGestureSwiped)
+          }
+        }
+    )
   }
 }
 
