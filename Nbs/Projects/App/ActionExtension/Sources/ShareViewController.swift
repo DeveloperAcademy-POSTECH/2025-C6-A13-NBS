@@ -25,11 +25,12 @@ final class ShareViewController: UIViewController {
   private var currentLinkItem: ArticleItem?
   private var categoryToSave: CategoryItem? = nil
   private var saveActionTriggered: Bool = false
+  private var isURLExisting: Bool = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
     configureViewController()
-    configureHostingController()
+    extractAllData()
     addObservers()
   }
 }
@@ -43,12 +44,12 @@ private extension ShareViewController {
   func configureHostingController() {
     let container = AppGroupContainer.shared
     
-    let rootView = RootWrapperView(container: container) { [weak self] selectedCategory in
+    let rootView = RootWrapperView(container: container, isURLExisting: isURLExisting) { [weak self] selectedCategory in
         guard let self = self else { return }
         self.categoryToSave = selectedCategory
         self.saveActionTriggered = true
         
-        self.extractAllData()
+        self.saveAllData()
     }
     
     DispatchQueue.main.async { [weak self] in
@@ -103,8 +104,6 @@ private extension ShareViewController {
       return
     }
     
-    print(extensionItem)
-    
     let propertyListIdentifier = UTType.propertyList.identifier
     let urlIdentifier = UTType.url.identifier
     
@@ -129,7 +128,7 @@ private extension ShareViewController {
             if let drafts = results["drafts"] as? [[String: Any]] {
               self.draftHighlights = drafts
             }
-            self.saveAllData()
+            self.checkIfURLExistsAndConfigure()
           }
         }
         break
@@ -149,7 +148,7 @@ private extension ShareViewController {
                 self.pageURL = url.absoluteString
                 self.pageTitle = url.host ?? ""
                 self.draftHighlights = []
-                self.saveAllData()
+                self.checkIfURLExistsAndConfigure()
               }
             }
           }
@@ -157,6 +156,20 @@ private extension ShareViewController {
         }
       }
     }
+  }
+    
+  func checkIfURLExistsAndConfigure() {
+      let container = AppGroupContainer.shared
+      let context = container.mainContext
+      let urlString = self.pageURL
+      let fetchDescriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.urlString == urlString })
+      
+      if let _ = try? context.fetch(fetchDescriptor).first {
+          self.isURLExisting = true
+      } else {
+          self.isURLExisting = false
+      }
+      configureHostingController()
   }
   
   private func closeExtension(clearDrafts: Bool) {

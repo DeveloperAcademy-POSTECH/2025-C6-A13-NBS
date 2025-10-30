@@ -13,11 +13,18 @@ import Domain
 
 struct RootWrapperView: View {
   let container: ModelContainer
+  let isURLExisting: Bool
   let saveAction: (CategoryItem?) -> Void
   
   var body: some View {
-    ShareBottomSheetView(saveAction: saveAction)
-      .modelContainer(container)
-      .ignoresSafeArea(edges: .bottom)
+    VStack {
+      if isURLExisting {
+        ReadyExistSheetView()
+      } else {
+        ShareBottomSheetView(saveAction: saveAction)
+      }
+    }
+    .modelContainer(container)
+    .ignoresSafeArea(edges: .bottom)
   }
 }
