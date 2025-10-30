@@ -90,7 +90,9 @@ private extension ShareViewController {
   
   @objc func handleNewCategorySave(_ notification: Notification) {
     if let newCategory = notification.userInfo?["newCategory"] as? CategoryItem {
-      self.updateLinkItem(with: newCategory)
+      self.categoryToSave = newCategory
+      self.saveActionTriggered = true
+      self.saveAllData()
     }
   }
 }
