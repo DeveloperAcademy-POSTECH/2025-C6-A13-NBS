@@ -131,7 +131,7 @@ struct HomeFeature {
       case .alertBannerTapped:
         if let link = state.copiedLink {
           //TODO: addLink로 이동
-          linkNavigator.push(.addLink, link)
+          linkNavigator.push(.addLink, CopiedLink(url: link))
         }
         return .none
         
