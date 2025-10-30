@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "CategoryIcon13.png",
+      "filename" : "CategoryIcon16.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "CategoryIcon13 1.png",
+      "filename" : "CategoryIcon16 1.png",
       "idiom" : "universal"
     }
   ],
