@@ -59,9 +59,12 @@ extension LinkListView: View {
       .sheet(
         store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
       ) { selectStore in
-        TCASelectBottomSheet(title: "카테고리 선택", store: selectStore)
-          .presentationDetents([.medium])
-          .presentationCornerRadius(16)
+        TCASelectBottomSheet(
+          title: "카테고리 선택",
+          buttonTitle: "선택하기",
+          store: selectStore)
+        .presentationDetents([.medium])
+        .presentationCornerRadius(16)
       }
       .navigationBarHidden(true)
       .onAppear {

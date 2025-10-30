@@ -41,9 +41,13 @@ extension MoveLinkView {
       .sheet(
          store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
        ) { selectStore in
-         TCASelectBottomSheet(title: "카테고리 이동", store: selectStore)
-           .presentationDetents([.medium])
-           .presentationCornerRadius(16)
+         TCASelectBottomSheet(
+          title: "카테고리 이동",
+          buttonTitle: "이동하기",
+          store: selectStore
+         )
+         .presentationDetents([.medium])
+         .presentationCornerRadius(16)
        }
     }
   }
