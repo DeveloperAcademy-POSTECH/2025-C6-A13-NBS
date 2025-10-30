@@ -21,6 +21,7 @@ final class ShareViewController: UIViewController {
   
   private var pageTitle: String = ""
   private var pageURL: String = ""
+  private var pageImageURL: String? // 썸네일 이미지 URL
   private var draftHighlights: [[String: Any]]? = []
   private var currentLinkItem: ArticleItem?
   private var categoryToSave: CategoryItem? = nil
@@ -127,6 +128,10 @@ private extension ShareViewController {
               self.pageURL = url
             }
             
+            if let imageURL = results["imageURL"] as? String { // 썸네일 이미지 URL 추출
+              self.pageImageURL = imageURL
+            }
+            
             if let drafts = results["drafts"] as? [[String: Any]] {
               self.draftHighlights = drafts
             }
@@ -200,8 +205,9 @@ private extension ShareViewController {
     let linkItem: ArticleItem
     if let existingLink = try? context.fetch(fetchDescriptor).first {
       linkItem = existingLink
+      linkItem.imageURL = self.pageImageURL
     } else {
-      linkItem = ArticleItem(urlString: self.pageURL, title: self.pageTitle)
+      linkItem = ArticleItem(urlString: self.pageURL, title: self.pageTitle, imageURL: self.pageImageURL)
       context.insert(linkItem)
     }
     
