@@ -33,8 +33,8 @@ extension RecentLinkListView {
             } label: {
               LinkCard(
                 title: item.title,
-                newsCompany: "조선 비즈",
-                image: "plus",
+                newsCompany: item.newsCompany ?? "언론사 정보 없음",
+                image: item.imageURL ?? "placeholder_image",
                 date: item.createAt.formattedKoreanDate()
               )
             }
