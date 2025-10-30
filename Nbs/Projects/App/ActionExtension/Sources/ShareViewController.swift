@@ -23,11 +23,13 @@ final class ShareViewController: UIViewController {
   private var pageURL: String = ""
   private var draftHighlights: [[String: Any]]? = []
   private var currentLinkItem: ArticleItem?
+  private var categoryToSave: CategoryItem? = nil
+  private var saveActionTriggered: Bool = false
+  private var isURLExisting: Bool = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
     configureViewController()
-    configureHostingController()
     extractAllData()
     addObservers()
   }
@@ -42,13 +44,12 @@ private extension ShareViewController {
   func configureHostingController() {
     let container = AppGroupContainer.shared
     
-    let rootView = RootWrapperView(container: container) { [weak self] selectedCategory in
-      guard let self = self else { return }
-      if let category = selectedCategory {
-        self.updateLinkItem(with: category)
-      } else {
-        self.closeExtension(clearDrafts: false)
-      }
+    let rootView = RootWrapperView(container: container, isURLExisting: isURLExisting) { [weak self] selectedCategory in
+        guard let self = self else { return }
+        self.categoryToSave = selectedCategory
+        self.saveActionTriggered = true
+        
+        self.saveAllData()
     }
     
     DispatchQueue.main.async { [weak self] in
@@ -89,7 +90,9 @@ private extension ShareViewController {
   
   @objc func handleNewCategorySave(_ notification: Notification) {
     if let newCategory = notification.userInfo?["newCategory"] as? CategoryItem {
-      self.updateLinkItem(with: newCategory)
+      self.categoryToSave = newCategory
+      self.saveActionTriggered = true
+      self.saveAllData()
     }
   }
 }
@@ -97,14 +100,11 @@ private extension ShareViewController {
 // MARK: - ShareExtension Method
 private extension ShareViewController {
   func extractAllData() {
-    print("alldata")
     guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
           let attachments = extensionItem.attachments else {
       self.closeExtension(clearDrafts: false)
       return
     }
-    
-    print(extensionItem)
     
     let propertyListIdentifier = UTType.propertyList.identifier
     let urlIdentifier = UTType.url.identifier
@@ -130,7 +130,7 @@ private extension ShareViewController {
             if let drafts = results["drafts"] as? [[String: Any]] {
               self.draftHighlights = drafts
             }
-            self.saveAllData()
+            self.checkIfURLExistsAndConfigure()
           }
         }
         break
@@ -150,7 +150,7 @@ private extension ShareViewController {
                 self.pageURL = url.absoluteString
                 self.pageTitle = url.host ?? ""
                 self.draftHighlights = []
-                self.saveAllData()
+                self.checkIfURLExistsAndConfigure()
               }
             }
           }
@@ -158,6 +158,20 @@ private extension ShareViewController {
         }
       }
     }
+  }
+    
+  func checkIfURLExistsAndConfigure() {
+      let container = AppGroupContainer.shared
+      let context = container.mainContext
+      let urlString = self.pageURL
+      let fetchDescriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.urlString == urlString })
+      
+      if let _ = try? context.fetch(fetchDescriptor).first {
+          self.isURLExisting = true
+      } else {
+          self.isURLExisting = false
+      }
+      configureHostingController()
   }
   
   private func closeExtension(clearDrafts: Bool) {
@@ -173,7 +187,6 @@ private extension ShareViewController {
 // MARK: - SwiftData
 private extension ShareViewController {
   func saveAllData() {
-    print("saveAllData")
     guard !self.pageURL.isEmpty else {
       return
     }
@@ -191,6 +204,11 @@ private extension ShareViewController {
       linkItem = ArticleItem(urlString: self.pageURL, title: self.pageTitle)
       context.insert(linkItem)
     }
+    
+    if self.saveActionTriggered {
+        linkItem.category = self.categoryToSave
+    }
+    
     self.currentLinkItem = linkItem
     
     if let drafts = self.draftHighlights, !drafts.isEmpty {
@@ -223,6 +241,7 @@ private extension ShareViewController {
     
     do {
       try context.save()
+      self.closeExtension(clearDrafts: true)
     } catch {
       self.closeExtension(clearDrafts: false)
     }
@@ -248,7 +267,7 @@ private extension ShareViewController {
   }
 }
 
-fileprivate extension Notification.Name {
+extension Notification.Name {
   static let dismissKeyboard = Notification.Name("dismissKeyboardNotification")
   static let newCategoryDidSave = Notification.Name("newCategoryDidSave")
   static let closeShareExtension = Notification.Name("closeShareExtension")
