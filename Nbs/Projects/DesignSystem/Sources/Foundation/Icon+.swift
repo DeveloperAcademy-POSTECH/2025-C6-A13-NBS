@@ -24,6 +24,8 @@ public extension DesignSystemAsset {
     case 12: return DesignSystemAsset.categoryIcon12.swiftUIImage
     case 13: return DesignSystemAsset.categoryIcon13.swiftUIImage
     case 14: return DesignSystemAsset.categoryIcon14.swiftUIImage
+    case 15: return DesignSystemAsset.categoryIcon15.swiftUIImage
+    case 16: return DesignSystemAsset.categoryIcon16.swiftUIImage
     default: return DesignSystemAsset.categoryIcon1.swiftUIImage
     }
   }
@@ -46,6 +48,8 @@ public extension DesignSystemAsset {
     case 12: return DesignSystemAsset.primaryCategoryIcon12.swiftUIImage
     case 13: return DesignSystemAsset.primaryCategoryIcon13.swiftUIImage
     case 14: return DesignSystemAsset.primaryCategoryIcon14.swiftUIImage
+    case 15: return DesignSystemAsset.primaryCategoryIcon15.swiftUIImage
+    case 16: return DesignSystemAsset.primaryCategoryIcon16.swiftUIImage
     default: return DesignSystemAsset.primaryCategoryIcon15.swiftUIImage
     }
   }
