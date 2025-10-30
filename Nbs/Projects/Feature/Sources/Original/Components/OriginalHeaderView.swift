@@ -11,7 +11,23 @@ import DesignSystem
 
 // MARK: - Properties
 struct OriginalHeaderView: View {
-  @State var isOn = true
+  enum HeaderType {
+    case edit
+    case article
+  }
+  
+  @Environment(\.dismiss) var dismiss
+  
+  let headerType: HeaderType
+  let onEditTapped: (() -> Void)?
+  let onCompleteTapped: (() -> Void)?
+  
+  // 초기화 시점에 기본값 설정
+  init(headerType: HeaderType, onEditTapped: (() -> Void)? = nil, onCompleteTapped: (() -> Void)? = nil) {
+    self.headerType = headerType
+    self.onEditTapped = onEditTapped
+    self.onCompleteTapped = onCompleteTapped
+  }
 }
 
 // MARK: - View
@@ -19,7 +35,7 @@ extension OriginalHeaderView {
   var body: some View {
     HStack {
       Button {
-        
+        dismiss()
       } label: {
         Image(icon: Icon.chevronLeft)
           .renderingMode(.template)
@@ -31,9 +47,14 @@ extension OriginalHeaderView {
       .contentShape(Rectangle())
       Spacer()
       Button {
-        
+        switch headerType {
+        case .edit:
+          onCompleteTapped?()
+        case .article:
+          onEditTapped?()
+        }
       } label: {
-        Text("수정")
+        Text(headerType == .edit ? "완료" : "수정")
           .font(.B2_SB)
           .foregroundStyle(.textw)
           .padding(.horizontal, 16)
@@ -50,5 +71,8 @@ extension OriginalHeaderView {
 }
 
 #Preview {
-  OriginalHeaderView()
+  VStack {
+    OriginalHeaderView(headerType: .article, onEditTapped: {})
+    OriginalHeaderView(headerType: .edit, onCompleteTapped: {}) 
+  }
 }
