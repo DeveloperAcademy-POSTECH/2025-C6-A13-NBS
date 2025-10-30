@@ -50,44 +50,47 @@ public struct SelectBottomSheet: View {
 // MARK: - View
 extension SelectBottomSheet {
   public var body: some View {
-    VStack {
-      HStack(alignment: .center, spacing: 8) {
-        Text(sheetTitle)
-          .font(.B1_SB)
-          .lineLimit(1)
-          .foregroundStyle(.text1)
-          .frame(maxWidth: .infinity, alignment: .center)
-          .padding(.leading, 48)
-        Button {
-          dismissButtonTapped() // 닫기 버튼 액션 연결
-        } label: {
-          Image(icon: Icon.x)
-            .frame(width: 24, height: 24)
-            .padding(.trailing, 20)
-        }
-      }
-      .padding(.vertical, 20)
-      
-      ScrollView(.vertical, showsIndicators: false) {
-        LazyVStack {
-          ForEach(items) { item in
-            SelectBottomSheetItem(
-              title: item.title,
-              isSelected: item.title == selectedCategory,
-              action: { categoryButtonTapped(item.title) }
-            )
+    ZStack {
+      Color.background.ignoresSafeArea()
+      VStack {
+        HStack(alignment: .center, spacing: 8) {
+          Text(sheetTitle)
+            .font(.B1_SB)
+            .lineLimit(1)
+            .foregroundStyle(.text1)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.leading, 48)
+          Button {
+            dismissButtonTapped() // 닫기 버튼 액션 연결
+          } label: {
+            Image(icon: Icon.x)
+              .frame(width: 24, height: 24)
+              .padding(.trailing, 20)
           }
         }
-      }
-      .padding(.horizontal, 20)
-      
-      MainButton(
-        buttonTitle,
-        action: { selectButtonTapped() }
-      )
+        .padding(.vertical, 20)
+        
+        ScrollView(.vertical, showsIndicators: false) {
+          LazyVStack {
+            ForEach(items) { item in
+              SelectBottomSheetItem(
+                title: item.title,
+                isSelected: item.title == selectedCategory,
+                action: { categoryButtonTapped(item.title) }
+              )
+            }
+          }
+        }
         .padding(.horizontal, 20)
+        
+        MainButton(
+          buttonTitle,
+          hasGradient: true,
+          action: { selectButtonTapped() }
+        )
+      }
+      .padding(.top, 8)
     }
-    .padding(.top, 8)
   }
 }
 
