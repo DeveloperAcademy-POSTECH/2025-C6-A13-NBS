@@ -34,7 +34,7 @@ extension CategoryListView: View {
         .padding(.horizontal, 20)
       } else {
         ScrollView(.horizontal, showsIndicators: false) {
-          HStack(spacing: 8) {
+          HStack(spacing: 10) {
             ForEach(store.categories.reversed()) { category in
               CategoryChipButton(
                 title: category.categoryName,
@@ -42,11 +42,11 @@ extension CategoryListView: View {
               ) {
                 store.send(.categoryTapped(category))
               }
-              .padding(.leading, 20)
             }
           }
         }
         .scrollDisabled(store.categories.count < 2)
+        .padding(.leading, 20)
       }
     }
     .onAppear { store.send(.onAppear) }
