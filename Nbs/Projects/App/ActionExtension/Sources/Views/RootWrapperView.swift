@@ -13,10 +13,10 @@ import Domain
 
 struct RootWrapperView: View {
   let container: ModelContainer
-  let confirmAction: (CategoryItem?) -> Void
+  let saveAction: (CategoryItem?) -> Void
   
   var body: some View {
-    ShareBottomSheetView(confirmAction: confirmAction)
+    ShareBottomSheetView(saveAction: saveAction)
       .modelContainer(container)
       .ignoresSafeArea(edges: .bottom)
   }
