@@ -14,7 +14,7 @@ struct AddLinkView: View {
   
   @Bindable var store: StoreOf<AddLinkFeature>
   @FocusState private var isFocused: Bool
-  @State private var keyboardVisible = false
+  @State private var isValidURL: Bool = true
   
   var body: some View {
     VStack {
@@ -27,41 +27,45 @@ struct AddLinkView: View {
       
       JNTextFieldLink(
         text: $store.linkURL.sending(\.setLinkURL),
-        style: .default,
+        style: isValidURL ? .default : .errorCaption,
         placeholder: "링크를 입력해주세요",
-        header: "추가할 링크"
+        header: "추가할 링크",
+        isValidURL: $isValidURL
       )
       .focused($isFocused)
       
-      HStack {
-        Text(AddLinkNamespace.selectCategory)
-          .font(.B2_SB)
-          .foregroundStyle(.caption1)
-        Spacer()
-        
-        AddNewCategoryButton{
-          store.send(.addNewCategoryButtonTapped)
+      VStack {
+        HStack {
+          Text(AddLinkNamespace.selectCategory)
+            .font(.B2_SB)
+            .foregroundStyle(.caption1)
+          Spacer()
+          
+          AddNewCategoryButton{
+            store.send(.addNewCategoryButtonTapped)
+          }
         }
-      }
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(.horizontal, 24)
-      .padding(.top, 24)
-      
-      CategoryGridView(
-        store: store.scope(
-          state: \.categoryGrid,
-          action: \.categoryGrid
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 24)
+        .padding(.top, 24)
+        
+        CategoryGridView(
+          store: store.scope(
+            state: \.categoryGrid,
+            action: \.categoryGrid
+          )
         )
-      )
-      
-      Spacer()
-      MainButton(
-        AddLinkNamespace.ctaButtonTitle,
-        isDisabled: store.linkURL.isEmpty
-      ) {
-        store.send(.saveButtonTapped)
+        
+        Spacer()
+        MainButton(
+          AddLinkNamespace.ctaButtonTitle,
+          isDisabled: store.linkURL.isEmpty || !isValidURL
+        ) {
+          store.send(.saveButtonTapped)
+        }
+        .padding(.horizontal, 20)
       }
-      .padding(.horizontal, 20)
+      .overlay(isFocused ? Color.white.opacity(0.3) : Color.clear)
     }
     .ignoresSafeArea(.keyboard)
     .navigationBarHidden(true)
@@ -69,7 +73,7 @@ struct AddLinkView: View {
     .overlay {
       if store.isConfirmAlertPresented {
         ZStack {
-          Color.black.opacity(0.4).ignoresSafeArea()
+          Color.dim.ignoresSafeArea()
           AlertDialog(
             title: "링크 추가를 중단할까요?",
             subtitle: "페이지를 나가면 링크가 저장되지 않아요",
@@ -90,15 +94,6 @@ struct AddLinkView: View {
           }
         }
     )
-    if keyboardVisible {
-      Color.black.opacity(0.2)
-        .ignoresSafeArea()
-        .onTapGesture {
-          isFocused = false
-        }
-        .transition(.opacity)
-        .animation(.easeInOut(duration: 0.2), value: keyboardVisible)
-    }
   }
 }
 
