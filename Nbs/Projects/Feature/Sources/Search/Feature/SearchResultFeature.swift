@@ -33,15 +33,10 @@ struct SearchResultFeature {
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
     case fetchAllCategories
     case responseCategoryItems([CategoryItem])
-    
-    case delegate(DelegateAction)
-  }
-  
-  enum DelegateAction: Equatable {
-    case openLinkDetail(ArticleItem)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
+  @Dependency(\.linkNavigator) var linkNavigator
   @Dependency(\.uuid) var uuid
   
   var body: some ReducerOf<Self> {
@@ -60,7 +55,8 @@ struct SearchResultFeature {
         return .none
         
       case .linkCardTapped(let item):
-        return .send(.delegate(.openLinkDetail(item)))
+        linkNavigator.push(.linkDetail, item)
+        return .none
         
       case .categoryButtonTapped:
         return .send(.fetchAllCategories)
@@ -102,7 +98,7 @@ struct SearchResultFeature {
         }
         return .none
         
-      case .delegate, .selectBottomSheet:
+      case .selectBottomSheet:
         return .none
       }
     }

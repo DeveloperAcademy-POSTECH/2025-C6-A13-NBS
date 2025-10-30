@@ -12,6 +12,7 @@ import Domain
 
 @Reducer
 struct SearchFeature {
+  @Dependency(\.linkNavigator) var linkNavigator
   @ObservableState
   struct State: Equatable {
     var topAppBar: TopAppBarSearchFeature.State = .init()
@@ -30,15 +31,7 @@ struct SearchFeature {
     case recentLink(RecentLinkFeature.Action)
     case searchResult(SearchResultFeature.Action)
     case searchSuggestion(SearchSuggestionFeature.Action)
-    
-    case delegate(DelegateAction)
   }
-  
-  enum DelegateAction: Equatable {
-    case openLinkDetail(ArticleItem)
-  }
-  
-  @Dependency(\.dismiss) var dismiss
   
   var body: some ReducerOf<Self> {
     Scope(state: \.topAppBar, action: \.topAppBar) {
@@ -86,7 +79,7 @@ struct SearchFeature {
           .cancellable(id: "search-debounce", cancelInFlight: true)
         case .backButtonTapped:
           return .run { _ in
-            await self.dismiss()
+            await linkNavigator.pop()
           }
         }
 
@@ -101,28 +94,7 @@ struct SearchFeature {
           }
         }
         
-      case .searchResult(.delegate(let action)):
-        switch action {
-        case .openLinkDetail(let item):
-          return .send(.delegate(.openLinkDetail(item)))
-        }
-      
-      case .searchSuggestion(.delegate(let action)):
-        switch action {
-        case .openLinkDetail(let item):
-          return .send(.delegate(.openLinkDetail(item)))
-        }
-        
-      case .recentLink(.delegate(let action)):
-        switch action {
-        case .openLinkDetail(let item):
-          return .send(.delegate(.openLinkDetail(item)))
-        }
-        
       case .topAppBar, .recentSearch, .recentLink, .searchResult, .searchSuggestion:
-        return .none
-      
-      case .delegate:
         return .none
       }
     }
