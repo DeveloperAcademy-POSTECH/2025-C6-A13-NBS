@@ -17,51 +17,39 @@ struct ArticleListView {
 extension ArticleListView: View {
   var body: some View {
     VStack(spacing: 8) {
-      HStack(spacing: 0) {
-        Text(ArticleNameSpace.recentAddLink)
-          .font(.B1_SB)
-          .foregroundStyle(.caption1)
-          .padding(.leading, 6)
-        Spacer()
-        Button {
+      ScrollViewHeader(
+        headerTitle: .recentAddLink,
+        buttonTitle: .showMore,
+        showButton: !store.articles.isEmpty) {
           store.send(.moreLinkButtonTapped)
-        } label: {
-          HStack(spacing: 0) {
-            Text(ArticleNameSpace.showMore)
-              .font(.B2_M)
-              .foregroundStyle(.caption1)
-            Image(icon: Icon.smallChevronRight)
-              .resizable()
-              .frame(width: 20, height: 20)
-          }
         }
-      }
-      .padding(.bottom, 4)
       
       if store.state.articles.isEmpty {
-        VStack(spacing: 12) {
-          Rectangle()
-            .fill(Color.clear)
-            .frame(height: 100)
-          Image(uiImage: DesignSystemAsset.emptyLinkIcon.image)
-            .resizable()
-            .frame(width: 120, height: 120)
-          Text("아직 저장한 링크가 없어요")
-            .font(.B1_M)
-            .foregroundStyle(.caption3)
+        if store.state.showTipCard {
+          TipCardView {
+            //TODO: 네비게이션 연결
+            print("")
+          } closeTap: {
+            store.send(.toggleTipCard)
+          }
+          .clipShape(RoundedRectangle(cornerRadius: 12))
+        } else {
+          EmptyArticleCard(type: .noLinks)
+            .padding(.top, 120)
         }
-        .padding(.vertical, 32)
-      } else {
+      }
+      else {
         VStack(spacing: 8) {
           ForEach(store.state.articles.reversed().prefix(5)) { article in
             Button {
               store.send(.listCellTapped(article))
             } label: {
-              LinkCard(
+              ArticleCard(
                 title: article.title,
-                newsCompany: article.newsCompany ?? "네이버 뉴스",
-                image: article.imageURL ?? "placeholder_image",
-                date: article.createAt.formattedKoreanDate()
+                categoryName: article.category?.categoryName,
+                imageURL: article.imageURL,
+                dateString: article.createAt.formattedKoreanDate(),
+                newsCompany: article.newsCompany
               )
               .background(.n0)
               .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -78,10 +66,10 @@ extension ArticleListView: View {
         } label: {
           Text(ArticleNameSpace.showAllLink)
             .font(.B1_SB)
-            .foregroundStyle(.bl6)
+            .foregroundStyle(.caption1)
             .frame(maxWidth: .infinity)
             .frame(height: 52)
-            .background(.bl1)
+            .background(.n30)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
       }

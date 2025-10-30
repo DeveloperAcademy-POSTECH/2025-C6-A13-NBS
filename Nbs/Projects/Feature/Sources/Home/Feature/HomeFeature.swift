@@ -119,29 +119,6 @@ struct HomeFeature {
         state.lastShownClipboardLink = copiedText
         return .none
         
-        /// 더보기 -> 링크 리스트
-      
-      
-//      case .articleList(.delegate(.openLinkList)):
-////        state.path.append(.linkList(LinkListFeature.State()))
-//        return .run { _ in
-//        }
-        
-//      case let .articleList(.delegate(.openLinkDetail(link))):
-//        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
-//        return .none
-        
-        /// 링크 리스트 -> 내부 기사 클릭
-//      case let .path(.element(_, .linkList(.delegate(.openLinkDetail(link))))):
-//        state.path.append(.linkDetail(LinkDetailFeature.State(link: link)))
-//        return .none
-        
-//      case .path(.element(id: _, action: .search(.delegate(.openLinkDetail(let item))))):
-//        state.path.append(.linkDetail(LinkDetailFeature.State(link: item)))
-//        return .run { _ in
-//          try swiftDataClient.updateLinkLastViewed(item)
-//        }
-        
       case .dismissAlertBanner:
         state.alertBanner = nil
         return .none
@@ -154,7 +131,7 @@ struct HomeFeature {
       case .alertBannerTapped:
         if let link = state.copiedLink {
           //TODO: addLink로 이동
-          state.path.append(.addLink(AddLinkFeature.State(linkURL: link)))
+          linkNavigator.push(.addLink, CopiedLink(url: link))
         }
         return .none
         

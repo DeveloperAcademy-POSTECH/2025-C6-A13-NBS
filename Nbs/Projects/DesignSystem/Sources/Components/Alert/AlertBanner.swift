@@ -52,16 +52,17 @@ public extension AlertBanner {
     }
     .padding(.horizontal, 24)
     .padding(.vertical, 18)
-    .background({
-      switch style {
-      case .close:
-        VisualEffectBlur(blurStyle: .systemUltraThinMaterialDark)
-          .background(DesignSystemAsset.alertColor.swiftUIColor)
-      default:
-        VisualEffectBlur(blurStyle: .systemUltraThinMaterialLight)
-          .background(DesignSystemAsset.alert.swiftUIColor)
-      }
-    }())
+    .background(DesignSystemAsset.alertColor.swiftUIColor)
+//    .background({
+//      switch style {
+//      case .close:
+////        VisualEffectBlur(blurStyle: .systemUltraThinMaterialDark)
+//          .backgro(DesignSystemAsset.alertColor.swiftUIColor)
+//      default:
+////        VisualEffectBlur(blurStyle: .systemUltraThinMaterialLight)
+//          .background(DesignSystemAsset.alert.swiftUIColor)
+//      }
+//    }())
     .cornerRadius(12)
   }
   
@@ -89,7 +90,7 @@ public extension AlertBanner {
         Button {
           action?()
         } label: {
-          Color.clear.frame(width: 40, height: 40)
+          Color.clear.frame(width: 44, height: 44)
           Image(icon: Icon.x)
             .resizable()
             .renderingMode(.template)

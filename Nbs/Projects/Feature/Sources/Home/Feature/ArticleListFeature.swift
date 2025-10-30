@@ -18,17 +18,13 @@ struct ArticleListFeature {
     var articles: [ArticleItem] = []
     var showMoreLink: Bool = false
     var showLinkDetail: Bool = false
+    var showTipCard: Bool = true
   }
   
   enum Action {
     case moreLinkButtonTapped
     case listCellTapped(ArticleItem)
-//    case delegate(Delegate)
-//    
-//    enum Delegate {
-//      case openLinkDetail(ArticleItem)
-//      case openLinkList
-//    }
+    case toggleTipCard
   }
   
   var body: some ReducerOf<Self> {
@@ -42,10 +38,10 @@ struct ArticleListFeature {
       case .listCellTapped(let article):
         linkNavigator.push(.linkDetail, article)
         return .none
-//        return .send(.delegate(.openLinkDetail(article)))
         
-//      case .delegate:
-//        return .none
+      case .toggleTipCard:
+        state.showTipCard = false
+        return .none
       }
     }
   }

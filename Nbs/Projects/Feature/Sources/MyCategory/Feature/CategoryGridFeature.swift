@@ -16,9 +16,10 @@ struct CategoryGridFeature {
     var selectedCategories: Set<CategoryItem> = []
     var allowsMultipleSelection: Bool = false
   }
+  
   enum Action {
     case onAppear
-    case fetchCategoriesResponse(TaskResult<[CategoryItem]>)
+    case fetchCategoriesResponse(Result<[CategoryItem], Error>)
     case toggleCategorySelection(CategoryItem)
     case delegate(Delegate)
 
@@ -34,7 +35,7 @@ struct CategoryGridFeature {
       switch action {
       case .onAppear:
         return .run { send in
-          await send(.fetchCategoriesResponse(TaskResult {
+          await send(.fetchCategoriesResponse(Result {
             try swiftDataClient.fetchCategories()
           }))
         }

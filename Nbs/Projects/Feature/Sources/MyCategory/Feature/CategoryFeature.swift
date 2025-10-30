@@ -26,13 +26,7 @@ struct CategoryListFeature {
     case categoriesResponse(Result<[CategoryItem], Error>)
     case moreCategoryButtonTapped
     case categoryTapped(CategoryItem)
-    case delegate(Delegate)
     case addCategoryButtonTapped
-    
-    enum Delegate {
-      case goToMoreLinkButtonView
-      case goToAddCategoryView
-    }
   }
   
   var body: some ReducerOf<Self> {
@@ -51,14 +45,12 @@ struct CategoryListFeature {
       case .moreCategoryButtonTapped:
         linkNavigator.push(.myCategory, nil)
         return .none
-//        return .send(.delegate(.goToMoreLinkButtonView))
       case let .categoryTapped(category):
-        state.selectedCategory = category
-        return .none
-      case .delegate:
+        linkNavigator.push(.linkList, category)
         return .none
       case .addCategoryButtonTapped:
-        return .send(.delegate(.goToAddCategoryView))
+        linkNavigator.push(.addCategory, nil)
+        return .none
       }
     }
   }

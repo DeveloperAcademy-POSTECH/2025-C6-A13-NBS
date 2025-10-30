@@ -25,12 +25,13 @@ extension MyCategoryCollectionView: View {
           )
         )
         Button {
-          print("")
+          store.send(.totalLinkTapped)
         } label: {
           HStack {
             Text("전체")
               .font(.B1_SB)
               .foregroundStyle(.text1)
+              .frame(maxWidth: .infinity, alignment: .leading)
             Spacer()
             Image(icon: Icon.chevronRight)
               .resizable()
@@ -40,6 +41,8 @@ extension MyCategoryCollectionView: View {
           }
           .padding(.horizontal)
           .padding(.vertical, 20)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .contentShape(Rectangle())
         }
         .frame(height: 64)
         .background(.bl1)
@@ -47,10 +50,10 @@ extension MyCategoryCollectionView: View {
         .padding(.horizontal, 20)
         .padding(.top, 8)
         .buttonStyle(.plain)
-        CategoryGridView(
+        MyCategoryGridView(
           store: store.scope(
-            state: \.categoryGrid,
-            action: \.categoryGrid
+            state: \.myCategoryGrid,
+            action: \.myCategoryGrid
           )
         )
         .padding(.top, 20)

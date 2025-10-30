@@ -9,6 +9,7 @@ import SwiftUI
 
 import LinkNavigator
 import ComposableArchitecture
+import Domain
 
 public struct AddLinkRouteBuilder {
 
@@ -17,9 +18,11 @@ public struct AddLinkRouteBuilder {
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
     let matchPath = Route.addLink.rawValue
-    return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
+    return .init(matchPath: matchPath) { navigator, item, _ -> RouteViewController? in
       WrappingController(matchPath: matchPath) {
-        AddLinkView(store: Store(initialState: AddLinkFeature.State()) {
+        let decodedItem: CopiedLink? = item.decoded()
+        let linkURL = decodedItem?.url ?? ""
+        AddLinkView(store: Store(initialState: AddLinkFeature.State(linkURL: linkURL)) {
           AddLinkFeature()
             .dependency(\.linkNavigator, .init(navigator: navigator))
         })

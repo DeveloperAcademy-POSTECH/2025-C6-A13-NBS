@@ -17,6 +17,7 @@ struct AddLinkFeature {
   
   @ObservableState
   struct State: Equatable {
+    var isConfirmAlertPresented = false
     var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: AddLinkNamespace.naviTitle)
     var linkURL: String
     var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
@@ -28,17 +29,15 @@ struct AddLinkFeature {
   }
   
   enum Action {
+    case backGestureSwiped
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setLinkURL(String)
     case saveButtonTapped
     case addNewCategoryButtonTapped
     case categoryGrid(CategoryGridFeature.Action)
-    case saveLinkResponse(TaskResult<Void>)
-    case delegate(Delegate)
-    
-    enum Delegate {
-      case goToAddCategory
-    }
+    case confirmAlertDismissed
+    case confirmAlertConfirmButtonTapped
+    case saveLinkResponse(Result<Void, Error>)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -53,12 +52,16 @@ struct AddLinkFeature {
     
     Reduce { state, action in
       switch action {
-      case .topAppBar(.tapBackButton):
-        return .run { _ in await linkNavigator.pop() }
+      case .backGestureSwiped, .topAppBar(.tapBackButton):
+        if state.linkURL.isEmpty {
+          return .run { _ in await linkNavigator.pop() }
+        }
+        state.isConfirmAlertPresented = true
+        return .none
         
       case .topAppBar:
         return .none
-        
+
       case let .setLinkURL(url):
         state.linkURL = url
         return .none
@@ -99,15 +102,20 @@ struct AddLinkFeature {
       case .categoryGrid:
         return .none
         
+      case .confirmAlertDismissed:
+        state.isConfirmAlertPresented = false
+        return .none
+        
+      case .confirmAlertConfirmButtonTapped:
+        state.isConfirmAlertPresented = false
+        return .run { _ in await linkNavigator.pop() }
+        
       case .saveLinkResponse(.success):
         return .run { _ in await linkNavigator.pop() }
         
       case .saveLinkResponse(.failure(let error)):
         //TODO: 링크 저장 실패시 에러 알럿?
         print("\(error)")
-        return .none
-        
-      case .delegate:
         return .none
       }
     }

@@ -23,7 +23,7 @@ extension CategoryGridView: View {
     WithViewStore(store, observe: { $0 }) { viewStore in
       ScrollView {
         LazyVGrid(columns: gridItems, spacing: 10) {
-          ForEach(viewStore.categories.reversed()) { category in
+          ForEach(viewStore.categories) { category in
             Button {
               viewStore.send(.toggleCategorySelection(category))
             } label: {
@@ -42,7 +42,7 @@ extension CategoryGridView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top)
                 .padding(.leading)
-                DesignSystemAsset.categoryIcon(number: category.icon.number)
+                DesignSystemAsset.primaryCategoryIcon(number: category.icon.number)
                   .resizable()
                   .frame(width: 56, height: 56)
                   .padding(.trailing, 12)
@@ -51,16 +51,17 @@ extension CategoryGridView: View {
               .frame(maxWidth: .infinity, minHeight: 116)
               .background(
                 viewStore.selectedCategories.contains(category)
-                ? DesignSystemAsset.bl1.swiftUIColor
-                : DesignSystemAsset.color(number: category.icon.number)
+                ? .bl1
+                : .n0
               )
               .clipShape(RoundedRectangle(cornerRadius: 12))
               .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                  .strokeBorder(viewStore.selectedCategories.contains(category) ? DesignSystemAsset.bl6.swiftUIColor : Color.clear, lineWidth: 1.25)
+                  .strokeBorder(viewStore.selectedCategories.contains(category) ? .bl6 : Color.clear, lineWidth: 1.25)
               )
             }
             .buttonStyle(.plain)
+            .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
           }
         }
         .padding(.horizontal, 20)

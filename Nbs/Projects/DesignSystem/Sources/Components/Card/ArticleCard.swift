@@ -17,6 +17,7 @@ public struct ArticleCard: View {
   private let categoryName: String?
   private let imageURL: String?
   private let dateString: String
+  private let newsCompany: String?
   @Binding private var isSelected: Bool
   private let editMode: EditMode
   
@@ -26,6 +27,7 @@ public struct ArticleCard: View {
     categoryName: String?,
     imageURL: String?,
     dateString: String,
+    newsCompany: String?,
     isSelected: Binding<Bool> = .constant(false),
     editMode: EditMode = .inactive
   ) {
@@ -33,6 +35,7 @@ public struct ArticleCard: View {
     self.categoryName = categoryName
     self.imageURL = imageURL
     self.dateString = dateString
+    self.newsCompany = newsCompany
     self._isSelected = isSelected
     self.editMode = editMode
   }
@@ -63,25 +66,33 @@ extension ArticleCard {
   
   /// 텍스트 영역
   private var textContents: some View {
-    VStack(alignment: .leading, spacing: 4) {
+    VStack(alignment: .leading, spacing: 0) {
       Text(title)
         .font(.B1_SB)
         .foregroundStyle(.text1)
         .lineLimit(2)
         .multilineTextAlignment(.leading)
+        .padding(.leading, 4)
+      HStack(spacing: 0) {
+        Text("\(dateString) ·   ")
+          .font(.B2_M)
+          .foregroundStyle(.caption2)
+        
+        Text(newsCompany ?? "네이버 뉴스")
+          .font(.B2_M)
+          .foregroundStyle(.caption2)
+      }
+      .padding(.bottom, 12)
       
-      Text(categoryName ?? "카테고리 없음")
+      Text(categoryName ?? "전체")
         .font(.B2_M)
-        .foregroundStyle(.caption2)
-      
-      Spacer()
-      
-      Text(dateString)
-        .font(.B2_M)
-        .foregroundStyle(.caption2)
+        .foregroundStyle(.caption1)
+        .padding(.vertical, 2)
+        .padding(.horizontal, 10)
+        .background(.n20)
+        .clipShape(RoundedRectangle(cornerRadius: 6))
     }
-    .padding(.vertical, 10)
-    .padding(.leading, 16)
+    .padding(.leading, 12)
   }
   
   /// 이미지 + 체크박스
@@ -147,13 +158,15 @@ private extension ArticleCard {
       title: "트럼프 “11월 1일부터 중·대형 트럭에 25% 관세 부과”",
       categoryName: "정치",
       imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
-      dateString: "2025년 10월 7일"
+      dateString: "2025년 10월 7일",
+      newsCompany: ""
     )
     ArticleCard(
        title: "AI가 뉴스 생태계를 바꾸다",
        categoryName: "기술",
        imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
        dateString: "2025년 10월 19일",
+       newsCompany: "",
        isSelected: .constant(true),
        editMode: .active
      )
