@@ -13,6 +13,8 @@ import DesignSystem
 struct AddLinkView: View {
   
   @Bindable var store: StoreOf<AddLinkFeature>
+  @FocusState private var isFocused: Bool
+  @State private var keyboardVisible = false
   
   var body: some View {
     VStack {
@@ -29,7 +31,8 @@ struct AddLinkView: View {
         placeholder: "링크를 입력해주세요",
         header: "추가할 링크"
       )
-            
+      .focused($isFocused)
+      
       HStack {
         Text(AddLinkNamespace.selectCategory)
           .font(.B2_SB)
@@ -63,7 +66,22 @@ struct AddLinkView: View {
     .ignoresSafeArea(.keyboard)
     .navigationBarHidden(true)
     .background(DesignSystemAsset.background.swiftUIColor)
-        .alert($store.scope(state: \.alert, action: \.alert))
+    .overlay {
+      if store.isConfirmAlertPresented {
+        ZStack {
+          Color.black.opacity(0.4).ignoresSafeArea()
+          AlertDialog(
+            title: "링크 추가를 중단할까요?",
+            subtitle: "페이지를 나가면 링크가 저장되지 않아요",
+            cancelTitle: "취소",
+            onCancel: { store.send(.confirmAlertDismissed) },
+            buttonType: .move(title: "나가기") {
+              store.send(.confirmAlertConfirmButtonTapped)
+            }
+          )
+        }
+      }
+    }
     .highPriorityGesture(
       DragGesture(minimumDistance: 25, coordinateSpace: .local)
         .onEnded { value in
@@ -72,6 +90,15 @@ struct AddLinkView: View {
           }
         }
     )
+    if keyboardVisible {
+      Color.black.opacity(0.2)
+        .ignoresSafeArea()
+        .onTapGesture {
+          isFocused = false
+        }
+        .transition(.opacity)
+        .animation(.easeInOut(duration: 0.2), value: keyboardVisible)
+    }
   }
 }
 
