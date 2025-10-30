@@ -9,9 +9,9 @@ struct AddCategoryView: View {
   @FocusState private var isFocused: Bool
   
   let columns = [
-    GridItem(.flexible(), spacing: 10),
-    GridItem(.flexible(), spacing: 10),
-    GridItem(.flexible(), spacing: 10)
+    GridItem(.flexible(), spacing: 16),
+    GridItem(.flexible(), spacing: 16),
+    GridItem(.flexible(), spacing: 16)
   ]
   
   var body: some View {
@@ -64,10 +64,9 @@ struct AddCategoryView: View {
           .padding(.top, 24)
         
         ScrollView {
-          LazyVGrid(columns: columns, spacing: 10) {
-            ForEach(1..<16, id: \.self) { index in
+          LazyVGrid(columns: columns, spacing: 16) {
+            ForEach(1..<15, id: \.self) { index in
               let isSelected = store.selectedIcon.number == index
-              
               Button {
                 store.selectedIcon = .init(number: index)
               } label: {
@@ -75,7 +74,7 @@ struct AddCategoryView: View {
                   .fill(
                     isSelected
                     ? DesignSystemAsset.bl1.swiftUIColor
-                    : DesignSystemAsset.color(number: index)
+                    : DesignSystemAsset.n0.swiftUIColor
                   )
                   .overlay(
                     RoundedRectangle(cornerRadius: 12)
@@ -88,11 +87,12 @@ struct AddCategoryView: View {
                   )
                   .aspectRatio(1, contentMode: .fit)
                   .overlay(
-                    DesignSystemAsset.categoryIcon(number: index)
+                    DesignSystemAsset.primaryCategoryIcon(number: index)
                       .resizable()
-                      .frame(width: 45, height: 45)
+                      .frame(width: 56, height: 56)
                   )
               }
+              .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
               .buttonStyle(.plain)
               .disabled(isFocused)
             }
