@@ -30,6 +30,7 @@ extension AddCategoryView: View {
             placeholder: "카테고리명을 입력해주세요",
             header: "카테고리명"
           )
+          .focused($isFocused)
         }
         
         Text(CategoryNamespace.categoryIcon)
@@ -86,10 +87,11 @@ extension AddCategoryView: View {
         }
       }
     }
-    .background(Color.background)
+    .contentShape(Rectangle())
     .onTapGesture {
       isFocused = false
     }
+    .background(Color.background)
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
   }

@@ -9,6 +9,7 @@ import SwiftUI
 
 import ComposableArchitecture
 import Domain
+import SwiftData
 
 @Reducer
 struct AddLinkFeature {
@@ -22,6 +23,11 @@ struct AddLinkFeature {
     var linkURL: String
     var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
     var selectedCategory: CategoryItem?
+    var isURLExisting: Bool = false
+    var articles: [ArticleItem] = []
+    //이삭 토스트 메시지
+    var showToast: Bool = false
+    var toastMessage: String = ""
     
     init(linkURL: String = "") {
       self.linkURL = linkURL
@@ -38,9 +44,18 @@ struct AddLinkFeature {
     case confirmAlertDismissed
     case confirmAlertConfirmButtonTapped
     case saveLinkResponse(Result<Void, Error>)
+    case checkURLExists(String)
+    case didCheckURLExists(Bool)
+    case showToast(String)
+    case hideToast
+    case fetch
+    case fetchArticleItem
+    case didFetchArticleItems(Result<ArticleItem?, Error>)
+    case navigateToLinkDetail(ArticleItem)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
+  
   var body: some ReducerOf<Self> {
     Scope(state: \.topAppBar, action: \.topAppBar) {
       TopAppBarDefaultRightIconxFeature()
@@ -58,13 +73,36 @@ struct AddLinkFeature {
         }
         state.isConfirmAlertPresented = true
         return .none
-        
+      
       case .topAppBar:
         return .none
+        
+      case let .didFetchArticleItems(.success(articles)):
+        linkNavigator.push(.linkDetail, articles)
+        return .none
+        
+      case let .didFetchArticleItems(.failure(error)):
+        state.toastMessage = "링크 불러오기 실패"
+        state.showToast = true
+        return .run { send in
+          try await Task.sleep(nanoseconds: 2_000_000_000)
+          await send(.hideToast)
+        }
+        
+      case .fetchArticleItem:
+        guard let found = state.articles.first(where: { $0.urlString == state.linkURL }) else {
+          state.toastMessage = "해당 링크를 찾을 수 없습니다"
+          state.showToast = true
+          return .run { send in
+            try await Task.sleep(nanoseconds: 2_000_000_000)
+            await send(.hideToast)
+          }
+        }
+        return .send(.navigateToLinkDetail(found))
 
       case let .setLinkURL(url):
         state.linkURL = url
-        return .none
+        return .send(.checkURLExists(url))
         
       case .saveButtonTapped:
         guard
@@ -86,6 +124,10 @@ struct AddLinkFeature {
             await send(.saveLinkResponse(.failure(error)))
           }
         }
+        
+      case .navigateToLinkDetail(let article):
+        linkNavigator.push(.linkDetail, article)
+        return .none
         
       case .addNewCategoryButtonTapped:
         linkNavigator.push(.addCategory, nil)
@@ -117,10 +159,48 @@ struct AddLinkFeature {
         //TODO: 링크 저장 실패시 에러 알럿?
         print("\(error)")
         return .none
+        
+      case let .checkURLExists(urlString):
+        return .run { send in
+          do {
+            let exists = try await swiftDataClient.urlExists(urlString)
+            await send(.didCheckURLExists(exists))
+          } catch {
+            await send(.didCheckURLExists(false))
+          }
+        }
+        
+      case let .didCheckURLExists(exists):
+        state.isURLExisting = exists
+        if exists {
+          state.toastMessage = "이미 저장된 링크입니다"
+          state.showToast = true
+          return .run { send in
+            try await Task.sleep(nanoseconds: 2_000_000_000)
+            await send(.hideToast)
+          }
+        }
+        return .none
+        
+      case .showToast(let message):
+        state.toastMessage = message
+        state.showToast = true
+        return .run { send in
+          try await Task.sleep(nanoseconds: 2_000_000_000)
+          await send(.hideToast)
+        }
+      case .hideToast:
+        state.showToast = false
+        return .none
+      case .fetch:
+        return .none
+      case .didFetchArticleItems(.failure(_)):
+        return .none
       }
     }
   }
   
+  //TODO: 함수들 어떻게 해야할지 생각해봐야함 SideEffect?
   private func extractTitle(from url: URL) async throws -> String {
     let (data, _) = try await URLSession.shared.data(from: url)
     guard let htmlString = String(data: data, encoding: .utf8) else {
@@ -169,4 +249,16 @@ private func extractImageURL(from url: URL) async throws -> URL {
   }
   
   throw URLError(.fileDoesNotExist)
+}
+
+extension SwiftDataClient {
+  @MainActor
+  func urlExists(_ urlString: String) throws -> Bool {
+    let container = AppGroupContainer.shared
+    let context = container.mainContext
+    let fetchDescriptor = FetchDescriptor<ArticleItem>(
+      predicate: #Predicate { $0.urlString == urlString }
+    )
+    return try context.fetch(fetchDescriptor).first != nil
+  }
 }
