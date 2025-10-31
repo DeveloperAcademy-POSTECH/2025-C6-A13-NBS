@@ -20,9 +20,9 @@ public struct AlertBanner: View {
   
   // MARK: - Style
   public enum Style {
-    case close(action: (() -> Void)? = nil) // X 버튼
-    case action(title: String)              // 오른쪽 버튼
-    case common                             // 텍스트만
+    case close(action: (() -> Void)? = nil)                 // X 버튼
+    case action(title: String, action: (() -> Void)? = nil) // 오른쪽 버튼
+    case common                                             // 텍스트만
   }
   
   // MARK: - Properties
@@ -53,16 +53,6 @@ public extension AlertBanner {
     .padding(.horizontal, 24)
     .padding(.vertical, 18)
     .background(DesignSystemAsset.alertColor.swiftUIColor)
-//    .background({
-//      switch style {
-//      case .close:
-////        VisualEffectBlur(blurStyle: .systemUltraThinMaterialDark)
-//          .backgro(DesignSystemAsset.alertColor.swiftUIColor)
-//      default:
-////        VisualEffectBlur(blurStyle: .systemUltraThinMaterialLight)
-//          .background(DesignSystemAsset.alert.swiftUIColor)
-//      }
-//    }())
     .cornerRadius(12)
   }
   
@@ -99,9 +89,15 @@ public extension AlertBanner {
             .foregroundStyle(.textw)
         }
         .buttonStyle(.plain)
-      case let .action(title):
-        ChipButton(title: title, style: .deep, isOn: .constant(true))
-          .fixedSize()
+        
+      case let .action(title, action):
+        ChipButton(
+          title: title,
+          style: .deep,
+          isOn: .constant(true),
+          onTap: { action?() }
+        )
+        .fixedSize()
         
       case .common:
         EmptyView()
