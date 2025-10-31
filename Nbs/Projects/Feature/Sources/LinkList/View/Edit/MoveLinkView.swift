@@ -123,6 +123,10 @@ extension MoveLinkView {
           editMode: .active
         )
         .id(link.id)
+        .contentShape(Rectangle())
+        .onTapGesture {
+          store.send(.toggleSelect(link))
+        }
       }
     }
     .padding(.horizontal, 20)
