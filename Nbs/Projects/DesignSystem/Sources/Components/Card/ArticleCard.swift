@@ -56,12 +56,6 @@ extension ArticleCard {
     .clipShape(RoundedRectangle(cornerRadius: 12))
     .animation(.easeInOut(duration: 0.2), value: editMode)
     .animation(.easeInOut(duration: 0.15), value: isSelected)
-    .contentShape(Rectangle())
-    .onTapGesture {
-      if editMode == .active {
-        isSelected.toggle()
-      }
-    }
   }
   
   /// 텍스트 영역

@@ -123,7 +123,7 @@ extension LinkDetailView: View {
       // 정보 섹션
       VStack(alignment: .leading, spacing: 12) {
         ArticleInfoItem(icon: Icon.calendar, text: store.link.createAt.formattedKoreanDate())
-        ArticleInfoItem(icon: Icon.book, text: "네이버 뉴스")
+        ArticleInfoItem(icon: Icon.book, text: store.link.newsCompany ?? "언론사 없음")
         ArticleInfoItem(icon: Icon.tag, text: store.link.category?.categoryName ?? "카테고리 없음")
       }
     }
@@ -137,7 +137,7 @@ extension LinkDetailView: View {
       }
     } label: {
       HStack(spacing: 12) {
-        DesignSystemAsset.notImage.swiftUIImage
+        Image(store.link.imageURL ?? "notImage")
           .resizable()
           .scaledToFit()
           .frame(width: 48, height: 48)
