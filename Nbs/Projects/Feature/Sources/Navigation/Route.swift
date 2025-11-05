@@ -10,7 +10,7 @@ public enum Route: String {
   case myCategory
   case addLink
   case addCategory
-  case setting
+  case categorySetting
   case editCategory
   case editCategoryNameIcon
   case deleteCategory
