@@ -18,14 +18,14 @@ struct MyCategoryCollectionFeature {
     var topAppBar = TopAppBarDefaultNoSearchFeature.State(title: CategoryNamespace.myCategoryCollection)
     var categoryGrid = CategoryGridFeature.State()
     var selectedCategory: CategoryItem?
-    var settingModal: SettingFeature.State?
+    var settingModal: CategorySettingFeature.State?
     var myCategoryGrid = MyCategoryGridFeature.State()
   }
   
   enum Action {
     case topAppBar(TopAppBarDefaultNoSearchFeature.Action)
     case categoryGrid(CategoryGridFeature.Action)
-    case settingModal(SettingFeature.Action)
+    case settingModal(CategorySettingFeature.Action)
     case totalLinkTapped
     case myCategoryGrid(MyCategoryGridFeature.Action)
   }
@@ -53,7 +53,7 @@ struct MyCategoryCollectionFeature {
         return .run { _ in await linkNavigator.pop() }
         
       case .topAppBar(.tapSettingButton):
-        state.settingModal = SettingFeature.State()
+        state.settingModal = CategorySettingFeature.State()
         return .none
 
       case .categoryGrid(_):
