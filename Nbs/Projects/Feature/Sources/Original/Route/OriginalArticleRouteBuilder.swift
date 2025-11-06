@@ -20,22 +20,19 @@ public struct OriginalArticleRouteBuilder {
     return .init(matchPath: matchPath) { navigator, item, _ -> RouteViewController? in
       
       let trimmedItem = item.trimmingCharacters(in: .whitespacesAndNewlines)
-      
-      guard
-        let data = Data(base64Encoded: trimmedItem),
-        let decoded = String(data: data, encoding: .utf8)?
-          .replacingOccurrences(of: "\\/", with: "/")
-          .replacingOccurrences(of: "\"", with: ""),
-        let url = URL(string: decoded)
+    
+      guard let data = Data(base64Encoded: trimmedItem),
+            let payload = try? JSONDecoder().decode(OriginalArticlePayload.self, from: data),
+            let url = URL(string: payload.url)
       else {
         return WrappingController(matchPath: matchPath) {
-          Text("Invalid URL")
+          Text("Invalid Data")
         }
       }
       
       return WrappingController(matchPath: matchPath) {
         OriginalArticleView(
-          store: Store(initialState: OriginalArticleFeature.State(url: url), reducer: {
+          store: Store(initialState: OriginalArticleFeature.State(url: url, highlights: payload.highlights), reducer: {
           OriginalArticleFeature()
               .dependency(\.linkNavigator, .init(navigator: navigator))
         }))

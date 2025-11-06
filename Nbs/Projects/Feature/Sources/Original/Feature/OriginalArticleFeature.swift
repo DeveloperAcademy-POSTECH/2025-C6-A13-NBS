@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import Foundation
+import Domain
 
 @Reducer
 struct OriginalArticleFeature {
@@ -15,6 +16,7 @@ struct OriginalArticleFeature {
   @ObservableState
   struct State: Equatable {
     var url: URL
+    var highlights: [HighlightItem]
   }
   
   enum Action: Equatable {
