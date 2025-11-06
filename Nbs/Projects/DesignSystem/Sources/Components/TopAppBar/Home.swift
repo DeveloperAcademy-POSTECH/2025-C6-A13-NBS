@@ -23,7 +23,6 @@ import SwiftUI
 /// }
 /// ```
 public struct TopAppBarHome {
-  let title: String = "LOGO"
   public let onTapSearchButton: () -> Void
   public let onTapSettingButton: () -> Void
   
@@ -39,10 +38,12 @@ public struct TopAppBarHome {
 extension TopAppBarHome: View {
   public var body: some View {
     HStack {
-      Text(title)
-        .font(.B1_M)
-        .foregroundStyle(.n700)
-        .padding(.leading, 24)
+      DesignSystemAsset.logo.swiftUIImage
+        .resizable()
+        .scaledToFit()
+        .frame(width: 44, height: 22)
+        .padding(.leading, 20)
+        .padding(.vertical, 19)
       Spacer()
       HStack(spacing: 0) {
         Button(action: onTapSearchButton) {
