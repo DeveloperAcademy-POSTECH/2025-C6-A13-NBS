@@ -81,7 +81,7 @@ struct AddLinkFeature {
         linkNavigator.push(.linkDetail, articles)
         return .none
         
-      case let .didFetchArticleItems(.failure(error)):
+      case let .didFetchArticleItems(.failure(_)):
         state.toastMessage = "링크 불러오기 실패"
         state.showToast = true
         return .run { send in
