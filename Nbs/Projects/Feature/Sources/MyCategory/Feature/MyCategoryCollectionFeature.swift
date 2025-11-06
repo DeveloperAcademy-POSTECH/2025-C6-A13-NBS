@@ -20,6 +20,7 @@ struct MyCategoryCollectionFeature {
     var selectedCategory: CategoryItem?
     var settingModal: CategorySettingFeature.State?
     var myCategoryGrid = MyCategoryGridFeature.State()
+    var allLinksCount = 0
   }
   
   enum Action {
@@ -28,6 +29,8 @@ struct MyCategoryCollectionFeature {
     case settingModal(CategorySettingFeature.Action)
     case totalLinkTapped
     case myCategoryGrid(MyCategoryGridFeature.Action)
+    case fetchArticleResponse(Result<[ArticleItem], Error>)
+    case onAppear
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -51,14 +54,17 @@ struct MyCategoryCollectionFeature {
         return .none
       case .topAppBar(.tapBackButton):
         return .run { _ in await linkNavigator.pop() }
-        
       case .topAppBar(.tapSettingButton):
         state.settingModal = CategorySettingFeature.State()
         return .none
-
       case .categoryGrid(_):
         return .none
-        
+      case .onAppear:
+        return .run { send in
+          await send(.fetchArticleResponse(Result {
+            try swiftDataClient.fetchLinks()
+          }))
+        }
       case .settingModal(.dismissButtonTapped):
         state.settingModal = nil
         return .none
@@ -72,6 +78,11 @@ struct MyCategoryCollectionFeature {
         linkNavigator.push(.deleteCategory, nil)
         return .none
       case .myCategoryGrid(_):
+        return .none
+      case let .fetchArticleResponse(.success(article)):
+        state.allLinksCount = article.count
+        return .none
+      case .fetchArticleResponse(.failure(_)):
         return .none
       }
     }
