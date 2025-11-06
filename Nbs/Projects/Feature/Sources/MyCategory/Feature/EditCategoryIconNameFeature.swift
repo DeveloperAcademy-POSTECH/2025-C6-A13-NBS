@@ -35,7 +35,7 @@ struct EditCategoryIconNameFeature {
     case compeleteButtonTapped
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setCategoryName(String)
-    case selectIcon(CategoryIcon)
+    case selectIcon(CategoryIcon?)
   }
   
   var body: some ReducerOf<Self> {
