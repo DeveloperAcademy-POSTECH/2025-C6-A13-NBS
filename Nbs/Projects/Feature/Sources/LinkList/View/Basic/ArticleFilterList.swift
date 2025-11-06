@@ -20,11 +20,10 @@ extension ArticleFilterList: View {
     ZStack {
       Color.background
         .ignoresSafeArea()
-      ScrollView {
-        VStack(spacing: 12) {
-          infoContents
-          articleList
-        }
+      VStack(spacing: 12) {
+        
+        infoContents
+        articleList
       }
       .padding(.horizontal, 20)
     }
