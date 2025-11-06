@@ -37,6 +37,11 @@ public extension Icon {
   static let smallPlus = "small-plus"
   static let circlePlus = "circlePlus"
   static let badgeCheck = "badge-check"
+  static let shield = "shield"
+  static let smile = "smile"
+  static let smallMove = "small-move"
+  static let opensource = "opensource"
+  static let file = "file"
 }
 
 public extension Image {
