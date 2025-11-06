@@ -16,8 +16,6 @@ struct MyCategoryGridView {
     .init(.flexible(), spacing: 10),
     .init(.flexible(), spacing: 10)
   ]
-  
-  
 }
 
 extension MyCategoryGridView: View {
@@ -26,6 +24,7 @@ extension MyCategoryGridView: View {
       ScrollView {
         LazyVGrid(columns: gridItems, spacing: 10) {
           ForEach(viewStore.categories) { category in
+            //TODO: 여기 디자인 수정해야함
             Button {
               store.send(.categoryTapped)
             } label: {
