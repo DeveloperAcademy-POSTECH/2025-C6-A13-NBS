@@ -14,12 +14,12 @@ public enum Route: String {
   case editCategory
   case editCategoryNameIcon
   case deleteCategory
-  
+  case setting // 홈 -> 설정
+  case policyDetail // 설정 -> 정책 디테일
+  case openSourceList // 설정 -> 오픈소스 리스트
   case search
-  
   case linkList    // 홈 -> 링크 리스트
   case linkDetail  // 카드 -> 링크 디테일
-  
   case originalArticle // 링크 디테일 -> 원문 보기
   case originalEdit // 원문 보기 -> 원문 편집
 }
