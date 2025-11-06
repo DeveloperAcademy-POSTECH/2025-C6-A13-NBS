@@ -68,7 +68,7 @@ extension MyCategoryCollectionView: View {
         BottomSheetContainerView(onDismiss: {
           store.send(.settingModal(.dismissButtonTapped))
         }) {
-          SettingView(store: sheetStore)
+          CategorySettingView(store: sheetStore)
         }
         .transition(.move(edge: .bottom).combined(with: .opacity))
         .zIndex(1)

@@ -1,6 +1,6 @@
 
 //
-//  SettingView.swift
+//  CategorySettingView.swift
 //  Feature
 //
 //  Created by 홍 on 10/20/25.
@@ -62,11 +62,11 @@ struct BottomSheetContainerView<Content: View>: View {
   }
 }
 
-struct SettingView {
-  @Bindable var store: StoreOf<SettingFeature>
+struct CategorySettingView {
+  @Bindable var store: StoreOf<CategorySettingFeature>
 }
 
-extension SettingView: View {
+extension CategorySettingView: View {
   var body: some View {
     VStack {
       HStack {
@@ -160,8 +160,8 @@ extension SettingView: View {
 }
 
 #Preview {
-  SettingView(store: Store(initialState: SettingFeature.State()) {
-    SettingFeature()
+  CategorySettingView(store: Store(initialState: CategorySettingFeature.State()) {
+    CategorySettingFeature()
   })
 }
 

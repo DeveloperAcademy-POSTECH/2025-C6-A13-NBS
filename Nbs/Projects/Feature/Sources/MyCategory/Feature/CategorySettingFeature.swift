@@ -1,6 +1,6 @@
 
 //
-//  SettingFeature.swift
+//  CategorySettingFeature.swift
 //  Feature
 //
 //  Created by 홍 on 10/20/25.
@@ -11,7 +11,7 @@ import SwiftUI
 import ComposableArchitecture
 
 @Reducer
-struct SettingFeature {
+struct CategorySettingFeature {
   
   @Dependency(\.linkNavigator) var linkNavigator
   

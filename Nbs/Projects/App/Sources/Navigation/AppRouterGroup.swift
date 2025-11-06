@@ -23,13 +23,16 @@ extension AppRouterGroup {
       AddCategoryRouteBuilder().generate(),
       EditCategoryRouteBuilder().generate(),
       DeleteCategoryRouteBuilder().generate(),
-      SettingRouteBuilder().generate(),
+      CategorySettingRouteBuilder().generate(),
       SearchRouteBuilder().generate(),
       EditCategoryIconNameRouteBuilder().generate(),
       LinkListRouteBuilder().generate(),
       LinkDetailRouteBuilder().generate(),
       OriginalArticleRouteBuilder().generate(),
-      OriginalEditRouteBuilder().generate()
+      OriginalEditRouteBuilder().generate(),
+      SettingRouteBuilder().generate(),
+      PolicyDetailRouteBuilder().generate(),
+      OpenSourceListRouteBuilder().generate()
     ]
   }
 }
