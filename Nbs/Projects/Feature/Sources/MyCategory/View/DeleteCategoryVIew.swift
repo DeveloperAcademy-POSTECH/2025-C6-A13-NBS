@@ -24,21 +24,13 @@ extension DeleteCategoryView: View {
           action: \.categoryGrid
         )
       )
-      HStack {
-        MainButton(
-          "취소",
-          style: .soft
-        ) {
-          store.send(.cancelButtonTapped)
-        }
-        MainButton(
-          "삭제하기",
-          isDisabled: store.selectedCategories.isEmpty
-        ) {
-          store.send(.deleteButtonTapped)
-        }
+      MainButton(
+        "삭제하기",
+        style: .danger,
+        isDisabled: store.selectedCategories.isEmpty
+      ) {
+        store.send(.deleteButtonTapped)
       }
-      .padding(.horizontal, 20)
     }
     .background(DesignSystemAsset.background.swiftUIColor)
     .toolbar(.hidden)
