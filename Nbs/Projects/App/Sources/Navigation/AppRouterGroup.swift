@@ -29,7 +29,10 @@ extension AppRouterGroup {
       LinkListRouteBuilder().generate(),
       LinkDetailRouteBuilder().generate(),
       OriginalArticleRouteBuilder().generate(),
-      OriginalEditRouteBuilder().generate()
+      OriginalEditRouteBuilder().generate(),
+      SettingRouteBuilder().generate(),
+      PolicyDetailRouteBuilder().generate(),
+      OpenSourceListRouteBuilder().generate()
     ]
   }
 }
