@@ -64,6 +64,7 @@ extension TopAppBarDefaultDetail: View {
               .frame(width: 44, height: 44)
               .contentShape(Rectangle())
           }
+          .hidden()
           Button(action: onTapSettingButton) {
             Image(icon: Icon.trash)
               .resizable()
