@@ -47,6 +47,7 @@ struct HomeFeature {
     case myCategoryCollection(MyCategoryCollectionFeature.Action)
     case articlesResponse(TaskResult<[ArticleItem]>)
     case searchButtonTapped
+    case settingButtonTapped
     case editCategory(EditCategoryFeature.Action)
     case editCategoryIconName(EditCategoryIconNameFeature.Action)
     case refresh
@@ -60,6 +61,7 @@ struct HomeFeature {
     case addLink(AddLinkFeature)
     case addCategory(AddCategoryFeature)
     case search(SearchFeature)
+    case setting(SettingFeature)
     case editCategory(EditCategoryFeature)
     case deleteCategory(DeleteCategoryFeature)
     case editCategoryIconName(EditCategoryIconNameFeature)
@@ -137,6 +139,10 @@ struct HomeFeature {
         
       case .searchButtonTapped:
         linkNavigator.push(.search, nil)
+        return .none
+        
+      case .settingButtonTapped:
+        linkNavigator.push(.setting, nil)
         return .none
         
       case .categoryList, .articleList, .path:
