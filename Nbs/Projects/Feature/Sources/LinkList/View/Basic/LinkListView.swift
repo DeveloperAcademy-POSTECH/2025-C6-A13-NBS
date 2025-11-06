@@ -12,13 +12,12 @@ import DesignSystem
 
 /// 링크 리스트 뷰
 struct LinkListView {
-  @Environment(\.dismiss) private var dismiss
   let store: StoreOf<LinkListFeature>
   @State private var showScrollToTopButton: Bool = false
-  @State private var baseOffset: CGFloat? = nil
+  @State private var initialOffsetY: CGFloat? = nil
 }
 
-// MARK: - Body
+// MARK: - View
 extension LinkListView: View {
   var body: some View {
     ZStack {
@@ -32,20 +31,10 @@ extension LinkListView: View {
             proxy: proxy,
             targetID: "top"
           )
-          
-          IfLetStore(
-            store.scope(state: \.$editSheet, action: \.editSheet)
-          ) { editStore in
-            ActionBottomSheet(onDismiss: {
-              // 닫기 버튼이나 배경 탭 시
-              store.send(.editSheet(.dismiss))
-            }) {
-              LinkEditSheetView(store: editStore)
-            }
-            .zIndex(2)
-          }
         }
       }
+      .navigationBarHidden(true)
+      .task { store.send(.onAppear) }
       .fullScreenCover(
         store: store.scope(state: \.$moveLink, action: \.moveLink)
       ) { moveStore in
@@ -66,9 +55,18 @@ extension LinkListView: View {
         .presentationDetents([.medium])
         .presentationCornerRadius(16)
       }
-      .navigationBarHidden(true)
-      .onAppear {
-        store.send(.onAppear)
+    }
+    .overlay {
+      IfLetStore(
+        store.scope(state: \.$editSheet, action: \.editSheet)
+      ) { editStore in
+        ActionBottomSheet(onDismiss: {
+          // 닫기 버튼이나 배경 탭 시
+          store.send(.editSheet(.dismiss))
+        }) {
+          LinkEditSheetView(store: editStore)
+        }
+        .zIndex(2)
       }
     }
     .overlay(alignment: .bottom) {
@@ -90,15 +88,9 @@ extension LinkListView: View {
       // 상단 네비게이션바
       TopAppBarDefault(
         title: "내 링크 모음",
-        onTapBackButton: { dismiss() },
-        onTapSearchButton: {
-          // TODO: 검색 화면 연결
-          print("검색 버튼 클릭")
-        },
-        onTapSettingButton: {
-          // 링크 편집 시트 띄우기
-          store.send(.editButtonTapped)
-        }
+        onTapBackButton: { store.send(.backButtonTapped) },
+        onTapSearchButton: { store.send(.searchButtonTapped) },
+        onTapSettingButton: { store.send(.editButtonTapped) }
       )
       // 하단 스크롤뷰 모음
       scrollViewContents
@@ -112,7 +104,7 @@ extension LinkListView: View {
         Color.clear
           .frame(height: 0)
           .id("top")
-        
+
         CategoryChipList(
           store: store.scope(
             state: \.categoryChipList,
@@ -130,7 +122,6 @@ extension LinkListView: View {
             action: \.articleList
           )
         )
-        
         GeometryReader { geo in
           Color.clear
             .preference(
@@ -143,12 +134,14 @@ extension LinkListView: View {
     }
     .coordinateSpace(name: "scroll")
     .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offsetY in
+      if initialOffsetY == nil {
+        initialOffsetY = offsetY
+      }
+
+      guard let base = initialOffsetY else { return }
+
       withAnimation(.easeInOut(duration: 0.2)) {
-        if offsetY < 1300 {
-          showScrollToTopButton = true
-        } else if offsetY > 1550 {
-          showScrollToTopButton = false
-        }
+        showScrollToTopButton = offsetY < base + 300
       }
     }
   }
