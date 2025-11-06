@@ -59,6 +59,9 @@ struct LinkListFeature {
     case linkLongPressed(ArticleItem)
     case editButtonTapped
     
+    case backButtonTapped
+    case searchButtonTapped
+    
     /// 시트 관련 액션
     case editSheet(PresentationAction<EditSheetFeature.Action>)
     case moveLink(PresentationAction<MoveLinkFeature.Action>)
@@ -113,6 +116,15 @@ private extension LinkListFeature {
       /// 초기 진입 시 링크 데이터 요청
     case .onAppear:
       return .send(.fetchLinks)
+      
+    case .backButtonTapped:
+      return .run { _ in
+        await linkNavigator.pop()
+      }
+      
+    case .searchButtonTapped:
+      linkNavigator.push(.search, nil)
+      return .none
       
       /// 편집 버튼 탭 -> 편집 시트 표시
     case .editButtonTapped:
