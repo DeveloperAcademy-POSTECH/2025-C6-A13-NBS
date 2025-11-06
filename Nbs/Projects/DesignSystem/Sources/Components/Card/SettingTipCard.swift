@@ -40,7 +40,8 @@ extension SettingTipCard {
       .padding(.horizontal, 8)
       .padding(.top, 8)
       .padding(.bottom, 20)
-      .frame(width: 161.5, height: 182, alignment: .top)
+      .frame(height: 182, alignment: .top)
+      .frame(minWidth: 161.5)
       .background(Color.n0)
       .cornerRadius(12)
       .shadow(
