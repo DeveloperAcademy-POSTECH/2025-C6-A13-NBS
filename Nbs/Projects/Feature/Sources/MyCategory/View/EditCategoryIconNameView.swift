@@ -64,7 +64,31 @@ extension EditCategoryIconNameView: View {
     .onTapGesture {
       isFocused = false
     }
+    .highPriorityGesture(
+      DragGesture(minimumDistance: 25, coordinateSpace: .local)
+        .onEnded { value in
+          if value.startLocation.x < 50 && value.translation.width > 80 {
+            store.send(.backGestureSwiped)
+          }
+        }
+    )
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
+    .overlay {
+      if store.isAlert {
+        ZStack {
+          Color.dim.ignoresSafeArea()
+          AlertDialog(
+            title: "카테고리 수정을 중단할까요?",
+            subtitle: "페이지를 나가면 수정사항이 저장되지 않아요",
+            cancelTitle: "취소",
+            onCancel: { store.send(.confirmAlertDismissed) },
+            buttonType: .move(title: "나가기", action: {
+              store.send(.confirmAlertConfirmButtonTapped)
+            })
+          )
+        }
+      }
+    }
   }
 }

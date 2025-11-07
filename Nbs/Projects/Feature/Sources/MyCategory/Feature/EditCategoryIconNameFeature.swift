@@ -26,6 +26,7 @@ struct EditCategoryIconNameFeature {
     var selectedIcon: CategoryIcon?
     var isDuplicate: Bool = false
     var textFieldStyle: JNTextFieldStyle = .default
+    var isAlert: Bool = false
     
     init(category: CategoryItem?) {
       self.category = category
@@ -39,8 +40,11 @@ struct EditCategoryIconNameFeature {
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setCategoryName(String)
     case selectIcon(CategoryIcon?)
-    case _setDuplicate(Bool)
+    case setDuplicate(Bool)
     case setTextFieldStyle(JNTextFieldStyle)
+    case backGestureSwiped
+    case confirmAlertDismissed
+    case confirmAlertConfirmButtonTapped
   }
   
   var body: some ReducerOf<Self> {
@@ -63,10 +67,10 @@ struct EditCategoryIconNameFeature {
           let categories = try swiftDataClient.fetchCategories()
           let isDuplicate = categories.contains { $0.categoryName.lowercased() == name.lowercased() && $0.id != category?.id }
           
-          await send(._setDuplicate(isDuplicate))
+          await send(.setDuplicate(isDuplicate))
         }
         
-      case let ._setDuplicate(isDuplicate):
+      case let .setDuplicate(isDuplicate):
         state.isDuplicate = isDuplicate
         state.textFieldStyle = isDuplicate ? .errorCaption : .default
         
@@ -90,7 +94,15 @@ struct EditCategoryIconNameFeature {
           state.textFieldStyle = style
           return .none
           
-      case .topAppBar(.tapBackButton):
+      case .backGestureSwiped, .topAppBar(.tapBackButton):
+//        return .run { _ in await linkNavigator.pop() }
+        state.isAlert = true
+        return .none
+      case .confirmAlertDismissed:
+        state.isAlert = false
+        return .none
+      case .confirmAlertConfirmButtonTapped:
+        state.isAlert = false
         return .run { _ in await linkNavigator.pop() }
       }
     }
