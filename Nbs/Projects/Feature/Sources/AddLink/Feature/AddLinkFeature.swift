@@ -25,7 +25,6 @@ struct AddLinkFeature {
     var selectedCategory: CategoryItem?
     var isURLExisting: Bool = false
     var articles: [ArticleItem] = []
-    //이삭 토스트 메시지
     var showToast: Bool = false
     var toastMessage: String = ""
     

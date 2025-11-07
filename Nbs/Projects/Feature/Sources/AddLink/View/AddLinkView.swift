@@ -72,18 +72,6 @@ struct AddLinkView: View {
     .ignoresSafeArea(.keyboard)
     .navigationBarHidden(true)
     .background(DesignSystemAsset.background.swiftUIColor)
-//    .overlay(alignment: .bottom) {
-//      if store.showToast {
-//        AlertBanner(
-//          text: "이미 저장된 링크에요",
-//          message: nil,
-//          style: .action(title: "보러가기") {
-//            store.send(.fetchArticleItem)
-//          }
-//        )
-//        .padding(.horizontal)
-//      }
-//    }
     .overlay {
       if store.isConfirmAlertPresented {
         ZStack {
