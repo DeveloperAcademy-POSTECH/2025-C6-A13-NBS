@@ -31,6 +31,14 @@ extension AddCategoryView: View {
             header: "카테고리명"
           )
           .focused($isFocused)
+          .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+              Spacer()
+              Button("완료") {
+                isFocused = false
+              }
+            }
+          }
         }
         
         Text(CategoryNamespace.categoryIcon)
