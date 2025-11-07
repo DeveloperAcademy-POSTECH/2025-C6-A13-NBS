@@ -102,6 +102,30 @@ extension AddCategoryView: View {
     .background(Color.background)
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
+    .highPriorityGesture(
+      DragGesture(minimumDistance: 25, coordinateSpace: .local)
+        .onEnded { value in
+          if value.startLocation.x < 50 && value.translation.width > 80 {
+            store.send(.backGestureSwiped)
+          }
+        }
+    )
+    .overlay {
+      if store.isAlert {
+        ZStack {
+          Color.dim.ignoresSafeArea()
+          AlertDialog(
+            title: "카테고리 추가를 중단할까요?",
+            subtitle: "페이지를 나가면 카테고리가 저장되지 않아요",
+            cancelTitle: "취소",
+            onCancel: { store.send(.confirmAlertDismissed)},
+            buttonType: .confirm(title: "나가기", action: {
+              store.send(.confirmAlertConfirmButtonTapped)
+            })
+          )
+        }
+      }
+    }
   }
 }
 
