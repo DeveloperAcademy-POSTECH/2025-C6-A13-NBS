@@ -8,7 +8,7 @@
 import Domain
 import Foundation
 
-struct OriginalArticlePayload: Codable {
+struct OriginalPayload: Codable {
   let url: String
   let highlights: [HighlightItem]
 }

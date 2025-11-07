@@ -22,7 +22,7 @@ public struct OriginalArticleRouteBuilder {
       let trimmedItem = item.trimmingCharacters(in: .whitespacesAndNewlines)
     
       guard let data = Data(base64Encoded: trimmedItem),
-            let payload = try? JSONDecoder().decode(OriginalArticlePayload.self, from: data),
+            let payload = try? JSONDecoder().decode(OriginalPayload.self, from: data),
             let url = URL(string: payload.url)
       else {
         return WrappingController(matchPath: matchPath) {

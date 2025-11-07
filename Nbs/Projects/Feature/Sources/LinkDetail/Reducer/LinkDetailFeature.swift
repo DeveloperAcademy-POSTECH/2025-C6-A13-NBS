@@ -145,7 +145,7 @@ struct LinkDetailFeature {
         
       /// 원문보기
       case .originalArticleTapped(let url):
-        let payload = OriginalArticlePayload(url: url.absoluteString, highlights: state.link.highlights)
+        let payload = OriginalPayload(url: url.absoluteString, highlights: state.link.highlights)
         
         linkNavigator.push(Route.originalArticle, payload)
         return .none
