@@ -10,7 +10,7 @@ import WebKit
 
 import Domain
 
-struct OriginalWebView: UIViewRepresentable {
+struct OriginalArticleWebView: UIViewRepresentable {
   let url: URL
   let highlights: [HighlightItem]
   
@@ -30,9 +30,9 @@ struct OriginalWebView: UIViewRepresentable {
   }
   
   class Coordinator: NSObject, WKNavigationDelegate {
-    var parent: OriginalWebView
+    var parent: OriginalArticleWebView
     
-    init(_ parent: OriginalWebView) {
+    init(_ parent: OriginalArticleWebView) {
       self.parent = parent
     }
     
