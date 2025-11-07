@@ -33,6 +33,14 @@ struct AddLinkView: View {
         isValidURL: $isValidURL
       )
       .focused($isFocused)
+      .toolbar {
+        ToolbarItemGroup(placement: .keyboard) {
+          Spacer()
+          Button("완료") {
+            isFocused = false
+          }
+        }
+      }
       
       VStack {
         HStack {
@@ -63,7 +71,7 @@ struct AddLinkView: View {
           store.send(.saveButtonTapped)
         }
       }
-      .overlay(isFocused ? Color.white.opacity(0.3) : Color.clear)
+      .overlay(isFocused ? Color.dim : Color.clear)
     }
     .contentShape(Rectangle())
     .onTapGesture {
