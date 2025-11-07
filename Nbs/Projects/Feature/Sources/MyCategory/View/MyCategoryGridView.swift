@@ -24,7 +24,6 @@ extension MyCategoryGridView: View {
       ScrollView {
         LazyVGrid(columns: gridItems, spacing: 10) {
           ForEach(viewStore.categories) { category in
-            //TODO: 여기 디자인 수정해야함
             Button {
               store.send(.categoryTapped)
             } label: {
@@ -40,28 +39,27 @@ extension MyCategoryGridView: View {
                     .foregroundStyle(.caption1)
                   Spacer()
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top)
+                .padding(.leading)
+                DesignSystemAsset.primaryCategoryIcon(number: category.icon.number)
+                  .resizable()
+                  .frame(width: 56, height: 56)
+                  .padding(.trailing, 12)
+                  .padding(.bottom, 12)
               }
-              .frame(maxWidth: .infinity, alignment: .leading)
-              .padding(.top)
-              .padding(.leading)
-              DesignSystemAsset.primaryCategoryIcon(number: category.icon.number)
-                .resizable()
-                .frame(width: 56, height: 56)
-                .padding(.trailing, 12)
-                .padding(.bottom, 12)
-              Text("")
+              .frame(maxWidth: .infinity, minHeight: 116)
+              .background(.n0)
+              .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .frame(maxWidth: .infinity, minHeight: 116)
-            .background(.n0)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .buttonStyle(.plain)
+            .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
           }
-          .buttonStyle(.plain)
-          .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
         }
-      }
-      .padding(.horizontal, 20)
-      .onAppear {
-        viewStore.send(.onAppear)
+        .padding(.horizontal, 20)
+        .onAppear {
+          viewStore.send(.onAppear)
+        }
       }
       .scrollDisabled(viewStore.categories.count < 7)
     }
