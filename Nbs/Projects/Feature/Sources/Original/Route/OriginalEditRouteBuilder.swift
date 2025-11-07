@@ -21,21 +21,18 @@ public struct OriginalEditRouteBuilder {
       
       let trimmedItem = item.trimmingCharacters(in: .whitespacesAndNewlines)
       
-      guard
-        let data = Data(base64Encoded: trimmedItem),
-        let decoded = String(data: data, encoding: .utf8)?
-          .replacingOccurrences(of: "\\/", with: "/")
-          .replacingOccurrences(of: "\"", with: ""),
-        let url = URL(string: decoded)
+      guard let data = Data(base64Encoded: trimmedItem),
+            let payload = try? JSONDecoder().decode(OriginalPayload.self, from: data),
+            let url = URL(string: payload.url)
       else {
         return WrappingController(matchPath: matchPath) {
-          Text("Invalid URL")
+          Text("Invalid Data")
         }
       }
       
       return WrappingController(matchPath: matchPath) {
         OriginalEditView(
-          store: Store(initialState: OriginalEditFeature.State(url: url), reducer: {
+          store: Store(initialState: OriginalEditFeature.State(url: url, highlights: payload.highlights), reducer: {
           OriginalEditFeature()
               .dependency(\.linkNavigator, .init(navigator: navigator))
         }))

@@ -8,6 +8,8 @@
 import ComposableArchitecture
 import Foundation
 
+import Domain
+
 @Reducer
 struct OriginalEditFeature {
   @Dependency(\.linkNavigator) var linkNavigator
@@ -15,6 +17,7 @@ struct OriginalEditFeature {
   @ObservableState
   struct State: Equatable {
     var url: URL
+    var highlights: [HighlightItem]
   }
   
   enum Action: Equatable {

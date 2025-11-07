@@ -27,8 +27,8 @@ struct OriginalArticleFeature {
     Reduce { state, action in
       switch action {
       case .editButtonTapped:
-        print("edit")
-        linkNavigator.push(.originalEdit, state.url.absoluteString)
+        let payload = OriginalPayload(url: state.url.absoluteString, highlights: state.highlights)
+        linkNavigator.push(.originalEdit, payload)
         return .none
       }
     }

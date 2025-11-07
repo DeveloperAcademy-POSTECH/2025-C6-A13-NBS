@@ -24,7 +24,7 @@ extension OriginalEditView {
         OriginalHeaderView(headerType: .edit, onCompleteTapped:  {
           
         })
-        OriginalWebView(url: store.url)
+        OriginalEditWebView(url: store.url, highlights: store.highlights)
           .ignoresSafeArea(edges: .bottom)
       }
     }
