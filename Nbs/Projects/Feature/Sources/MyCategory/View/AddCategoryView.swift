@@ -26,7 +26,7 @@ extension AddCategoryView: View {
         VStack(alignment: .leading, spacing: 4) {
           JNTextField(
             text: $store.categoryName,
-            style: .default,
+            style: .constant(.default),
             placeholder: "카테고리명을 입력해주세요",
             header: "카테고리명"
           )
