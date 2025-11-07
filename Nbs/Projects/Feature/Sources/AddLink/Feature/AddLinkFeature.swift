@@ -64,15 +64,18 @@ struct AddLinkFeature {
       CategoryGridFeature()
     }
     
-    Reduce { state, action in
+    Reduce {
+      state,
+      action in
       switch action {
-      case .backGestureSwiped, .topAppBar(.tapBackButton):
+      case .backGestureSwiped,
+          .topAppBar(.tapBackButton):
         if state.linkURL.isEmpty {
           return .run { _ in await linkNavigator.pop() }
         }
         state.isConfirmAlertPresented = true
         return .none
-      
+        
       case .topAppBar:
         return .none
         
@@ -98,7 +101,7 @@ struct AddLinkFeature {
           }
         }
         return .send(.navigateToLinkDetail(found))
-
+        
       case let .setLinkURL(url):
         state.linkURL = url
         return .send(.checkURLExists(url))
@@ -115,7 +118,11 @@ struct AddLinkFeature {
           do {
             let title = try await extractTitle(from: url)
             let image = try await extractImageURL(from: url)
-            let newLink = ArticleItem(urlString: linkURL, title: title, imageURL: image.absoluteString)
+            let newLink = ArticleItem(
+              urlString: linkURL,
+              title: title,
+              imageURL: image.absoluteString
+            )
             newLink.category = selectedCategory
             try swiftDataClient.addLink(newLink)
             await send(.saveLinkResponse(.success(())))
