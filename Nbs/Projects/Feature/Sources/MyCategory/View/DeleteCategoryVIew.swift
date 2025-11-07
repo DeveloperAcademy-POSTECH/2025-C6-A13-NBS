@@ -30,7 +30,7 @@ extension DeleteCategoryView: View {
         )
       )
       MainButton(
-        "(\(store.selectedCategories.count))삭제하기",
+        "(\(store.selectedCategories.count)) 삭제하기",
         style: .danger,
         isDisabled: store.selectedCategories.isEmpty
       ) {
