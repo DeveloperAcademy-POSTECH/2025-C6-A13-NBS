@@ -37,12 +37,11 @@ struct HomeFeature {
     case onAppear
     case clipboardResponded(String?)
     case dismissAlertBanner
-    case articleList(ArticleListFeature.Action)
-    case categoryList(CategoryListFeature.Action)
+    case articleList(ArticleListFeature.Action) //TODO: 정말 필요한지 확인이 필요함
+    case categoryList(CategoryListFeature.Action) //TODO: 정말 필요한지 확인이 필요함
     case floatingButtonTapped
     case alertBannerTapped
     case fetchArticles
-    case myCategoryCollection(MyCategoryCollectionFeature.Action)
     case articlesResponse(Result<[ArticleItem], Error>)
     case searchButtonTapped
     case settingButtonTapped
