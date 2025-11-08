@@ -77,6 +77,6 @@ extension HomeView: View {
       }
     }
     .background(Color.background)
-    .navigationBarHidden(true)
+    .toolbar(.hidden)
   }
 }
