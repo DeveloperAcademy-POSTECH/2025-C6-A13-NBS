@@ -1,7 +1,6 @@
 let isTulipMenuClick = false;
-let lastSelectedHighlightType = 'what'; // 기본값 설정
+let lastSelectedHighlightType = 'what';
 
-// 페이지의 고정 헤더 높이를 계산하는 함수
 function getFixedHeaderHeight() {
   let fixedHeaderHeight = 0;
   const elements = document.querySelectorAll('body *');
@@ -17,13 +16,11 @@ function getFixedHeaderHeight() {
   return fixedHeaderHeight;
 }
 
-// 메모 데이터 속성 키를 camelCase로 변환하는 헬퍼 함수
 function getMemoKey(type) {
   if (!type) return null;
   return 'memo' + type.charAt(0).toUpperCase() + type.slice(1);
 }
 
-// 메모 캡슐들을 렌더링하는 함수
 function renderCapsules(span) {
   if (span.nextElementSibling && span.nextElementSibling.classList.contains('capsule-container')) {
     span.nextElementSibling.remove();
@@ -154,7 +151,6 @@ function showMemoBox(span, memoId = null) {
   span.after(memoBox);
 }
 
-// 튤립 메뉴를 표시하는 함수
 function showTulipMenu(span) {
   if (document.getElementById('memo-box')) return;
   const existingMenu = document.getElementById('tulip-menu');
@@ -225,7 +221,6 @@ function showTulipMenu(span) {
   menu.style.top = `${top}px`;
 }
 
-// 🔹 여기에 따옴표 무시 헬퍼 추가
 function isInsideQuotes(text, index) {
   const quoteChars = ['"', "'", '“', '”', '‘', '’'];
   let count = 0;
@@ -235,9 +230,7 @@ function isInsideQuotes(text, index) {
   return count % 2 === 1;
 }
 
-// 🔹 아래부터는 dblclick 이벤트 전체 교체 버전 (따옴표 무시 로직 포함)
 document.addEventListener('dblclick', function(event) {
-  // 메모 캡슐 더블탭 방지
   if (event.target.closest('.memo-capsule')) {
     event.preventDefault();
     event.stopPropagation();
@@ -345,10 +338,9 @@ document.addEventListener('dblclick', function(event) {
   }
 });
 
-// 초안 처리 로직
 async function saveDraft(highlightSpan) {
   const draft = {
-    id: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 고유 ID
+    id: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     sentence: highlightSpan.textContent,
     type: highlightSpan.dataset.highlightType,
     comments: JSON.parse(highlightSpan.dataset.comments || '[]'),
@@ -369,11 +361,10 @@ async function saveDraft(highlightSpan) {
   }
 }
 
-// 초안 하이라이트 수정 메소드
 async function updateDraft(highlightSpan) {
   const draftId = highlightSpan.dataset.draftId;
   if (!draftId) {
-    console.log("updateDraft: 초안 ID가 없는 하이라이트입니다. 업데이트를 건너뜁니다.");
+    console.log("updateDraft: 초안 ID가 없는 하이라이트입니다. 업데이트를 건너뜜니다.");
     return;
   }
   
@@ -396,10 +387,9 @@ async function updateDraft(highlightSpan) {
   }
 }
 
-// 초안 하이라이트 삭제 메소드
 async function deleteDraft(draftId) {
   if (!draftId) {
-    console.log("deleteDraft: 초안 ID가 없습니다. 삭제를 건너뜁니다.");
+    console.log("deleteDraft: 초안 ID가 없습니다. 삭제를 건너뜜니다.");
     return;
   }
   
@@ -415,14 +405,10 @@ async function deleteDraft(draftId) {
   }
 }
 
-
-// --- 페이지 로드 및 하이라이트 렌더링 로직 --
-// 하이라이트 정보 저장 메소드
 function saveHighlights() {
   console.warn('saveHighlights() is deprecated. Use updateDraft() or saveDraft().');
 }
 
-// 하이라이트 적용 메소드
 function findAndApplyHighlights(savedHighlights) {
   if (!savedHighlights || savedHighlights.length === 0) return;
   
@@ -465,7 +451,6 @@ function findAndApplyHighlights(savedHighlights) {
   }
 }
 
-// 하이라이트 읽기 메소드
 async function loadHighlights() {
   const url = window.location.href;
   try {
@@ -480,10 +465,7 @@ async function loadHighlights() {
     
     const highlightsToApply = [...officialHighlights, ...draftsForThisPage];
     
-    // React와 같은 서버 사이드 렌더링 라이브러리와의 충돌(Hydration 오류)을 피하기 위해
-    // 하이라이트 적용을 1초 지연시킵니다.
     setTimeout(() => {
-      // 중복 적용을 막기 위해 기존 하이라이트를 모두 제거합니다.
       document.querySelectorAll('.highlighted-text').forEach(span => {
         if (span.parentNode) {
             span.replaceWith(...span.childNodes);
@@ -509,9 +491,6 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received request: ", request);
 });
 
-// --- 네이티브 앱 <-> 사파리 동기화 로직 ---
-
-// 최신 데이터 동기화 메소드
 async function syncHighlightsFromServer() {
   console.log("[%cSYNC%c] 서버와 동기화를 시도합니다...", "color: blue; font-weight: bold;", "");
   try {
@@ -545,7 +524,6 @@ async function syncHighlightsFromServer() {
   }
 }
 
-// 페이지가 bfcache에서 로드될 때 하이라이트를 다시 적용
 window.addEventListener('pageshow', function(event) {
   if (event.persisted) {
     console.log('Page was loaded from bfcache. Reloading highlights.');
@@ -557,5 +535,22 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
     console.log('Tab is now visible. Reloading highlights from local storage.');
     loadHighlights();
+  }
+});
+
+document.addEventListener('click', function(event) {
+  const tulipMenu = document.getElementById('tulip-menu');
+  if (tulipMenu && !tulipMenu.contains(event.target) && !event.target.closest('.highlighted-text')) {
+    tulipMenu.remove();
+  }
+
+  const memoBox = document.getElementById('memo-box');
+  if (memoBox && !memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
+    const textarea = memoBox.querySelector('textarea');
+    if (textarea) {
+      textarea.blur();
+    } else {
+      memoBox.remove();
+    }
   }
 });
