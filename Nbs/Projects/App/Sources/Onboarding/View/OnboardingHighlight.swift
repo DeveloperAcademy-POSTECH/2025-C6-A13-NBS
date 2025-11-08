@@ -22,6 +22,7 @@ struct OnboardingHighlightView {
   let store: StoreOf<OnboardingHighlightFeature>
   @State private var showDimming: Bool = false
   @State private var showTooltip: Bool = true
+  @State private var showHighlightTip: Bool = false
   @State private var highlightRect: CGRect = .zero
   @State private var tooltipText: String = "하이라이트 치는 방법을 배워볼게요"
   @State private var isTextHighlighted: Bool = false
@@ -49,35 +50,42 @@ extension OnboardingHighlightView: View {
             .background(isTextHighlighted ? Color.yellow.opacity(0.4) : Color.clear)
             .frame(maxWidth: .infinity, alignment: .leading)
           }
-            .padding(.horizontal, 20)
-            .background(
-              GeometryReader { geometry in
-                Color.clear
-                  .preference(key: HighlightRectPreferenceKey.self, value: geometry.frame(in: .named("dimmableVStack")))
+          .padding(.horizontal, 20)
+          .background(
+            GeometryReader { geometry in
+              Color.clear
+                .preference(key: HighlightRectPreferenceKey.self, value: geometry.frame(in: .named("dimmableVStack")))
+            }
+          )
+          .onTapGesture(count: 1) {
+            if isTextHighlighted {
+              withAnimation {
+                showHighlightTip.toggle()
               }
-            )
-            .onTapGesture(count: 2) {
-              if showDimming {
-                withAnimation(.easeInOut) {
-                  showDimming = false
-                  isTextHighlighted = true
-                  tooltipText = "해당 문장이 하이라이트 돼요"
+            }
+          }
+          .onTapGesture(count: 2) {
+            if showDimming {
+              withAnimation(.easeInOut) {
+                showDimming = false
+                isTextHighlighted = true
+                tooltipText = "해당 문장이 하이라이트 돼요"
+              }
+              
+              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                withAnimation {
+                  showTooltip = false
                 }
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                  tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
                   withAnimation {
-                    showTooltip = false
-                  }
-                  
-                  DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
-                    withAnimation {
-                      showTooltip = true
-                    }
+                    showTooltip = true
                   }
                 }
               }
             }
+          }
           
           articleScript3
             .padding(.top, 24)
@@ -108,10 +116,19 @@ extension OnboardingHighlightView: View {
             .allowsHitTesting(false)
         }
         
-        if showTooltip && highlightRect != .zero {
+        if showTooltip && highlightRect != .zero && !showHighlightTip {
           OnboardingToolTipBox(text: tooltipText)
             .position(x: highlightRect.midX, y: highlightRect.maxY + 30)
             .transition(.opacity)
+        }
+        
+        if showHighlightTip && highlightRect != .zero {
+          VStack {
+            OnboardingToolTipBoxBottom(text: "원하는 색상을 탭하여\n하이라이트 색상을 변경해요")
+            OnboardingHighlightTip()
+          }
+          .position(x: highlightRect.midX, y: highlightRect.minY - 60)
+          .transition(.opacity)
         }
       }
       .coordinateSpace(name: "dimmableVStack")
