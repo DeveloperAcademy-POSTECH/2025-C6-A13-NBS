@@ -374,8 +374,14 @@ document.addEventListener('dblclick', function(event) {
   sentenceRange.setStart(textNode, sentenceStart);
   sentenceRange.setEnd(textNode, sentenceEnd);
 
-  const extractedText = sentenceRange.toString().trim();
-  if (extractedText.length < 3) return;
+  // Adjust range to exclude leading whitespace
+  let extractedText = sentenceRange.toString();
+  const leadingWhitespaceLength = extractedText.length - extractedText.trimStart().length;
+  if (leadingWhitespaceLength > 0) {
+    sentenceRange.setStart(textNode, sentenceStart + leadingWhitespaceLength);
+  }
+  
+  if (sentenceRange.toString().trim().length < 3) return;
 
   const allHighlights = document.querySelectorAll('.highlighted-text');
   for (const highlight of allHighlights) {
@@ -402,7 +408,7 @@ document.addEventListener('dblclick', function(event) {
 async function saveDraft(highlightSpan) {
   const draft = {
     id: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    sentence: highlightSpan.textContent,
+    sentence: highlightSpan.textContent.trim(),
     type: highlightSpan.dataset.highlightType,
     comments: JSON.parse(highlightSpan.dataset.comments || '[]'),
     url: window.location.href,
