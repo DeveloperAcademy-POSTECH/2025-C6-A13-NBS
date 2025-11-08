@@ -5,14 +5,15 @@
 //  Created by 여성일 on 11/7/25.
 //
 
+import Domain
 import SwiftUI
 import WebKit
-
-import Domain
+import ComposableArchitecture
 
 struct OriginalEditWebView: UIViewRepresentable {
   let url: URL
   let highlights: [HighlightItem]
+  let store: StoreOf<OriginalEditFeature>
   
   func makeUIView(context: Context) -> WKWebView {
     let webView = WKWebView()
@@ -29,11 +30,17 @@ struct OriginalEditWebView: UIViewRepresentable {
     Coordinator(self)
   }
   
-  class Coordinator: NSObject, WKNavigationDelegate {
+  class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
     var parent: OriginalEditWebView
     
     init(_ parent: OriginalEditWebView) {
       self.parent = parent
+    }
+    
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+      if message.name == "editHandler" {
+        //parent.store.send()
+      }
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -46,27 +53,31 @@ struct OriginalEditWebView: UIViewRepresentable {
             return [
               "id": comment.id,
               "type": comment.type,
-              "text": comment.text
+              "text": comment.text,
             ]
-          }
+          },
         ]
       }
       
-      guard let jsonData = try? JSONSerialization.data(withJSONObject: highlightsJSON, options: []),
-            let jsonString = String(data: jsonData, encoding: .utf8) else {
+      guard
+        let jsonData = try? JSONSerialization.data(withJSONObject: highlightsJSON, options: []),
+        let jsonString = String(data: jsonData, encoding: .utf8)
+      else {
         print("변환 실패")
         return
       }
       
-      injectCss(webView: webView, filename: "OriginalArticleStyle")
-      injectJS(webView: webView, filename: "OriginalArticleScript", jsonString: jsonString)
+      injectCss(webView: webView, filename: "OriginalEditStyle")
+      injectJS(webView: webView, filename: "OriginalEditScript", jsonString: jsonString)
     }
     
     private func getFeatureBundle() -> Bundle? {
-      guard let bundleURL = Bundle.main.url(
-        forResource: "Feature_Feature",
-        withExtension: "bundle"
-      ) else {
+      guard
+        let bundleURL = Bundle.main.url(
+          forResource: "Feature_Feature",
+          withExtension: "bundle"
+        )
+      else {
         print("❌ Feature_Feature.bundle을 찾을 수 없음")
         return nil
       }
@@ -82,18 +93,20 @@ struct OriginalEditWebView: UIViewRepresentable {
         return
       }
       
-      guard let cssString = try? String(contentsOfFile: cssPath)
-        .replacingOccurrences(of: "\n", with: "") else {
+      guard
+        let cssString = try? String(contentsOfFile: cssPath)
+          .replacingOccurrences(of: "\n", with: "")
+      else {
         print("CSS 파일 읽기 실패")
         return
       }
       
       let javascript = """
-        var style = document.createElement('style');
-        style.innerHTML = `\(cssString)`;
-        document.head.appendChild(style);
-        void 0;
-      """
+          var style = document.createElement('style');
+          style.innerHTML = `\(cssString)`;
+          document.head.appendChild(style);
+          void 0;
+        """
       
       webView.evaluateJavaScript(javascript) { _, error in
         if let error = error {
@@ -113,10 +126,10 @@ struct OriginalEditWebView: UIViewRepresentable {
       do {
         let scriptContent = try String(contentsOfFile: jsPath)
         let fullScript = """
-          \(scriptContent)
-          applyHighlights(\(jsonString));
-          void 0;
-        """
+            \(scriptContent)
+            applyHighlights(\(jsonString));
+            void 0;
+          """
         
         webView.evaluateJavaScript(fullScript) { _, error in
           if let error = error {
