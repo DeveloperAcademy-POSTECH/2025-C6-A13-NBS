@@ -27,9 +27,7 @@ extension CategoryChipList: View {
         bottomSheetButton
       }
       .padding(.horizontal, 20)
-      .onAppear {
-        store.send(.onAppear)
-      }
+      .task { store.send(.onAppear) }
     }
   }
   
