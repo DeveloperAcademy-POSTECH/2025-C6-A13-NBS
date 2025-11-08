@@ -2,13 +2,13 @@ import LinkNavigator
 import ComposableArchitecture
 import Foundation
 
-struct LinkNavigatorClient {
-  var push: (Route, Codable?) -> Void
-  var pop: () async -> Void
+public struct LinkNavigatorClient {
+  public var push: (Route, Codable?) -> Void
+  public var pop: () async -> Void
 }
 
 extension LinkNavigatorClient: DependencyKey {
-  static let liveValue = Self(
+  public static let liveValue = Self(
     push: { _, _ in
       #if DEBUG
       print("LinkNavigatorClient.push called, but not implemented.")
@@ -23,14 +23,14 @@ extension LinkNavigatorClient: DependencyKey {
 }
 
 extension DependencyValues {
-  var linkNavigator: LinkNavigatorClient {
+  public var linkNavigator: LinkNavigatorClient {
     get { self[LinkNavigatorClient.self] }
     set { self[LinkNavigatorClient.self] = newValue }
   }
 }
 
 extension LinkNavigatorClient {
-  init(navigator: SingleLinkNavigator) {
+  public init(navigator: SingleLinkNavigator) {
     self.push = { path, items in
       DispatchQueue.main.async {
         navigator.next(linkItem: .init(path: path.rawValue, items: items), isAnimated: true)
