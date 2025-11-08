@@ -11,19 +11,31 @@ import WebKit
 import ComposableArchitecture
 
 struct OriginalEditWebView: UIViewRepresentable {
-  let url: URL
-  let highlights: [HighlightItem]
+  let articleItem: ArticleItem
   let store: StoreOf<OriginalEditFeature>
   
   func makeUIView(context: Context) -> WKWebView {
-    let webView = WKWebView()
+    let userContentController = WKUserContentController()
+    userContentController.add(context.coordinator, name: "editHandler")
+    
+    let configuration = WKWebViewConfiguration()
+    configuration.userContentController = userContentController
+    
+    let webView = WKWebView(frame: .zero, configuration: configuration)
     webView.navigationDelegate = context.coordinator
     return webView
   }
   
   func updateUIView(_ uiView: WKWebView, context: Context) {
-    let request = URLRequest(url: url)
-    uiView.load(request)
+    if store.isDataRequestTriggered {
+      context.coordinator.getHighlightsData(webView: uiView)
+    } else {
+      guard let articleURL = URL(string: articleItem.urlString) else {
+        return
+      }
+      let request = URLRequest(url: articleURL)
+      uiView.load(request)
+    }
   }
   
   func makeCoordinator() -> Coordinator {
@@ -38,13 +50,29 @@ struct OriginalEditWebView: UIViewRepresentable {
     }
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-      if message.name == "editHandler" {
-        //parent.store.send()
+      if message.name == "editHandler", let body = message.body as? [[String: Any]] {
+        do {
+          let data = try JSONSerialization.data(withJSONObject: body, options: [])
+          
+          let payloads = try JSONDecoder().decode([HighlightPayload].self, from: data)
+          
+          parent.store.send(.highlightsDataResponse(payloads))
+        } catch {
+          print("userContentController 전송 에러")
+        }
+      }
+    }
+    
+    func getHighlightsData(webView: WKWebView) {
+      webView.evaluateJavaScript("getAllHighlightsData();") { _, error in
+        if let error = error {
+          print("getHighlightsData evaluate 에러 \(error)")
+        }
       }
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-      let highlightsJSON = parent.highlights.map { item in
+      let highlightsJSON = parent.articleItem.highlights.map { item in
         return [
           "id": item.id,
           "sentence": item.sentence,

@@ -13,23 +13,49 @@ import Domain
 @Reducer
 struct OriginalEditFeature {
   @Dependency(\.linkNavigator) var linkNavigator
+  @Dependency(\.swiftDataClient) var swiftDataClient
   
   @ObservableState
   struct State: Equatable {
-    var url: URL
-    var highlights: [HighlightItem]
+    var articleItem: ArticleItem
+    var isDataRequestTriggered: Bool = false
   }
   
   enum Action: Equatable {
     case completeButtonTapped
+    case highlightsDataResponse([HighlightPayload])
   }
   
   var body: some ReducerOf<Self> {
-    Reduce { state, action in
+    Reduce {
+      state,
+      action in
       switch action {
       case .completeButtonTapped:
+        state.isDataRequestTriggered = true
         print("completed")
         return .none
+        
+      case .highlightsDataResponse(let highlights):
+        print("전달 받은 하이라이트 : \(highlights)")
+        return .run { [linkID = state.articleItem.id] _ in
+          do {
+            let highlights = highlights.map { payload in
+              HighlightItem(
+                id: payload.id,
+                sentence: payload.sentence,
+                type: payload.type,
+                createdAt: Date(),
+                comments: payload.comments
+              )
+            }
+            try swiftDataClient.updateHighlightsForLink(linkID, highlights)
+            await linkNavigator.pop()
+            await linkNavigator.pop()
+          } catch {
+            print("저장 실패")
+          }
+        }
       }
     }
   }

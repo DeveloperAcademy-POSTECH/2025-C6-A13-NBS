@@ -45,7 +45,8 @@ struct LinkDetailFeature {
     case deleteResponse(TaskResult<Void>)
     
     /// 원문보기
-    case originalArticleTapped(URL)
+    case originalArticleTapped
+    case refreshed(ArticleItem?)
   }
   
   var body: some ReducerOf<Self> {
@@ -54,7 +55,10 @@ struct LinkDetailFeature {
       case .onAppear:
         state.editedTitle = state.link.title
         state.editedMemo  = state.link.userMemo
-        return .none
+        return .run { [linkID = state.link.id] send in
+          let linkItem = try swiftDataClient.fetchLink(linkID)
+          await send(.refreshed(linkItem))
+        }
         
         /// 제목 편집
       case .editButtonTapped:
@@ -144,10 +148,16 @@ struct LinkDetailFeature {
         return .none
         
       /// 원문보기
-      case .originalArticleTapped(let url):
-        let payload = OriginalPayload(url: url.absoluteString, highlights: state.link.highlights)
+      case .originalArticleTapped:
+        let payload = OriginalPayload(articleItem: state.link)
         
         linkNavigator.push(Route.originalArticle, payload)
+        return .none
+        
+      case .refreshed(let item):
+        if let item {
+          state.link = item
+        }
         return .none
       }
     }

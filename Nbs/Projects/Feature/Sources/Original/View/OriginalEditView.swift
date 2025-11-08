@@ -22,9 +22,9 @@ extension OriginalEditView {
       Color.background.ignoresSafeArea()
       VStack {
         OriginalHeaderView(headerType: .edit, onCompleteTapped:  {
-          
+          store.send(.completeButtonTapped)
         })
-        OriginalEditWebView(url: store.url, highlights: store.highlights)
+        OriginalEditWebView(articleItem: store.articleItem, store: store)
           .ignoresSafeArea(edges: .bottom)
       }
     }
