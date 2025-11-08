@@ -11,26 +11,39 @@ public struct OnboardingTitleImage {
   let title: OnboardingNamespace
   let description: OnboardingNamespace
   let image: Image
+  let showPage: Bool
+  let currentPage: Int
   
   public init(
     title: OnboardingNamespace,
     description: OnboardingNamespace,
-    image: Image
+    image: Image,
+    showPage: Bool,
+    currentPage: Int
   ) {
     self.title = title
     self.description = description
     self.image = image
+    self.showPage = showPage
+    self.currentPage = currentPage
   }
 }
 
 extension OnboardingTitleImage: View {
   public var body: some View {
     VStack(spacing: 0) {
-      Text(title.rawValue)
-        .font(.H2)
-        .foregroundStyle(.text1)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading, 20)
+      HStack(spacing: 8) {
+        Text(title.rawValue)
+          .font(.H2)
+          .foregroundStyle(.text1)
+        if showPage {
+          Text("\(currentPage)/\(3)")
+            .font(.C2)
+            .foregroundStyle(.caption1)
+        }
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .padding(.leading, 20)
       
       Text(description.rawValue)
         .font(.C1)
