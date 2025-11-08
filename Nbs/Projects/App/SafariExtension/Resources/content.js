@@ -208,15 +208,23 @@ function showTulipMenu(span) {
   const spanRect = span.getBoundingClientRect();
   const menuRect = menu.getBoundingClientRect();
   const fixedHeaderHeight = getFixedHeaderHeight();
-  menu.style.position = 'absolute';
-  
-  let left = window.scrollX + spanRect.left + (spanRect.width / 2) - (menuRect.width / 2);
+
+  const spaceAvailableAbove = spanRect.top - fixedHeaderHeight;
+  if (menuRect.height + 10 > spaceAvailableAbove) {
+      const scrollAmount = menuRect.height + 10 - spaceAvailableAbove;
+      window.scrollBy({ top: -scrollAmount, behavior: 'instant' });
+  }
+
+  const newSpanRect = span.getBoundingClientRect();
+  const newMenuRect = menu.getBoundingClientRect();
+
+  let left = window.scrollX + newSpanRect.left + (newSpanRect.width / 2) - (newMenuRect.width / 2);
   if (left < window.scrollX) left = window.scrollX + 10;
-  if (left + menuRect.width > window.scrollX + window.innerWidth)
-    left = window.scrollX + window.innerWidth - menuRect.width - 10;
-  let top = window.scrollY + spanRect.top - menuRect.height - 10;
-  if (top < window.scrollY + fixedHeaderHeight)
-    top = window.scrollY + spanRect.bottom + 10;
+  if (left + newMenuRect.width > window.scrollX + window.innerWidth)
+      left = window.scrollX + window.innerWidth - newMenuRect.width - 10;
+
+  let top = window.scrollY + newSpanRect.top - newMenuRect.height - 10;
+
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
 }
