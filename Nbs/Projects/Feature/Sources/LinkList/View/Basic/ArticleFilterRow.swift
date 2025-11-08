@@ -20,7 +20,8 @@ struct ArticleRowView: View {
       title: article.title,
       categoryName: article.category?.categoryName,
       imageURL: article.imageURL ?? "notImage",
-      dateString: article.createAt.formattedKoreanDate(), newsCompany: ""
+      dateString: article.createAt.formattedKoreanDate(), 
+      newsCompany: article.newsCompany
     )
     .contentShape(Rectangle())
     .background(Color.clear)
