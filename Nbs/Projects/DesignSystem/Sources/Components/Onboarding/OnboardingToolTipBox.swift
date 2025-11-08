@@ -19,10 +19,10 @@ extension OnboardingToolTipBox: View {
   public var body: some View {
     VStack(spacing: 0) {
       
-      Triangle()
-        .rotation(.degrees(180))
-        .fill(.bl6)
-        .frame(width: 16, height: 10)
+        Triangle()
+          .rotation(.degrees(180))
+          .fill(.bl6)
+          .frame(width: 16, height: 10)
       
       Text(text)
         .font(.B1_M_HL)
@@ -53,6 +53,35 @@ fileprivate struct Triangle: Shape {
   }
 }
 
-#Preview(body: {
-  OnboardingToolTipBox(text: "하이라이트 치는 방법을 배워볼게요")
-})
+//#Preview(body: {
+//  OnboardingToolTipBox(text: "하이라이트 치는 방법을 배워볼게요")
+//})
+
+import SwiftUI
+
+public struct OnboardingToolTipBoxBottom {
+  let text: String
+  
+  public init(text: String) {
+    self.text = text
+  }
+}
+
+extension OnboardingToolTipBoxBottom: View {
+  public var body: some View {
+    VStack(spacing: 0) {
+      Text(text)
+        .font(.B1_M_HL)
+        .foregroundStyle(.textw)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 6)
+        .background(
+          RoundedRectangle(cornerRadius: 4)
+            .fill(.bl6)
+        )
+      Triangle()
+        .fill(.bl6)
+        .frame(width: 16, height: 10)
+    }
+  }
+}
