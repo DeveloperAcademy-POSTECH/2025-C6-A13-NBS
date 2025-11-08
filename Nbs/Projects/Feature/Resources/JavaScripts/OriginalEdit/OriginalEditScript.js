@@ -446,3 +446,23 @@ document.addEventListener('click', function(event) {
         tulipMenu.remove();
     }
 });
+
+function getAllHighlightsData() {
+  const highlights = document.querySelectorAll('.highlighted-text');
+  const highlightsData = [];
+  highlights.forEach(span => {
+    const comments = JSON.parse(span.dataset.comments || '[]');
+    highlightsData.push({
+      id: span.dataset.id,
+      sentence: span.textContent.trim(),
+      type: span.dataset.highlightType,
+      comments: comments
+    });
+  });
+  
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.editHandler) {
+    window.webkit.messageHandlers.editHandler.postMessage(highlightsData);
+  } else {
+    console.error("WebKit message handler 'editHandler' not found.");
+  }
+}
