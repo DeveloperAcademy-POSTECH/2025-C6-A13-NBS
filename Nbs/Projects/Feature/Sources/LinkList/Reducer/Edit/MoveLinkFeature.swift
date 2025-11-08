@@ -8,6 +8,7 @@
 import SwiftUI
 
 import ComposableArchitecture
+import LinkNavigator
 import Domain
 import DesignSystem
 
@@ -15,6 +16,7 @@ import DesignSystem
 struct MoveLinkFeature {
   @Dependency(\.swiftDataClient) var swiftDataClient
   @Dependency(\.uuid) var uuid
+  @Dependency(\.linkNavigator) var linkNavigator
   
   @ObservableState
   struct State: Equatable {
@@ -37,12 +39,7 @@ struct MoveLinkFeature {
     case fetchCategories
     case fetchCategoriesResponse([CategoryItem])
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
-    
-    case delegate(Delegate)
-    enum Delegate {
-      case dismiss
-      case confirmMove(selected: [ArticleItem], target: CategoryItem?)
-    }
+    case moveDone
   }
   
   var body: some ReducerOf<Self> {
@@ -61,6 +58,14 @@ struct MoveLinkFeature {
         }
         return .none
         
+      case .binding:
+        if state.selectBottomSheet == nil {
+          return .run { _ in
+            await linkNavigator.pop()
+          }
+        }
+        return .none
+        
         /// 개별 토글 시 전체선택 여부 갱신
       case let .toggleSelect(link):
         if state.selectedLinks.contains(link.id) {
@@ -72,8 +77,11 @@ struct MoveLinkFeature {
         return .none
         
       case .cancelTapped:
-        return .send(.delegate(.dismiss))
+        return .run { _ in
+          await linkNavigator.pop()
+        }
         
+        /// 이동 버튼
       case .confirmMoveTapped:
         let selected = state.allLinks.filter { state.selectedLinks.contains($0.id) }
         guard !selected.isEmpty else { return .none }
@@ -83,6 +91,7 @@ struct MoveLinkFeature {
           return .send(.openCategorySheet)
         }
         
+        /// 카테고리 로드
       case .fetchCategories:
         return .run { send in
           let items = try swiftDataClient.fetchCategories()
@@ -93,7 +102,7 @@ struct MoveLinkFeature {
         state.categories = items
         return .send(.openCategorySheet)
         
-        // 시트 오픈
+        /// 시트 오픈
       case .openCategorySheet:
         var props: [CategoryProps] = [CategoryProps(id: uuid(), title: "전체")]
         props.append(contentsOf: state.categories.map { CategoryProps(id: uuid(), title: $0.categoryName) })
@@ -105,22 +114,48 @@ struct MoveLinkFeature {
         
         /// 시트에서 "선택하기"
       case .selectBottomSheet(.presented(.delegate(.categorySelected(let name)))):
-        let target = state.categories.first(where: { $0.categoryName == (name ?? "") })
+        guard let name,
+              let target = state.categories.first(where: { $0.categoryName == name })
+        else {
+          state.selectBottomSheet = nil
+          return .none
+        }
+        
         state.targetCategory = target
         let selected = state.allLinks.filter { state.selectedLinks.contains($0.id) }
-        state.selectBottomSheet = nil
-        return .send(.delegate(.confirmMove(selected: selected, target: target)))
+        
+        return .run { send in
+          do {
+            try swiftDataClient.moveLinks(selected, target)
+          } catch {
+            print("❌ moveLinks failed:", error)
+          }
+          await send(.moveDone)
+        }
+        
+      case .moveDone:
+        let movedCount = state.selectedLinks.count
+        return .run { _ in
+          try? await Task.sleep(nanoseconds: 500_000_000)
+          NotificationCenter.default.post(name: .linkMoved, object: ["movedCount": movedCount])
+          await linkNavigator.pop()
+        }
         
         /// 시트에서 닫기
       case .selectBottomSheet(.presented(.delegate(.dismiss))):
         state.selectBottomSheet = nil
         return .none
         
-      case .binding, .selectBottomSheet, .delegate:
+      case .selectBottomSheet:
         return .none
       }
     }
-    .ifLet(\.$selectBottomSheet, action: \.selectBottomSheet) { SelectBottomSheetFeature()
+    .ifLet(\.$selectBottomSheet, action: \.selectBottomSheet) {
+      SelectBottomSheetFeature()
     }
   }
+}
+
+extension Notification.Name {
+  static let linkMoved = Notification.Name("linkMoved")
 }

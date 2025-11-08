@@ -60,7 +60,6 @@ extension TopAppBarHome: View {
             .resizable()
             .renderingMode(.template)
             .foregroundStyle(.icon)
-//            .frame(width: 24, height: 24)
             .frame(width: 44, height: 44)
         }
       }

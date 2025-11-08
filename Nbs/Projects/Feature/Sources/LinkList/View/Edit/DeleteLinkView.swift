@@ -65,15 +65,9 @@ extension DeleteLinkView {
   
   /// 삭제할 링크 선택 텍스트
   private var topContents: some View {
-    Text(
-      store.selectedLinks.isEmpty
-      ? "삭제할 링크를 선택해주세요"
-      : "\(store.selectedLinks.count)개의 링크가 선택됐어요"
-    )
-    .font(.H4_SB)
-    .foregroundStyle(.text1)
-    .padding(.vertical, 18)
-    .padding(.horizontal, 20)
+    TopAppBarDefaultRightIconx(title: "링크 삭제하기") {
+      store.send(.cancelTapped)
+    }
   }
   
   private var middleContents: some View {
@@ -144,21 +138,14 @@ extension DeleteLinkView {
   
   /// 취소 + 삭제하기 버튼 모음
   private var bottomContents: some View {
-    HStack(spacing: 12) {
-      MainButton("취소", style: .soft) {
-        store.send(.cancelTapped)
-      }
-      
-      MainButton(
-        "\(store.selectedLinks.isEmpty ? "" : "(\(store.selectedLinks.count)) " )삭제하기",
-        style: .danger,
-        isDisabled: store.selectedLinks.isEmpty
-      ) {
-        showAlertDialog = true
-      }
+    MainButton(
+      "\(store.selectedLinks.isEmpty ? "" : "(\(store.selectedLinks.count))개 " )삭제하기",
+      style: .danger,
+      isDisabled: store.selectedLinks.isEmpty,
+      hasGradient: true
+    ) {
+      showAlertDialog = true
     }
-    .padding(.horizontal, 20)
-    .padding(.bottom, 14)
   }
 }
 

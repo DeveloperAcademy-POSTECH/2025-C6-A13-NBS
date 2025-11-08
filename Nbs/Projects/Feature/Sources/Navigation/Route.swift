@@ -22,4 +22,6 @@ public enum Route: String {
   case linkDetail  // 카드 -> 링크 디테일
   case originalArticle // 링크 디테일 -> 원문 보기
   case originalEdit // 원문 보기 -> 원문 편집
+  case moveLink    // 링크 이동하기
+  case deleteLink  // 링크 삭제하기
 }

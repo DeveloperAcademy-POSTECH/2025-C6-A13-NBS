@@ -16,7 +16,7 @@ struct CategoryChipList {
   var onTap: (() -> Void)? = nil
 }
 
-// MARK: - Body
+// MARK: - View
 extension CategoryChipList: View {
   var body: some View {
     ZStack {
@@ -27,9 +27,7 @@ extension CategoryChipList: View {
         bottomSheetButton
       }
       .padding(.horizontal, 20)
-      .onAppear {
-        store.send(.onAppear)
-      }
+      .task { store.send(.onAppear) }
     }
   }
   
@@ -47,13 +45,19 @@ extension CategoryChipList: View {
             ) {
               store.send(.categoryTapped(category))
               withAnimation(.easeInOut(duration: 0.2)) {
-                proxy.scrollTo(category, anchor: .center)
+                proxy.scrollTo(category.categoryName, anchor: .center)
               }
             }
             .id(category.categoryName)
           }
         }
         .frame(minHeight: 36)
+      }
+      .onChange(of: store.selectedCategory?.categoryName) { _, newValue in
+        guard let newValue else { return }
+        withAnimation(.easeInOut(duration: 0.25)) {
+          proxy.scrollTo(newValue, anchor: .center)
+        }
       }
     }
   }

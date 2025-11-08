@@ -32,7 +32,9 @@ extension AppRouterGroup {
       OriginalEditRouteBuilder().generate(),
       SettingRouteBuilder().generate(),
       PolicyDetailRouteBuilder().generate(),
-      OpenSourceListRouteBuilder().generate()
+      OpenSourceListRouteBuilder().generate(),
+      MoveLinkRouteBuilder().generate(),
+      DeleteLinkRouteBuilder().generate()
     ]
   }
 }

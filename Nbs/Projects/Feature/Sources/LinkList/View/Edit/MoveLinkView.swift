@@ -39,30 +39,24 @@ extension MoveLinkView {
         }
       }
       .sheet(
-         store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
-       ) { selectStore in
-         TCASelectBottomSheet(
+        store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
+      ) { selectStore in
+        TCASelectBottomSheet(
           title: "카테고리 이동",
           buttonTitle: "이동하기",
           store: selectStore
-         )
-         .presentationDetents([.medium])
-         .presentationCornerRadius(16)
-       }
+        )
+        .presentationDetents([.medium])
+        .presentationCornerRadius(16)
+      }
     }
   }
   
   /// 이동할 링크 선택 텍스트
   private var topContents: some View {
-    Text(
-      store.selectedLinks.isEmpty
-      ? "이동할 링크를 선택해주세요"
-      : "\(store.selectedLinks.count)개의 링크가 선택됐어요"
-    )
-    .font(.H4_SB)
-    .foregroundStyle(.text1)
-    .padding(.vertical, 18)
-    .padding(.horizontal, 20)
+    TopAppBarDefaultRightIconx(title: "링크 이동하기") {
+      store.send(.cancelTapped)
+    }
   }
   
   private var middleContents: some View {
@@ -130,22 +124,19 @@ extension MoveLinkView {
       }
     }
     .padding(.horizontal, 20)
+    .padding(.bottom, 100)
   }
   
   /// 취소 + 이동하기 버튼 모음
   private var bottomContents: some View {
-    HStack(spacing: 12) {
-      MainButton("취소", style: .soft) {
-        store.send(.cancelTapped)
-      }
-      
-      MainButton("이동하기", style: .deep, isDisabled: store.selectedLinks.isEmpty
-      ) {
-        store.send(.confirmMoveTapped)
-      }
+    MainButton(
+      "\(store.selectedLinks.isEmpty ? "" : "\(store.selectedLinks.count)개 ")이동하기",
+      style: .deep,
+      isDisabled: store.selectedLinks.isEmpty,
+      hasGradient: true
+    ) {
+      store.send(.confirmMoveTapped)
     }
-    .padding(.horizontal, 20)
-    .padding(.bottom, 14)
   }
 }
 
