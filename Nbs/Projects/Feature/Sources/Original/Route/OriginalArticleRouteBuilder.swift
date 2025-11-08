@@ -23,7 +23,7 @@ public struct OriginalArticleRouteBuilder {
     
       guard let data = Data(base64Encoded: trimmedItem),
             let payload = try? JSONDecoder().decode(OriginalPayload.self, from: data),
-            let url = URL(string: payload.url)
+            let url = URL(string: payload.articleItem.urlString)
       else {
         return WrappingController(matchPath: matchPath) {
           Text("Invalid Data")
@@ -32,7 +32,7 @@ public struct OriginalArticleRouteBuilder {
       
       return WrappingController(matchPath: matchPath) {
         OriginalArticleView(
-          store: Store(initialState: OriginalArticleFeature.State(url: url, highlights: payload.highlights), reducer: {
+          store: Store(initialState: OriginalArticleFeature.State(articleItem: payload.articleItem), reducer: {
           OriginalArticleFeature()
               .dependency(\.linkNavigator, .init(navigator: navigator))
         }))

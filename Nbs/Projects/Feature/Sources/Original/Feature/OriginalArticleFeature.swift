@@ -15,8 +15,7 @@ struct OriginalArticleFeature {
   
   @ObservableState
   struct State: Equatable {
-    var url: URL
-    var highlights: [HighlightItem]
+    var articleItem: ArticleItem
   }
   
   enum Action: Equatable {
@@ -27,7 +26,7 @@ struct OriginalArticleFeature {
     Reduce { state, action in
       switch action {
       case .editButtonTapped:
-        let payload = OriginalPayload(url: state.url.absoluteString, highlights: state.highlights)
+        let payload = OriginalPayload(articleItem: state.articleItem)
         linkNavigator.push(.originalEdit, payload)
         return .none
       }

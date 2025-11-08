@@ -11,8 +11,7 @@ import WebKit
 import Domain
 
 struct OriginalArticleWebView: UIViewRepresentable {
-  let url: URL
-  let highlights: [HighlightItem]
+  let articleItem: ArticleItem
   
   func makeUIView(context: Context) -> WKWebView {
     let webView = WKWebView()
@@ -21,7 +20,10 @@ struct OriginalArticleWebView: UIViewRepresentable {
   }
   
   func updateUIView(_ uiView: WKWebView, context: Context) {
-    let request = URLRequest(url: url)
+    guard let articleURL = URL(string: articleItem.urlString) else {
+      return
+    }
+    let request = URLRequest(url: articleURL)
     uiView.load(request)
   }
   
@@ -37,7 +39,7 @@ struct OriginalArticleWebView: UIViewRepresentable {
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-      let highlightsJSON = parent.highlights.map { item in
+      let highlightsJSON = parent.articleItem.highlights.map { item in
         return [
           "id": item.id,
           "sentence": item.sentence,
