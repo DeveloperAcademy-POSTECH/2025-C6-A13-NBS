@@ -10,6 +10,7 @@ import SwiftUI
 
 import ComposableArchitecture
 import Domain
+import DesignSystem
 
 @Reducer
 struct EditCategoryIconNameFeature {
@@ -23,6 +24,9 @@ struct EditCategoryIconNameFeature {
     var categoryName: String
     var category: CategoryItem?
     var selectedIcon: CategoryIcon?
+    var isDuplicate: Bool = false
+    var textFieldStyle: JNTextFieldStyle = .default
+    var isAlert: Bool = false
     
     init(category: CategoryItem?) {
       self.category = category
@@ -35,7 +39,12 @@ struct EditCategoryIconNameFeature {
     case compeleteButtonTapped
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setCategoryName(String)
-    case selectIcon(CategoryIcon)
+    case selectIcon(CategoryIcon?)
+    case setDuplicate(Bool)
+    case setTextFieldStyle(JNTextFieldStyle)
+    case backGestureSwiped
+    case confirmAlertDismissed
+    case confirmAlertConfirmButtonTapped
   }
   
   var body: some ReducerOf<Self> {
@@ -47,23 +56,53 @@ struct EditCategoryIconNameFeature {
       switch action {
       case let .setCategoryName(name):
         state.categoryName = name
+        state.isDuplicate = false
+        state.textFieldStyle = .default
         return .none
       case let .selectIcon(icon):
         state.selectedIcon = icon
         return .none
       case .compeleteButtonTapped:
-        return .run { [id = state.category?.id, name = state.categoryName, icon = state.selectedIcon] _ in
-          guard let id, let icon else { return }
-          await MainActor.run {
-            do {
-              try swiftDataClient.updateCategoryItem(id, name, icon)
-            } catch {
-              print("카테고리 업데이트 실패 \(error)")
-            }
-          }
-          await linkNavigator.pop()
+        return .run { [category = state.category, name = state.categoryName] send in
+          let categories = try swiftDataClient.fetchCategories()
+          let isDuplicate = categories.contains { $0.categoryName.lowercased() == name.lowercased() && $0.id != category?.id }
+          
+          await send(.setDuplicate(isDuplicate))
         }
-      case .topAppBar(.tapBackButton):
+        
+      case let .setDuplicate(isDuplicate):
+        state.isDuplicate = isDuplicate
+        state.textFieldStyle = isDuplicate ? .errorCaption : .default
+        
+        if !isDuplicate {
+          return .run { [id = state.category?.id, name = state.categoryName, icon = state.selectedIcon] _ in
+            guard let id, let icon else { return }
+            await MainActor.run {
+              do {
+                try swiftDataClient.updateCategoryItem(id, name, icon)
+              } catch {
+                print("카테고리 업데이트 실패 \(error)")
+              }
+            }
+            await linkNavigator.pop()
+          }
+        } else {
+          return .none
+        }
+        
+        case let .setTextFieldStyle(style):
+          state.textFieldStyle = style
+          return .none
+          
+      case .backGestureSwiped, .topAppBar(.tapBackButton):
+//        return .run { _ in await linkNavigator.pop() }
+        state.isAlert = true
+        return .none
+      case .confirmAlertDismissed:
+        state.isAlert = false
+        return .none
+      case .confirmAlertConfirmButtonTapped:
+        state.isAlert = false
         return .run { _ in await linkNavigator.pop() }
       }
     }

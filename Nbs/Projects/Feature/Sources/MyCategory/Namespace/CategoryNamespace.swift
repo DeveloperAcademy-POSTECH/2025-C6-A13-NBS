@@ -6,8 +6,8 @@
 //
 
 enum CategoryNamespace {
-  ///"새 카테고리"
-  static let newCategoryNavTitle = "새 카테고리"
+  ///"카테고리 추가하기"
+  static let newCategoryNavTitle = "카테고리 추가하기"
   ///"카테고리 수정하기"
   static let editCategoryNavTitle = "카테고리 수정하기"
   ///"카테고리명"
@@ -20,5 +20,6 @@ enum CategoryNamespace {
   static let addCategory = "추가하기"
   ///"내 카테고리 모음"
   static let myCategoryCollection = "내 카테고리 모음"
-
+  ///전체
+  static let total = "전체"
 }

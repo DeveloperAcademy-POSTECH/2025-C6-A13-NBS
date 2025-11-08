@@ -13,21 +13,21 @@ import LinkNavigator
 
 @Reducer
 struct EditCategoryFeature {
-
+  
   @Dependency(\.linkNavigator) var linkNavigator
-//  let naviagtor: SingleLinkNavigator
   
   @ObservableState
   struct State: Equatable {
-    var naviTitle: String = "수정할 카테고리를 입력해주세요."
     var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
     var selectedCategory: CategoryItem?
+    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: "카테고리 수정하기")
   }
   
   enum Action {
     case categoryGrid(CategoryGridFeature.Action)
     case cancelButtonTapped
     case editButtonTapped
+    case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
   }
   
   var body: some ReducerOf<Self> {
@@ -53,6 +53,10 @@ struct EditCategoryFeature {
           let category = state.selectedCategory
         else { return .none }
         linkNavigator.push(.editCategoryNameIcon, category)
+        return .none
+      case .topAppBar(.tapBackButton):
+        return .run { _ in await linkNavigator.pop() } 
+      case .topAppBar(_):
         return .none
       }
     }

@@ -8,25 +8,37 @@
 import SwiftUI
 import Combine
 
+fileprivate struct Shake: GeometryEffect {
+  var amount: CGFloat = 10
+  var shakesPerUnit = 3
+  var animatableData: CGFloat
+  
+  func effectValue(size: CGSize) -> ProjectionTransform {
+    ProjectionTransform(CGAffineTransform(translationX: amount * sin(animatableData * .pi * CGFloat(shakesPerUnit)), y: 0))
+  }
+}
+
 public struct JNTextField: View {
   @Binding var text: String
   
-  @State var style: JNTextFieldStyle
+  @Binding var style: JNTextFieldStyle
   let placeholder: String
   let caption: String
   let header: String
   
   @FocusState private var isFocused: Bool
   
+  @State private var shakeCount: CGFloat = 0
+  
   public init(
     text: Binding<String>,
-    style: JNTextFieldStyle = .default,
+    style: Binding<JNTextFieldStyle> = .constant(.default),
     placeholder: String = "링크를 입력해주세요",
     caption: String = "",
     header: String = ""
   ) {
     self._text = text
-    self._style = State(initialValue: style)
+    self._style = style
     self.placeholder = placeholder
     self.caption = caption
     self.header = header
@@ -41,7 +53,7 @@ public struct JNTextField: View {
   
   private var isTextVisible: Bool {
     switch style {
-    case .default, .filled, .foucsed:
+    case .default, .filled, .foucsed, .error, .errorCaption:
       return true
     default:
       return false
@@ -100,27 +112,35 @@ public struct JNTextField: View {
             .padding(.leading, 16)
         }
       }
+      .modifier(Shake(animatableData: shakeCount))
+      .onChange(of: style) { _, newValue in
+        guard newValue == .error || newValue == .errorCaption else { return }
+        withAnimation(.default) {
+          shakeCount += 1
+        }
+      }
       
       if style == .errorCaption {
         Text(caption)
           .font(.C3)
           .foregroundColor(.danger)
+          .padding(.leading, 4)
       }
     }
     .padding(.horizontal, 20)
   }
 }
 
-#Preview {
-  VStack(spacing: 30) {
-    Spacer()
-    JNTextField(text: .constant(""), style: .default)
-    JNTextField(text: .constant("hello"), style: .filled)
-    JNTextField(text: .constant("hello"), style: .foucsed)
-    JNTextField(text: .constant(""), style: .disabled)
-    JNTextField(text: .constant("error"), style: .error)
-    JNTextField(text: .constant("errorCapation"), style: .errorCaption, caption: "에러 발생")
-    Spacer()
-  }
-  .background(Color.background)
-}
+//#Preview {
+//  VStack(spacing: 30) {
+//    Spacer()
+//    JNTextField(text: .constant(""), style: .default)
+//    JNTextField(text: .constant("hello"), style: .filled)
+//    JNTextField(text: .constant("hello"), style: .foucsed)
+//    JNTextField(text: .constant(""), style: .disabled)
+//    JNTextField(text: .constant("error"), style: .error)
+//    JNTextField(text: .constant("errorCapation"), style: .errorCaption, caption: "에러 발생")
+//    Spacer()
+//  }
+//  .background(Color.background)
+//}
