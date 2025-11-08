@@ -34,7 +34,7 @@ extension LinkListView: View {
           )
         }
       }
-      .navigationBarHidden(true)
+			.toolbar(.hidden)
       .task { store.send(.onAppear) }
       .sheet(
         store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
