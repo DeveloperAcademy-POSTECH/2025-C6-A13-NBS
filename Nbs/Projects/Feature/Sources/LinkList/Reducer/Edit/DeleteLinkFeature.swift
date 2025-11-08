@@ -6,11 +6,16 @@
 //
 
 import SwiftUI
+
+import SwiftData
 import ComposableArchitecture
 import Domain
 
 @Reducer
 struct DeleteLinkFeature {
+  @Dependency(\.swiftDataClient) var swiftDataClient
+  @Dependency(\.linkNavigator) var linkNavigator
+  
   @ObservableState
   struct State: Equatable {
     var allLinks: [ArticleItem] = []
@@ -26,6 +31,7 @@ struct DeleteLinkFeature {
     case cancelTapped
     case confirmDeleteTapped
     case delegate(Delegate)
+    case deleteDone(Int)
     
     enum Delegate {
       case dismiss
@@ -67,12 +73,45 @@ struct DeleteLinkFeature {
         return .send(.delegate(.dismiss))
         
       case .confirmDeleteTapped:
-        let selected = state.allLinks.filter { state.selectedLinks.contains($0.id) }
-        return .send(.delegate(.confirmDelete(selected: selected)))
+        let selectedIDs = state.allLinks
+          .filter { state.selectedLinks.contains($0.id) }
+          .map(\.id)
+        
+        guard !selectedIDs.isEmpty else {
+          return .none
+        }
+        
+        return .run { _ in
+          do {
+            for id in selectedIDs {
+              try swiftDataClient.deleteLinkById(id)
+            }
+            
+            NotificationCenter.default.post(
+              name: .linkDeleted,
+              object: ["deletedCount": selectedIDs.count]
+            )
+            
+            try? await Task.sleep(nanoseconds: 400_000_000)
+            await linkNavigator.pop()
+            
+          } catch {
+            print("delete by ids failed:", error)
+          }
+        }
+        
+      case .deleteDone:
+        return .run { _ in
+          await linkNavigator.pop()
+        }
         
       case .binding, .delegate:
         return .none
       }
     }
   }
+}
+
+extension Notification.Name {
+  static let linkDeleted = Notification.Name("linkDeleted")
 }
