@@ -12,7 +12,8 @@ public enum Route: String {
   case onboarding
   case safariSetting
   case highlightMemoGuide
-  case highlight
+  case onboardingHighlight
+  case onboardingMemo
   case share
   case safariShare
   case startApp
