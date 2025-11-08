@@ -51,8 +51,10 @@ extension ArticleCard {
     }
     .frame(maxWidth: .infinity)
     .frame(maxHeight: 132)
-    .background(backgroundColor)
-    .overlay(borderOverlay)
+    .overlay(overlayLayer)
+    .background(.n0)
+    .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
+    .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
     .clipShape(RoundedRectangle(cornerRadius: 12))
     .animation(.easeInOut(duration: 0.2), value: editMode)
     .animation(.easeInOut(duration: 0.15), value: isSelected)
@@ -66,17 +68,18 @@ extension ArticleCard {
         .foregroundStyle(.text1)
         .lineLimit(2)
         .multilineTextAlignment(.leading)
-        .padding(.leading, 4)
+        .padding(.leading, 2)
       HStack(spacing: 0) {
-        Text("\(dateString) ·   ")
+        Text("\(dateString)  ·  ")
           .font(.B2_M)
           .foregroundStyle(.caption2)
         
-        Text(newsCompany ?? "네이버 뉴스")
+        Text(newsCompany ?? "NBS")
           .font(.B2_M)
           .foregroundStyle(.caption2)
       }
       .padding(.bottom, 12)
+      .padding(.leading, 2)
       
       Text(categoryName ?? "전체")
         .font(.B2_M)
@@ -131,38 +134,43 @@ private extension ArticleCard {
     }
   }
   
-  var backgroundColor: Color {
-    if editMode == .active && isSelected {
-      return .bl6.opacity(0.15)
-    } else {
-      return .n0
+  private var overlayLayer: some View {
+    ZStack {
+      if editMode == .active {
+        if isSelected {
+          RoundedRectangle(cornerRadius: 12)
+            .fill(Color.bgDimSelect)
+            .overlay(
+              RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.bl6, lineWidth: 1.25)
+            )
+        }
+      }
     }
-  }
-  
-  var borderOverlay: some View {
-    RoundedRectangle(cornerRadius: 12)
-      .stroke(editMode == .active && isSelected ? .bl6 : .clear, lineWidth: editMode == .active ? 1.5 : 0)
   }
 }
 
 // MARK: - Preview
 #Preview {
-  VStack {
-    ArticleCard(
-      title: "트럼프 “11월 1일부터 중·대형 트럭에 25% 관세 부과”",
-      categoryName: "정치",
-      imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
-      dateString: "2025년 10월 7일",
-      newsCompany: ""
-    )
-    ArticleCard(
-       title: "AI가 뉴스 생태계를 바꾸다",
-       categoryName: "기술",
-       imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
-       dateString: "2025년 10월 19일",
-       newsCompany: "",
-       isSelected: .constant(true),
-       editMode: .active
-     )
+  ZStack {
+    Color.background.ignoresSafeArea()
+    VStack {
+      ArticleCard(
+        title: "트럼프 “11월 1일부터 중·대형 트럭에 25% 관세 부과”",
+        categoryName: "정치",
+        imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
+        dateString: "2025년 10월 7일",
+        newsCompany: "한국일보"
+      )
+      ArticleCard(
+        title: "AI가 뉴스 생태계를 바꾸다",
+        categoryName: "기술",
+        imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
+        dateString: "2025년 10월 19일",
+        newsCompany: "조선일보",
+        isSelected: .constant(true),
+        editMode: .active
+      )
+    }
   }
 }
