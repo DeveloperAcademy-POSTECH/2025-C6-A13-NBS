@@ -230,6 +230,67 @@ function isInsideQuotes(text, index) {
   return count % 2 === 1;
 }
 
+function showDeleteConfirmationModal(onConfirm) {
+  const existingModal = document.getElementById('delete-confirm-modal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+
+  const modalContainer = document.createElement('div');
+  modalContainer.id = 'delete-confirm-modal';
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  
+  modalContent.addEventListener('click', e => e.stopPropagation());
+
+  const title = document.createElement('h3');
+  title.textContent = '하이라이트 삭제';
+  
+  const message = document.createElement('p');
+  message.textContent = '이 하이라이트와 모든 메모를 삭제하시겠습니까?';
+
+  const separator = document.createElement('div');
+  separator.className = 'modal-separator';
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.className = 'modal-buttons';
+
+  const cancelButton = document.createElement('button');
+  cancelButton.textContent = '취소';
+  cancelButton.onclick = () => {
+    modalContainer.remove();
+  };
+
+  const verticalSeparator = document.createElement('div');
+  verticalSeparator.className = 'vertical-separator';
+
+  const confirmButton = document.createElement('button');
+  confirmButton.className = 'delete-btn';
+  confirmButton.textContent = '삭제';
+  confirmButton.onclick = () => {
+    onConfirm();
+    modalContainer.remove();
+  };
+
+  buttonContainer.appendChild(cancelButton);
+  buttonContainer.appendChild(verticalSeparator);
+  buttonContainer.appendChild(confirmButton);
+
+  modalContent.appendChild(title);
+  modalContent.appendChild(message);
+  modalContent.appendChild(separator);
+  modalContent.appendChild(buttonContainer);
+  
+  modalContainer.appendChild(modalContent);
+
+  modalContainer.addEventListener('click', () => {
+    modalContainer.remove();
+  });
+
+  document.body.appendChild(modalContainer);
+}
+
 document.addEventListener('dblclick', function(event) {
   if (event.target.closest('.memo-capsule')) {
     event.preventDefault();
