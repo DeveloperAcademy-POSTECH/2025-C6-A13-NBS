@@ -20,6 +20,7 @@ extension AppRouterGroup {
       //MARK: 온보딩
       OnboardingServiceRouteBuilder().generate(),
       OnboardingRouteBuilder().generate(),
+      OnboardingHighlightGuideRouteBuilder().generate(),
       
       //MARK: 앱
       HomeRouteBuilder().generate(),
