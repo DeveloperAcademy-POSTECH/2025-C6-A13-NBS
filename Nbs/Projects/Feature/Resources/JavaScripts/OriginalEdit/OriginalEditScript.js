@@ -208,8 +208,69 @@ function isInsideQuotes(text, index) {
   return count % 2 === 1;
 }
 
+function showDeleteConfirmationModal(onConfirm) {
+  const existingModal = document.getElementById('delete-confirm-modal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+
+  const modalContainer = document.createElement('div');
+  modalContainer.id = 'delete-confirm-modal';
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  
+  modalContent.addEventListener('click', e => e.stopPropagation());
+
+  const title = document.createElement('h3');
+  title.textContent = '하이라이트 삭제';
+  
+  const message = document.createElement('p');
+  message.textContent = '이 하이라이트와 모든 메모를 삭제하시겠습니까?';
+
+  const separator = document.createElement('div');
+  separator.className = 'modal-separator';
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.className = 'modal-buttons';
+
+  const cancelButton = document.createElement('button');
+  cancelButton.textContent = '취소';
+  cancelButton.onclick = () => {
+    modalContainer.remove();
+  };
+
+  const verticalSeparator = document.createElement('div');
+  verticalSeparator.className = 'vertical-separator';
+
+  const confirmButton = document.createElement('button');
+  confirmButton.className = 'delete-btn';
+  confirmButton.textContent = '삭제';
+  confirmButton.onclick = () => {
+    onConfirm();
+    modalContainer.remove();
+  };
+
+  buttonContainer.appendChild(cancelButton);
+  buttonContainer.appendChild(verticalSeparator);
+  buttonContainer.appendChild(confirmButton);
+
+  modalContent.appendChild(title);
+  modalContent.appendChild(message);
+  modalContent.appendChild(separator);
+  modalContent.appendChild(buttonContainer);
+  
+  modalContainer.appendChild(modalContent);
+
+  modalContainer.addEventListener('click', () => {
+    modalContainer.remove();
+  });
+
+  document.body.appendChild(modalContainer);
+}
+
 document.addEventListener('dblclick', function(event) {
-  if (event.target.closest('.memo-capsule') || event.target.closest('#tulip-menu') || event.target.closest('#memo-box')) {
+  if (event.target.closest('.memo-capsule') || event.target.closest('#tulip-menu') || event.target.closest('#memo-box') || event.target.closest('#delete-confirm-modal')) {
     event.preventDefault();
     event.stopPropagation();
     return;
@@ -219,9 +280,21 @@ document.addEventListener('dblclick', function(event) {
   if (existingHighlight) {
     event.preventDefault();
     event.stopPropagation();
-    const capsuleContainer = existingHighlight.nextElementSibling;
-    if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) capsuleContainer.remove();
-    existingHighlight.replaceWith(...existingHighlight.childNodes);
+    const comments = JSON.parse(existingHighlight.dataset.comments || '[]');
+    const deleteHighlight = () => {
+      const existingMenu = document.getElementById('tulip-menu');
+      if (existingMenu) existingMenu.remove();
+      const existingMemoBox = document.getElementById('memo-box');
+      if (existingMemoBox) existingMemoBox.remove();
+      const capsuleContainer = existingHighlight.nextElementSibling;
+      if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) capsuleContainer.remove();
+      existingHighlight.replaceWith(...existingHighlight.childNodes);
+    };
+    if (comments.length > 0) {
+        showDeleteConfirmationModal(deleteHighlight);
+    } else {
+        deleteHighlight();
+    }
     return;
   }
   
@@ -290,6 +363,7 @@ document.addEventListener('dblclick', function(event) {
   const span = document.createElement('span');
   span.className = 'highlighted-text';
   span.dataset.highlightType = lastSelectedHighlightType;
+  span.dataset.id = `new-${Date.now()}`;
   
   try {
     span.appendChild(sentenceRange.extractContents());
@@ -335,3 +409,25 @@ function applyHighlights(highlights) {
         }
     });
 }
+
+document.addEventListener('click', function(event) {
+    const tulipMenu = document.getElementById('tulip-menu');
+    const memoBox = document.getElementById('memo-box');
+    const clickedHighlight = event.target.closest('.highlighted-text');
+
+    if (memoBox) {
+        if (!memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
+            memoBox.querySelector('textarea')?.blur();
+        }
+        return;
+    }
+
+    if (clickedHighlight) {
+        showTulipMenu(clickedHighlight);
+        return;
+    }
+
+    if (tulipMenu) {
+        tulipMenu.remove();
+    }
+});
