@@ -33,11 +33,9 @@ struct OriginalEditFeature {
       switch action {
       case .completeButtonTapped:
         state.isDataRequestTriggered = true
-        print("completed")
         return .none
         
       case .highlightsDataResponse(let highlights):
-        print("전달 받은 하이라이트 : \(highlights)")
         return .run { [linkID = state.articleItem.id] _ in
           do {
             let highlights = highlights.map { payload in
@@ -50,8 +48,12 @@ struct OriginalEditFeature {
               )
             }
             try swiftDataClient.updateHighlightsForLink(linkID, highlights)
+            
             await linkNavigator.pop()
             await linkNavigator.pop()
+            
+            try await Task.sleep(for: .milliseconds(300))
+            NotificationCenter.default.post(name: .editCompleted, object: nil)
           } catch {
             print("저장 실패")
           }
@@ -59,4 +61,8 @@ struct OriginalEditFeature {
       }
     }
   }
+}
+
+extension Notification.Name {
+  static let editCompleted = Notification.Name("editCompleted")
 }

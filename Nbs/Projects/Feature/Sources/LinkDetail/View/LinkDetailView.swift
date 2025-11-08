@@ -57,6 +57,17 @@ extension LinkDetailView: View {
           }
         )
       }
+      
+      VStack {
+        Spacer()
+        if(store.showToast) {
+          AlertBanner(text: "링크를 수정했어요", style: .common)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+            .transition(.opacity)
+        }
+      }
+      .animation(.easeInOut, value: store.showToast)
     }
   }
   
