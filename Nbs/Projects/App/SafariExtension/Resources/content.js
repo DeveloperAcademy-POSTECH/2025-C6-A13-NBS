@@ -466,9 +466,7 @@ async function deleteDraft(draftId) {
   }
 }
 
-function saveHighlights() {
-  console.warn('saveHighlights() is deprecated. Use updateDraft() or saveDraft().');
-}
+
 
 function findAndApplyHighlights(savedHighlights) {
   if (!savedHighlights || savedHighlights.length === 0) return;
@@ -551,39 +549,6 @@ browser.runtime.sendMessage({ greeting: "hello" }).then((response) => {
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received request: ", request);
 });
-
-async function syncHighlightsFromServer() {
-  console.log("[%cSYNC%c] 서버와 동기화를 시도합니다...", "color: blue; font-weight: bold;", "");
-  try {
-    const response = await browser.runtime.sendMessage({
-      action: "getLatestDataForURL",
-      url: window.location.href
-    });
-    
-    console.log("[%cSYNC%c] Swift로부터 받은 전체 응답:", "color: blue; font-weight: bold;", "", response);
-    
-    if (response && response.highlights) {
-      console.log("[%cSYNC%c] 서버로부터 최신 하이라이트 수신: %d개", "color: blue; font-weight: bold;", "", response.highlights.length);
-      
-      document.querySelectorAll('.highlighted-text, .capsule-container, #tulip-menu, #memo-box').forEach(el => el.remove());
-      
-      await browser.storage.local.set({ [window.location.href]: response.highlights });
-      
-      const data = await browser.storage.local.get('draftHighlights');
-      const allDrafts = data.draftHighlights || [];
-      if (allDrafts.length > 0) {
-        const otherDrafts = allDrafts.filter(draft => draft.url !== window.location.href);
-        await browser.storage.local.set({ draftHighlights: otherDrafts });
-      }
-      
-      findAndApplyHighlights(response.highlights);
-    } else {
-      console.warn("[%cSYNC%c] 서버로부터 받은 데이터에 하이라이트가 없습니다.", "color: orange; font-weight: bold;", "");
-    }
-  } catch (e) {
-    console.error("[%cSYNC%c] 서버와 동기화 중 오류 발생:", "color: red; font-weight: bold;", "", e);
-  }
-}
 
 window.addEventListener('pageshow', function(event) {
   if (event.persisted) {
