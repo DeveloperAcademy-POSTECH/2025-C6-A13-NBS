@@ -26,6 +26,7 @@ extension LinkListView: View {
       ScrollViewReader { proxy in
         ZStack(alignment: .bottomTrailing) {
           mainContents
+          
           ScrollFloatingButton(
             isVisible: $showScrollToTopButton,
             proxy: proxy,
@@ -35,16 +36,6 @@ extension LinkListView: View {
       }
       .navigationBarHidden(true)
       .task { store.send(.onAppear) }
-      .fullScreenCover(
-        store: store.scope(state: \.$moveLink, action: \.moveLink)
-      ) { moveStore in
-        MoveLinkView(store: moveStore)
-      }
-      .fullScreenCover(
-        store: store.scope(state: \.$deleteLink, action: \.deleteLink)
-      ) { deleteStore in
-        DeleteLinkView(store: deleteStore)
-      }
       .sheet(
         store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
       ) { selectStore in
@@ -54,6 +45,32 @@ extension LinkListView: View {
           store: selectStore)
         .presentationDetents([.medium])
         .presentationCornerRadius(16)
+      }
+      .task {
+        NotificationCenter.default.addObserver(
+          forName: .linkMoved,
+          object: nil,
+          queue: .main
+        ) { notification in
+          let count = (notification.object as? [String: Int])?["movedCount"] ?? 0
+          store.send(.showAlert(title: "\(count)개의 링크를 이동했어요", tint: .info))
+          store.send(.fetchLinks)
+        }
+      }
+      .task {
+        NotificationCenter.default.addObserver(
+          forName: .linkDeleted,
+          object: nil,
+          queue: .main
+        ) { notification in
+          let count = (notification.object as? [String: Int])?["deletedCount"] ?? 0
+          store.send(.showAlert(title: "\(count)개의 링크를 삭제했어요", tint: .danger))
+          store.send(.fetchLinks)
+        }
+      }
+      .onDisappear {
+        NotificationCenter.default.removeObserver(self, name: .linkMoved, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .linkDeleted, object: nil)
       }
     }
     .overlay {
@@ -92,6 +109,19 @@ extension LinkListView: View {
         onTapSearchButton: { store.send(.searchButtonTapped) },
         onTapSettingButton: { store.send(.editButtonTapped) }
       )
+      
+      CategoryChipList(
+        store: store.scope(
+          state: \.categoryChipList,
+          action: \.categoryChipList
+        ),
+        onTap: {
+          store.send(.bottomSheetButtonTapped)
+        }
+      )
+      .frame(height: 36)
+      .padding(.bottom, 16)
+      
       // 하단 스크롤뷰 모음
       scrollViewContents
     }
@@ -104,17 +134,6 @@ extension LinkListView: View {
         Color.clear
           .frame(height: 0)
           .id("top")
-
-        CategoryChipList(
-          store: store.scope(
-            state: \.categoryChipList,
-            action: \.categoryChipList
-          ),
-          onTap: {
-            store.send(.bottomSheetButtonTapped)
-          }
-        )
-        .padding(.bottom, 16)
         
         ArticleFilterList(
           store: store.scope(
