@@ -22,7 +22,9 @@ extension OnboardingServiceView: View {
         OnboardingTitleImage(
           title: .introTitle,
           description: .introDescription,
-          image: DesignSystemAsset.onboardingService.swiftUIImage
+          image: DesignSystemAsset.onboardingService.swiftUIImage,
+          showPage: false,
+          currentPage: 0
         )
         .padding(.top, 72)
         
