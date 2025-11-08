@@ -26,6 +26,7 @@ extension ArticleFilterList: View {
         articleList
       }
       .padding(.horizontal, 20)
+      .padding(.bottom, 100)
     }
   }
   
