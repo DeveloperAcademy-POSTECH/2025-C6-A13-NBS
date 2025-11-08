@@ -33,7 +33,8 @@ extension AppRouterGroup {
       SettingRouteBuilder().generate(),
       PolicyDetailRouteBuilder().generate(),
       OpenSourceListRouteBuilder().generate(),
-      MoveLinkRouteBuilder().generate()
+      MoveLinkRouteBuilder().generate(),
+      DeleteLinkRouteBuilder().generate()
     ]
   }
 }
