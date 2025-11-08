@@ -14,23 +14,36 @@ struct OnboardingFeature {
   
   @ObservableState
   struct State {
-    
+    var currentPage: Int = 1
+    var isAlert: Bool = false
   }
   
   enum Action {
-    case startButtonTapped
+    case settingButtonTapped
     case backButtonTapped
+    case skipButtonTapped
+    case alertCancelButtonTapped
+    case alertSkipButtonTapped
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .skipButtonTapped:
+        state.isAlert = true
+        return .none
       case .backButtonTapped:
         return .run { send in
           await navigation.pop()
         }
-      case .startButtonTapped:
-        navigation.push(.safariSetting, nil)
+      case .settingButtonTapped:
+        return .none
+      case .alertCancelButtonTapped:
+        state.isAlert = false
+        return .none
+      case .alertSkipButtonTapped:
+        state.isAlert = false
+        navigation.push(.highlightMemoGuide, nil)
         return .none
       }
     }
