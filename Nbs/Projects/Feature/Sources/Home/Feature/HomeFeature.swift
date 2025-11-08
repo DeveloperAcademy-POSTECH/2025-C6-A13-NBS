@@ -23,7 +23,6 @@ struct HomeFeature {
     var articleList = ArticleListFeature.State()
     var categoryList = CategoryListFeature.State()
     var alertBanner: AlertBannerState?
-    var path = StackState<Path.State>()
     var copiedLink: String?
     var myCategoryCollection = MyCategoryCollectionFeature.State()
     var lastShownClipboardLink: String?
@@ -38,33 +37,15 @@ struct HomeFeature {
     case onAppear
     case clipboardResponded(String?)
     case dismissAlertBanner
-    case articleList(ArticleListFeature.Action)
-    case categoryList(CategoryListFeature.Action)
-    case path(StackAction<Path.State, Path.Action>)
+    case articleList(ArticleListFeature.Action) //TODO: 정말 필요한지 확인이 필요함
+    case categoryList(CategoryListFeature.Action) //TODO: 정말 필요한지 확인이 필요함
     case floatingButtonTapped
     case alertBannerTapped
     case fetchArticles
-    case myCategoryCollection(MyCategoryCollectionFeature.Action)
-    case articlesResponse(TaskResult<[ArticleItem]>)
+    case articlesResponse(Result<[ArticleItem], Error>)
     case searchButtonTapped
     case settingButtonTapped
-    case editCategory(EditCategoryFeature.Action)
-    case editCategoryIconName(EditCategoryIconNameFeature.Action)
     case refresh
-  }
-  
-  @Reducer
-  enum Path {
-    case linkList(LinkListFeature)
-    case linkDetail(LinkDetailFeature)
-    case myCategoryCollection(MyCategoryCollectionFeature)
-    case addLink(AddLinkFeature)
-    case addCategory(AddCategoryFeature)
-    case search(SearchFeature)
-    case setting(SettingFeature)
-    case editCategory(EditCategoryFeature)
-    case deleteCategory(DeleteCategoryFeature)
-    case editCategoryIconName(EditCategoryIconNameFeature)
   }
   
   var body: some ReducerOf<Self> {
@@ -86,7 +67,7 @@ struct HomeFeature {
         
       case .fetchArticles:
         return .run { send in
-          await send(.articlesResponse(TaskResult { try swiftDataClient.fetchLinks() }))
+          await send(.articlesResponse(Result { try swiftDataClient.fetchLinks() }))
         }
         
       case let .articlesResponse(.success(linkItems)):
@@ -132,7 +113,6 @@ struct HomeFeature {
         
       case .alertBannerTapped:
         if let link = state.copiedLink {
-          //TODO: addLink로 이동
           linkNavigator.push(.addLink, CopiedLink(url: link))
         }
         return .none
@@ -145,17 +125,10 @@ struct HomeFeature {
         linkNavigator.push(.setting, nil)
         return .none
         
-      case .categoryList, .articleList, .path:
-        return .none
-      case .editCategory(_):
-        return .none
-      case .myCategoryCollection(_):
-        return .none
-      case .editCategoryIconName(_):
+      case .categoryList, .articleList:
         return .none
       }
     }
-    .forEach(\.path, action: \.path)
   }
 }
 

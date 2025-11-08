@@ -33,6 +33,14 @@ struct AddLinkView: View {
         isValidURL: $isValidURL
       )
       .focused($isFocused)
+      .toolbar {
+        ToolbarItemGroup(placement: .keyboard) {
+          Spacer()
+          Button("완료") {
+            isFocused = false
+          }
+        }
+      }
       
       VStack {
         HStack {
@@ -63,7 +71,7 @@ struct AddLinkView: View {
           store.send(.saveButtonTapped)
         }
       }
-      .overlay(isFocused ? Color.white.opacity(0.3) : Color.clear)
+      .overlay(isFocused ? Color.dim : Color.clear)
     }
     .contentShape(Rectangle())
     .onTapGesture {
@@ -72,18 +80,6 @@ struct AddLinkView: View {
     .ignoresSafeArea(.keyboard)
     .navigationBarHidden(true)
     .background(DesignSystemAsset.background.swiftUIColor)
-//    .overlay(alignment: .bottom) {
-//      if store.showToast {
-//        AlertBanner(
-//          text: "이미 저장된 링크에요",
-//          message: nil,
-//          style: .action(title: "보러가기") {
-//            store.send(.fetchArticleItem)
-//          }
-//        )
-//        .padding(.horizontal)
-//      }
-//    }
     .overlay {
       if store.isConfirmAlertPresented {
         ZStack {

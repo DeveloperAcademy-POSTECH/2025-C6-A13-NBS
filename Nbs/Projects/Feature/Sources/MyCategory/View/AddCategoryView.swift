@@ -26,11 +26,19 @@ extension AddCategoryView: View {
         VStack(alignment: .leading, spacing: 4) {
           JNTextField(
             text: $store.categoryName,
-            style: .default,
+            style: .constant(.default),
             placeholder: "카테고리명을 입력해주세요",
             header: "카테고리명"
           )
           .focused($isFocused)
+          .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+              Spacer()
+              Button("완료") {
+                isFocused = false
+              }
+            }
+          }
         }
         
         Text(CategoryNamespace.categoryIcon)
@@ -94,6 +102,30 @@ extension AddCategoryView: View {
     .background(Color.background)
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
+    .highPriorityGesture(
+      DragGesture(minimumDistance: 25, coordinateSpace: .local)
+        .onEnded { value in
+          if value.startLocation.x < 50 && value.translation.width > 80 {
+            store.send(.backGestureSwiped)
+          }
+        }
+    )
+    .overlay {
+      if store.isAlert {
+        ZStack {
+          Color.dim.ignoresSafeArea()
+          AlertDialog(
+            title: "카테고리 추가를 중단할까요?",
+            subtitle: "페이지를 나가면 카테고리가 저장되지 않아요",
+            cancelTitle: "취소",
+            onCancel: { store.send(.confirmAlertDismissed)},
+            buttonType: .confirm(title: "나가기", action: {
+              store.send(.confirmAlertConfirmButtonTapped)
+            })
+          )
+        }
+      }
+    }
   }
 }
 

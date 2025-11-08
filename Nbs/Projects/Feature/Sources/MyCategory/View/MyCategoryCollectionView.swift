@@ -27,12 +27,19 @@ extension MyCategoryCollectionView: View {
         Button {
           store.send(.totalLinkTapped)
         } label: {
-          HStack {
-            Text("전체")
+          HStack(spacing: 0) {
+            DesignSystemAsset.categoryIcon(number: 16)
+              .resizable()
+              .frame(width: 28, height: 28)
+              .padding(.trailing, 8)
+            Text(CategoryNamespace.total)
               .font(.B1_SB)
               .foregroundStyle(.text1)
               .frame(maxWidth: .infinity, alignment: .leading)
             Spacer()
+            Text("\(store.allLinksCount)개")
+              .font(.B1_M)
+              .foregroundStyle(.caption1)
             Image(icon: Icon.chevronRight)
               .resizable()
               .renderingMode(.template)
@@ -73,6 +80,9 @@ extension MyCategoryCollectionView: View {
         .transition(.move(edge: .bottom).combined(with: .opacity))
         .zIndex(1)
       }
+    }
+    .onAppear {
+      store.send(.onAppear)
     }
   }
 }

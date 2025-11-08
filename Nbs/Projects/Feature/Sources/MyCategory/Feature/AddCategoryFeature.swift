@@ -8,12 +8,16 @@ struct AddCategoryFeature {
   struct State: Equatable {
     var categoryName: String = ""
     var selectedIcon: CategoryIcon = .init(number: 1)
+    var isAlert: Bool = false
   }
   
   enum Action: BindableAction {
     case binding(BindingAction<State>)
     case saveButtonTapped
     case cancelButtonTapped
+    case backGestureSwiped
+    case confirmAlertDismissed
+    case confirmAlertConfirmButtonTapped
   }
   
   @Dependency(\.linkNavigator) var linkNavigator
@@ -33,10 +37,16 @@ struct AddCategoryFeature {
           try swiftDataClient.addCategory(newCategory)
           await linkNavigator.pop()
         }
-      case .cancelButtonTapped:
-        return .run { _ in await linkNavigator.pop() }
       case .binding:
         return .none
+      case .backGestureSwiped, .cancelButtonTapped:
+        state.isAlert = true
+        return .none
+      case .confirmAlertDismissed:
+        state.isAlert = false
+        return .none
+      case .confirmAlertConfirmButtonTapped:
+        return .run { _ in await linkNavigator.pop() }
       }
     }
   }

@@ -29,65 +29,28 @@ extension EditCategoryIconNameView: View {
       TopAppBarDefaultRightIconx(title: "카테고리 수정하기") {
         store.send(.topAppBar(.tapBackButton))
       }
-      Text("카테고리명")
-        .font(.B2_SB)
-        .foregroundStyle(.caption1)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading, 24)
-        .padding(.top, 8)
       
-      TextField(
-        "카테고리명을 입력해주세요",
-        text: $store.categoryName.sending(\.setCategoryName)
+      JNTextField(
+        text: $store.categoryName.sending(\.setCategoryName),
+        style: $store.textFieldStyle.sending(\.setTextFieldStyle),
+        placeholder: "카테고리명을 입력해주세요",
+        caption: "이미 존재하는 카테고리예요",
+        header: "카테고리명"
       )
       .focused($isFocused)
-      .padding()
-      .background(
-        RoundedRectangle(cornerRadius: 12)
-          .fill(DesignSystemAsset.n0.swiftUIColor)
-          .stroke(Color.divider1, lineWidth: 1)
-      )
-      .padding(.top, 8)
-      .padding(.horizontal, 20)
-      
-      Text("카테고리 아이콘")
-        .font(.B2_SB)
-        .foregroundStyle(.caption1)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading, 24)
-        .padding(.top, 24)
-      
-      ScrollView {
-        LazyVGrid(columns: columns, spacing: 10) {
-          ForEach(1..<16, id: \.self) { index in
-            let icon = CategoryIcon(number: index)
-            Button {
-              store.send(.selectIcon(icon))
-            } label: {
-              RoundedRectangle(cornerRadius: 12)
-                .fill(
-                  store.selectedIcon == icon
-                  ? .bl1
-                  : .clear
-                )
-                .aspectRatio(1, contentMode: .fit)
-                .overlay(
-                  DesignSystemAsset.primaryCategoryIcon(number: index)
-                    .resizable()
-                    .frame(width: 45, height: 45)
-                )
-                .overlay(
-                  RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(store.selectedIcon == icon ? .bl6 : Color.clear, lineWidth: 1.25)
-                )
-            }
-            .buttonStyle(.plain)
-            .disabled(isFocused)
+      .toolbar {
+        ToolbarItemGroup(placement: .keyboard) {
+          Spacer()
+          Button("완료") {
+            isFocused = false
           }
         }
-        .padding(.horizontal, 20)
       }
-      .scrollDisabled(isFocused)
+      
+      CategoryIconScrollView(
+        selectedIcon: $store.selectedIcon.sending(\.selectIcon),
+        isFocused: isFocused
+      )
       
       MainButton(
         "완료",
@@ -101,7 +64,31 @@ extension EditCategoryIconNameView: View {
     .onTapGesture {
       isFocused = false
     }
+    .highPriorityGesture(
+      DragGesture(minimumDistance: 25, coordinateSpace: .local)
+        .onEnded { value in
+          if value.startLocation.x < 50 && value.translation.width > 80 {
+            store.send(.backGestureSwiped)
+          }
+        }
+    )
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
+    .overlay {
+      if store.isAlert {
+        ZStack {
+          Color.dim.ignoresSafeArea()
+          AlertDialog(
+            title: "카테고리 수정을 중단할까요?",
+            subtitle: "페이지를 나가면 수정사항이 저장되지 않아요",
+            cancelTitle: "취소",
+            onCancel: { store.send(.confirmAlertDismissed) },
+            buttonType: .move(title: "나가기", action: {
+              store.send(.confirmAlertConfirmButtonTapped)
+            })
+          )
+        }
+      }
+    }
   }
 }

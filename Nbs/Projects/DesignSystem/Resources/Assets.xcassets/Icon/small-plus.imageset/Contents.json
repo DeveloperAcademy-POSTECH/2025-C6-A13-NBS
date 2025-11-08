@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "small-plus.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
