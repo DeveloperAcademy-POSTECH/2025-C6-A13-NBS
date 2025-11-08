@@ -14,9 +14,15 @@ public struct LinkListRouteBuilder {
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
     let matchPath = Route.linkList.rawValue
-    return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
-      WrappingController(matchPath: matchPath) {
-        LinkListView(store: Store(initialState: LinkListFeature.State()) {
+    return .init(matchPath: matchPath) { navigator, item, data -> RouteViewController? in
+      let movedInfo = data as? [String: Bool]
+      let didMove = movedInfo?["moved"] ?? false
+      
+      return WrappingController(matchPath: matchPath) {
+        LinkListView(
+          store: Store(
+            initialState: LinkListFeature.State(didMoveLink: didMove)
+          ) {
           LinkListFeature()
             .dependency(\.linkNavigator, .init(navigator: navigator))
         })
