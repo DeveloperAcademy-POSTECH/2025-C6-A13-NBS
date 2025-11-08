@@ -1,5 +1,5 @@
 let isTulipMenuClick = false;
-let lastSelectedHighlightType = 'what';
+let lastSelectedHighlightType = 'what'; 
 
 function getFixedHeaderHeight() {
   let fixedHeaderHeight = 0;
@@ -364,7 +364,7 @@ async function saveDraft(highlightSpan) {
 async function updateDraft(highlightSpan) {
   const draftId = highlightSpan.dataset.draftId;
   if (!draftId) {
-    console.log("updateDraft: 초안 ID가 없는 하이라이트입니다. 업데이트를 건너뜜니다.");
+    console.log("updateDraft: 초안 ID가 없는 하이라이트입니다. 업데이트를 건너뜁니다.");
     return;
   }
   
@@ -539,18 +539,26 @@ document.addEventListener('visibilitychange', () => {
 });
 
 document.addEventListener('click', function(event) {
-  const tulipMenu = document.getElementById('tulip-menu');
-  if (tulipMenu && !tulipMenu.contains(event.target) && !event.target.closest('.highlighted-text')) {
-    tulipMenu.remove();
-  }
+    const tulipMenu = document.getElementById('tulip-menu');
+    const memoBox = document.getElementById('memo-box');
+    const clickedHighlight = event.target.closest('.highlighted-text');
 
-  const memoBox = document.getElementById('memo-box');
-  if (memoBox && !memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
-    const textarea = memoBox.querySelector('textarea');
-    if (textarea) {
-      textarea.blur();
-    } else {
-      memoBox.remove();
+    if (memoBox) {
+        if (!memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
+            memoBox.querySelector('textarea')?.blur();
+        }
+        return;
     }
-  }
+
+    if (clickedHighlight) {
+        if (tulipMenu && tulipMenu.dataset.highlightId === clickedHighlight.dataset.draftId) {
+            return;
+        }
+        showTulipMenu(clickedHighlight);
+        return;
+    }
+
+    if (tulipMenu) {
+        tulipMenu.remove();
+    }
 });
