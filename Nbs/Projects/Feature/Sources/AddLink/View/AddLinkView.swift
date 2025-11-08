@@ -78,7 +78,7 @@ struct AddLinkView: View {
       isFocused = false
     }
     .ignoresSafeArea(.keyboard)
-    .navigationBarHidden(true)
+    .toolbar(.hidden)
     .background(DesignSystemAsset.background.swiftUIColor)
     .overlay {
       if store.isConfirmAlertPresented {
