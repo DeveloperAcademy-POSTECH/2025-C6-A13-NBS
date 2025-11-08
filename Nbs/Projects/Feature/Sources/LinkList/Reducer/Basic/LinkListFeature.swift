@@ -30,11 +30,10 @@ struct LinkListFeature {
     
     var selectedCategoryTitle: String = "카테고리"
     var alert: AlertBannerState? = nil
+    var didMoveLink: Bool = false
     
     // 시트 상태 관리
     @Presents var editSheet: EditSheetFeature.State?
-    @Presents var moveLink: MoveLinkFeature.State?
-    @Presents var deleteLink: DeleteLinkFeature.State?
     @Presents var selectBottomSheet: SelectBottomSheetFeature.State?
   }
   
@@ -58,24 +57,24 @@ struct LinkListFeature {
     case bottomSheetButtonTapped
     case linkLongPressed(ArticleItem)
     case editButtonTapped
-    
     case backButtonTapped
     case searchButtonTapped
+    case navigateToMoveLink(allLinks: [ArticleItem])
+    case navigateToDeleteLink(allLinks: [ArticleItem])
     
     /// 시트 관련 액션
     case editSheet(PresentationAction<EditSheetFeature.Action>)
-    case moveLink(PresentationAction<MoveLinkFeature.Action>)
-    case deleteLink(PresentationAction<DeleteLinkFeature.Action>)
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
     case openDeleteLink
     case closeEditSheet
-    case deleteLinksResponse(TaskResult<Void>)
+    
+    /// 알럿 관련 액션
     case hideAlertBanner
-    case moveLinksResponse(TaskResult<Void>)
+    case showAlert(title: String, tint: AlertBannerState.Tint)
     
     /// 데이터 로드 관련
     case fetchLinks
-    case fetchLinksResponse(TaskResult<[ArticleItem]>)
+    case fetchLinksResponse(Result<[ArticleItem], Error>)
     case fetchCategories
     case responseCategoryItems([CategoryItem])
   
@@ -99,8 +98,6 @@ struct LinkListFeature {
     /// UI 처리 전용 Reducer
     Reduce(self.uiReducer)
       .ifLet(\.$editSheet, action: \.editSheet) { EditSheetFeature() }
-      .ifLet(\.$moveLink, action: \.moveLink) { MoveLinkFeature() }
-      .ifLet(\.$deleteLink, action: \.deleteLink) { DeleteLinkFeature() }
       .ifLet(\.$selectBottomSheet, action: \.selectBottomSheet) { SelectBottomSheetFeature() }
     
     /// 데이터 로드 전용 Reducer
@@ -151,6 +148,16 @@ private extension LinkListFeature {
       }
       return .none
       
+    case let .navigateToMoveLink(allLinks):
+      return .run { _ in
+        await linkNavigator.push(.moveLink, allLinks)
+      }
+      
+    case let .navigateToDeleteLink(allLinks):
+      return .run { _ in
+        await linkNavigator.push(.deleteLink, allLinks)
+      }
+      
       /// 편집 시트 내부에서 닫기
     case .editSheet(.presented(.delegate(.dismissSheet))):
       state.editSheet = nil
@@ -158,23 +165,24 @@ private extension LinkListFeature {
       
       /// 편집 시트 -> 이동하기
     case .editSheet(.presented(.delegate(.moveLink))):
-      state.moveLink = MoveLinkFeature.State(allLinks: state.allLinks)
       state.editSheet = nil
-      return .none
-      
-    case .moveLink(.presented(.delegate(.confirmMove(let selected, let target)))):
-      return .run { send in
-        await send(.moveLinksResponse(TaskResult {
-          try swiftDataClient.moveLinks(selected, target)
-        }))
-      }
+      return .send(.navigateToMoveLink(allLinks: state.allLinks))
       
       /// 편집 시트 -> 삭제하기
     case .editSheet(.presented(.delegate(.deleteLink))):
+      state.editSheet = nil
+      return .send(.navigateToDeleteLink(allLinks: state.allLinks))
+      
+      /// 알럿 띄우기
+    case let .showAlert(title, tint):
+      state.alert = .init(
+        title: title,
+        icon: tint == .info ? Image(icon: Icon.badgeCheck) : Image(icon: Icon.alertCircle),
+        tint: tint
+      )
       return .run { send in
-        await send(.openDeleteLink)
-        try? await Task.sleep(nanoseconds: 100_000_000)
-        await send(.closeEditSheet)
+        try? await Task.sleep(nanoseconds: 3_000_000_000)
+        await send(.hideAlertBanner)
       }
       
     case .hideAlertBanner:
@@ -182,18 +190,10 @@ private extension LinkListFeature {
       return .none
       
     case .openDeleteLink:
-      state.deleteLink = DeleteLinkFeature.State(allLinks: state.allLinks)
       return .none
       
     case .closeEditSheet:
       state.editSheet = nil
-      return .none
-      
-      /// 이동 / 삭제 시트 닫기
-    case .moveLink(.presented(.delegate(.dismiss))),
-        .deleteLink(.presented(.delegate(.dismiss))):
-      state.moveLink = nil
-      state.deleteLink = nil
       return .none
       
       /// 카테고리 바텀시트에서 카테고리 선택
@@ -237,10 +237,6 @@ private extension LinkListFeature {
     case let .articleList(.delegate(.longPressed(link))):
       return .send(.linkLongPressed(link))
       
-      /// 그 외 단순 전달 케이스
-    case .categoryChipList, .articleList, .editSheet, .moveLink, .deleteLink, .selectBottomSheet, .delegate:
-      return .none
-      
     default:
       return .none
     }
@@ -258,7 +254,12 @@ private extension LinkListFeature {
         let result: TaskResult<[ArticleItem]> = await TaskResult {
           try swiftDataClient.fetchLinks()
         }
-        await send(.fetchLinksResponse(result))
+        switch result {
+        case let .success(items):
+          await send(.fetchLinksResponse(.success(items)))
+        case let .failure(error):
+          await send(.fetchLinksResponse(.failure(error)))
+        }
       }
       
       /// 링크 데이터 성공적으로 로드됨
@@ -319,53 +320,6 @@ private extension LinkListFeature {
         categories: allCategories,
         selectedCategory: currentSelectedTitle
       )
-      return .none
-      
-    case .deleteLink(.presented(.delegate(.confirmDelete(let selected)))):
-      return .run { send in
-        await send(.deleteLinksResponse(TaskResult {
-          try swiftDataClient.deleteLinks(selected)
-        }))
-      }
-
-    case .deleteLinksResponse(.success):
-      state.alert = .init(
-        title: "\(state.deleteLink?.selectedLinks.count ?? 0)개의 링크를 삭제했어요",
-        icon: Image(icon: Icon.alertCircle),
-        tint: .danger
-      )
-
-      return .merge(
-        .send(.fetchLinks),
-        .send(.deleteLink(.presented(.delegate(.dismiss)))),
-        .run { send in
-          try? await Task.sleep(nanoseconds: 3_000_000_000)
-          await send(.hideAlertBanner)
-        }
-      )
-      
-    case .moveLinksResponse(.success):
-      state.alert = .init(
-        title: "\(state.moveLink?.selectedLinks.count ?? 0)개의 링크를 이동했어요",
-        icon: Image(icon: Icon.badgeCheck),
-        tint: .info
-      )
-      
-      return .merge(
-        .send(.fetchLinks),
-        .send(.moveLink(.presented(.delegate(.dismiss)))),
-        .run { send in
-          try? await Task.sleep(nanoseconds: 3_000_000_000)
-          await send(.hideAlertBanner)
-        }
-      )
-      
-    case .moveLinksResponse(.failure(let error)):
-      print("moveLinks failed", error)
-      return .none
-
-    case .deleteLinksResponse(.failure(let error)):
-      print("deleteLinks failed:", error)
       return .none
       
     default:
