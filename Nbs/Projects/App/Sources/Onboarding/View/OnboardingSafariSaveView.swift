@@ -10,15 +10,15 @@ import SwiftUI
 import ComposableArchitecture
 import DesignSystem
 
-struct OnboardingSaveView {
-  let store: StoreOf<OnboardingSaveFeature>
+struct OnboardingSafariSaveView {
+  let store: StoreOf<OnboardingSafariSaveFeature>
 }
 
-extension OnboardingSaveView: View {
+extension OnboardingSafariSaveView: View {
   var body: some View {
     ZStack(alignment: .bottom) {
       VStack(spacing: 0) {
-        TopAppBarDefaultRightIconx(title: "") {
+        TopAppBarDefaultRightIconx(title: "Safari에서 공유하기") {
           store.send(.backButtonTapped)
         }
         OnboardingTitleImage(
@@ -32,20 +32,10 @@ extension OnboardingSaveView: View {
       }
       
       VStack {
-        MainButton("다음", hasGradient: true) {
-          store.send(.nextButtonTapped)
+        MainButton("완료", hasGradient: true) {
+          store.send(.completeButtonTapped)
         }
         .buttonStyle(.plain)
-        
-        Button(action: {
-          store.send(.skipButtonTapped)
-        }) {
-          Text("건너뛰기")
-            .font(.C2)
-            .foregroundStyle(.caption2)
-            .underline()
-        }
-        .padding(.top, 8)
       }
       .background(Color.background)
     }
