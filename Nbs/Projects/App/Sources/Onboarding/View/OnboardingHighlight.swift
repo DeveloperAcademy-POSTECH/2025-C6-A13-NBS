@@ -36,170 +36,182 @@ struct OnboardingHighlightView {
 
 extension OnboardingHighlightView: View {
   var body: some View {
-    VStack(spacing: 0) {
-      TopAppBarDefaultRightIconx(title: navigationTitle) {
-        store.send(.backButtonTapped)
-      }
-      OnboardingPageControl(numberOfPages: 2, currentPage: currentPage)
-      
-      ZStack(alignment: .top) {
+    ZStack {
         VStack(spacing: 0) {
-          articleScriptHeader
-            .padding(.top, 30)
-          VStack(spacing: 2) {
-            Group {
-              Text("나의 하이라이트가 쌓일수록, 뉴스는 단순한 읽을거리가")
-              Text("아니라 나만의 데이터가 됩니다.")
-            }
-            .font(.B1_M_HL)
-            .foregroundStyle(.text1)
-            .background(isTextHighlighted ? highlightColor : Color.clear)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
+          TopAppBarDefaultRightIconx(title: navigationTitle) {
+            store.send(.backButtonTapped)
+          }
+          OnboardingPageControl(numberOfPages: 2, currentPage: currentPage)
+          
+          ZStack(alignment: .top) {
             VStack(spacing: 0) {
-              Text("하이라이트 문장을 읽고 중요한 것들에 대한 메모")
+              articleScriptHeader
+                .padding(.top, 30)
+              VStack(spacing: 2) {
+                Group {
+                  Text("나의 하이라이트가 쌓일수록, 뉴스는 단순한 읽을거리가")
+                  Text("아니라 나만의 데이터가 됩니다.")
+                }
                 .font(.B1_M_HL)
                 .foregroundStyle(.text1)
-                .opacity(showMemo ? 1 : 0)
+                .background(isTextHighlighted ? highlightColor : Color.clear)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .frame(height: showMemo ? nil : 0)
-                .padding(.horizontal, showMemo ? 16 : 0)
-                .padding(.top, showMemo ? 16 : 0)
-              Text("를 동시에 남겨요.")
-                .font(.B1_M_HL)
-                .foregroundStyle(.text1)
-                .opacity(showMemo ? 1 : 0)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .frame(height: showMemo ? nil : 0)
-                .padding(.horizontal)
-                .padding(.bottom, showMemo ? 16 : 0)
-              OnboardingToolTipBox(text: "원하는 메모를 입력하면")
-                .opacity(showMemo ? 1 : 0)
-                .frame(height: showMemo ? nil : 0)
-            }
-            .background(showMemo ? .n20 : .clear)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-          }
-          .padding(.horizontal, 20)
-          .background(
-            GeometryReader { geometry in
-              Color.clear
-                .preference(key: HighlightRectPreferenceKey.self, value: geometry.frame(in: .named("dimmableVStack")))
-            }
-          )
-          .onTapGesture(count: 1) {
-            if isTextHighlighted {
-              withAnimation {
-                showHighlightTip = true
+                
+                VStack(spacing: 0) {
+                  Text("하이라이트 문장을 읽고 중요한 것들에 대한 메모")
+                    .font(.B1_M_HL)
+                    .foregroundStyle(.text1)
+                    .opacity(showMemo ? 1 : 0)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(height: showMemo ? nil : 0)
+                    .padding(.horizontal, showMemo ? 16 : 0)
+                    .padding(.top, showMemo ? 16 : 0)
+                  Text("를 동시에 남겨요.")
+                    .font(.B1_M_HL)
+                    .foregroundStyle(.text1)
+                    .opacity(showMemo ? 1 : 0)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(height: showMemo ? nil : 0)
+                    .padding(.horizontal)
+                    .padding(.bottom, showMemo ? 16 : 0)
+                  OnboardingToolTipBox(text: "원하는 메모를 입력하면")
+                    .opacity(showMemo ? 1 : 0)
+                    .frame(height: showMemo ? nil : 0)
+                }
+                .background(showMemo ? .n20 : .clear)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
               }
-            }
-          }
-          .onTapGesture(count: 2) {
-            if showDimming {
-              withAnimation(.easeInOut) {
-                showDimming = false
-                isTextHighlighted = true
-                tooltipText = "해당 문장이 하이라이트 돼요"
+              .padding(.horizontal, 20)
+              .background(
+                GeometryReader { geometry in
+                  Color.clear
+                    .preference(key: HighlightRectPreferenceKey.self, value: geometry.frame(in: .named("dimmableVStack")))
+                }
+              )
+              .onTapGesture(count: 1) {
+                if isTextHighlighted {
+                  withAnimation {
+                    showHighlightTip = true
+                  }
+                }
+              }
+              .onTapGesture(count: 2) {
+                if showDimming {
+                  withAnimation(.easeInOut) {
+                    showDimming = false
+                    isTextHighlighted = true
+                    tooltipText = "해당 문장이 하이라이트 돼요"
+                  }
+                  
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation {
+                      showTooltip = false
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                      tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
+                      withAnimation {
+                        showTooltip = true
+                      }
+                    }
+                  }
+                }
               }
               
-              DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                withAnimation {
-                  showTooltip = false
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                  tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
-                  withAnimation {
-                    showTooltip = true
-                  }
-                }
+              if showMemoChip {
+                  MemoChipView(selectedColor: $highlightColor)
+                      .padding(.top, 20)
               }
+              
+              articleScript3
+                .padding(.top, 24)
+              articleScript2
+                .padding(.top, 40)
+              articleScript
+                .padding(.top, 40)
+              Spacer()
+              DesignSystemAsset.toolbarBottom.swiftUIImage
+                .resizable()
+                .scaledToFit()
+                .padding(.bottom, -20)
             }
-          }
-          
-          if showMemoChip {
-            MemoChipView(selectedColor: $highlightColor)
-              .padding(.top, 20)
-          }
-          
-          articleScript3
-            .padding(.top, 24)
-          articleScript2
-            .padding(.top, 40)
-          articleScript
-            .padding(.top, 40)
-          Spacer()
-          DesignSystemAsset.toolbarBottom.swiftUIImage
-            .resizable()
-            .scaledToFit()
-            .padding(.bottom, -20)
-        }
-        
-        if showDimming {
-          Color.black.opacity(0.7)
-            .mask(
-              Rectangle()
-                .overlay(
+            
+            if showDimming {
+              Color.black.opacity(0.7)
+                .mask(
                   Rectangle()
-                    .frame(width: highlightRect.width, height: highlightRect.height)
-                    .position(x: highlightRect.midX, y: highlightRect.midY)
-                    .blendMode(.destinationOut)
+                    .overlay(
+                      Rectangle()
+                        .frame(width: highlightRect.width, height: highlightRect.height)
+                        .position(x: highlightRect.midX, y: highlightRect.midY)
+                        .blendMode(.destinationOut)
+                    )
                 )
-            )
-            .ignoresSafeArea()
-            .transition(.opacity)
-            .allowsHitTesting(false)
-        }
-        
-        if showTooltip && highlightRect != .zero && !showHighlightTip {
-          OnboardingToolTipBox(text: tooltipText)
-            .position(x: highlightRect.midX, y: highlightRect.maxY + 30)
-            .transition(.opacity)
-        }
-        
-        if showHighlightTip && highlightRect != .zero {
-          Group {
-            if !didChangeColor {
-              VStack {
-                OnboardingToolTipBoxBottom(text: "원하는 색상을 탭하여\n하이라이트 색상을 변경해요")
-                OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
-                  showMemo = true
-                  showHighlightTip = false
-                  showTooltip = false
-                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    showMemo = false
-                    showMemoChip = true
+                .ignoresSafeArea()
+                .transition(.opacity)
+                .allowsHitTesting(false)
+            }
+            
+            if showTooltip && highlightRect != .zero && !showHighlightTip {
+              OnboardingToolTipBox(text: tooltipText)
+                .position(x: highlightRect.midX, y: highlightRect.maxY + 30)
+                .transition(.opacity)
+            }
+            
+            if showHighlightTip && highlightRect != .zero {
+              Group {
+                if !didChangeColor {
+                  VStack {
+                    OnboardingToolTipBoxBottom(text: "원하는 색상을 탭하여\n하이라이트 색상을 변경해요")
+                    OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
+                      showMemo = true
+                      showHighlightTip = false
+                      showTooltip = false
+                      DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        showMemo = false
+                        showMemoChip = true
+                      }
+                    })
                   }
-                })
-              }
-            } else {
-              VStack(alignment: .trailing) {
-                OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")
-                OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
-                  showMemo = true
-                  showHighlightTip = false
-                  showTooltip = false
-                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    showMemo = false
-                    showMemoChip = true
+                } else {
+                  VStack(alignment: .trailing) {
+                    OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")
+                    OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
+                      showMemo = true
+                      showHighlightTip = false
+                      showTooltip = false
+                      DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        showMemo = false
+                        showMemoChip = true
+                      }
+                    })
                   }
-                })
+                }
               }
+              .position(x: highlightRect.midX, y: highlightRect.minY - 60)
+              .transition(.opacity)
             }
           }
-          .position(x: highlightRect.midX, y: highlightRect.minY - 60)
-          .transition(.opacity)
+          .coordinateSpace(name: "dimmableVStack")
+          .onPreferenceChange(HighlightRectPreferenceKey.self) { rect in
+            highlightRect = rect
+          }
+          .onChange(of: highlightColor) {
+            currentPage = 1
+            navigationTitle = "메모 입력하기"
+            didChangeColor = true
+          }
         }
-      }
-      .coordinateSpace(name: "dimmableVStack")
-      .onPreferenceChange(HighlightRectPreferenceKey.self) { rect in
-        highlightRect = rect
-      }
-      .onChange(of: highlightColor) {
-        currentPage = 1
-        navigationTitle = "메모 입력하기"
-        didChangeColor = true
-      }
+        
+        if showMemoChip {
+            VStack {
+                Spacer()
+                MainButton("완료") {
+                    // TODO: 완료 액션 추가
+                }
+            }
+            .transition(.opacity.animation(.easeInOut))
+        }
     }
     .background(Color.background)
     .toolbar(.hidden)

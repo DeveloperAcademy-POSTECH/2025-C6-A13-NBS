@@ -19,20 +19,17 @@ struct OnboardingHighlightFeature {
   
   enum Action {
     case backButtonTapped
-    case skipButtonTapped
-    case nextButtonTapped
+    case finishButtonTapped
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .skipButtonTapped:
-        return .none
       case .backButtonTapped:
         return .run { send in
           await navigation.pop()
         }
-      case .nextButtonTapped:
+      case .finishButtonTapped:
         navigation.push(.onboardingHighlight, nil)
         return .none
       }
