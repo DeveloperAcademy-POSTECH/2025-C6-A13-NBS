@@ -31,6 +31,7 @@ struct OnboardingHighlightView {
   @State private var navigationTitle: String = "문장 하이라이트"
   @State private var didChangeColor: Bool = false
   @State private var showMemo: Bool = false
+  @State private var showMemoChip: Bool = false
 }
 
 extension OnboardingHighlightView: View {
@@ -72,6 +73,9 @@ extension OnboardingHighlightView: View {
                 .frame(height: showMemo ? nil : 0)
                 .padding(.horizontal)
                 .padding(.bottom, showMemo ? 16 : 0)
+              OnboardingToolTipBox(text: "원하는 메모를 입력하면")
+                .opacity(showMemo ? 1 : 0)
+                .frame(height: showMemo ? nil : 0)
             }
             .background(showMemo ? .n20 : .clear)
             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -86,7 +90,7 @@ extension OnboardingHighlightView: View {
           .onTapGesture(count: 1) {
             if isTextHighlighted {
               withAnimation {
-                showHighlightTip.toggle()
+                showHighlightTip = true
               }
             }
           }
@@ -111,6 +115,11 @@ extension OnboardingHighlightView: View {
                 }
               }
             }
+          }
+          
+          if showMemoChip {
+            MemoChipView(selectedColor: $highlightColor)
+              .padding(.top, 20)
           }
           
           articleScript3
@@ -155,8 +164,11 @@ extension OnboardingHighlightView: View {
                 OnboardingToolTipBoxBottom(text: "원하는 색상을 탭하여\n하이라이트 색상을 변경해요")
                 OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
                   showMemo = true
-                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                  showHighlightTip = false
+                  showTooltip = false
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     showMemo = false
+                    showMemoChip = true
                   }
                 })
               }
@@ -165,8 +177,11 @@ extension OnboardingHighlightView: View {
                 OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")
                 OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
                   showMemo = true
-                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                  showHighlightTip = false
+                  showTooltip = false
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     showMemo = false
+                    showMemoChip = true
                   }
                 })
               }
