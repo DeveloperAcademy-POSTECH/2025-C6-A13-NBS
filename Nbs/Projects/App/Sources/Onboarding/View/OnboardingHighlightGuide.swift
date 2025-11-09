@@ -11,7 +11,7 @@ import ComposableArchitecture
 import DesignSystem
 
 struct OnboardingHighlightGuideView {
-  let store: StoreOf<OnboardingHighlightFeature>
+  let store: StoreOf<OnboardingHighlightGuideFeature>
 }
 
 extension OnboardingHighlightGuideView: View {

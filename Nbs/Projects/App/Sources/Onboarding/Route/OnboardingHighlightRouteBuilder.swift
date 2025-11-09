@@ -2,24 +2,24 @@
 //  OnboardingHighlightRouteBuilder.swift
 //  Nbs
 //
-//  Created by 홍 on 11/8/25.
+//  Created by 홍 on 11/9/25.
 //
 
 import ComposableArchitecture
 import LinkNavigator
 import Feature
 
-public struct OnboardingHighlightGuideRouteBuilder {
+public struct OnboardingHighlightRouteBuilder {
   
   public init() {}
   
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
-    let matchPath = Route.highlightMemoGuide.rawValue
+    let matchPath = Route.onboardingHighlight.rawValue
     return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
       return WrappingController(matchPath: matchPath) {
-        OnboardingHighlightGuideView(store: Store(initialState: OnboardingHighlightGuideFeature.State()) {
-          OnboardingHighlightGuideFeature()
+        OnboardingHighlightView(store: Store(initialState: OnboardingHighlightFeature.State()) {
+          OnboardingHighlightFeature()
             .dependency(\.linkNavigator, .init(navigator: navigator))
         })
       }
