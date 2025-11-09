@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import Foundation
+import Domain
 
 @Reducer
 struct OriginalArticleFeature {
@@ -14,7 +15,7 @@ struct OriginalArticleFeature {
   
   @ObservableState
   struct State: Equatable {
-    var url: URL
+    var articleItem: ArticleItem
   }
   
   enum Action: Equatable {
@@ -25,8 +26,8 @@ struct OriginalArticleFeature {
     Reduce { state, action in
       switch action {
       case .editButtonTapped:
-        print("edit")
-        linkNavigator.push(.originalEdit, state.url.absoluteString)
+        let payload = OriginalPayload(articleItem: state.articleItem)
+        linkNavigator.push(.originalEdit, payload)
         return .none
       }
     }

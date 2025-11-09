@@ -15,6 +15,8 @@ struct LinkDetailFeature {
   @Dependency(\.swiftDataClient) var swiftDataClient
   @Dependency(\.linkNavigator) var linkNavigator
   
+  private enum CancelID { case editNotification }
+  
   @ObservableState
   struct State {
     var link: ArticleItem
@@ -22,6 +24,7 @@ struct LinkDetailFeature {
     var editedTitle = ""
     var editedMemo = ""
     var isDeleted = false
+    var showToast: Bool = false
   }
   
   enum Action {
@@ -45,7 +48,13 @@ struct LinkDetailFeature {
     case deleteResponse(TaskResult<Void>)
     
     /// 원문보기
-    case originalArticleTapped(URL)
+    case originalArticleTapped
+    case refreshed(ArticleItem?)
+    
+    /// 토스트
+    case editCompletedNotification
+    case showToast
+    case dismissToast
   }
   
   var body: some ReducerOf<Self> {
@@ -54,7 +63,18 @@ struct LinkDetailFeature {
       case .onAppear:
         state.editedTitle = state.link.title
         state.editedMemo  = state.link.userMemo
-        return .none
+        return .merge(
+          .run { [linkID = state.link.id] send in
+            let linkItem = try swiftDataClient.fetchLink(linkID)
+            await send(.refreshed(linkItem))
+          },
+          .run { send in
+            for await _ in NotificationCenter.default.notifications(named: .editCompleted) {
+              await send(.editCompletedNotification)
+            }
+          }
+            .cancellable(id: CancelID.editNotification)
+        )
         
         /// 제목 편집
       case .editButtonTapped:
@@ -143,9 +163,32 @@ struct LinkDetailFeature {
         print("링크 삭제 실패:", error)
         return .none
         
-      /// 원문보기
-      case .originalArticleTapped(let url):
-        linkNavigator.push(Route.originalArticle, url.absoluteString)
+        /// 원문보기
+      case .originalArticleTapped:
+        let payload = OriginalPayload(articleItem: state.link)
+        
+        linkNavigator.push(Route.originalArticle, payload)
+        return .none
+        
+      case .refreshed(let item):
+        if let item {
+          state.link = item
+        }
+        return .none
+        
+      case .editCompletedNotification:
+        print("수정 완료")
+        return .send(.showToast)
+        
+      case .showToast:
+        state.showToast = true
+        return .run { send in
+          try await Task.sleep(for: .seconds(2))
+          await send(.dismissToast)
+        }
+        
+      case .dismissToast:
+        state.showToast = false
         return .none
       }
     }

@@ -22,7 +22,6 @@ struct OriginalHeaderView: View {
   let onEditTapped: (() -> Void)?
   let onCompleteTapped: (() -> Void)?
   
-  // 초기화 시점에 기본값 설정
   init(headerType: HeaderType, onEditTapped: (() -> Void)? = nil, onCompleteTapped: (() -> Void)? = nil) {
     self.headerType = headerType
     self.onEditTapped = onEditTapped

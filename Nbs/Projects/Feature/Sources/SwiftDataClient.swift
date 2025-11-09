@@ -8,6 +8,7 @@ import Domain
 struct SwiftDataClient {
   // LinkItem
   var fetchLinks: () throws -> [ArticleItem]
+  var fetchLink: (String) throws -> ArticleItem?
   var searchLinks: (String) throws -> [ArticleItem]
   var addLink: (ArticleItem) throws -> Void
   var updateLinkLastViewed: (ArticleItem) throws -> Void
@@ -26,6 +27,9 @@ struct SwiftDataClient {
   var updateCategoryItem: (UUID, String, CategoryIcon) throws -> Void
   var deleteCategory: (CategoryItem) throws -> Void
   //  var addLink: (LinkItem) throws -> Void
+  
+  // WebView
+  var updateHighlightsForLink: (_ linkID: String, _ highlights: [HighlightItem]) throws -> Void
 }
 
 extension SwiftDataClient: DependencyKey {
@@ -37,6 +41,10 @@ extension SwiftDataClient: DependencyKey {
       fetchLinks: {
         let descriptor = FetchDescriptor<ArticleItem>()
         return try modelContext.fetch(descriptor)
+      },
+      fetchLink: { id in
+        let descriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.id == id })
+        return try modelContext.fetch(descriptor).first
       },
       searchLinks: { query in
         let predicate = #Predicate<ArticleItem> {
@@ -123,6 +131,15 @@ extension SwiftDataClient: DependencyKey {
         modelContext.delete(category)
         try modelContext.save()
       },
+      
+      updateHighlightsForLink: { linkID, highlights in
+        let descriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.id == linkID })
+        if let articleToUpdate = try modelContext.fetch(descriptor).first {
+          articleToUpdate.highlights.forEach { modelContext.delete($0) }
+          articleToUpdate.highlights = highlights
+          try modelContext.save()
+        }
+      }
     )
   }()
 }

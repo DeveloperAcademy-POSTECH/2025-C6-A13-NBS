@@ -24,7 +24,7 @@ extension OriginalArticleView {
         OriginalHeaderView(headerType: .article, onEditTapped: {
           store.send(.editButtonTapped)
         })
-        OriginalWebView(url: store.url)
+        OriginalArticleWebView(articleItem: store.articleItem)
           .ignoresSafeArea(edges: .bottom)
       }
     }

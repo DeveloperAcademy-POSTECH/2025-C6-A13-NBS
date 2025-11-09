@@ -57,6 +57,17 @@ extension LinkDetailView: View {
           }
         )
       }
+      
+      VStack {
+        Spacer()
+        if(store.showToast) {
+          AlertBanner(text: "링크를 수정했어요", style: .common)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+            .transition(.opacity)
+        }
+      }
+      .animation(.easeInOut, value: store.showToast)
     }
   }
   
@@ -132,9 +143,7 @@ extension LinkDetailView: View {
   /// 링크 원문 보기
   private var articleLink: some View {
     Button {
-      if let url = URL(string: store.link.urlString) {
-        store.send(.originalArticleTapped(url))
-      }
+      store.send(.originalArticleTapped)
     } label: {
       HStack(spacing: 12) {
         Image(store.link.imageURL ?? "notImage")
