@@ -16,7 +16,7 @@ public struct HomeRouteBuilder {
   
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
-    let matchPath = "home"
+    let matchPath = Route.home.rawValue
     
     return .init(
       matchPath: matchPath) {

@@ -6,6 +6,17 @@
 //
 
 public enum Route: String {
+  
+  //MARK: 온보딩
+  case onboardingService
+  case onboarding
+  case safariSetting
+  case highlightMemoGuide
+  case onboardingHighlight
+  case safariSave
+  case safariShare
+  case startApp
+
   case home
   case myCategory
   case addLink

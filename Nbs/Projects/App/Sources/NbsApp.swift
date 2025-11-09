@@ -16,24 +16,28 @@ struct NbsApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ZStack {
-        if showSplash {
-          SplashView()
-        } else {
-          LinkNavigationView(
-            linkNavigator: singleNavigator,
-            item: .init(path: Route.home.rawValue))
-          .ignoresSafeArea()
-        }
-      }
-      .modelContainer(AppGroupContainer.shared)
-      .onAppear {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-          withAnimation(.easeOut(duration: 0.3)) {
-            showSplash = false
-          }
-        }
-      }
+      LinkNavigationView(
+        linkNavigator: singleNavigator,
+        item: .init(path: Route.onboardingService.rawValue))
+      .ignoresSafeArea()
+//      ZStack {
+//        if showSplash {
+//          SplashView()
+//        } else {
+//          LinkNavigationView(
+//            linkNavigator: singleNavigator,
+//            item: .init(path: Route.home.rawValue))
+//          .ignoresSafeArea()
+//        }
+//      }
+//      .modelContainer(AppGroupContainer.shared)
+//      .onAppear {
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+//          withAnimation(.easeOut(duration: 0.3)) {
+//            showSplash = false
+//          }
+//        }
+//      }
     }
   }
 }

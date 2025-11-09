@@ -17,6 +17,16 @@ extension AppRouterGroup {
   @MainActor
   func routers() -> [RouteBuilderOf<SingleLinkNavigator>] {
     [
+      //MARK: 온보딩
+      OnboardingServiceRouteBuilder().generate(),
+      OnboardingRouteBuilder().generate(),
+      OnboardingHighlightGuideRouteBuilder().generate(),
+      OnboardingHighlightRouteBuilder().generate(),
+      OnboardingSafariShareRouteBuilder().generate(),
+      OnboardingSafariSaveRouteBuilder().generate(),
+      OnboardingStartAppRouteBuilder().generate(),
+      
+      //MARK: 앱
       HomeRouteBuilder().generate(),
       AddLinkRouteBuilder().generate(),
       MyCategoryRouteBuilder().generate(),

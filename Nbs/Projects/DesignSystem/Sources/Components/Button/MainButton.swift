@@ -84,7 +84,7 @@ extension MainButton {
       Text(title.uppercased())
         .font(.B1_SB)
         .foregroundStyle(foregroundColor)
-        .frame(maxWidth: .infinity, minHeight: 52)
+        .frame(maxWidth: .infinity, minHeight: 54)
         .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
