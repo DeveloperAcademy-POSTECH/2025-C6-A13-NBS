@@ -62,6 +62,7 @@ extension MyCategoryGridView: View {
         }
       }
       .scrollDisabled(viewStore.categories.count < 7)
+      .scrollIndicators(.hidden)
     }
   }
 }

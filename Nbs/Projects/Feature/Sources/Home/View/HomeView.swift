@@ -48,6 +48,7 @@ extension HomeView: View {
           .refreshable {
             store.send(.refresh)
           }
+          .scrollIndicators(.hidden)
           
           AddFloatingButton {
             store.send(.floatingButtonTapped)
