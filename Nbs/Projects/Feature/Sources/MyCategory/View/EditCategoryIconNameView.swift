@@ -64,10 +64,12 @@ extension EditCategoryIconNameView: View {
     .onTapGesture {
       isFocused = false
     }
-    .highPriorityGesture(
+    .simultaneousGesture(
       DragGesture(minimumDistance: 25, coordinateSpace: .local)
         .onEnded { value in
-          if value.startLocation.x < 50 && value.translation.width > 80 {
+          if value.startLocation.x < 50,
+             value.translation.width > 80,
+             abs(value.translation.width) > abs(value.translation.height) {
             store.send(.backGestureSwiped)
           }
         }
