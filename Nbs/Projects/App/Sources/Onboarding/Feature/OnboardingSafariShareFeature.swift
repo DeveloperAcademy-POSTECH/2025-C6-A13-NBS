@@ -31,10 +31,10 @@ struct OnboardingSafariShareFeature {
           await navigation.pop()
         }
       case .nextButtonTapped:
-        navigation.push(.onboardingHighlight, nil)
+        navigation.push(.safariSave, nil)
         return .none
       case .skipButtonTapped:
-        navigation.push(.onboardingHighlight, nil)
+        navigation.push(.startApp, nil)
         return .none
       }
     }
