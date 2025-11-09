@@ -100,7 +100,7 @@ extension ArticleCard {
         .padding(.trailing, 10)
       
       if editMode == .active {
-        CheckboxButton(isOn: $isSelected)
+        CheckboxButton(isOn: $isSelected, style: .dim)
           .offset(x: -16, y: 16)
       }
     }

@@ -17,37 +17,43 @@ struct MoveLinkView: View {
 
 extension MoveLinkView {
   var body: some View {
-    ScrollViewReader { proxy in
-      ZStack(alignment: .bottomTrailing) {
-        Color.background.ignoresSafeArea()
-        VStack(alignment: .leading, spacing: 0) {
-          topContents
-          middleContents
-          bottomContents
+    ZStack {
+      Color.background
+        .ignoresSafeArea()
+      ScrollViewReader { proxy in
+        ZStack(alignment: .bottomTrailing) {
+          VStack(alignment: .leading, spacing: 0) {
+            topContents
+            middleContents
+            bottomContents
+          }
+          
+          ScrollFloatingButton(
+            isVisible: $showScrollToTopButton,
+            proxy: proxy,
+            targetID: "moveTop"
+          )
+          .zIndex(1)
+          .padding(.bottom, 50)
         }
-        
-        ScrollFloatingButton(
-          isVisible: $showScrollToTopButton,
-          proxy: proxy,
-          targetID: "moveTop"
-        )
-        .padding(.bottom, 50)
-      }
-      .onPreferenceChange(MoveScrollOffsetKey.self) { offsetY in
-        withAnimation(.easeInOut(duration: 0.2)) {
-          showScrollToTopButton = offsetY < -200
+        .onPreferenceChange(MoveScrollOffsetKey.self) { offsetY in
+          print("🌀 offsetY:", offsetY)
+          withAnimation(.easeInOut(duration: 0.2)) {
+            showScrollToTopButton = offsetY < -50
+            //          showScrollToTopButton = true/
+          }
         }
-      }
-      .sheet(
-        store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
-      ) { selectStore in
-        TCASelectBottomSheet(
-          title: "카테고리 이동",
-          buttonTitle: "이동하기",
-          store: selectStore
-        )
-        .presentationDetents([.medium])
-        .presentationCornerRadius(16)
+        .sheet(
+          store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
+        ) { selectStore in
+          TCASelectBottomSheet(
+            title: "카테고리 이동",
+            buttonTitle: "이동하기",
+            store: selectStore
+          )
+          .presentationDetents([.medium])
+          .presentationCornerRadius(16)
+        }
       }
     }
   }
@@ -60,30 +66,32 @@ extension MoveLinkView {
   }
   
   private var middleContents: some View {
-    ScrollView() {
-      VStack(spacing: 0) {
-        Color.clear.frame(height: 0).id("moveTop")
+    ScrollView(.vertical, showsIndicators: false) {
+      VStack {
+        Color.clear
+          .frame(height: 0)
+          .id("moveTop")
+        
         linkSelectView
         articleListView
-          .background(
-            GeometryReader { geo in
-              Color.clear.preference(
-                key: MoveScrollOffsetKey.self,
-                value: geo.frame(in: .named("moveScroll")).minY
-              )
-            }
-              .frame(height: 0)
-          )
+        
+        GeometryReader { geo in
+          Color.clear
+            .preference(
+              key: MoveScrollOffsetKey.self,
+              value: geo.frame(in: .named("scroll")).minY
+            )
+        }
+        .frame(height: 0)
       }
     }
-    .coordinateSpace(name: "moveScroll")
-    .scrollIndicators(.hidden)
+    .coordinateSpace(name: "scroll")
   }
   
   /// 링크 개수 + 선택
   private var linkSelectView: some View {
     HStack(spacing: 4) {
-      CheckboxButton(isOn: $store.isSelectAll)
+      CheckboxButton(isOn: $store.isSelectAll, style: .clear)
       
       Text("모두 선택")
         .font(.B2_SB)
