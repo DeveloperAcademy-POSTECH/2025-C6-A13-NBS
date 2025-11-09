@@ -18,8 +18,10 @@ public struct OnboardingStartAppRouteBuilder {
     let matchPath = Route.startApp.rawValue
     return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
       return WrappingController(matchPath: matchPath) {
-        OnboardingStartAppView()
-//            .dependency(\.linkNavigator, .init(navigator: navigator))
+        OnboardingStartAppView(store: Store(initialState: OnboardingStartAppFeature.State()) {
+          OnboardingStartAppFeature()
+            .dependency(\.linkNavigator, .init(navigator: navigator))
+        })
       }
     }
   }

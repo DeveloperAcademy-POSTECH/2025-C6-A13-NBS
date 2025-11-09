@@ -24,7 +24,7 @@ extension AppRouterGroup {
       OnboardingHighlightRouteBuilder().generate(),
       OnboardingSafariShareRouteBuilder().generate(),
       OnboardingSafariSaveRouteBuilder().generate(),
-      
+      OnboardingStartAppRouteBuilder().generate(),
       
       //MARK: 앱
       HomeRouteBuilder().generate(),

@@ -11,7 +11,7 @@ import ComposableArchitecture
 import DesignSystem
 
 public struct OnboardingStartAppView {
-  @Dependency(\.linkNavigator) var navigation
+  let store: StoreOf<OnboardingStartAppFeature>
 }
 
 extension OnboardingStartAppView: View {
@@ -24,6 +24,7 @@ extension OnboardingStartAppView: View {
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.leading, 20)
+      .padding(.top, 72)
       
       Text("읽고, 밑줄 긋고, 기록하며 만들어가는 시사 습관\nTapTap을 통해 만들어가요")
         .font(.C1)
@@ -38,7 +39,7 @@ extension OnboardingStartAppView: View {
         .padding(.horizontal, 30)
         .padding(.top, 55)
       MainButton("시작하기") {
-        navigation.push(.home, nil)
+        store.send(.startButtonTapped)
       }
     }
   }
