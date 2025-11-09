@@ -35,6 +35,9 @@ extension LinkListView: View {
         }
       }
 			.toolbar(.hidden)
+      .refreshable {
+        store.send(.refresh)
+      }
       .task { store.send(.onAppear) }
       .sheet(
         store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)

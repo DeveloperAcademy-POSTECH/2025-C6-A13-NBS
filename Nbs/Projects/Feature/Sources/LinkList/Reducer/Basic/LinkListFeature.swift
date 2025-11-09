@@ -61,6 +61,7 @@ struct LinkListFeature {
     case searchButtonTapped
     case navigateToMoveLink(allLinks: [ArticleItem])
     case navigateToDeleteLink(allLinks: [ArticleItem])
+    case refresh
     
     /// 시트 관련 액션
     case editSheet(PresentationAction<EditSheetFeature.Action>)
@@ -236,6 +237,11 @@ private extension LinkListFeature {
       /// 링크 롱프레스 -> 편집 시트 표시로 연결
     case let .articleList(.delegate(.longPressed(link))):
       return .send(.linkLongPressed(link))
+      
+    case .refresh:
+      return .run { send in
+        await send(.fetchLinks)
+      }
       
     default:
       return .none
