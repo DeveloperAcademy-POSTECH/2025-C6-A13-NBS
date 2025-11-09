@@ -23,18 +23,23 @@ struct OnboardingHighlightView {
   @State private var showDimming: Bool = false
   @State private var showTooltip: Bool = true
   @State private var showHighlightTip: Bool = false
+  @State private var highlightColor: Color = .chipPink
   @State private var highlightRect: CGRect = .zero
   @State private var tooltipText: String = "하이라이트 치는 방법을 배워볼게요"
   @State private var isTextHighlighted: Bool = false
+  @State private var currentPage: Int = 0
+  @State private var navigationTitle: String = "문장 하이라이트"
+  @State private var didChangeColor: Bool = false
+  @State private var showMemo: Bool = false
 }
 
 extension OnboardingHighlightView: View {
   var body: some View {
     VStack(spacing: 0) {
-      TopAppBarDefaultRightIconx(title: "문장 하이라이트") {
+      TopAppBarDefaultRightIconx(title: navigationTitle) {
         store.send(.backButtonTapped)
       }
-      OnboardingPageControl(numberOfPages: 2, currentPage: 0)
+      OnboardingPageControl(numberOfPages: 2, currentPage: currentPage)
       
       ZStack(alignment: .top) {
         VStack(spacing: 0) {
@@ -47,8 +52,29 @@ extension OnboardingHighlightView: View {
             }
             .font(.B1_M_HL)
             .foregroundStyle(.text1)
-            .background(isTextHighlighted ? Color.yellow.opacity(0.4) : Color.clear)
+            .background(isTextHighlighted ? highlightColor : Color.clear)
             .frame(maxWidth: .infinity, alignment: .leading)
+            
+            VStack(spacing: 0) {
+              Text("하이라이트 문장을 읽고 중요한 것들에 대한 메모")
+                .font(.B1_M_HL)
+                .foregroundStyle(.text1)
+                .opacity(showMemo ? 1 : 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: showMemo ? nil : 0)
+                .padding(.horizontal, showMemo ? 16 : 0)
+                .padding(.top, showMemo ? 16 : 0)
+              Text("를 동시에 남겨요.")
+                .font(.B1_M_HL)
+                .foregroundStyle(.text1)
+                .opacity(showMemo ? 1 : 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: showMemo ? nil : 0)
+                .padding(.horizontal)
+                .padding(.bottom, showMemo ? 16 : 0)
+            }
+            .background(showMemo ? .n20 : .clear)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
           }
           .padding(.horizontal, 20)
           .background(
@@ -77,7 +103,7 @@ extension OnboardingHighlightView: View {
                   showTooltip = false
                 }
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                   tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
                   withAnimation {
                     showTooltip = true
@@ -123,9 +149,28 @@ extension OnboardingHighlightView: View {
         }
         
         if showHighlightTip && highlightRect != .zero {
-          VStack {
-            OnboardingToolTipBoxBottom(text: "원하는 색상을 탭하여\n하이라이트 색상을 변경해요")
-            OnboardingHighlightTip()
+          Group {
+            if !didChangeColor {
+              VStack {
+                OnboardingToolTipBoxBottom(text: "원하는 색상을 탭하여\n하이라이트 색상을 변경해요")
+                OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
+                  showMemo = true
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    showMemo = false
+                  }
+                })
+              }
+            } else {
+              VStack(alignment: .trailing) {
+                OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")
+                OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
+                  showMemo = true
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    showMemo = false
+                  }
+                })
+              }
+            }
           }
           .position(x: highlightRect.midX, y: highlightRect.minY - 60)
           .transition(.opacity)
@@ -134,6 +179,11 @@ extension OnboardingHighlightView: View {
       .coordinateSpace(name: "dimmableVStack")
       .onPreferenceChange(HighlightRectPreferenceKey.self) { rect in
         highlightRect = rect
+      }
+      .onChange(of: highlightColor) {
+        currentPage = 1
+        navigationTitle = "메모 입력하기"
+        didChangeColor = true
       }
     }
     .background(Color.background)
