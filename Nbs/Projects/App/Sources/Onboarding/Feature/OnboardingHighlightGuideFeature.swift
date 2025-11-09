@@ -34,7 +34,7 @@ struct OnboardingHighlightGuideFeature {
         navigation.push(.onboardingHighlight, nil)
         return .none
       case .skipButtonTapped:
-        navigation.push(.onboardingHighlight, nil)
+        navigation.push(.safariShare, nil)
         return .none
       }
     }

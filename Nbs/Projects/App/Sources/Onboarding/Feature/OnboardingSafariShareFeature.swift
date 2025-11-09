@@ -1,25 +1,26 @@
 //
-//  OnboardingHighlightFeature.swift
+//  OnboardingSafariShareFeature.swift
 //  Nbs
 //
-//  Created by 홍 on 11/8/25.
+//  Created by 홍 on 11/9/25.
 //
 
 import ComposableArchitecture
 import LinkNavigator
 
 @Reducer
-struct OnboardingHighlightFeature {
+struct OnboardingSafariShareFeature {
   @Dependency(\.linkNavigator) var navigation
   
   @ObservableState
   struct State {
-    var currentPage: Int = 2
+    var currentPage: Int = 3
   }
   
   enum Action {
     case backButtonTapped
-    case finishButtonTapped
+    case nextButtonTapped
+    case skipButtonTapped
   }
   
   var body: some ReducerOf<Self> {
@@ -29,8 +30,11 @@ struct OnboardingHighlightFeature {
         return .run { send in
           await navigation.pop()
         }
-      case .finishButtonTapped:
-        navigation.push(.safariShare, nil)
+      case .nextButtonTapped:
+        navigation.push(.onboardingHighlight, nil)
+        return .none
+      case .skipButtonTapped:
+        navigation.push(.onboardingHighlight, nil)
         return .none
       }
     }
