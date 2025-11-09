@@ -12,6 +12,13 @@ import DesignSystem
 
 struct OnboardingView {
   @Bindable var store: StoreOf<OnboardingFeature>
+  
+  @StateObject private var pip: SimplePiPController = {
+    guard let url = Bundle.main.url(forResource: "SafariSettingVideo1080", withExtension: "mov") else {
+      fatalError("Video file not found")
+    }
+    return SimplePiPController(url: url)
+  }()
 }
 
 extension OnboardingView: View {
@@ -31,6 +38,8 @@ extension OnboardingView: View {
       VStack {
         MainButton("설정하기", hasGradient: true) {
           store.send(.settingButtonTapped)
+          pip.play()
+          startPipThenOpenSetting()
         }
         .buttonStyle(.plain)
         
@@ -59,6 +68,22 @@ extension OnboardingView: View {
             onCancel: { store.send(.alertCancelButtonTapped) },
             buttonType: .move(title: "건너뛰기", action: { store.send(.alertSkipButtonTapped) })
           )
+        }
+      }
+    }
+  }
+}
+
+extension OnboardingView {
+  private func startPipThenOpenSetting() {
+    pip.play()
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+      self.pip.startPiP()
+      
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+          UIApplication.shared.open(url)
         }
       }
     }

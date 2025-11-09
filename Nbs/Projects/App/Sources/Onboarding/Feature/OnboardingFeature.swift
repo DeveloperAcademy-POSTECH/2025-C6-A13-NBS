@@ -37,6 +37,7 @@ struct OnboardingFeature {
           await navigation.pop()
         }
       case .settingButtonTapped:
+//        navigation.push(.highlightMemoGuide, nil)
         return .none
       case .alertCancelButtonTapped:
         state.isAlert = false
