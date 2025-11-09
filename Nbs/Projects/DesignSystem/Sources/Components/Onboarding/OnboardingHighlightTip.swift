@@ -8,10 +8,12 @@
 import SwiftUI
 
 public struct OnboardingHighlightTip {
-  @State private var selectedIndex: Int? = nil
+  @Binding var selectedColor: Color
+  var onMemoTapped: () -> Void
   
-  public init(selectedIndex: Int? = nil) {
-    self.selectedIndex = selectedIndex
+  public init(selectedColor: Binding<Color>, onMemoTapped: @escaping () -> Void) {
+    self._selectedColor = selectedColor
+    self.onMemoTapped = onMemoTapped
   }
 }
 
@@ -19,46 +21,46 @@ extension OnboardingHighlightTip: View {
   public var body: some View {
     VStack(spacing: 0) {
       HStack(spacing: 6) {
-        Button(action: { selectedIndex = 0 }) {
+        Button(action: { selectedColor = .chipPink }) {
           Capsule()
             .fill(.chipPink)
             .overlay(
               Capsule().strokeBorder(
-                selectedIndex == 0 ? .chipPinkLine : .stateDefaultLine,
+                selectedColor == .chipPink ? .chipPinkLine : .stateDefaultLine,
                 lineWidth: 2
               )
             )
             .frame(width: 50, height: 40)
         }
-        Button(action: { selectedIndex = 1 }) {
+        Button(action: { selectedColor = .chipYellow }) {
           Capsule()
             .fill(.chipYellow)
             .overlay(
               Capsule().strokeBorder(
-                selectedIndex == 1 ? .chipYellowLine : .stateDefaultLine,
+                selectedColor == .chipYellow ? .chipYellowLine : .stateDefaultLine,
                 lineWidth: 2
               )
             )
             .frame(width: 50, height: 40)
         }
-        Button(action: { selectedIndex = 2 }) {
+        Button(action: { selectedColor = .chipBlue }) {
           Capsule()
             .fill(.chipBlue)
             .overlay(
               Capsule().strokeBorder(
-                selectedIndex == 2 ? .chipBlueLine : .stateDefaultLine,
+                selectedColor == .chipBlue ? .chipBlueLine : .stateDefaultLine,
                 lineWidth: 2
               )
             )
             .frame(width: 50, height: 40)
         }
-        Button(action: { selectedIndex = 3 }) {
+        Button(action: onMemoTapped) {
           ZStack {
             Capsule()
               .fill(Color.chipMemo)
               .overlay(
                 Capsule().strokeBorder(
-                  selectedIndex == 3 ? .stateDefaultLine : .stateDefaultLine,
+                  .stateDefaultLine,
                   lineWidth: 2
                 )
               )
@@ -84,7 +86,13 @@ extension OnboardingHighlightTip: View {
 }
 
 #Preview {
-  OnboardingHighlightTip()
+  struct PreviewWrapper: View {
+    @State private var color: Color = .chipPink
+    var body: some View {
+      OnboardingHighlightTip(selectedColor: $color, onMemoTapped: {})
+    }
+  }
+  return PreviewWrapper()
 }
 
 fileprivate struct Triangle: Shape {
