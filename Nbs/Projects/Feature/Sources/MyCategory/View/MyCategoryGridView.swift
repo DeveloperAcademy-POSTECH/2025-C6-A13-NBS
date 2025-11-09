@@ -23,7 +23,7 @@ extension MyCategoryGridView: View {
     WithViewStore(store, observe: { $0 }) { viewStore in
       ScrollView {
         LazyVGrid(columns: gridItems, spacing: 10) {
-          ForEach(viewStore.categories) { category in
+          ForEach(viewStore.categories.reversed()) { category in
             Button {
               store.send(.categoryTapped)
             } label: {
