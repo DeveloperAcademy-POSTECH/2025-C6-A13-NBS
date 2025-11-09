@@ -70,6 +70,7 @@ extension CategoryGridView: View {
         }
       }
       .scrollDisabled(viewStore.categories.count < 7)
+      .scrollIndicators(.hidden)
     }
   }
 }

@@ -47,6 +47,7 @@ extension CategoryListView: View {
         }
         .scrollDisabled(store.categories.count < 2)
         .padding(.leading, 20)
+        .scrollIndicators(.hidden)
       }
     }
     .onAppear { store.send(.onAppear) }

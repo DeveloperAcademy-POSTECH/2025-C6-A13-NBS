@@ -85,6 +85,7 @@ extension AddCategoryView: View {
           .padding(.horizontal, 20)
         }
         .scrollDisabled(isFocused)
+        .scrollIndicators(.hidden)
         .padding(.top, 4)
         MainButton(
           CategoryNamespace.addCategory,
