@@ -28,7 +28,7 @@ struct DeleteLinkFeature {
     case binding(BindingAction<State>)
     case onAppear
     case toggleSelect(ArticleItem)
-    case cancelTapped
+    case backButtonTapped
     case confirmDeleteTapped
     case delegate(Delegate)
     case deleteDone(Int)
@@ -69,8 +69,10 @@ struct DeleteLinkFeature {
         state.isSelectAll = state.selectedLinks.count == state.allLinks.count
         return .none
         
-      case .cancelTapped:
-        return .send(.delegate(.dismiss))
+      case .backButtonTapped:
+        return .run { _ in
+          await linkNavigator.pop()
+        }
         
       case .confirmDeleteTapped:
         let selectedIDs = state.allLinks

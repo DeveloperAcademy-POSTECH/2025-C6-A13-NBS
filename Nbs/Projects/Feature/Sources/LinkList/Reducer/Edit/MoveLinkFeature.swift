@@ -33,7 +33,7 @@ struct MoveLinkFeature {
     case binding(BindingAction<State>)
     case onAppear
     case toggleSelect(ArticleItem)
-    case cancelTapped
+    case backButtonTapped
     case confirmMoveTapped
     case openCategorySheet
     case fetchCategories
@@ -76,7 +76,7 @@ struct MoveLinkFeature {
         state.isSelectAll = state.selectedLinks.count == state.allLinks.count
         return .none
         
-      case .cancelTapped:
+      case .backButtonTapped:
         return .run { _ in
           await linkNavigator.pop()
         }
