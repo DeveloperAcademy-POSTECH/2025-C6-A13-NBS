@@ -113,18 +113,18 @@ extension MainButton {
         )
       )
       .blur(radius: 0)
-      .frame(height: 32)
-      .offset(y: -40)
+      .frame(height: 40)
+      .offset(y: -36)
       .allowsHitTesting(false)
   }
 }
 
 // MARK: - Preview
 #Preview {
-  MainButton(
-    "BUTTON",
-    style: .deep,
-    isDisabled: false,
-    hasGradient: true
-  ) { print("버튼입니다") }
+    MainButton(
+      "BUTTON",
+      style: .deep,
+      isDisabled: false,
+      hasGradient: true
+    ) { print("버튼입니다") }
 }
