@@ -42,8 +42,7 @@ extension MoveLinkView {
 //            showScrollToTopButton = true
           }
         }
-        .sheet(
-          store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
+        .sheet(item: $store.scope(state: \.selectBottomSheet, action: \.selectBottomSheet)
         ) { selectStore in
           TCASelectBottomSheet(
             title: "카테고리 이동",

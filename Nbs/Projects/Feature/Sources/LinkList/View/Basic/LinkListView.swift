@@ -12,7 +12,7 @@ import DesignSystem
 
 /// 링크 리스트 뷰
 struct LinkListView {
-  let store: StoreOf<LinkListFeature>
+  @Bindable var store: StoreOf<LinkListFeature>
   @State private var showScrollToTopButton: Bool = false
   @State private var initialOffsetY: CGFloat? = nil
 }
@@ -36,8 +36,7 @@ extension LinkListView: View {
       }
 			.toolbar(.hidden)
       .task { store.send(.onAppear) }
-      .sheet(
-        store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
+      .sheet(item: $store.scope(state: \.selectBottomSheet, action: \.selectBottomSheet)
       ) { selectStore in
         TCASelectBottomSheet(
           title: "카테고리 선택",
