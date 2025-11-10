@@ -42,7 +42,11 @@ struct EditCategoryFeature {
     Reduce { state, action in
       switch action {
       case .categoryGrid(.delegate(.toggleCategorySelection(let category))):
-        state.selectedCategory = category
+        if state.selectedCategory == category {
+          state.selectedCategory = nil
+        } else {
+          state.selectedCategory = category
+        }
         return .none
       case .categoryGrid(.onAppear):
         return .none
