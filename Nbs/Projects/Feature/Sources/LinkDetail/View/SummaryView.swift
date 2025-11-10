@@ -39,7 +39,6 @@ extension SummaryView {
     .background(Color.background)
     .sheet(item: $store.scope(state: \.hightlightEditSheet, action: \.hightlightEditSheet)) { store in
       HighlightEditSheetView(
-        title: "하이라이트 메모 편집",
         store: store
       )
       .presentationDetents([.height(164)])
@@ -62,7 +61,7 @@ extension SummaryView {
         .onLongPressGesture(minimumDuration: 0.5) {
           let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
           impactFeedback.impactOccurred()
-          store.send(.highlightLongpress)
+          store.send(.highlightLongpress(item))
         }
       
       // 코멘트 리스트
