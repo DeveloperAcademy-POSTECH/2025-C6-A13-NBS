@@ -23,7 +23,7 @@ struct CategoryChipFeature {
   
   enum Action {
     case onAppear
-    case categoriesResponse(TaskResult<[CategoryItem]>)
+    case categoriesResponse(Result<[CategoryItem], Error>)
     case categoryTapped(CategoryItem)
   }
   
@@ -33,7 +33,7 @@ struct CategoryChipFeature {
       case .onAppear:
         /// 카테고리 불러오기
         return .run { send in
-          await send(.categoriesResponse(TaskResult {
+          await send(.categoriesResponse(Result {
             try swiftDataClient.fetchCategories()
           }))
         }
