@@ -14,8 +14,40 @@ struct HighlightEditFeature {
   
   @ObservableState
   struct State: Equatable {
-    var comment: Comment
+    enum Context: Equatable {
+      case comment(Comment)
+      case highlight(HighlightItem)
+    }
+    
+    var context: Context
     var isShowDeleteModal: Bool = false
+    
+    var title: String {
+      switch context {
+      case .highlight:
+        return "하이라이트 편집"
+      case .comment:
+        return "하이라이트 메모 편집"
+      }
+    }
+    
+    var alertTitle: String {
+      switch context {
+      case .highlight:
+        return "해당 하이라이트 삭제할까요?"
+      case .comment:
+        return "해당 메모를 삭제할까요?"
+      }
+    }
+    
+    var alertSubTitle: String {
+      switch context {
+      case .highlight:
+        return "메모도 함께 삭제 되며,\n삭제한 하이라이트는 복구할 수 없어요"
+      case .comment:
+        return "삭제한 메모는 복구할 수 없어요"
+      }
+    }
   }
   
   enum Action: Equatable {
@@ -27,8 +59,8 @@ struct HighlightEditFeature {
     
     enum Delegate: Equatable {
       case dismiss
-      case edit(Comment)
-      case delete(Comment)
+      case edit(State.Context)
+      case delete(State.Context)
     }
     case delegate(Delegate)
   }
@@ -39,16 +71,16 @@ struct HighlightEditFeature {
       case .dismissButtonTapped:
         return .send(.delegate(.dismiss))
       case .editButtonTapped:
-        return .send(.delegate(.edit(state.comment)))
+        return .send(.delegate(.edit(state.context)))
       case .deleteButtonTapped:
         state.isShowDeleteModal = true
         return .none
       case .confirmDeleteButtonTapped:
-        return .run { [comment = state.comment] send in
-          await send(.canceleDeleteButtonTapped)
-          await send(.delegate(.delete(comment)))
-          await send(.delegate(.dismiss))
-        }
+        state.isShowDeleteModal = false
+        return .merge(
+          .send(.delegate(.delete(state.context))),
+          .send(.delegate(.dismiss))
+        )
       case .canceleDeleteButtonTapped:
         state.isShowDeleteModal = false
         return .none

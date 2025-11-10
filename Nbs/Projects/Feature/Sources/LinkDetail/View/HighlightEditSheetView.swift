@@ -11,7 +11,6 @@ import ComposableArchitecture
 
 // MARK: - Properties
 struct HighlightEditSheetView: View {
-  let title: String
   let store: StoreOf<HighlightEditFeature>
 }
 
@@ -21,20 +20,37 @@ extension HighlightEditSheetView {
     ZStack(alignment: .topLeading) {
       Color.background.ignoresSafeArea()
       VStack(spacing: 0) {
-        SheetHeader(title: title) {
+        SheetHeader(title: store.title) {
           store.send(.dismissButtonTapped)
         }
-        VStack(spacing: 8) {
-          ActionSheetButton(icon: Icon.edit, title: "수정하기") {
-            store.send(.editButtonTapped)
+        
+        switch store.context {
+        case .comment:
+          VStack(spacing: 8) {
+            ActionSheetButton(icon: Icon.edit, title: "수정하기") {
+              store.send(.editButtonTapped)
+            }
+            .padding(.vertical, 8)
+            ActionSheetButton(icon: Icon.trash, title: "삭제하기", style: .danger) {
+              store.send(.deleteButtonTapped)
+            }
+            .padding(.vertical, 8)
           }
-          .padding(.vertical, 8)
-          ActionSheetButton(icon: Icon.trash, title: "삭제하기", style: .danger) {
-            store.send(.deleteButtonTapped)
+          .padding(.bottom, 12)
+        case .highlight:
+          VStack(spacing: 8) {
+            ActionSheetButton(icon: Icon.edit, title: "메모 추가하기") {
+              store.send(.editButtonTapped)
+            }
+            .padding(.vertical, 8)
+            ActionSheetButton(icon: Icon.trash, title: "삭제하기", style: .danger) {
+              store.send(.deleteButtonTapped)
+            }
+            .padding(.vertical, 8)
           }
-          .padding(.vertical, 8)
+          .padding(.bottom, 12)
         }
-        .padding(.bottom, 12)
+        
       }
     }
     .fullScreenCover(isPresented: .constant(store.isShowDeleteModal)) {
@@ -42,8 +58,8 @@ extension HighlightEditSheetView {
         Color.dim.ignoresSafeArea()
         
         AlertDialog(
-          title: "해당 메모를 삭제할까요?",
-          subtitle: "삭제한 메모는 복구할 수 없어요",
+          title: store.alertTitle,
+          subtitle: store.alertSubTitle,
           onCancel: { store.send(.canceleDeleteButtonTapped)},
           buttonType: .delete(title: "삭제", action: {
             store.send(.confirmDeleteButtonTapped)
