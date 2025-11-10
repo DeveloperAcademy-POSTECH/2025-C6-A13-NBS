@@ -46,12 +46,7 @@ extension EditCategoryIconNameView: View {
           }
         }
       }
-      
-      CategoryIconScrollView(
-        selectedIcon: $store.selectedIcon.sending(\.selectIcon),
-        isFocused: isFocused
-      )
-      
+      CategoryIconScrollView(selectedIcon: $store.selectedIcon.sending(\.selectIcon))
       MainButton(
         "완료",
         isDisabled: store.categoryName.isEmpty,

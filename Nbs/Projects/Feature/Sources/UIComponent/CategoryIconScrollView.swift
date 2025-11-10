@@ -6,7 +6,6 @@ import Domain
 
 struct CategoryIconScrollView {
   @Binding var selectedIcon: CategoryIcon?
-  let isFocused: Bool
   
   let columns = [
     GridItem(.flexible(), spacing: 10),
@@ -56,12 +55,11 @@ extension CategoryIconScrollView: View {
             }
             .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
             .buttonStyle(.plain)
-            .disabled(isFocused)
           }
         }
         .padding(.horizontal, 20)
       }
-      .scrollDisabled(isFocused)
+      .scrollIndicators(.hidden)
     }
   }
 }
