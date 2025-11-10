@@ -17,103 +17,107 @@ struct AddCategoryView {
   
 extension AddCategoryView: View {
   var body: some View {
-    VStack {
-      TopAppBarDefaultRightIconx(title: CategoryNamespace.newCategoryNavTitle) {
-        store.send(.cancelButtonTapped)
-      }
+    ZStack(alignment: .leading) {
       VStack {
-        VStack(alignment: .leading, spacing: 4) {
-          JNTextField(
-            text: $store.categoryName,
-            style: $store.textFieldStyle.sending(\.setTextFieldStyle),
-            placeholder: "카테고리명을 입력해주세요",
-            caption: "이미 존재하는 카테고리예요",
-            header: "카테고리명"
-          )
-          .focused($isFocused)
-          .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-              Spacer()
-              Button("완료") {
-                isFocused = false
+        TopAppBarDefaultRightIconx(title: CategoryNamespace.newCategoryNavTitle) {
+          store.send(.cancelButtonTapped)
+        }
+        VStack {
+          VStack(alignment: .leading, spacing: 4) {
+            JNTextField(
+              text: $store.categoryName,
+              style: $store.textFieldStyle.sending(\.setTextFieldStyle),
+              placeholder: "카테고리명을 입력해주세요",
+              caption: "이미 존재하는 카테고리예요",
+              header: "카테고리명"
+            )
+            .focused($isFocused)
+            .toolbar {
+              ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("완료") {
+                  isFocused = false
+                }
               }
             }
           }
-        }
-        
-        Text(CategoryNamespace.categoryIcon)
-          .font(.B2_SB)
-          .foregroundStyle(.caption1)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.leading, 24)
-          .padding(.top, 24)
-        
-        //TODO: 컴포넌트 대체하기
-        ScrollView {
-          LazyVGrid(columns: columns, spacing: 16) {
-            ForEach(1..<16, id: \.self) { index in
-              let isSelected = store.selectedIcon.number == index
-              Button {
-                store.selectedIcon = .init(number: index)
-              } label: {
-                RoundedRectangle(cornerRadius: 12)
-                  .fill(
-                    isSelected
-                    ? DesignSystemAsset.bl1.swiftUIColor
-                    : DesignSystemAsset.n0.swiftUIColor
-                  )
-                  .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                      .strokeBorder(
-                        isSelected
-                        ? DesignSystemAsset.bl6.swiftUIColor
-                        : Color.clear,
-                        lineWidth: 1.25
-                      )
-                  )
-                  .aspectRatio(1, contentMode: .fit)
-                  .overlay(
-                    DesignSystemAsset.primaryCategoryIcon(number: index)
-                      .resizable()
-                      .frame(width: 56, height: 56)
-                  )
+          
+          Text(CategoryNamespace.categoryIcon)
+            .font(.B2_SB)
+            .foregroundStyle(.caption1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, 24)
+            .padding(.top, 24)
+          
+          //TODO: 컴포넌트 대체하기
+          ScrollView {
+            LazyVGrid(columns: columns, spacing: 16) {
+              ForEach(1..<16, id: \.self) { index in
+                let isSelected = store.selectedIcon.number == index
+                Button {
+                  store.selectedIcon = .init(number: index)
+                } label: {
+                  RoundedRectangle(cornerRadius: 12)
+                    .fill(
+                      isSelected
+                      ? DesignSystemAsset.bl1.swiftUIColor
+                      : DesignSystemAsset.n0.swiftUIColor
+                    )
+                    .overlay(
+                      RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(
+                          isSelected
+                          ? DesignSystemAsset.bl6.swiftUIColor
+                          : Color.clear,
+                          lineWidth: 1.25
+                        )
+                    )
+                    .aspectRatio(1, contentMode: .fit)
+                    .overlay(
+                      DesignSystemAsset.primaryCategoryIcon(number: index)
+                        .resizable()
+                        .frame(width: 56, height: 56)
+                    )
+                }
+                .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
+                .buttonStyle(.plain)
+                .disabled(isFocused)
               }
-              .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
-              .buttonStyle(.plain)
-              .disabled(isFocused)
             }
+            .padding(.horizontal, 20)
           }
-          .padding(.horizontal, 20)
-        }
-        .scrollDisabled(isFocused)
-        .scrollIndicators(.hidden)
-        .padding(.top, 4)
-        MainButton(
-          CategoryNamespace.addCategory,
-          isDisabled: store.categoryName.isEmpty,
-          hasGradient: true
-        ) {
-          store.send(.saveButtonTapped)
+          .scrollDisabled(isFocused)
+          .scrollIndicators(.hidden)
+          .padding(.top, 4)
+          MainButton(
+            CategoryNamespace.addCategory,
+            isDisabled: store.categoryName.isEmpty,
+            hasGradient: true
+          ) {
+            store.send(.saveButtonTapped)
+          }
         }
       }
+      .contentShape(Rectangle())
+      .onTapGesture {
+        isFocused = false
+      }
+      .background(Color.background)
+      
+      Color.clear
+        .frame(width: 50)
+        .contentShape(Rectangle())
+        .gesture(
+          DragGesture()
+            .onEnded { value in
+              if value.translation.width > 80 {
+                store.send(.backGestureSwiped)
+              }
+            }
+        )
     }
-    .contentShape(Rectangle())
-    .onTapGesture {
-      isFocused = false
-    }
-    .background(Color.background)
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
-    .simultaneousGesture(
-      DragGesture(minimumDistance: 25, coordinateSpace: .local)
-        .onEnded { value in
-          if value.startLocation.x < 50,
-             value.translation.width > 80,
-             abs(value.translation.width) > abs(value.translation.height) {
-            store.send(.backGestureSwiped)
-          }
-        }
-    )
     .overlay {
       if store.isAlert {
         ZStack {
