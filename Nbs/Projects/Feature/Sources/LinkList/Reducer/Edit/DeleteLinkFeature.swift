@@ -19,6 +19,7 @@ struct DeleteLinkFeature {
   @ObservableState
   struct State: Equatable {
     var allLinks: [ArticleItem] = []
+    var categoryName: String = "전체"
     var selectedLinks: Set<String> = []
     var isSelectAll: Bool = false
     var hideSelectControls: Bool = false
