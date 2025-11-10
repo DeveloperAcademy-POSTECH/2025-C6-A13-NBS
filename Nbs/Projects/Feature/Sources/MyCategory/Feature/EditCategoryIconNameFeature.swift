@@ -68,7 +68,7 @@ struct EditCategoryIconNameFeature {
       case .compeleteButtonTapped:
         return .run { [category = state.category, name = state.categoryName] send in
           let categories = try swiftDataClient.fetchCategories()
-          let isDuplicate = categories.contains { $0.categoryName.lowercased() == name.lowercased() && $0.id != category?.id }
+          let isDuplicate = categories.contains { $0.categoryName.lowercased() == name.lowercased() && $0.id != category?.id } || name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == "전체"
           
           await send(.setDuplicate(isDuplicate))
         }
