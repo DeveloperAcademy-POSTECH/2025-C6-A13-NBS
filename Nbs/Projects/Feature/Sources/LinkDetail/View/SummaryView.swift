@@ -14,6 +14,7 @@ import ComposableArchitecture
 struct SummaryView: View {
   let link: ArticleItem
   @Bindable var store: StoreOf<SummaryFeature>
+  @FocusState private var isCommentTextFieldFocused: Bool
 }
 
 extension SummaryView {
@@ -44,6 +45,7 @@ extension SummaryView {
       .presentationDetents([.height(164)])
       .presentationCornerRadius(16)
     }
+    .bind($store.isCommentTextFieldFocused, to: self.$isCommentTextFieldFocused)
   }
   
   /// 하이라이트 섹션
@@ -57,23 +59,49 @@ extension SummaryView {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(type.backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .onLongPressGesture(minimumDuration: 0.5) {
+          let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
+          impactFeedback.impactOccurred()
+          store.send(.highlightLongpress)
+        }
       
       // 코멘트 리스트
       if !item.comments.isEmpty {
         VStack(alignment: .leading, spacing: 8) {
           ForEach(item.comments, id: \.id) { comment in
-            Text("\(comment.text)")
-              .font(.B3_R_HLM)
-              .foregroundStyle(.text1)
-              .padding(16)
-              .frame(maxWidth: .infinity, alignment: .leading)
-              .background(.n20)
-              .clipShape(RoundedRectangle(cornerRadius: 12))
-              .onLongPressGesture(minimumDuration: 0.5) {
-                let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
-                impactFeedback.impactOccurred()
-                store.send(.commentLongpress(comment))
-              }
+            if store.editingCommentId == comment.id {
+              TextEditor(text: $store.editedCommentText.sending(\.commentTextFieldChanged))
+                .font(.B3_R_HLM)
+                .foregroundStyle(.text1)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 11)
+                .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
+                .scrollContentBackground(.hidden)
+                .background(.n20)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .focused($isCommentTextFieldFocused)
+                .toolbar {
+                  ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") {
+                      isCommentTextFieldFocused = false
+                    }
+                  }
+                }
+            } else {
+              Text("\(comment.text)")
+                .font(.B3_R_HLM)
+                .foregroundStyle(.text1)
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.n20)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .onLongPressGesture(minimumDuration: 0.5) {
+                  let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
+                  impactFeedback.impactOccurred()
+                  store.send(.commentLongpress(comment))
+                }
+            }
           }
         }
         
