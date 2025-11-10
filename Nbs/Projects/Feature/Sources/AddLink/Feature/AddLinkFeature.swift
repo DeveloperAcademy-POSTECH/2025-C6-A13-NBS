@@ -20,12 +20,16 @@ struct AddLinkFeature {
   struct State: Equatable {
     var isConfirmAlertPresented = false
     var linkURL: String
-    var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
+    var categoryGrid = CategoryGridFeature.State(
+      allowsMultipleSelection: false,
+      showAllCategory: true
+    )
     var selectedCategory: CategoryItem?
     var isURLExisting: Bool = false
     var articles: [ArticleItem] = []
     var showToast: Bool = false
     var toastMessage: String = ""
+    var totalLinksCount: Int = 0
     
     init(linkURL: String = "") {
       self.linkURL = linkURL
@@ -45,7 +49,6 @@ struct AddLinkFeature {
     case didCheckURLExists(Bool)
     case showToast(String)
     case hideToast
-    case fetch
     case fetchArticleItem
     case didFetchArticleItems(Result<ArticleItem?, Error>)
     case navigateToLinkDetail(ArticleItem)
@@ -111,7 +114,11 @@ struct AddLinkFeature {
               title: title,
               imageURL: image.absoluteString
             )
-            newLink.category = selectedCategory
+            if selectedCategory?.categoryName == "전체" {
+              newLink.category = nil
+            } else {
+              newLink.category = selectedCategory
+            }
             try swiftDataClient.addLink(newLink)
             await send(.saveLinkResponse(.success(())))
           } catch {
@@ -185,8 +192,6 @@ struct AddLinkFeature {
         }
       case .hideToast:
         state.showToast = false
-        return .none
-      case .fetch:
         return .none
       }
     }

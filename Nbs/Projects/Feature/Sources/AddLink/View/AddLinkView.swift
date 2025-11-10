@@ -64,7 +64,7 @@ struct AddLinkView: View {
             Spacer()
             MainButton(
               AddLinkNamespace.ctaButtonTitle,
-              isDisabled: store.linkURL.isEmpty || !isValidURL || store.isURLExisting,
+              isDisabled: store.linkURL.isEmpty || !isValidURL || store.isURLExisting || store.selectedCategory == nil,
               hasGradient: true
             ) {
               store.send(.saveButtonTapped)
@@ -83,9 +83,9 @@ struct AddLinkView: View {
         Color.clear
           .frame(width: 50)
           .padding(.top, 60)
-                  .contentShape(Rectangle())
-                  .allowsHitTesting(false)
-                  .gesture(
+          .contentShape(Rectangle())
+          .allowsHitTesting(false)
+          .gesture(
             DragGesture()
               .onEnded { value in
                 if value.translation.width > 80 {

@@ -15,6 +15,7 @@ struct CategoryGridFeature {
     var categories: [CategoryItem] = []
     var selectedCategories: Set<CategoryItem> = []
     var allowsMultipleSelection: Bool = false
+    var showAllCategory: Bool = false
   }
   
   enum Action {
@@ -41,7 +42,13 @@ struct CategoryGridFeature {
           }))
         }
       case let .fetchCategoriesResponse(.success(categories)):
-        state.categories = categories
+        var allCategories = categories
+        if state.showAllCategory {
+          allCategories.append(CategoryItem(categoryName: "전체", icon: .init(number: 16)))
+          state.categories = allCategories
+        } else {
+          state.categories = categories
+        }
         return .none
       case let .toggleCategorySelection(category):
         if state.allowsMultipleSelection {
