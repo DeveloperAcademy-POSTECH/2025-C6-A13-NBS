@@ -34,9 +34,11 @@ extension CategoryGridView: View {
                     .foregroundStyle(.text1)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
-                  Text("\(category.links.count)개")
-                    .font(.B2_M)
-                    .foregroundStyle(.caption1)
+                  if category.categoryName != "전체" {
+                    Text("\(category.links.count)개")
+                      .font(.B2_M)
+                      .foregroundStyle(.caption1)
+                  }
                   Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
