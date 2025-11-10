@@ -28,7 +28,7 @@ struct SummaryFeature {
     case commentTextFieldChanged(String)
     case saveCommentButtonTapped
     
-    case highlightLongpress
+    case highlightLongpress(HighlightItem)
     case binding(BindingAction<State>)
     
     case hightlightEditSheet(PresentationAction<HighlightEditFeature.Action>)
@@ -41,7 +41,7 @@ struct SummaryFeature {
       switch action {
       case .commentLongpress(let comment):
         print("Longpress")
-        state.hightlightEditSheet = .init(comment: comment)
+        state.hightlightEditSheet = .init(context: .comment(comment))
         return .none
         
       case .commentTextFieldChanged(let text):
@@ -80,8 +80,8 @@ struct SummaryFeature {
         }
         .cancellable(id: "edit-comment-\(editingId)")
       
-      case .highlightLongpress:
-        print("hlp")
+      case .highlightLongpress(let highlightItem):
+        state.hightlightEditSheet = .init(context: .highlight(highlightItem))
         return .none
         
       case .binding(\.isCommentTextFieldFocused):
@@ -94,31 +94,54 @@ struct SummaryFeature {
         state.hightlightEditSheet = nil
         return .none
         
-      case .hightlightEditSheet(.presented(.delegate(.delete(let comment)))):
-        print(comment)
-        guard let highlightIndex = state.article.highlights.firstIndex(where: { $0.comments.contains(comment)}) else {
-          return .none
-        }
-        let highlightId = state.article.highlights[highlightIndex].id
-        let commentId = comment.id
-        
-        state.article.highlights[highlightIndex].comments.removeAll { $0.id == comment.id }
-        
-        return .run { _ in
-          do {
-            try self.swiftDataClient.deleteComment(commentId, highlightId)
-          } catch {
-            print("코멘트 삭제 실패")
+      case .hightlightEditSheet(.presented(.delegate(.delete(let context)))):
+        switch context {
+        case .comment(let comment):
+          guard let highlightIndex = state.article.highlights.firstIndex(where: { $0.comments.contains(comment)}) else {
+            return .none
+          }
+          let highlightId = state.article.highlights[highlightIndex].id
+          let commentId = comment.id
+          
+          state.article.highlights[highlightIndex].comments.removeAll { $0.id == comment.id }
+          
+          return .run { _ in
+            do {
+              try self.swiftDataClient.deleteComment(commentId, highlightId)
+            } catch {
+              print("코멘트 삭제 실패")
+            }
+          }
+          .cancellable(id: "delete-comment-\(commentId)")
+        case .highlight(let highlight):
+          guard let highlightIndex = state.article.highlights.firstIndex(where: { $0.id == highlight.id }) else {
+            return .none
+          }
+          
+          state.article.highlights.remove(at: highlightIndex)
+          
+          let highlightId = highlight.id
+          
+          return .run { _ in
+            do {
+              try self.swiftDataClient.deleteHighlight(highlightId)
+            } catch {
+              print("")
+            }
           }
         }
-        .cancellable(id: "delete-comment-\(commentId)")
-      
-      case .hightlightEditSheet(.presented(.delegate(.edit(let comment)))):
-        state.hightlightEditSheet = nil
-        state.editingCommentId = comment.id
-        state.editedCommentText = comment.text
-        state.isCommentTextFieldFocused = true
-        return .none
+        
+      case .hightlightEditSheet(.presented(.delegate(.edit(let context)))):
+        switch context {
+        case .comment(let comment):
+          state.hightlightEditSheet = nil
+          state.editingCommentId = comment.id
+          state.editedCommentText = comment.text
+          state.isCommentTextFieldFocused = true
+          return .none
+        case .highlight(let highlight):
+          return .none
+        }
         
       case .hightlightEditSheet:
         return .none
