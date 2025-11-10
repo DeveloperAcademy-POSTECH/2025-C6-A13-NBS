@@ -25,50 +25,54 @@ struct EditCategoryIconNameView {
 
 extension EditCategoryIconNameView: View {
   var body: some View {
-    VStack {
-      TopAppBarDefaultRightIconx(title: "카테고리 수정하기") {
-        store.send(.topAppBar(.tapBackButton))
+    ZStack(alignment: .leading) {
+      VStack {
+        TopAppBarDefaultRightIconx(title: "카테고리 수정하기") {
+          store.send(.topAppBar(.tapBackButton))
+        }
+        
+        JNTextField(
+          text: $store.categoryName.sending(\.setCategoryName),
+          style: $store.textFieldStyle.sending(\.setTextFieldStyle),
+          placeholder: "카테고리명을 입력해주세요",
+          caption: "이미 존재하는 카테고리예요",
+          header: "카테고리명"
+        )
+        .focused($isFocused)
+        .toolbar {
+          ToolbarItemGroup(placement: .keyboard) {
+            Spacer()
+            Button("완료") {
+              isFocused = false
+            }
+          }
+        }
+        CategoryIconScrollView(selectedIcon: $store.selectedIcon.sending(\.selectIcon))
+        MainButton(
+          "완료",
+          isDisabled: store.categoryName.isEmpty,
+          hasGradient: true
+        ) {
+          store.send(.compeleteButtonTapped)
+        }
+      }
+      .background(DesignSystemAsset.background.swiftUIColor)
+      .onTapGesture {
+        isFocused = false
       }
       
-      JNTextField(
-        text: $store.categoryName.sending(\.setCategoryName),
-        style: $store.textFieldStyle.sending(\.setTextFieldStyle),
-        placeholder: "카테고리명을 입력해주세요",
-        caption: "이미 존재하는 카테고리예요",
-        header: "카테고리명"
-      )
-      .focused($isFocused)
-      .toolbar {
-        ToolbarItemGroup(placement: .keyboard) {
-          Spacer()
-          Button("완료") {
-            isFocused = false
-          }
-        }
-      }
-      CategoryIconScrollView(selectedIcon: $store.selectedIcon.sending(\.selectIcon))
-      MainButton(
-        "완료",
-        isDisabled: store.categoryName.isEmpty,
-        hasGradient: true
-      ) {
-        store.send(.compeleteButtonTapped)
-      }
+      Color.clear
+        .frame(width: 50)
+        .contentShape(Rectangle())
+        .gesture(
+          DragGesture()
+            .onEnded { value in
+              if value.translation.width > 80 {
+                store.send(.backGestureSwiped)
+              }
+            }
+        )
     }
-    .background(DesignSystemAsset.background.swiftUIColor)
-    .onTapGesture {
-      isFocused = false
-    }
-    .simultaneousGesture(
-      DragGesture(minimumDistance: 25, coordinateSpace: .local)
-        .onEnded { value in
-          if value.startLocation.x < 50,
-             value.translation.width > 80,
-             abs(value.translation.width) > abs(value.translation.height) {
-            store.send(.backGestureSwiped)
-          }
-        }
-    )
     .toolbar(.hidden)
     .ignoresSafeArea(.keyboard)
     .overlay {
