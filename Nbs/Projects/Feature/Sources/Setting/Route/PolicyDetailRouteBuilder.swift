@@ -21,7 +21,7 @@ public struct PolicyDetailRouteBuilder {
     let matchPath = Route.policyDetail.rawValue
     
     return .init(matchPath: matchPath) { navigator, item, _ -> RouteViewController? in
-      let decoded: PolicyDetailParameter? = item.decoded()
+      let decoded: PolicyDetailPayload? = item.decoded()
       return WrappingController(matchPath: matchPath) {
         PolicyDetailView(
           store: Store(
