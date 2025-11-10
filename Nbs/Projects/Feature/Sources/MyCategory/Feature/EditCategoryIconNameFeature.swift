@@ -12,6 +12,10 @@ import ComposableArchitecture
 import Domain
 import DesignSystem
 
+extension Notification.Name {
+  static let categoryEdited = Notification.Name("categoryEdited")
+}
+
 @Reducer
 struct EditCategoryIconNameFeature {
   
@@ -80,6 +84,7 @@ struct EditCategoryIconNameFeature {
             await MainActor.run {
               do {
                 try swiftDataClient.updateCategoryItem(id, name, icon)
+                NotificationCenter.default.post(name: .categoryEdited, object: nil)
               } catch {
                 print("카테고리 업데이트 실패 \(error)")
               }
