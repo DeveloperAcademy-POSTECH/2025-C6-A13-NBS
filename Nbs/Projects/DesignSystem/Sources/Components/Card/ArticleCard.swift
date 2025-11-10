@@ -144,6 +144,9 @@ private extension ArticleCard {
               RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.bl6, lineWidth: 1.25)
             )
+        } else {
+          RoundedRectangle(cornerRadius: 12)
+            .fill(Color.bgDimCard)
         }
       }
     }
@@ -169,6 +172,15 @@ private extension ArticleCard {
         dateString: "2025년 10월 19일",
         newsCompany: "조선일보",
         isSelected: .constant(true),
+        editMode: .active
+      )
+      ArticleCard(
+        title: "AI가 뉴스 생태계를 바꾸다",
+        categoryName: "기술",
+        imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
+        dateString: "2025년 10월 19일",
+        newsCompany: "조선일보",
+        isSelected: .constant(false),
         editMode: .active
       )
     }
