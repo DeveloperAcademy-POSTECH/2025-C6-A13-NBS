@@ -41,7 +41,7 @@ struct LinkListFeature {
     let title: String
     let icon: Image
     let tint: Tint
-    enum Tint: Equatable { case danger, info }
+    enum Tint: Equatable { case danger, info, alert }
   }
   
   // MARK: - Action
@@ -155,6 +155,9 @@ private extension LinkListFeature {
       /// 편집 시트 -> 이동하기
     case .editSheet(.presented(.delegate(.moveLink))):
       state.editSheet = nil
+      if state.articleList.link.isEmpty {
+          return .send(.showAlert(title: "이 카테고리에 이동할 링크가 없어요", tint: .alert))
+        }
       let payload = LinkListPayload(
         links: state.articleList.link,
         categoryName: state.selectedCategory?.categoryName ?? "전체"
@@ -181,6 +184,9 @@ private extension LinkListFeature {
       /// 편집 시트 -> 삭제하기
     case .editSheet(.presented(.delegate(.deleteLink))):
       state.editSheet = nil
+      if state.articleList.link.isEmpty {
+          return .send(.showAlert(title: "이 카테고리에 삭제할 링크가 없어요", tint: .alert))
+        }
       let payload = LinkListPayload(
         links: state.articleList.link,
         categoryName: state.selectedCategory?.categoryName ?? "전체"

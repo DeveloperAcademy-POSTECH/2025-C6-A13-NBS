@@ -181,6 +181,8 @@ extension LinkListView: View {
       return .danger
     case .info:
       return .bl3
+    case .alert:
+      return .bl3
     }
   }
 }
