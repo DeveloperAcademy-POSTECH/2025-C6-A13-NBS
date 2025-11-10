@@ -8,9 +8,9 @@ struct CategoryIconScrollView {
   @Binding var selectedIcon: CategoryIcon?
   
   let columns = [
-    GridItem(.flexible(), spacing: 10),
-    GridItem(.flexible(), spacing: 10),
-    GridItem(.flexible(), spacing: 10)
+    GridItem(.flexible(), spacing: 16),
+    GridItem(.flexible(), spacing: 16),
+    GridItem(.flexible(), spacing: 16)
   ]
 }
 
