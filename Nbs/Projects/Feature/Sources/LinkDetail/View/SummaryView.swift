@@ -52,10 +52,13 @@ extension SummaryView {
           ForEach(item.comments, id: \.id) { comment in
             Text("\(comment.text)")
               .font(.B3_R_HLM)
-              .foregroundStyle(.caption1)
+              .foregroundStyle(.text1)
+              .padding(16)
+              .frame(maxWidth: .infinity, alignment: .leading)
+              .background(.n20)
+              .clipShape(RoundedRectangle(cornerRadius: 12))
           }
         }
-        .padding(.horizontal, 16)
         
         Rectangle()
           .fill(.divider1)
