@@ -11,6 +11,11 @@ import ComposableArchitecture
 import Domain
 import SwiftData
 
+extension Notification.Name {
+  static let linkSaved = Notification.Name("linkSaved")
+  static let firstlinkSaved = Notification.Name("firstlinkSaved")
+}
+
 @Reducer
 struct AddLinkFeature {
   
@@ -154,6 +159,10 @@ struct AddLinkFeature {
         return .run { _ in await linkNavigator.pop() }
         
       case .saveLinkResponse(.success):
+        NotificationCenter.default.post(
+          name: .linkSaved,
+          object: nil
+        )
         return .run { _ in await linkNavigator.pop() }
         
       case .saveLinkResponse(.failure(let error)):

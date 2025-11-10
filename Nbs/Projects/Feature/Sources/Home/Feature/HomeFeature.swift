@@ -26,6 +26,8 @@ struct HomeFeature {
     var copiedLink: String?
     var myCategoryCollection = MyCategoryCollectionFeature.State()
     var lastShownClipboardLink: String?
+    var showToast: Bool = false
+    var toastMessage: String = ""
     
     struct AlertBannerState: Equatable {
       let text: String
@@ -46,6 +48,8 @@ struct HomeFeature {
     case searchButtonTapped
     case settingButtonTapped
     case refresh
+    case showToast(String)
+    case hideToast
   }
   
   var body: some ReducerOf<Self> {
@@ -64,6 +68,19 @@ struct HomeFeature {
           await send(.clipboardResponded(clipboard.getString()))
           await send(.fetchArticles)
         }
+        
+      case .showToast(let message):
+        state.showToast = true
+        state.toastMessage = message
+        return .run { send in
+          try await Task.sleep(for: .seconds(2))
+          await send(.hideToast)
+        }
+        
+      case .hideToast:
+        state.showToast = false
+        state.toastMessage = ""
+        return .none
         
       case .fetchArticles:
         return .run { send in
@@ -100,6 +117,7 @@ struct HomeFeature {
         )
         state.copiedLink = copiedText
         state.lastShownClipboardLink = copiedText
+        
         return .none
         
       case .dismissAlertBanner:
@@ -115,6 +133,7 @@ struct HomeFeature {
         if let link = state.copiedLink {
           linkNavigator.push(.addLink, CopiedLink(url: link))
         }
+        state.alertBanner = nil
         return .none
         
       case .searchButtonTapped:

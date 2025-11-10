@@ -79,5 +79,26 @@ extension HomeView: View {
     }
     .background(Color.background)
     .toolbar(.hidden)
+    .task {
+      NotificationCenter.default.addObserver(
+        forName: .linkSaved,
+        object: nil,
+        queue: .main
+      ) { _ in
+        store.send(.showToast(""))
+      }
+    }
+    .overlay(alignment: .bottom) {
+      if store.showToast {
+        AlertBanner(
+          text: "링크를 저장했어요!",
+          message: "정책에서 확인할 수 있어요",
+          style: .common
+        )
+        .padding(.horizontal, 20)
+        .padding(.bottom, 20)
+      }
+    }
+    .animation(.easeInOut(duration: 0.3), value: store.showToast)
   }
 }
