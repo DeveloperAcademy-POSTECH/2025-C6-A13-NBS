@@ -21,6 +21,8 @@ struct MyCategoryCollectionFeature {
     var settingModal: CategorySettingFeature.State?
     var myCategoryGrid = MyCategoryGridFeature.State()
     var allLinksCount = 0
+    var showToast: Bool = false
+    var toastMessage: String = ""
   }
   
   enum Action {
@@ -31,6 +33,8 @@ struct MyCategoryCollectionFeature {
     case myCategoryGrid(MyCategoryGridFeature.Action)
     case fetchArticleResponse(Result<[ArticleItem], Error>)
     case onAppear
+    case showToast(String)
+    case hideToast
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -70,12 +74,15 @@ struct MyCategoryCollectionFeature {
         return .none
       case .settingModal(.addButtonTapped):
         linkNavigator.push(.addCategory, nil)
+        state.settingModal = nil
         return .none
       case .settingModal(.editButtonTapped):
         linkNavigator.push(.editCategory, nil)
+        state.settingModal = nil
         return .none
       case .settingModal(.deleteButtonTapped):
         linkNavigator.push(.deleteCategory, nil)
+        state.settingModal = nil
         return .none
       case .myCategoryGrid(_):
         return .none
@@ -83,6 +90,17 @@ struct MyCategoryCollectionFeature {
         state.allLinksCount = article.count
         return .none
       case .fetchArticleResponse(.failure(_)):
+        return .none
+      case .showToast(let message):
+        state.showToast = true
+        state.toastMessage = message
+        return .run { send in
+          try await Task.sleep(for: .seconds(2))
+          await send(.hideToast)
+        }
+      case .hideToast:
+        state.showToast = false
+        state.toastMessage = ""
         return .none
       }
     }
