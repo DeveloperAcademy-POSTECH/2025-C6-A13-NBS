@@ -25,7 +25,7 @@ extension CategoryListView: View {
           store.send(.moreCategoryButtonTapped)
         }
       )
-        .padding(.horizontal, 20)
+      .padding(.horizontal, 20)
       
       if store.categories.isEmpty {
         MakeNewCategoryButton {
@@ -44,9 +44,9 @@ extension CategoryListView: View {
               }
             }
           }
+          .padding(.horizontal, 20)
         }
         .scrollDisabled(store.categories.count < 2)
-        .padding(.leading, 20)
         .scrollIndicators(.hidden)
       }
     }
