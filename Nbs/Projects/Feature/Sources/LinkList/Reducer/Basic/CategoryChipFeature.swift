@@ -41,17 +41,18 @@ struct CategoryChipFeature {
       case let .categoriesResponse(.success(items)):
         /// 카테고리를 가상의 첫 항목으로 추가
         let allCategory = CategoryItem(categoryName: "전체", icon: .init(number: 0))
-        state.categories = [allCategory] + items
+        let reversed = items.reversed()
+        state.categories = [allCategory] + reversed
         if state.selectedCategory == nil {
-            state.selectedCategory = allCategory
-          } else if let selectedName = state.selectedCategory?.categoryName,
-                    let match = state.categories.first(where: { $0.categoryName == selectedName }) {
-            // 기존 선택 카테고리가 목록에 여전히 존재하면 그걸 유지
-            state.selectedCategory = match
-          } else {
-            // 기존 선택 카테고리가 목록에 없을 경우만 전체로 복귀
-            state.selectedCategory = allCategory
-          }
+          state.selectedCategory = allCategory
+        } else if let selectedName = state.selectedCategory?.categoryName,
+                  let match = state.categories.first(where: { $0.categoryName == selectedName }) {
+          // 기존 선택 카테고리가 목록에 여전히 존재하면 그걸 유지
+          state.selectedCategory = match
+        } else {
+          // 기존 선택 카테고리가 목록에 없을 경우만 전체로 복귀
+          state.selectedCategory = allCategory
+        }
         return .none
         
       case let .categoriesResponse(.failure(error)):
