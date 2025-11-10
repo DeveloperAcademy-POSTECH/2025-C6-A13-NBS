@@ -59,15 +59,12 @@ struct LinkListFeature {
     case editButtonTapped
     case backButtonTapped
     case searchButtonTapped
-    case navigateToMoveLink(allLinks: [ArticleItem])
-    case navigateToDeleteLink(allLinks: [ArticleItem])
     case refresh
+    case moveToCategoryName(String)
     
     /// 시트 관련 액션
     case editSheet(PresentationAction<EditSheetFeature.Action>)
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
-    case openDeleteLink
-    case closeEditSheet
     
     /// 알럿 관련 액션
     case hideAlertBanner
@@ -78,11 +75,6 @@ struct LinkListFeature {
     case fetchLinksResponse(Result<[ArticleItem], Error>)
     case fetchCategories
     case responseCategoryItems([CategoryItem])
-    
-    case delegate(Delegate)
-    enum Delegate {
-      case openLinkDetail(ArticleItem)
-    }
   }
   
   // MARK: - Body
@@ -155,16 +147,6 @@ private extension LinkListFeature {
       }
       return .none
       
-    case let .navigateToMoveLink(allLinks):
-      return .run { _ in
-        await linkNavigator.push(.moveLink, allLinks)
-      }
-      
-    case let .navigateToDeleteLink(allLinks):
-      return .run { _ in
-        await linkNavigator.push(.deleteLink, allLinks)
-      }
-      
       /// 편집 시트 내부에서 닫기
     case .editSheet(.presented(.delegate(.dismissSheet))):
       state.editSheet = nil
@@ -173,12 +155,39 @@ private extension LinkListFeature {
       /// 편집 시트 -> 이동하기
     case .editSheet(.presented(.delegate(.moveLink))):
       state.editSheet = nil
-      return .send(.navigateToMoveLink(allLinks: state.allLinks))
+      let payload = LinkListPayload(
+        links: state.articleList.link,
+        categoryName: state.selectedCategory?.categoryName ?? "전체"
+      )
+      return .run { _ in
+        linkNavigator.push(.moveLink, payload)
+      }
+      
+    case let .moveToCategoryName(name):
+      if let match = state.categoryChipList.categories.first(where: { $0.categoryName == name }) {
+        state.selectedCategory = match
+        state.categoryChipList.selectedCategory = match
+        state.articleList.link = state.allLinks.filter {
+          $0.category?.categoryName == name
+        }
+      } else {
+        state.selectedCategory = nil
+        state.categoryChipList.selectedCategory =
+        state.categoryChipList.categories.first(where: { $0.categoryName == "전체" })
+        state.articleList.link = state.allLinks
+      }
+      return .none
       
       /// 편집 시트 -> 삭제하기
     case .editSheet(.presented(.delegate(.deleteLink))):
       state.editSheet = nil
-      return .send(.navigateToDeleteLink(allLinks: state.allLinks))
+      let payload = LinkListPayload(
+        links: state.articleList.link,
+        categoryName: state.selectedCategory?.categoryName ?? "전체"
+      )
+      return .run { _ in
+        linkNavigator.push(.deleteLink, payload)
+      }
       
       /// 알럿 띄우기
     case let .showAlert(title, tint):
@@ -196,40 +205,22 @@ private extension LinkListFeature {
       state.alert = nil
       return .none
       
-    case .openDeleteLink:
-      return .none
-      
-    case .closeEditSheet:
-      state.editSheet = nil
-      return .none
-      
       /// 카테고리 바텀시트에서 카테고리 선택
     case .selectBottomSheet(.presented(.delegate(.categorySelected(let name)))):
       if let name {
         if name == "전체" {
-          // 필터 해제
-          state.selectedCategory = nil
+          state.selectedCategory = CategoryItem(categoryName: "전체", icon: .init(number: 0))
           state.articleList.link = state.allLinks
-          
-          // 칩 하이라이트는 전체 항목으로 맞춰주기
-          if let allChip = state.categoryChipList.categories.first(where: { $0.categoryName == "전체" }) {
-            state.categoryChipList.selectedCategory = allChip
-          } else {
-            // "전체" 칩이 별도로 없으면 하이라이트 해제
-            state.categoryChipList.selectedCategory = nil
-          }
+          state.categoryChipList.selectedCategory =
+          state.categoryChipList.categories.first(where: { $0.categoryName == "전체" })
         } else {
-          // 현재 로드된 칩 목록에서 같은 이름의 카테고리 객체를 찾아 동기화
           if let match = state.categoryChipList.categories.first(where: { $0.categoryName == name }) {
             state.selectedCategory = match
             state.categoryChipList.selectedCategory = match
           } else {
-            // 혹시 칩 목록에 아직 없으면 이름만으로 상태 유지
             state.selectedCategory = CategoryItem(categoryName: name, icon: .init(number: 1))
             state.categoryChipList.selectedCategory = nil
           }
-          
-          // 리스트 필터 적용
           state.articleList.link = state.allLinks.filter { $0.category?.categoryName == name }
         }
       }
@@ -245,9 +236,7 @@ private extension LinkListFeature {
       return .send(.linkLongPressed(link))
       
     case .refresh:
-      return .run { send in
-        await send(.fetchLinks)
-      }
+      return .send(.fetchLinks)
       
     default:
       return .none
@@ -276,29 +265,28 @@ private extension LinkListFeature {
       
       /// 링크 데이터 성공적으로 로드됨
     case let .fetchLinksResponse(.success(items)):
+      // 받은 데이터 정렬
       let sorted = items.sorted { $0.createAt > $1.createAt }
       state.allLinks = sorted
-      state.articleList.link = sorted
       state.articleList.sortOrder = .latest
       
-      if let selected = state.selectedCategory {
-        // 목록도 필터
+      if let selected = state.selectedCategory, selected.categoryName != "전체" {
         state.articleList.link = sorted.filter { $0.category?.categoryName == selected.categoryName }
-        // 칩 하이라이트 동기화 (동일 이름의 카테고리 객체로 교체)
-        if let match = state.categoryChipList.categories.first(where: { $0.categoryName == selected.categoryName }) {
-          state.categoryChipList.selectedCategory = match
-          state.selectedCategory = match
-        } else {
-          // 칩 목록에 없으면 일단 하이라이트 해제
-          state.categoryChipList.selectedCategory = nil
+      } else if state.selectedCategory?.categoryName == "전체" {
+        state.articleList.link = sorted
+      } else if let chipSelected = state.categoryChipList.selectedCategory,
+                chipSelected.categoryName != "전체" {
+        state.selectedCategory = chipSelected
+        state.articleList.link = sorted.filter {
+          $0.category?.categoryName == chipSelected.categoryName
         }
       } else {
-        // 전체 선택 상태라면 전체 칩에 하이라이트(있으면)
-        if let allChip = state.categoryChipList.categories.first(where: { $0.categoryName == "전체" }) {
-          state.categoryChipList.selectedCategory = allChip
-        } else {
-          state.categoryChipList.selectedCategory = nil
-        }
+        state.articleList.link = sorted
+      }
+      
+      if let selected = state.selectedCategory,
+         let match = state.categoryChipList.categories.first(where: { $0.categoryName == selected.categoryName }) {
+        state.categoryChipList.selectedCategory = match
       }
       return .none
       
@@ -318,42 +306,26 @@ private extension LinkListFeature {
     case .responseCategoryItems(let items):
       // 전체 + 최신순 구성
       let allCategory = CategoryProps(id: uuid(), title: "전체")
-      let reversedItems = items.reversed()
-      var categoryProps: [CategoryProps] = reversedItems.map { item in
-        CategoryProps(id: uuid(), title: item.categoryName)
-      }
-      categoryProps.insert(allCategory, at: 0)
-      let allCategories = IdentifiedArray(uniqueElements: categoryProps)
+      let reversed = items.reversed()
+      var props = reversed.map { CategoryProps(id: uuid(), title: $0.categoryName) }
+      props.insert(allCategory, at: 0)
+      let allCategories = IdentifiedArray(uniqueElements: props)
       
-      // ChipList도 동기화
       let allChip = CategoryItem(categoryName: "전체", icon: .init(number: 0))
-      let chipCategories = [allChip] + reversedItems.map {
+      let chipCategories = [allChip] + reversed.map {
         CategoryItem(categoryName: $0.categoryName, icon: $0.icon)
       }
       state.categoryChipList.categories = chipCategories
       
-      // selectedCategory가 항상 최신으로 반영되도록 보장
-      let currentSelectedTitle: String
-      if let selected = state.selectedCategory?.categoryName,
-         chipCategories.contains(where: { $0.categoryName == selected }) {
-        currentSelectedTitle = selected
-      } else {
-        currentSelectedTitle = "전체"
-      }
-      
-      // 시트 생성 (동기화된 선택 상태로)
+      let current = state.selectedCategory?.categoryName ?? "전체"
       state.selectBottomSheet = SelectBottomSheetFeature.State(
         categories: allCategories,
-        selectedCategory: currentSelectedTitle
+        selectedCategory: current
       )
       
-      // 칩도 동일하게 반영
-      if let match = chipCategories.first(where: { $0.categoryName == currentSelectedTitle }) {
+      if let match = chipCategories.first(where: { $0.categoryName == current }) {
         state.categoryChipList.selectedCategory = match
-      } else {
-        state.categoryChipList.selectedCategory = nil
       }
-      
       return .none
       
     default:

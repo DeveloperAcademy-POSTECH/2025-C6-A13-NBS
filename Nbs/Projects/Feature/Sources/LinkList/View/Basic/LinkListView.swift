@@ -51,8 +51,16 @@ extension LinkListView: View {
           object: nil,
           queue: .main
         ) { notification in
-          let count = (notification.object as? [String: Int])?["movedCount"] ?? 0
+          guard
+            let info = notification.object as? [String: Any]
+          else { return }
+          
+          let count = info["movedCount"] as? Int ?? 0
           store.send(.showAlert(title: "\(count)개의 링크를 이동했어요", tint: .info))
+          
+          if let name = info["categoryName"] as? String {
+            store.send(.moveToCategoryName(name))
+          }
           store.send(.fetchLinks)
         }
       }
