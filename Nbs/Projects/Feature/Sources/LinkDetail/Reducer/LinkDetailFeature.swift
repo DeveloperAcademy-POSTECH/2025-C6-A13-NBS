@@ -25,6 +25,18 @@ struct LinkDetailFeature {
     var editedMemo = ""
     var isDeleted = false
     var showToast: Bool = false
+    
+    var summary: SummaryFeature.State
+    
+    init(article: ArticleItem) {
+      self.link = article
+      self.isEditingTitle = false
+      self.editedTitle = ""
+      self.editedMemo = ""
+      self.isDeleted = false
+      self.showToast = false
+      self.summary = SummaryFeature.State(article: article)
+    }
   }
   
   enum Action {
@@ -55,9 +67,15 @@ struct LinkDetailFeature {
     case editCompletedNotification
     case showToast
     case dismissToast
+    
+    case summary(SummaryFeature.Action)
   }
   
   var body: some ReducerOf<Self> {
+    Scope(state: \.summary, action: \.summary) {
+      SummaryFeature()
+    }
+    
     Reduce { state, action in
       switch action {
       case .onAppear:
@@ -173,6 +191,7 @@ struct LinkDetailFeature {
       case .refreshed(let item):
         if let item {
           state.link = item
+          state.summary.article = item
         }
         return .none
         
@@ -189,6 +208,9 @@ struct LinkDetailFeature {
         
       case .dismissToast:
         state.showToast = false
+        return .none
+        
+      case .summary:
         return .none
       }
     }
