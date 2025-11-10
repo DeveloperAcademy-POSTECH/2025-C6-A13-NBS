@@ -35,9 +35,6 @@ extension LinkListView: View {
         }
       }
 			.toolbar(.hidden)
-      .refreshable {
-        store.send(.refresh)
-      }
       .task { store.send(.onAppear) }
       .sheet(
         store: store.scope(state: \.$selectBottomSheet, action: \.selectBottomSheet)
@@ -165,6 +162,9 @@ extension LinkListView: View {
       withAnimation(.easeInOut(duration: 0.2)) {
         showScrollToTopButton = offsetY < base + 300
       }
+    }
+    .refreshable {
+      await store.send(.refresh)
     }
   }
   

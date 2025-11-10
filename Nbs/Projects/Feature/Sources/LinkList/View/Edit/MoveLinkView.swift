@@ -37,10 +37,9 @@ extension MoveLinkView {
           .padding(.bottom, 50)
         }
         .onPreferenceChange(MoveScrollOffsetKey.self) { offsetY in
-          print("🌀 offsetY:", offsetY)
           withAnimation(.easeInOut(duration: 0.2)) {
             showScrollToTopButton = offsetY < -50
-            //          showScrollToTopButton = true/
+//            showScrollToTopButton = true
           }
         }
         .sheet(

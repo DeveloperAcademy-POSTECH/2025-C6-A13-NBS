@@ -78,7 +78,7 @@ struct LinkListFeature {
     case fetchLinksResponse(Result<[ArticleItem], Error>)
     case fetchCategories
     case responseCategoryItems([CategoryItem])
-  
+    
     case delegate(Delegate)
     enum Delegate {
       case openLinkDetail(ArticleItem)
@@ -140,6 +140,12 @@ private extension LinkListFeature {
       
       /// 카테고리 칩 선택 시 필터링
     case let .categoryChipList(.categoryTapped(category)):
+      // 선택 상태 동기화
+      state.selectedCategory = category
+      state.categoryChipList.selectedCategory = category
+      state.selectBottomSheet?.selectedCategory = category.categoryName
+      
+      // 필터링 반영
       if category.categoryName == "전체" {
         state.articleList.link = state.allLinks
       } else {
@@ -310,22 +316,44 @@ private extension LinkListFeature {
       
       /// 카테고리 목록 로드 후 바텀시트 표시
     case .responseCategoryItems(let items):
-      /// 전체 카테고리 + 실제 카테고리 목록 구성
+      // 전체 + 최신순 구성
       let allCategory = CategoryProps(id: uuid(), title: "전체")
-      var categoryProps: [CategoryProps] = items.map { item in
+      let reversedItems = items.reversed()
+      var categoryProps: [CategoryProps] = reversedItems.map { item in
         CategoryProps(id: uuid(), title: item.categoryName)
       }
       categoryProps.insert(allCategory, at: 0)
       let allCategories = IdentifiedArray(uniqueElements: categoryProps)
       
-      /// 현재 선택된 카테고리명 기준으로 시트 선택상태 세팅
-      let currentSelectedTitle = state.selectedCategory?.categoryName ?? "전체"
+      // ChipList도 동기화
+      let allChip = CategoryItem(categoryName: "전체", icon: .init(number: 0))
+      let chipCategories = [allChip] + reversedItems.map {
+        CategoryItem(categoryName: $0.categoryName, icon: $0.icon)
+      }
+      state.categoryChipList.categories = chipCategories
       
-      /// 시트 상태 생성
+      // selectedCategory가 항상 최신으로 반영되도록 보장
+      let currentSelectedTitle: String
+      if let selected = state.selectedCategory?.categoryName,
+         chipCategories.contains(where: { $0.categoryName == selected }) {
+        currentSelectedTitle = selected
+      } else {
+        currentSelectedTitle = "전체"
+      }
+      
+      // 시트 생성 (동기화된 선택 상태로)
       state.selectBottomSheet = SelectBottomSheetFeature.State(
         categories: allCategories,
         selectedCategory: currentSelectedTitle
       )
+      
+      // 칩도 동일하게 반영
+      if let match = chipCategories.first(where: { $0.categoryName == currentSelectedTitle }) {
+        state.categoryChipList.selectedCategory = match
+      } else {
+        state.categoryChipList.selectedCategory = nil
+      }
+      
       return .none
       
     default:
