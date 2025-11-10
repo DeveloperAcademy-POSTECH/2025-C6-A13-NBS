@@ -33,6 +33,7 @@ struct SwiftDataClient {
   
   // Comment
   var deleteComment: (_ commentId: Double, _ highlightId: String) throws -> Void
+  var editComment: (_ commentId: Double, _ newText: String, _ highlightId: String) throws -> Void
 }
 
 extension SwiftDataClient: DependencyKey {
@@ -149,6 +150,22 @@ extension SwiftDataClient: DependencyKey {
         }
         
         highlightToUpdate.comments.removeAll { $0.id == commentId }
+        
+        try modelContext.save()
+      },
+      editComment: { commentId, newText, highlightId in
+        let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == highlightId})
+        guard let highlightToUpdate = try modelContext.fetch(descriptor).first else {
+          return
+        }
+        
+        guard let index = highlightToUpdate.comments.firstIndex(where: { $0.id == commentId}) else {
+          return
+        }
+        
+        var commentToEdit = highlightToUpdate.comments[index]
+        let updatedCommet = Comment(id: commentToEdit.id, type: commentToEdit.type, text: newText)
+        highlightToUpdate.comments[index] = updatedCommet
         
         try modelContext.save()
       }
