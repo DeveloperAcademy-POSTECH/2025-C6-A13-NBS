@@ -31,6 +31,7 @@ struct EditCategoryFeature {
     case editButtonTapped
     case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case showToast(String)
+    case onAppear
     case hideToast
   }
   
@@ -41,6 +42,9 @@ struct EditCategoryFeature {
     
     Reduce { state, action in
       switch action {
+      case .onAppear:
+        state.selectedCategory = nil
+        return .none
       case .categoryGrid(.delegate(.toggleCategorySelection(let category))):
         if state.selectedCategory == category {
           state.selectedCategory = nil

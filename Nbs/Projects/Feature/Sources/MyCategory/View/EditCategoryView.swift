@@ -60,6 +60,9 @@ extension EditCategoryView: View {
       }
     }
     .animation(.easeInOut(duration: 0.3), value: store.showToast)
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
 }
 
