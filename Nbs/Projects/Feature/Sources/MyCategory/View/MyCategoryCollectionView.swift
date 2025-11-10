@@ -110,7 +110,7 @@ extension MyCategoryCollectionView: View {
         )
         .zIndex(1)
         .padding(.horizontal, 20)
-        .padding(.bottom, 92)
+        .padding(.bottom, 20)
       }
     }
     .animation(.easeInOut(duration: 0.3), value: store.showToast)
