@@ -97,7 +97,7 @@ extension MoveLinkView {
       
       Spacer()
       
-      Text("전체 (\(store.allLinks.count)개)")
+      Text("\(store.categoryName) (\(store.allLinks.count)개)")
         .font(.B2_M)
         .foregroundStyle(.caption3)
     }

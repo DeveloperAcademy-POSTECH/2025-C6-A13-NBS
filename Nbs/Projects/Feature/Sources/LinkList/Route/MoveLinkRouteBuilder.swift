@@ -16,12 +16,15 @@ public struct MoveLinkRouteBuilder {
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
     let matchPath = Route.moveLink.rawValue
     return .init(matchPath: matchPath) { navigator, item, _ -> RouteViewController? in
-      let decoded: [ArticleItem]? = item.decoded()
+      let payload: LinkListPayload? = item.decoded()
       
       return WrappingController(matchPath: matchPath) {
         MoveLinkView(
           store: Store(
-            initialState: MoveLinkFeature.State(allLinks: decoded ?? [])
+            initialState: MoveLinkFeature.State(
+              allLinks: payload?.links ?? [],
+              categoryName: payload?.categoryName ?? "전체"
+              )
           ) {
             MoveLinkFeature()
               .dependency(\.linkNavigator, .init(navigator: navigator))
