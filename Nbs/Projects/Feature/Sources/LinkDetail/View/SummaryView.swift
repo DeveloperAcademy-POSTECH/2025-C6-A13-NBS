@@ -7,31 +7,43 @@
 
 import SwiftUI
 import Domain
+import DesignSystem
+
+import ComposableArchitecture
 
 struct SummaryView: View {
   let link: ArticleItem
+  @Bindable var store: StoreOf<SummaryFeature>
 }
 
 extension SummaryView {
   var body: some View {
-      VStack(spacing: 32) {
-        ForEach(groupedHighlights.keys.sorted(by: sortOrder), id: \.self) { key in
-          if let items = groupedHighlights[key],
-             let displayType = displayType(forModelKey: key) {
-            VStack(alignment: .leading, spacing: 24) {
-              SummaryTypeItem(type: displayType)
-              
-              // 같은 모델 타입에 묶인 하이라이트들
-              ForEach(items) { item in
-                highlightContents(for: item, type: displayType)
-              }
+    VStack(spacing: 32) {
+      ForEach(groupedHighlights.keys.sorted(by: sortOrder), id: \.self) { key in
+        if let items = groupedHighlights[key],
+           let displayType = displayType(forModelKey: key) {
+          VStack(alignment: .leading, spacing: 24) {
+            SummaryTypeItem(type: displayType)
+            
+            // 같은 모델 타입에 묶인 하이라이트들
+            ForEach(items) { item in
+              highlightContents(for: item, type: displayType)
             }
           }
         }
       }
-      .padding(.horizontal, 20)
-      .padding(.vertical, 24)
-      .background(Color.background)
+    }
+    .padding(.horizontal, 20)
+    .padding(.vertical, 24)
+    .background(Color.background)
+    .sheet(item: $store.scope(state: \.hightlightEditSheet, action: \.hightlightEditSheet)) { store in
+      HighlightEditSheetView(
+        title: "하이라이트 메모 편집",
+        store: store
+      )
+      .presentationDetents([.height(164)])
+      .presentationCornerRadius(16)
+    }
   }
   
   /// 하이라이트 섹션
@@ -57,6 +69,11 @@ extension SummaryView {
               .frame(maxWidth: .infinity, alignment: .leading)
               .background(.n20)
               .clipShape(RoundedRectangle(cornerRadius: 12))
+              .onLongPressGesture(minimumDuration: 0.5) {
+                let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
+                impactFeedback.impactOccurred()
+                store.send(.commentLongpress(comment))
+              }
           }
         }
         
@@ -69,13 +86,13 @@ extension SummaryView {
   
   /// 보여줄 타입
   private func displayType(forModelKey key: String) -> SummaryTypeItem.SummaryType? {
-     switch key.lowercased() {
-     case "what":   return .pink
-     case "why":    return .yellow
-     case "detail": return .blue
-     default:       return nil
-     }
-   }
+    switch key.lowercased() {
+    case "what":   return .pink
+    case "why":    return .yellow
+    case "detail": return .blue
+    default:       return nil
+    }
+  }
   
   ///  type별 그룹핑된 highlights
   private var groupedHighlights: [String: [HighlightItem]] {

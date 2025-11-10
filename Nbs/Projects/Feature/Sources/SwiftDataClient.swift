@@ -30,6 +30,9 @@ struct SwiftDataClient {
   
   // WebView
   var updateHighlightsForLink: (_ linkID: String, _ highlights: [HighlightItem]) throws -> Void
+  
+  // Comment
+  var deleteComment: (_ commentId: Double, _ highlightId: String) throws -> Void
 }
 
 extension SwiftDataClient: DependencyKey {
@@ -131,7 +134,6 @@ extension SwiftDataClient: DependencyKey {
         modelContext.delete(category)
         try modelContext.save()
       },
-      
       updateHighlightsForLink: { linkID, highlights in
         let descriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.id == linkID })
         if let articleToUpdate = try modelContext.fetch(descriptor).first {
@@ -139,6 +141,16 @@ extension SwiftDataClient: DependencyKey {
           articleToUpdate.highlights = highlights
           try modelContext.save()
         }
+      },
+      deleteComment: { commentId, highlightId in
+        let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == highlightId})
+        guard let highlightToUpdate = try modelContext.fetch(descriptor).first else {
+          return
+        }
+        
+        highlightToUpdate.comments.removeAll { $0.id == commentId }
+        
+        try modelContext.save()
       }
     )
   }()
