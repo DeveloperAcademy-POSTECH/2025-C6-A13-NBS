@@ -19,15 +19,15 @@ extension AddCategoryView: View {
   var body: some View {
     VStack {
       TopAppBarDefaultRightIconx(title: CategoryNamespace.newCategoryNavTitle) {
-        //TODO: 알럿 추가하기
         store.send(.cancelButtonTapped)
       }
       VStack {
         VStack(alignment: .leading, spacing: 4) {
           JNTextField(
             text: $store.categoryName,
-            style: .constant(.default),
+            style: $store.textFieldStyle.sending(\.setTextFieldStyle),
             placeholder: "카테고리명을 입력해주세요",
+            caption: "이미 존재하는 카테고리예요",
             header: "카테고리명"
           )
           .focused($isFocused)
@@ -48,6 +48,7 @@ extension AddCategoryView: View {
           .padding(.leading, 24)
           .padding(.top, 24)
         
+        //TODO: 컴포넌트 대체하기
         ScrollView {
           LazyVGrid(columns: columns, spacing: 16) {
             ForEach(1..<16, id: \.self) { index in
