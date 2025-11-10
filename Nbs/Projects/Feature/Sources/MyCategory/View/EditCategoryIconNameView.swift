@@ -64,6 +64,7 @@ extension EditCategoryIconNameView: View {
       Color.clear
         .frame(width: 50)
         .contentShape(Rectangle())
+        .allowsHitTesting(true)
         .gesture(
           DragGesture()
             .onEnded { value in
