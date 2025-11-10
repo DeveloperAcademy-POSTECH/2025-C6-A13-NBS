@@ -93,6 +93,7 @@ public extension AlertDialog {
         Text(subtitle)
           .font(.C2)
           .foregroundStyle(.caption1)
+          .multilineTextAlignment(.center)
       }
     }
     .frame(maxWidth: .infinity)
