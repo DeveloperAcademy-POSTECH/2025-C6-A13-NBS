@@ -19,7 +19,6 @@ struct AddLinkFeature {
   @ObservableState
   struct State: Equatable {
     var isConfirmAlertPresented = false
-    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: AddLinkNamespace.naviTitle)
     var linkURL: String
     var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
     var selectedCategory: CategoryItem?
@@ -35,7 +34,6 @@ struct AddLinkFeature {
   
   enum Action {
     case backGestureSwiped
-    case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setLinkURL(String)
     case saveButtonTapped
     case addNewCategoryButtonTapped
@@ -56,34 +54,24 @@ struct AddLinkFeature {
   @Dependency(\.swiftDataClient) var swiftDataClient
   
   var body: some ReducerOf<Self> {
-    Scope(state: \.topAppBar, action: \.topAppBar) {
-      TopAppBarDefaultRightIconxFeature()
-    }
-    
     Scope(state: \.categoryGrid, action: \.categoryGrid) {
       CategoryGridFeature()
     }
     
-    Reduce {
-      state,
-      action in
+    Reduce { state, action in
       switch action {
-      case .backGestureSwiped,
-          .topAppBar(.tapBackButton):
+      case .backGestureSwiped:
         if state.linkURL.isEmpty {
           return .run { _ in await linkNavigator.pop() }
         }
         state.isConfirmAlertPresented = true
         return .none
         
-      case .topAppBar:
-        return .none
-        
       case let .didFetchArticleItems(.success(articles)):
         linkNavigator.push(.linkDetail, articles)
         return .none
         
-      case let .didFetchArticleItems(.failure(_)):
+      case .didFetchArticleItems(.failure(_)):
         state.toastMessage = "링크 불러오기 실패"
         state.showToast = true
         return .run { send in
@@ -199,8 +187,6 @@ struct AddLinkFeature {
         state.showToast = false
         return .none
       case .fetch:
-        return .none
-      case .didFetchArticleItems(.failure(_)):
         return .none
       }
     }
