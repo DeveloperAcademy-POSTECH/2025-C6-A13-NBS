@@ -63,6 +63,7 @@ extension EditCategoryIconNameView: View {
       
       Color.clear
         .frame(width: 50)
+        .padding(.top, 60)
         .contentShape(Rectangle())
         .allowsHitTesting(true)
         .gesture(
