@@ -34,6 +34,7 @@ struct CategoryGridFeature {
     Reduce { state, action in
       switch action {
       case .onAppear:
+        state.selectedCategories = []
         return .run { send in
           await send(.fetchCategoriesResponse(Result {
             try swiftDataClient.fetchCategories()
