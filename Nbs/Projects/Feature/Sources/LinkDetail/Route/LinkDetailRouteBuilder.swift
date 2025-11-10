@@ -21,7 +21,7 @@ public struct LinkDetailRouteBuilder {
       let query: ArticleItem? = item.decoded()
   
       return WrappingController(matchPath: matchPath) {
-        LinkDetailView(store: Store(initialState: LinkDetailFeature.State(link: query!)) {
+        LinkDetailView(store: Store(initialState: LinkDetailFeature.State(article: query!)) {
           LinkDetailFeature()
             .dependency(\.linkNavigator, .init(navigator: navigator))
         })
