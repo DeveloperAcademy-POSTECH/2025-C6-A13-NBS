@@ -1,6 +1,11 @@
 
 import ComposableArchitecture
 import Domain
+import SwiftUI
+
+extension Notification.Name {
+  static let categoryAdded = Notification.Name("categoryAdded")
+}
 
 @Reducer
 struct AddCategoryFeature {
@@ -35,6 +40,7 @@ struct AddCategoryFeature {
         return .run {
           send in
           try swiftDataClient.addCategory(newCategory)
+          NotificationCenter.default.post(name: .categoryAdded, object: nil)
           await linkNavigator.pop()
         }
       case .binding:
