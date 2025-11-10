@@ -63,10 +63,10 @@ extension DeleteLinkView {
     }
   }
   
-  /// 삭제할 링크 선택 텍스트
+  /// 링크 삭제하기 네비게이션바
   private var topContents: some View {
     TopAppBarDefaultRightIconx(title: "링크 삭제하기") {
-      store.send(.cancelTapped)
+      store.send(.backButtonTapped)
     }
   }
   
@@ -93,7 +93,7 @@ extension DeleteLinkView {
   /// 링크 개수 + 선택
   private var linkSelectView: some View {
     HStack(spacing: 4) {
-      CheckboxButton(isOn: $store.isSelectAll)
+      CheckboxButton(isOn: $store.isSelectAll, style: .clear)
       
       Text("모두 선택")
         .font(.B2_SB)
@@ -101,7 +101,7 @@ extension DeleteLinkView {
       
       Spacer()
       
-      Text("전체 (\(store.allLinks.count)개)")
+      Text("\(store.categoryName) (\(store.allLinks.count)개)")
         .font(.B2_M)
         .foregroundStyle(.caption3)
     }

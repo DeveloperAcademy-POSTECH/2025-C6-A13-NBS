@@ -69,6 +69,8 @@ extension ArticleCard {
         .lineLimit(2)
         .multilineTextAlignment(.leading)
         .padding(.leading, 2)
+        .padding(.top, 10)
+      
       HStack(spacing: 0) {
         Text("\(dateString)  ·  ")
           .font(.B2_M)
@@ -78,8 +80,9 @@ extension ArticleCard {
           .font(.B2_M)
           .foregroundStyle(.caption2)
       }
-      .padding(.bottom, 12)
       .padding(.leading, 2)
+      
+      Spacer()
       
       Text(categoryName ?? "전체")
         .font(.B2_M)
@@ -88,6 +91,7 @@ extension ArticleCard {
         .padding(.horizontal, 10)
         .background(.n20)
         .clipShape(RoundedRectangle(cornerRadius: 6))
+        .padding(.bottom, 10)
     }
     .padding(.leading, 12)
   }
@@ -100,7 +104,7 @@ extension ArticleCard {
         .padding(.trailing, 10)
       
       if editMode == .active {
-        CheckboxButton(isOn: $isSelected)
+        CheckboxButton(isOn: $isSelected, style: .dim)
           .offset(x: -16, y: 16)
       }
     }
@@ -144,6 +148,9 @@ private extension ArticleCard {
               RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.bl6, lineWidth: 1.25)
             )
+        } else {
+          RoundedRectangle(cornerRadius: 12)
+            .fill(Color.bgDimCard)
         }
       }
     }
@@ -169,6 +176,15 @@ private extension ArticleCard {
         dateString: "2025년 10월 19일",
         newsCompany: "조선일보",
         isSelected: .constant(true),
+        editMode: .active
+      )
+      ArticleCard(
+        title: "AI가 뉴스 생태계를 바꾸다",
+        categoryName: "기술",
+        imageURL: "https://images.unsplash.com/photo-1542744094-24638eff58bb",
+        dateString: "2025년 10월 19일",
+        newsCompany: "조선일보",
+        isSelected: .constant(false),
         editMode: .active
       )
     }

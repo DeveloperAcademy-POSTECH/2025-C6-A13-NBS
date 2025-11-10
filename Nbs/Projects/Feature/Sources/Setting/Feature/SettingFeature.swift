@@ -33,7 +33,7 @@ struct SettingFeature {
       case .privacyPolicyTapped:
         linkNavigator.push(
           .policyDetail,
-          PolicyDetailParameter(
+          PolicyDetailPayload(
             title: "개인정보 처리방침",
             text: Constants.AppInfo.privacyPolicy
           )
@@ -43,7 +43,7 @@ struct SettingFeature {
       case .termsOfServiceTapped:
         linkNavigator.push(
           .policyDetail,
-          PolicyDetailParameter(
+          PolicyDetailPayload(
             title: "서비스 이용약관",
             text: Constants.AppInfo.termsOfService
           )

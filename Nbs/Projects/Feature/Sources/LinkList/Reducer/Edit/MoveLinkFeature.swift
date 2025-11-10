@@ -21,6 +21,7 @@ struct MoveLinkFeature {
   @ObservableState
   struct State: Equatable {
     var allLinks: [ArticleItem] = []
+    var categoryName: String = "전체"
     var selectedLinks: Set<String> = []
     var isSelectAll: Bool = false
     var categories: [CategoryItem] = []
@@ -33,18 +34,20 @@ struct MoveLinkFeature {
     case binding(BindingAction<State>)
     case onAppear
     case toggleSelect(ArticleItem)
-    case cancelTapped
+    case backButtonTapped
     case confirmMoveTapped
     case openCategorySheet
     case fetchCategories
     case fetchCategoriesResponse([CategoryItem])
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
-    case moveDone
+    case moveDone(count: Int)
   }
   
   var body: some ReducerOf<Self> {
     BindingReducer()
-    Reduce { state, action in
+    Reduce {
+      state,
+      action in
       switch action {
       case .onAppear:
         return .none
@@ -58,14 +61,6 @@ struct MoveLinkFeature {
         }
         return .none
         
-      case .binding:
-        if state.selectBottomSheet == nil {
-          return .run { _ in
-            await linkNavigator.pop()
-          }
-        }
-        return .none
-        
         /// 개별 토글 시 전체선택 여부 갱신
       case let .toggleSelect(link):
         if state.selectedLinks.contains(link.id) {
@@ -76,7 +71,7 @@ struct MoveLinkFeature {
         state.isSelectAll = state.selectedLinks.count == state.allLinks.count
         return .none
         
-      case .cancelTapped:
+      case .backButtonTapped:
         return .run { _ in
           await linkNavigator.pop()
         }
@@ -123,6 +118,7 @@ struct MoveLinkFeature {
         
         state.targetCategory = target
         let selected = state.allLinks.filter { state.selectedLinks.contains($0.id) }
+        let moveCount = selected.count
         
         return .run { send in
           do {
@@ -130,14 +126,24 @@ struct MoveLinkFeature {
           } catch {
             print("❌ moveLinks failed:", error)
           }
-          await send(.moveDone)
+          await send(.moveDone(count: moveCount))
         }
         
-      case .moveDone:
-        let movedCount = state.selectedLinks.count
+      case let .moveDone(count):
+        let moveCategoryName = state.targetCategory?.categoryName ?? "전체"
         return .run { _ in
-          try? await Task.sleep(nanoseconds: 500_000_000)
-          NotificationCenter.default.post(name: .linkMoved, object: ["movedCount": movedCount])
+          try? await Task
+            .sleep(
+              nanoseconds: 500_000_000
+            )
+          NotificationCenter.default
+            .post(
+              name: .linkMoved,
+              object: [
+                "movedCount": count,
+                "categoryName": moveCategoryName
+              ]
+            )
           await linkNavigator.pop()
         }
         
@@ -146,7 +152,7 @@ struct MoveLinkFeature {
         state.selectBottomSheet = nil
         return .none
         
-      case .selectBottomSheet:
+      case .selectBottomSheet, .binding:
         return .none
       }
     }

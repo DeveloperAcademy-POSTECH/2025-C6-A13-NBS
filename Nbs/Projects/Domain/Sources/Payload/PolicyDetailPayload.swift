@@ -1,13 +1,13 @@
 //
-//  PolicyDetailParameter.swift
+//  PolicyDetailPayload.swift
 //  Domain
 //
-//  Created by 이안 on 11/6/25.
+//  Created by 이안 on 11/10/25.
 //
 
 import Foundation
 
-public struct PolicyDetailParameter: Codable, Equatable {
+public struct PolicyDetailPayload: Codable, Equatable {
   public let title: String
   public let text: String
   

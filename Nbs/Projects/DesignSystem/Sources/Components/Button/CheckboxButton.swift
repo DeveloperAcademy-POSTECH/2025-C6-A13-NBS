@@ -13,29 +13,49 @@ import SwiftUI
 ///
 /// - Parameters:
 ///   - isOn: 현재 선택 상태 (Binding)
+///   - style: 표시 스타일 (.dim / .clear)
 ///   - onTap: 선택 상태 변경 후 실행할 클로저 (선택)
 public struct CheckboxButton: View {
   
+  // MARK: Style
+  public enum Style {
+     case dim
+     case clear
+   }
+  
   // MARK: - Properties
   @Binding var isOn: Bool
-  var onTap: (() -> Void)?
+  private let style: Style
+  private let onTap: (() -> Void)?
   
   // MARK: - Init
   public init(
     isOn: Binding<Bool>,
+    style: Style = .dim,
     onTap: (() -> Void)? = nil
   ) {
     self._isOn = isOn
+    self.style = style
     self.onTap = onTap
   }
   
   // MARK: - Color
   private var borderColor: Color {
-    isOn ? .bl4 : .textw
+    switch style {
+    case .dim:
+      return isOn ? .bl4 : .textw
+    case .clear:
+      return isOn ? .bl4 : .n50
+    }
   }
   
   private var fillColor: Color {
-    isOn ? .bl6 : .dim
+    switch style {
+    case .dim:
+      return isOn ? .bl6 : .dim
+    case .clear:
+      return isOn ? .bl6 : .clear
+    }
   }
   
   private var checkmarkColor: Color {
@@ -81,7 +101,10 @@ private struct CheckboxButtonPreview: View {
     ZStack {
       Color.gray
         .ignoresSafeArea()
-      CheckboxButton(isOn: $isOn)
+      VStack {
+        CheckboxButton(isOn: $isOn, style: .dim)
+        CheckboxButton(isOn: $isOn, style: .clear)
+      }
     }
   }
 }
