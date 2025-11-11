@@ -65,7 +65,7 @@ extension EditCategoryIconNameView: View {
         .frame(width: 50)
         .padding(.top, 60)
         .contentShape(Rectangle())
-        .allowsHitTesting(true)
+        .allowsHitTesting(false)
         .gesture(
           DragGesture()
             .onEnded { value in

@@ -108,7 +108,7 @@ extension AddCategoryView: View {
         .frame(width: 50)
         .padding(.top, 60)
         .contentShape(Rectangle())
-        .allowsTightening(true)
+        .allowsHitTesting(false)
         .gesture(
           DragGesture()
             .onEnded { value in
