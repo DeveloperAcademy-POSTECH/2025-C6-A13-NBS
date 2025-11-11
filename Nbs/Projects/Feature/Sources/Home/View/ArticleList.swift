@@ -39,7 +39,7 @@ extension ArticleListView: View {
         }
       }
       else {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
           ForEach(store.state.articles.reversed().prefix(5)) { article in
             Button {
               store.send(.listCellTapped(article))
@@ -51,12 +51,8 @@ extension ArticleListView: View {
                 dateString: article.createAt.formattedKoreanDate(),
                 newsCompany: article.newsCompany
               )
-              .background(.n0)
-              .clipShape(RoundedRectangle(cornerRadius: 12))
-              .padding(.vertical, 1)
-              .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
-              .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
             }
+            .buttonStyle(.plain)
           }
         }
       }
