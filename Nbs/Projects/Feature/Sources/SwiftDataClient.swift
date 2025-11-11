@@ -30,6 +30,14 @@ struct SwiftDataClient {
   
   // WebView
   var updateHighlightsForLink: (_ linkID: String, _ highlights: [HighlightItem]) throws -> Void
+  
+  // Comment
+  var addComment: (_ comment: Comment, _ highlightId: String) throws -> Void
+  var deleteComment: (_ commentId: Double, _ highlightId: String) throws -> Void
+  var editComment: (_ commentId: Double, _ newText: String, _ highlightId: String) throws -> Void
+  
+  // Highlight
+  var deleteHighlight: (_ id: String) throws -> Void
 }
 
 extension SwiftDataClient: DependencyKey {
@@ -131,12 +139,53 @@ extension SwiftDataClient: DependencyKey {
         modelContext.delete(category)
         try modelContext.save()
       },
-      
       updateHighlightsForLink: { linkID, highlights in
         let descriptor = FetchDescriptor<ArticleItem>(predicate: #Predicate { $0.id == linkID })
         if let articleToUpdate = try modelContext.fetch(descriptor).first {
           articleToUpdate.highlights.forEach { modelContext.delete($0) }
           articleToUpdate.highlights = highlights
+          try modelContext.save()
+        }
+      },
+      addComment: { comment, highlightId in
+        let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == highlightId })
+        guard let highlightToUpdate = try modelContext.fetch(descriptor).first else {
+          return
+        }
+        
+        highlightToUpdate.comments.append(comment)
+        try modelContext.save()
+      },
+      deleteComment: { commentId, highlightId in
+        let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == highlightId})
+        guard let highlightToUpdate = try modelContext.fetch(descriptor).first else {
+          return
+        }
+        
+        highlightToUpdate.comments.removeAll { $0.id == commentId }
+        
+        try modelContext.save()
+      },
+      editComment: { commentId, newText, highlightId in
+        let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == highlightId})
+        guard let highlightToUpdate = try modelContext.fetch(descriptor).first else {
+          return
+        }
+        
+        guard let index = highlightToUpdate.comments.firstIndex(where: { $0.id == commentId}) else {
+          return
+        }
+        
+        var commentToEdit = highlightToUpdate.comments[index]
+        let updatedCommet = Comment(id: commentToEdit.id, type: commentToEdit.type, text: newText)
+        highlightToUpdate.comments[index] = updatedCommet
+        
+        try modelContext.save()
+      },
+      deleteHighlight: { id in
+        let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == id})
+        if let target = try modelContext.fetch(descriptor).first {
+          modelContext.delete(target)
           try modelContext.save()
         }
       }

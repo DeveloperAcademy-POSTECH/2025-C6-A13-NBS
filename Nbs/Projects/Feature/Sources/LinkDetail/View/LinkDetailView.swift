@@ -194,7 +194,7 @@ extension LinkDetailView: View {
           EmptyLinkDetailView()
             .padding(.top, 80)
         } else {
-          SummaryView(link: store.link)
+          SummaryView(link: store.link, store: store.scope(state: \.summary, action: \.summary))
         }
       case .memo:
         AddMemoView(

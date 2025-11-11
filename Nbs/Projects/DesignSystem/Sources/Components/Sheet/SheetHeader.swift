@@ -36,6 +36,6 @@ extension SheetHeader {
       }
     }
     .frame(height: 48)
-    .padding(.top, 8)
+    .padding(.vertical, 8)
   }
 }
