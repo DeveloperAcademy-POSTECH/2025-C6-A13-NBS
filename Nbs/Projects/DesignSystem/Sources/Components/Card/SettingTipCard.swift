@@ -11,13 +11,13 @@ import SwiftUI
 public struct SettingTipCard: View {
   
   // MARK: - Properties
-  private let icon: String
+  private let icon: Image
   private let title: String
   private let action: (() -> Void)?
   
   // MARK: - Init
   public init(
-    icon: String,
+    icon: Image,
     title: String,
     action: (() -> Void)? = nil
   ) {
@@ -56,15 +56,13 @@ extension SettingTipCard {
   /// 상단 컨텐츠
   private var topContents: some View {
     ZStack {
-      RoundedRectangle(cornerRadius: 8)
-        .fill(.n20)
-        .frame(height: 100)
-      
-      Image(icon: icon)
+      Color.c13
+      icon
         .resizable()
         .scaledToFit()
-        .frame(width: 44, height: 44)
     }
+    .frame(width: 145.5, height: 100)
+    .clipShape(RoundedRectangle(cornerRadius: 8))
   }
   
   /// 하단 컨텐츠
@@ -80,6 +78,9 @@ extension SettingTipCard {
 #Preview {
   ZStack {
     Color.black.ignoresSafeArea()
-    SettingTipCard(icon: Icon.alertCircle, title: "Safari extension 허용하기")
+    SettingTipCard(
+      icon: DesignSystemAsset.settingSafari.swiftUIImage,
+      title: "Safari extension 허용하기"
+    )
   }
 }

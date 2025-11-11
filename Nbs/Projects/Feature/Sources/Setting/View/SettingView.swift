@@ -70,19 +70,31 @@ extension SettingView {
       ],
       spacing: 12
     ) {
-      SettingTipCard(icon: Icon.alertCircle, title: "Safari extension 허용하기") {
+      SettingTipCard(
+        icon: DesignSystemAsset.settingSafari.swiftUIImage,
+        title: "Safari extension 허용하기"
+      ) {
         //        store.send(.safariTipTapped)
       }
       
-      SettingTipCard(icon: Icon.book, title: "하이라이트 및 메모 \n연습하기") {
+      SettingTipCard(
+        icon: DesignSystemAsset.settingHighlight.swiftUIImage,
+        title: "하이라이트 및 메모 \n연습하기"
+      ) {
         //        store.send(.highlightTipTapped)
       }
       
-      SettingTipCard(icon: Icon.share, title: "우리앱으로 손쉽게 \n공유하기") {
+      SettingTipCard(
+        icon: DesignSystemAsset.settingShare.swiftUIImage,
+        title: "우리앱으로 손쉽게 \n공유하기"
+      ) {
         //        store.send(.shareTipTapped)
       }
       
-      SettingTipCard(icon: Icon.heart, title: "즐겨찾기 설정하기") {
+      SettingTipCard(
+        icon: DesignSystemAsset.settingFavorite.swiftUIImage,
+        title: "즐겨찾기 설정하기"
+      ) {
         //        store.send(.favoriteTipTapped)
       }
     }
@@ -103,9 +115,14 @@ extension SettingView {
   
   private var infoList: some View {
     VStack(spacing: .zero) {
-      InfoListItem(icon: Icon.info, title: "앱 버전", trailing: .text(Constants.appVersion))
+      InfoListItem(
+        icon: Icon.info,
+        title: "앱 버전",
+        trailing: .text { Constants.appVersion }
+      )
       
-      InfoListItem(icon: Icon.shield, title: "개인정보 처리방침", trailing: .chevron) {
+      InfoListItem(
+        icon: Icon.shield, title: "개인정보 처리방침", trailing: .chevron) {
         store.send(.privacyPolicyTapped)
       }
       
