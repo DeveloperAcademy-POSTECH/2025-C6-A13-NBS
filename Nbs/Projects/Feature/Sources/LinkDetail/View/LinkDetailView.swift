@@ -95,6 +95,7 @@ extension LinkDetailView: View {
     VStack(alignment: .leading, spacing: 24) {
       // 기사 타이틀
       HStack(alignment: .firstTextBaseline, spacing: 12) {
+        // 편집중 일때
         if store.isEditingTitle || titleFocused {
           TextField(
             "제목",
@@ -107,28 +108,36 @@ extension LinkDetailView: View {
           .submitLabel(.done)
           .onSubmit { titleFocused = false }
         } else {
-          Text(store.link.title)
-            .font(.H1)
-            .foregroundStyle(.text1)
-            .multilineTextAlignment(.leading)
-            .lineLimit(nil)
+          Button {
+            store.send(.editButtonTapped)
+            DispatchQueue.main.async { titleFocused = true }
+          } label: {
+            Text(store.link.title)
+              .font(.H1)
+              .foregroundStyle(.text1)
+              .multilineTextAlignment(.leading)
+              .lineLimit(nil)
+          }
+          .buttonStyle(.plain)
         }
         
         Spacer()
         
-        Button {
-          store.send(.editButtonTapped)
-          DispatchQueue.main.async { titleFocused = true }
-        } label: {
-          Image(icon: Icon.edit)
-            .resizable()
-            .renderingMode(.template)
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 24, height: 24)
-            .contentShape(Rectangle())
-            .foregroundStyle(.iconGray)
+        if !store.isEditingTitle && !titleFocused {
+          Button {
+            store.send(.editButtonTapped)
+            DispatchQueue.main.async { titleFocused = true }
+          } label: {
+            Image(icon: Icon.edit)
+              .resizable()
+              .renderingMode(.template)
+              .aspectRatio(contentMode: .fit)
+              .frame(width: 24, height: 24)
+              .contentShape(Rectangle())
+              .foregroundStyle(.iconGray)
+          }
+          .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
       }
       
       // 정보 섹션
