@@ -30,7 +30,6 @@ struct LinkListFeature {
     
     var selectedCategoryTitle: String = "카테고리"
     var alert: AlertBannerState? = nil
-    var didMoveLink: Bool = false
     
     // 시트 상태 관리
     @Presents var editSheet: EditSheetFeature.State?
@@ -105,6 +104,9 @@ private extension LinkListFeature {
       
       /// 초기 진입 시 링크 데이터 요청
     case .onAppear:
+      if let selected = state.selectedCategory {
+        state.categoryChipList.selectedCategory = selected
+      }
       return .send(.fetchLinks)
       
     case .backButtonTapped:
@@ -156,8 +158,8 @@ private extension LinkListFeature {
     case .editSheet(.presented(.delegate(.moveLink))):
       state.editSheet = nil
       if state.articleList.link.isEmpty {
-          return .send(.showAlert(title: "이 카테고리에 이동할 링크가 없어요", tint: .alert))
-        }
+        return .send(.showAlert(title: "이 카테고리에 이동할 링크가 없어요", tint: .alert))
+      }
       let payload = LinkListPayload(
         links: state.articleList.link,
         categoryName: state.selectedCategory?.categoryName ?? "전체"
@@ -185,8 +187,8 @@ private extension LinkListFeature {
     case .editSheet(.presented(.delegate(.deleteLink))):
       state.editSheet = nil
       if state.articleList.link.isEmpty {
-          return .send(.showAlert(title: "이 카테고리에 삭제할 링크가 없어요", tint: .alert))
-        }
+        return .send(.showAlert(title: "이 카테고리에 삭제할 링크가 없어요", tint: .alert))
+      }
       let payload = LinkListPayload(
         links: state.articleList.link,
         categoryName: state.selectedCategory?.categoryName ?? "전체"
@@ -323,15 +325,20 @@ private extension LinkListFeature {
       }
       state.categoryChipList.categories = chipCategories
       
+      if let selected = state.selectedCategory,
+         let match = chipCategories.first(where: { $0.categoryName == selected.categoryName }) {
+        state.categoryChipList.selectedCategory = match
+      } else {
+        // 혹시 매칭이 없으면 전체로
+        state.selectedCategory = allChip
+        state.categoryChipList.selectedCategory = allChip
+      }
+      
       let current = state.selectedCategory?.categoryName ?? "전체"
       state.selectBottomSheet = SelectBottomSheetFeature.State(
         categories: allCategories,
         selectedCategory: current
       )
-      
-      if let match = chipCategories.first(where: { $0.categoryName == current }) {
-        state.categoryChipList.selectedCategory = match
-      }
       return .none
       
     default:

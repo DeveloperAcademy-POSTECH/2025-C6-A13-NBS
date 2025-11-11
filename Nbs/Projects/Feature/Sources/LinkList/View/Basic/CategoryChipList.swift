@@ -41,7 +41,7 @@ extension CategoryChipList: View {
             ChipButton(
               title: category.categoryName,
               style: .soft,
-              isOn: .constant(store.selectedCategory == category)
+              isOn: .constant(isOn)
             ) {
               store.send(.categoryTapped(category))
               withAnimation(.easeInOut(duration: 0.2)) {
@@ -57,6 +57,19 @@ extension CategoryChipList: View {
         guard let newValue else { return }
         withAnimation(.easeInOut(duration: 0.25)) {
           proxy.scrollTo(newValue, anchor: .center)
+        }
+      }
+      .onChange(of: store.categories.map(\.categoryName)) { _, _ in
+        // 카테고리 목록이 비어있지 않고, 선택된 카테고리가 있으면 그걸로 스크롤
+        guard
+          !store.categories.isEmpty,
+          let name = store.selectedCategory?.categoryName
+        else { return }
+        
+        DispatchQueue.main.async {
+          withAnimation(.easeInOut(duration: 0.25)) {
+            proxy.scrollTo(name, anchor: .center)
+          }
         }
       }
     }
