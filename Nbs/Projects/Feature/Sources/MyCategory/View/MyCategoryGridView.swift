@@ -25,7 +25,7 @@ extension MyCategoryGridView: View {
         LazyVGrid(columns: gridItems, spacing: 10) {
           ForEach(viewStore.categories) { category in
             Button {
-              store.send(.categoryTapped)
+              store.send(.categoryTapped(category))
             } label: {
               ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading, spacing: 4) {
