@@ -27,8 +27,7 @@ extension ArticleListView: View {
       if store.state.articles.isEmpty {
         if store.state.showTipCard {
           TipCardView {
-            //TODO: 네비게이션 연결
-            print("")
+            store.send(.tipCardTapped)
           } closeTap: {
             store.send(.toggleTipCard)
           }
