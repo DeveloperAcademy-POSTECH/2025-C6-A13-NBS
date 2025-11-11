@@ -17,9 +17,9 @@ struct EditCategoryIconNameView {
   @FocusState private var isFocused: Bool
   
   let columns = [
-    GridItem(.flexible(), spacing: 10),
-    GridItem(.flexible(), spacing: 10),
-    GridItem(.flexible(), spacing: 10)
+    GridItem(.flexible(), spacing: 16),
+    GridItem(.flexible(), spacing: 16),
+    GridItem(.flexible(), spacing: 16)
   ]
 }
 
