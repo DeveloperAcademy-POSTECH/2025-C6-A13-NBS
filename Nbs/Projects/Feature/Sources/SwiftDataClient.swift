@@ -32,6 +32,7 @@ struct SwiftDataClient {
   var updateHighlightsForLink: (_ linkID: String, _ highlights: [HighlightItem]) throws -> Void
   
   // Comment
+  var addComment: (_ comment: Comment, _ highlightId: String) throws -> Void
   var deleteComment: (_ commentId: Double, _ highlightId: String) throws -> Void
   var editComment: (_ commentId: Double, _ newText: String, _ highlightId: String) throws -> Void
   
@@ -145,6 +146,15 @@ extension SwiftDataClient: DependencyKey {
           articleToUpdate.highlights = highlights
           try modelContext.save()
         }
+      },
+      addComment: { comment, highlightId in
+        let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == highlightId })
+        guard let highlightToUpdate = try modelContext.fetch(descriptor).first else {
+          return
+        }
+        
+        highlightToUpdate.comments.append(comment)
+        try modelContext.save()
       },
       deleteComment: { commentId, highlightId in
         let descriptor = FetchDescriptor<HighlightItem>(predicate: #Predicate { $0.id == highlightId})

@@ -21,6 +21,10 @@ struct SummaryFeature {
     var editingCommentId: Double?
     var editedCommentText: String = ""
     var isCommentTextFieldFocused: Bool = false
+    
+    var addingCommentToHighlightId: String?
+    var newCommentText: String = ""
+    var isNewCommentTextFieldFocused: Bool = false
   }
   
   enum Action: Equatable, BindableAction {
@@ -29,6 +33,9 @@ struct SummaryFeature {
     case saveCommentButtonTapped
     
     case highlightLongpress(HighlightItem)
+    case newCommentTextChanged(String)
+    case saveNewCommentButtonTapped
+    
     case binding(BindingAction<State>)
     
     case hightlightEditSheet(PresentationAction<HighlightEditFeature.Action>)
@@ -40,7 +47,6 @@ struct SummaryFeature {
     Reduce { state, action in
       switch action {
       case .commentLongpress(let comment):
-        print("Longpress")
         state.hightlightEditSheet = .init(context: .comment(comment))
         return .none
         
@@ -49,9 +55,8 @@ struct SummaryFeature {
         return .none
       
       case .saveCommentButtonTapped:
-        guard let editingId = state.editingCommentId else {
-          return .none
-        }
+        state.isCommentTextFieldFocused = false
+        guard let editingId = state.editingCommentId else { return .none }
         
         guard let highlightIndex = state.article.highlights.firstIndex(where: { $0.comments.contains(where: { $0.id == editingId })}) else {
           return .none
@@ -72,11 +77,7 @@ struct SummaryFeature {
         let newText = state.editedCommentText
         
         return .run { _ in
-          do {
-            try self.swiftDataClient.editComment(editingId, newText, highlightId)
-          } catch {
-            print("")
-          }
+          try swiftDataClient.editComment(editingId, newText, highlightId)
         }
         .cancellable(id: "edit-comment-\(editingId)")
       
@@ -84,9 +85,43 @@ struct SummaryFeature {
         state.hightlightEditSheet = .init(context: .highlight(highlightItem))
         return .none
         
-      case .binding(\.isCommentTextFieldFocused):
-        if state.isCommentTextFieldFocused == false {
-          return .send(.saveCommentButtonTapped)
+      case .newCommentTextChanged(let text):
+        state.newCommentText = text
+        return .none
+        
+      case .saveNewCommentButtonTapped:
+        state.isNewCommentTextFieldFocused = false
+        guard let highlightId = state.addingCommentToHighlightId, !state.newCommentText.isEmpty else {
+          state.addingCommentToHighlightId = nil
+          return .none
+        }
+        
+        guard let highlightIndex = state.article.highlights.firstIndex(where: { $0.id == highlightId }) else {
+          return .none
+        }
+        
+        let newComment = Comment(id: Date().timeIntervalSince1970, type: state.article.highlights[highlightIndex].type, text:
+              state.newCommentText)
+        
+        state.addingCommentToHighlightId = nil
+        
+        return .run { _ in
+          try swiftDataClient.addComment(newComment, highlightId)
+        }
+        .cancellable(id: "add-comment-\(newComment.id)")
+        
+      case .binding(let action):
+        switch action.keyPath {
+        case \.isCommentTextFieldFocused:
+          if state.isCommentTextFieldFocused == false {
+            return .send(.saveCommentButtonTapped)
+          }
+        case \.isNewCommentTextFieldFocused:
+          if state.isNewCommentTextFieldFocused == false {
+            return .send(.saveNewCommentButtonTapped)
+          }
+        default:
+          break
         }
         return .none
         
@@ -106,13 +141,10 @@ struct SummaryFeature {
           state.article.highlights[highlightIndex].comments.removeAll { $0.id == comment.id }
           
           return .run { _ in
-            do {
-              try self.swiftDataClient.deleteComment(commentId, highlightId)
-            } catch {
-              print("코멘트 삭제 실패")
-            }
+            try swiftDataClient.deleteComment(commentId, highlightId)
           }
           .cancellable(id: "delete-comment-\(commentId)")
+          
         case .highlight(let highlight):
           guard let highlightIndex = state.article.highlights.firstIndex(where: { $0.id == highlight.id }) else {
             return .none
@@ -123,30 +155,25 @@ struct SummaryFeature {
           let highlightId = highlight.id
           
           return .run { _ in
-            do {
-              try self.swiftDataClient.deleteHighlight(highlightId)
-            } catch {
-              print("")
-            }
+            try self.swiftDataClient.deleteHighlight(highlightId)
           }
         }
         
-      case .hightlightEditSheet(.presented(.delegate(.edit(let context)))):
-        switch context {
-        case .comment(let comment):
-          state.hightlightEditSheet = nil
-          state.editingCommentId = comment.id
-          state.editedCommentText = comment.text
-          state.isCommentTextFieldFocused = true
-          return .none
-        case .highlight(let highlight):
-          return .none
-        }
-        
-      case .hightlightEditSheet:
+      case .hightlightEditSheet(.presented(.delegate(.edit(let comment)))):
+        state.hightlightEditSheet = nil
+        state.editingCommentId = comment.id
+        state.editedCommentText = comment.text
+        state.isCommentTextFieldFocused = true
         return .none
       
-      case .binding:
+      case .hightlightEditSheet(.presented(.delegate(.add(let highlight)))):
+        state.hightlightEditSheet = nil
+        state.addingCommentToHighlightId = highlight.id
+        state.newCommentText = ""
+        state.isNewCommentTextFieldFocused = true
+        return .none
+      
+      case .hightlightEditSheet:
         return .none
       }
     }
@@ -155,4 +182,5 @@ struct SummaryFeature {
     }
   }
 }
+
 

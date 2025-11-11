@@ -15,6 +15,7 @@ struct SummaryView: View {
   let link: ArticleItem
   @Bindable var store: StoreOf<SummaryFeature>
   @FocusState private var isCommentTextFieldFocused: Bool
+  @FocusState private var isNewCommentTextFieldFocused: Bool
 }
 
 extension SummaryView {
@@ -45,6 +46,7 @@ extension SummaryView {
       .presentationCornerRadius(16)
     }
     .bind($store.isCommentTextFieldFocused, to: self.$isCommentTextFieldFocused)
+    .bind($store.isNewCommentTextFieldFocused, to: self.$isNewCommentTextFieldFocused)
   }
   
   /// 하이라이트 섹션
@@ -65,8 +67,8 @@ extension SummaryView {
         }
       
       // 코멘트 리스트
-      if !item.comments.isEmpty {
-        VStack(alignment: .leading, spacing: 8) {
+      VStack(alignment: .leading, spacing: 8) {
+        if !item.comments.isEmpty {
           ForEach(item.comments, id: \.id) { comment in
             if store.editingCommentId == comment.id {
               TextEditor(text: $store.editedCommentText.sending(\.commentTextFieldChanged))
@@ -83,7 +85,7 @@ extension SummaryView {
                   ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("완료") {
-                      isCommentTextFieldFocused = false
+                      store.send(.saveCommentButtonTapped)
                     }
                   }
                 }
@@ -103,11 +105,32 @@ extension SummaryView {
             }
           }
         }
-        
-        Rectangle()
-          .fill(.divider1)
-          .frame(height: 1)
+      
+        if store.addingCommentToHighlightId == item.id {
+          TextEditor(text: $store.newCommentText.sending(\.newCommentTextChanged))
+            .font(.B3_R_HLM)
+            .foregroundStyle(.text1)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 11)
+            .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
+            .scrollContentBackground(.hidden)
+            .background(.n20)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .focused($isNewCommentTextFieldFocused)
+            .toolbar {
+              ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("완료") {
+                  store.send(.saveNewCommentButtonTapped)
+                }
+              }
+            }
+        }
       }
+      
+      Rectangle()
+        .fill(.divider1)
+        .frame(height: 1)
     }
   }
   
