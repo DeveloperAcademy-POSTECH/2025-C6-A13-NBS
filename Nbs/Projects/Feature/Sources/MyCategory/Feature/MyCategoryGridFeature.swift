@@ -6,11 +6,12 @@
 //
 
 import ComposableArchitecture
-
 import Domain
 
 @Reducer
 struct MyCategoryGridFeature {
+  @Dependency(\.linkNavigator) var linkNavigator
+  
   struct State: Equatable {
     var categories: [CategoryItem] = []
   }
@@ -18,7 +19,7 @@ struct MyCategoryGridFeature {
   enum Action {
     case onAppear
     case fetchCategoriesResponse(Result<[CategoryItem], Error>)
-    case categoryTapped
+    case categoryTapped(CategoryItem)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -27,8 +28,9 @@ struct MyCategoryGridFeature {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .categoryTapped:
-        navigation.push(.linkList, nil)
+      case let .categoryTapped(category):
+        let payload = LinkListPayload(links: [], categoryName: category.categoryName)
+        linkNavigator.push(.linkList, payload)
         return .none
       case .onAppear:
         return .run { send in
