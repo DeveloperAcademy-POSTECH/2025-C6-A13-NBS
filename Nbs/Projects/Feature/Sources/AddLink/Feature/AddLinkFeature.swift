@@ -11,6 +11,11 @@ import ComposableArchitecture
 import Domain
 import SwiftData
 
+extension Notification.Name {
+  static let linkSaved = Notification.Name("linkSaved")
+  static let firstlinkSaved = Notification.Name("firstlinkSaved")
+}
+
 @Reducer
 struct AddLinkFeature {
   
@@ -19,14 +24,17 @@ struct AddLinkFeature {
   @ObservableState
   struct State: Equatable {
     var isConfirmAlertPresented = false
-    var topAppBar = TopAppBarDefaultRightIconxFeature.State(title: AddLinkNamespace.naviTitle)
     var linkURL: String
-    var categoryGrid = CategoryGridFeature.State(allowsMultipleSelection: false)
+    var categoryGrid = CategoryGridFeature.State(
+      allowsMultipleSelection: false,
+      showAllCategory: true
+    )
     var selectedCategory: CategoryItem?
     var isURLExisting: Bool = false
     var articles: [ArticleItem] = []
     var showToast: Bool = false
     var toastMessage: String = ""
+    var totalLinksCount: Int = 0
     
     init(linkURL: String = "") {
       self.linkURL = linkURL
@@ -34,73 +42,64 @@ struct AddLinkFeature {
   }
   
   enum Action {
+    case onAppear
     case backGestureSwiped
-    case topAppBar(TopAppBarDefaultRightIconxFeature.Action)
     case setLinkURL(String)
     case saveButtonTapped
     case addNewCategoryButtonTapped
     case categoryGrid(CategoryGridFeature.Action)
     case confirmAlertDismissed
     case confirmAlertConfirmButtonTapped
-    case saveLinkResponse(Result<Void, Error>)
+    case saveLinkResponse(Result<ArticleItem, Error>)
     case checkURLExists(String)
     case didCheckURLExists(Bool)
     case showToast(String)
     case hideToast
-    case fetch
     case fetchArticleItem
-    case didFetchArticleItems(Result<ArticleItem?, Error>)
+    case didFetchArticleItems(Result<[ArticleItem], Error>)
     case navigateToLinkDetail(ArticleItem)
+    case showArticleButtonTapped
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
   
   var body: some ReducerOf<Self> {
-    Scope(state: \.topAppBar, action: \.topAppBar) {
-      TopAppBarDefaultRightIconxFeature()
-    }
-    
     Scope(state: \.categoryGrid, action: \.categoryGrid) {
       CategoryGridFeature()
     }
     
-    Reduce {
-      state,
-      action in
+    Reduce { state, action in
       switch action {
-      case .backGestureSwiped,
-          .topAppBar(.tapBackButton):
+      case .onAppear:
+        return .run { send in
+          await send(.didFetchArticleItems(Result { try swiftDataClient.fetchLinks() }))
+        }
+        
+      case .showArticleButtonTapped:
+        guard
+          let article = state.articles.first(where: { $0.urlString == state.linkURL })
+        else { return .none }
+        linkNavigator.push(.linkDetail, article)
+        return .none
+        
+      case .backGestureSwiped:
         if state.linkURL.isEmpty {
           return .run { _ in await linkNavigator.pop() }
         }
         state.isConfirmAlertPresented = true
         return .none
         
-      case .topAppBar:
-        return .none
-        
       case let .didFetchArticleItems(.success(articles)):
-        linkNavigator.push(.linkDetail, articles)
+        state.articles = articles
         return .none
         
-      case let .didFetchArticleItems(.failure(_)):
+      case .didFetchArticleItems(.failure(_)):
         state.toastMessage = "링크 불러오기 실패"
         state.showToast = true
         return .run { send in
           try await Task.sleep(nanoseconds: 2_000_000_000)
           await send(.hideToast)
         }
-        
-      case .fetchArticleItem:
-        guard let found = state.articles.first(where: { $0.urlString == state.linkURL }) else {
-          state.toastMessage = "해당 링크를 찾을 수 없습니다"
-          state.showToast = true
-          return .run { send in
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            await send(.hideToast)
-          }
-        }
-        return .send(.navigateToLinkDetail(found))
         
       case let .setLinkURL(url):
         state.linkURL = url
@@ -123,9 +122,13 @@ struct AddLinkFeature {
               title: title,
               imageURL: image.absoluteString
             )
-            newLink.category = selectedCategory
+            if selectedCategory?.categoryName == "전체" {
+              newLink.category = nil
+            } else {
+              newLink.category = selectedCategory
+            }
             try swiftDataClient.addLink(newLink)
-            await send(.saveLinkResponse(.success(())))
+            await send(.saveLinkResponse(.success(newLink)))
           } catch {
             await send(.saveLinkResponse(.failure(error)))
           }
@@ -158,7 +161,11 @@ struct AddLinkFeature {
         state.isConfirmAlertPresented = false
         return .run { _ in await linkNavigator.pop() }
         
-      case .saveLinkResponse(.success):
+      case .saveLinkResponse(.success(let savedArticle)):
+        NotificationCenter.default.post(
+          name: .linkSaved,
+          object: savedArticle.category
+        )
         return .run { _ in await linkNavigator.pop() }
         
       case .saveLinkResponse(.failure(let error)):
@@ -181,10 +188,8 @@ struct AddLinkFeature {
         if exists {
           state.toastMessage = "이미 저장된 링크입니다"
           state.showToast = true
-          return .run { send in
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            await send(.hideToast)
-          }
+        } else {
+          state.showToast = false
         }
         return .none
         
@@ -198,9 +203,7 @@ struct AddLinkFeature {
       case .hideToast:
         state.showToast = false
         return .none
-      case .fetch:
-        return .none
-      case .didFetchArticleItems(.failure(_)):
+      case .fetchArticleItem:
         return .none
       }
     }

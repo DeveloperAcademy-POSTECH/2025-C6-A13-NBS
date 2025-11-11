@@ -21,7 +21,7 @@ public struct CategoryIcon: Codable, Hashable {
 }
 
 @Model
-public final class CategoryItem: Identifiable, Codable, Equatable {
+public final class CategoryItem: Identifiable, Codable, Equatable, Sendable {
   @Attribute(.unique) public var id: UUID
   @Attribute(.unique) public var categoryName: String // 카테고리 이름
   public var createdAt: Date

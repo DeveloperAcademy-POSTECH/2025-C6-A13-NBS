@@ -18,7 +18,7 @@ struct NbsApp: App {
     WindowGroup {
       LinkNavigationView(
         linkNavigator: singleNavigator,
-        item: .init(path: Route.onboardingService.rawValue))
+        item: .init(path: Route.home.rawValue))
       .ignoresSafeArea()
 //      ZStack {
 //        if showSplash {

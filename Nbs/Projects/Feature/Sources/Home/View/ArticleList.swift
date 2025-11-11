@@ -63,6 +63,7 @@ extension ArticleListView: View {
       
       if store.state.articles.count >= 6 {
         Button {
+          store.send(.moreLinkButtonTapped)
         } label: {
           Text(ArticleNameSpace.showAllLink)
             .font(.B1_SB)

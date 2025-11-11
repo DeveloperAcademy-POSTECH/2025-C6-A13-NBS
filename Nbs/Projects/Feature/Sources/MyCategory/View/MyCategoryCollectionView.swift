@@ -84,6 +84,36 @@ extension MyCategoryCollectionView: View {
     .onAppear {
       store.send(.onAppear)
     }
+    .task {
+      NotificationCenter.default.addObserver(
+        forName: .categoryDeleted,
+        object: nil,
+        queue: .main
+      ) { notification in
+        let count = (notification.object as? [String: Int])?["deletedCount"] ?? 0
+        store.send(.showToast("\(count)개의 카테고리를 삭제했어요"))
+      }
+      NotificationCenter.default.addObserver(
+        forName: .categoryAdded,
+        object: nil,
+        queue: .main
+      ) { _ in
+        store.send(.showToast("카테고리를 추가했어요"))
+      }
+    }
+    .overlay(alignment: .bottom) {
+      if store.showToast {
+        AlertIconBanner(
+          icon: Image(icon: Icon.check),
+          title: store.toastMessage,
+          iconColor: .bl3
+        )
+        .zIndex(1)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 20)
+      }
+    }
+    .animation(.easeInOut(duration: 0.3), value: store.showToast)
   }
 }
 

@@ -11,6 +11,10 @@ import ComposableArchitecture
 import Domain
 import LinkNavigator
 
+extension Notification.Name {
+  static let categoryDeleted = Notification.Name("categoryDeleted")
+}
+
 @Reducer
 struct DeleteCategoryFeature {
   
@@ -64,9 +68,14 @@ struct DeleteCategoryFeature {
       case .confirmAlertConfirmButtonTapped:
         state.isAlert = false
         return .run { [selectedCategories = state.selectedCategories] _ in
+          let deletedCount = selectedCategories.count
           for category in selectedCategories {
             try swiftDataClient.deleteCategory(category)
           }
+          NotificationCenter.default.post(
+            name: .categoryDeleted,
+            object: ["deletedCount": deletedCount]
+          )
           await navigation.pop()
         }
       }

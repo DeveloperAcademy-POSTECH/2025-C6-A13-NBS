@@ -1,4 +1,3 @@
-
 //
 //  EditCategoryIconNameFeature.swift
 //  Feature
@@ -11,6 +10,10 @@ import SwiftUI
 import ComposableArchitecture
 import Domain
 import DesignSystem
+
+extension Notification.Name {
+  static let categoryEdited = Notification.Name("categoryEdited")
+}
 
 @Reducer
 struct EditCategoryIconNameFeature {
@@ -65,7 +68,7 @@ struct EditCategoryIconNameFeature {
       case .compeleteButtonTapped:
         return .run { [category = state.category, name = state.categoryName] send in
           let categories = try swiftDataClient.fetchCategories()
-          let isDuplicate = categories.contains { $0.categoryName.lowercased() == name.lowercased() && $0.id != category?.id }
+          let isDuplicate = categories.contains { $0.categoryName.lowercased() == name.lowercased() && $0.id != category?.id } || name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == "전체"
           
           await send(.setDuplicate(isDuplicate))
         }
@@ -80,6 +83,7 @@ struct EditCategoryIconNameFeature {
             await MainActor.run {
               do {
                 try swiftDataClient.updateCategoryItem(id, name, icon)
+                NotificationCenter.default.post(name: .categoryEdited, object: nil)
               } catch {
                 print("카테고리 업데이트 실패 \(error)")
               }

@@ -113,7 +113,7 @@ extension CategorySettingView: View {
         .buttonStyle(.plain)
       }
       .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(.leading, 20)
+      .padding(.leading)
       
       Button {
         store.send(.addButtonTapped)
@@ -133,7 +133,7 @@ extension CategorySettingView: View {
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(.leading, 20)
+      .padding(.leading)
 
       Button {
         store.send(.deleteButtonTapped)
@@ -153,7 +153,7 @@ extension CategorySettingView: View {
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(.leading, 20)
+      .padding(.leading)
       .padding(.bottom, 44)
     }
   }

@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "primaryCategoryIcon7.pdf",
+      "filename" : "primaryCategoryIcon7.png",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "primaryCategoryIcon7 1.png",
       "idiom" : "universal"
     }
   ],

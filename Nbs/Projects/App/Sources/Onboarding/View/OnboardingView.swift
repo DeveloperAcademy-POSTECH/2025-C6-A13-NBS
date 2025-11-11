@@ -14,7 +14,7 @@ struct OnboardingView {
   @Bindable var store: StoreOf<OnboardingFeature>
   
   @StateObject private var pip: SimplePiPController = {
-    guard let url = Bundle.main.url(forResource: "SafariSettingVideo1080", withExtension: "mov") else {
+    guard let url = Bundle.main.url(forResource: "SafariSettingVideo1080", withExtension: "mp4") else {
       fatalError("Video file not found")
     }
     return SimplePiPController(url: url)

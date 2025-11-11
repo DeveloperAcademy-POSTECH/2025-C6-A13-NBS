@@ -38,6 +38,31 @@ extension EditCategoryView: View {
     }
     .background(DesignSystemAsset.background.swiftUIColor)
     .toolbar(.hidden)
+    .task {
+      NotificationCenter.default.addObserver(
+        forName: .categoryEdited,
+        object: nil,
+        queue: .main
+      ) { _ in
+        store.send(.showToast("카테고리를 수정했어요"))
+      }
+    }
+    .overlay(alignment: .bottom) {
+      if store.showToast {
+        AlertIconBanner(
+          icon: Image(icon: Icon.check),
+          title: store.toastMessage,
+          iconColor: .bl3
+        )
+        .zIndex(1)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 92)
+      }
+    }
+    .animation(.easeInOut(duration: 0.3), value: store.showToast)
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
 }
 

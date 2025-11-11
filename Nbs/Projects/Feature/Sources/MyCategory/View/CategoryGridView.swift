@@ -23,7 +23,7 @@ extension CategoryGridView: View {
     WithViewStore(store, observe: { $0 }) { viewStore in
       ScrollView {
         LazyVGrid(columns: gridItems, spacing: 10) {
-          ForEach(viewStore.categories) { category in
+          ForEach(viewStore.categories.reversed()) { category in
             Button {
               viewStore.send(.toggleCategorySelection(category))
             } label: {
@@ -34,9 +34,11 @@ extension CategoryGridView: View {
                     .foregroundStyle(.text1)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
-                  Text("\(category.links.count)개")
-                    .font(.B2_M)
-                    .foregroundStyle(.caption1)
+                  if category.categoryName != "전체" {
+                    Text("\(category.links.count)개")
+                      .font(.B2_M)
+                      .foregroundStyle(.caption1)
+                  }
                   Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -70,6 +72,7 @@ extension CategoryGridView: View {
         }
       }
       .scrollDisabled(viewStore.categories.count < 7)
+      .scrollIndicators(.hidden)
     }
   }
 }

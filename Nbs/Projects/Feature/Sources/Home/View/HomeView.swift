@@ -48,6 +48,7 @@ extension HomeView: View {
           .refreshable {
             store.send(.refresh)
           }
+          .scrollIndicators(.hidden)
           
           AddFloatingButton {
             store.send(.floatingButtonTapped)
@@ -78,5 +79,29 @@ extension HomeView: View {
     }
     .background(Color.background)
     .toolbar(.hidden)
+    .task {
+      NotificationCenter.default.addObserver(
+        forName: .linkSaved,
+        object: nil,
+        queue: .main
+      ) { notification in
+        let category = notification.object as? CategoryItem
+        let categoryName = category?.categoryName ?? "전체"
+        let message = "\(categoryName)에 링크를 저장했어요!"
+        store.send(.showToast(message))
+      }
+    }
+    .overlay(alignment: .bottom) {
+      if store.showToast {
+        AlertBanner(
+          text: "링크를 저장했어요!",
+          message: store.toastMessage,
+          style: .common
+        )
+        .padding(.horizontal, 20)
+        .padding(.bottom, 20)
+      }
+    }
+    .animation(.easeInOut(duration: 0.3), value: store.showToast)
   }
 }
