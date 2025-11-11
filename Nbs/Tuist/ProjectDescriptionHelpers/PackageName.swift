@@ -10,4 +10,5 @@ import ProjectDescription
 public extension Package {
   static let TCA = "ComposableArchitecture"
   static let navigator = "LinkNavigator"
+  static let lottie = "lottie"
 }
