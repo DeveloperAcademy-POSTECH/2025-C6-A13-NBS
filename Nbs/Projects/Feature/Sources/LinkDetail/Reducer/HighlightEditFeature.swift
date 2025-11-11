@@ -59,7 +59,8 @@ struct HighlightEditFeature {
     
     enum Delegate: Equatable {
       case dismiss
-      case edit(State.Context)
+      case add(HighlightItem)
+      case edit(Comment)
       case delete(State.Context)
     }
     case delegate(Delegate)
@@ -71,7 +72,12 @@ struct HighlightEditFeature {
       case .dismissButtonTapped:
         return .send(.delegate(.dismiss))
       case .editButtonTapped:
-        return .send(.delegate(.edit(state.context)))
+        switch state.context {
+        case .comment(let comment):
+          return .send(.delegate(.edit(comment)))
+        case .highlight(let highlight):
+          return .send(.delegate(.add(highlight)))
+        }
       case .deleteButtonTapped:
         state.isShowDeleteModal = true
         return .none
