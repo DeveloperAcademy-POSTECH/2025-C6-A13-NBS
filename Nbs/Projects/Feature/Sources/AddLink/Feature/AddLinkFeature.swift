@@ -42,6 +42,7 @@ struct AddLinkFeature {
   }
   
   enum Action {
+    case onAppear
     case backGestureSwiped
     case setLinkURL(String)
     case saveButtonTapped
@@ -55,8 +56,9 @@ struct AddLinkFeature {
     case showToast(String)
     case hideToast
     case fetchArticleItem
-    case didFetchArticleItems(Result<ArticleItem?, Error>)
+    case didFetchArticleItems(Result<[ArticleItem], Error>)
     case navigateToLinkDetail(ArticleItem)
+    case showArticleButtonTapped
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -68,6 +70,18 @@ struct AddLinkFeature {
     
     Reduce { state, action in
       switch action {
+      case .onAppear:
+        return .run { send in
+          await send(.didFetchArticleItems(Result { try swiftDataClient.fetchLinks() }))
+        }
+        
+      case .showArticleButtonTapped:
+        guard let article = state.articles.first(where: { $0.urlString == state.linkURL }) else {
+          return .none
+        }
+        linkNavigator.push(.linkDetail, article)
+        return .none
+        
       case .backGestureSwiped:
         if state.linkURL.isEmpty {
           return .run { _ in await linkNavigator.pop() }
@@ -76,7 +90,7 @@ struct AddLinkFeature {
         return .none
         
       case let .didFetchArticleItems(.success(articles)):
-        linkNavigator.push(.linkDetail, articles)
+        state.articles = articles
         return .none
         
       case .didFetchArticleItems(.failure(_)):
@@ -86,17 +100,6 @@ struct AddLinkFeature {
           try await Task.sleep(nanoseconds: 2_000_000_000)
           await send(.hideToast)
         }
-        
-      case .fetchArticleItem:
-        guard let found = state.articles.first(where: { $0.urlString == state.linkURL }) else {
-          state.toastMessage = "해당 링크를 찾을 수 없습니다"
-          state.showToast = true
-          return .run { send in
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            await send(.hideToast)
-          }
-        }
-        return .send(.navigateToLinkDetail(found))
         
       case let .setLinkURL(url):
         state.linkURL = url
@@ -185,10 +188,8 @@ struct AddLinkFeature {
         if exists {
           state.toastMessage = "이미 저장된 링크입니다"
           state.showToast = true
-          return .run { send in
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            await send(.hideToast)
-          }
+        } else {
+          state.showToast = false
         }
         return .none
         
@@ -201,6 +202,8 @@ struct AddLinkFeature {
         }
       case .hideToast:
         state.showToast = false
+        return .none
+      case .fetchArticleItem:
         return .none
       }
     }
