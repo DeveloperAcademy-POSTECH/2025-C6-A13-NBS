@@ -50,7 +50,7 @@ struct AddLinkFeature {
     case categoryGrid(CategoryGridFeature.Action)
     case confirmAlertDismissed
     case confirmAlertConfirmButtonTapped
-    case saveLinkResponse(Result<Void, Error>)
+    case saveLinkResponse(Result<ArticleItem, Error>)
     case checkURLExists(String)
     case didCheckURLExists(Bool)
     case showToast(String)
@@ -76,9 +76,9 @@ struct AddLinkFeature {
         }
         
       case .showArticleButtonTapped:
-        guard let article = state.articles.first(where: { $0.urlString == state.linkURL }) else {
-          return .none
-        }
+        guard
+          let article = state.articles.first(where: { $0.urlString == state.linkURL })
+        else { return .none }
         linkNavigator.push(.linkDetail, article)
         return .none
         
@@ -128,7 +128,7 @@ struct AddLinkFeature {
               newLink.category = selectedCategory
             }
             try swiftDataClient.addLink(newLink)
-            await send(.saveLinkResponse(.success(())))
+            await send(.saveLinkResponse(.success(newLink)))
           } catch {
             await send(.saveLinkResponse(.failure(error)))
           }
@@ -161,10 +161,10 @@ struct AddLinkFeature {
         state.isConfirmAlertPresented = false
         return .run { _ in await linkNavigator.pop() }
         
-      case .saveLinkResponse(.success):
+      case .saveLinkResponse(.success(let savedArticle)):
         NotificationCenter.default.post(
           name: .linkSaved,
-          object: nil
+          object: savedArticle.category
         )
         return .run { _ in await linkNavigator.pop() }
         

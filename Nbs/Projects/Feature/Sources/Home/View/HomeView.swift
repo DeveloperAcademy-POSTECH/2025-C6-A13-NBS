@@ -84,15 +84,18 @@ extension HomeView: View {
         forName: .linkSaved,
         object: nil,
         queue: .main
-      ) { _ in
-        store.send(.showToast(""))
+      ) { notification in
+        let category = notification.object as? CategoryItem
+        let categoryName = category?.categoryName ?? "전체"
+        let message = "\(categoryName)에 링크를 저장했어요!"
+        store.send(.showToast(message))
       }
     }
     .overlay(alignment: .bottom) {
       if store.showToast {
         AlertBanner(
           text: "링크를 저장했어요!",
-          message: "정책에서 확인할 수 있어요",
+          message: store.toastMessage,
           style: .common
         )
         .padding(.horizontal, 20)
