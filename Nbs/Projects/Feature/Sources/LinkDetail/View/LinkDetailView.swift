@@ -146,14 +146,10 @@ extension LinkDetailView: View {
       store.send(.originalArticleTapped)
     } label: {
       HStack(spacing: 12) {
-        Image(store.link.imageURL ?? "notImage")
-          .resizable()
-          .scaledToFit()
-          .frame(width: 48, height: 48)
-          .cornerRadius(8)
+        articleImage
         
         VStack(alignment: .leading, spacing: 4) {
-          Text("링크 원문 보기")
+          Text("원문 보기 및 수정하기")
             .font(.B1_M)
             .foregroundStyle(.text1)
             .lineLimit(1)
@@ -181,6 +177,34 @@ extension LinkDetailView: View {
       }
     }
     .buttonStyle(.plain)
+  }
+  
+  private var articleImage: some View {
+    AsyncImage(url: URL(string: store.link.imageURL ?? "")) { phase in
+      switch phase {
+      case .empty:
+        ProgressView()
+          .frame(width: 48, height: 48)
+          .cornerRadius(8)
+      case .success(let image):
+        image
+          .resizable()
+          .scaledToFill()
+          .frame(width: 48, height: 48)
+          .cornerRadius(8)
+          .clipped()
+          .clipShape(RoundedRectangle(cornerRadius: 6))
+      case .failure:
+        DesignSystemAsset.notImage.swiftUIImage
+          .resizable()
+          .scaledToFit()
+          .frame(width: 48, height: 48)
+          .cornerRadius(8)
+          .foregroundColor(.gray)
+      @unknown default:
+        EmptyView()
+      }
+    }
   }
   
   private var bottomContents: some View {
