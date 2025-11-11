@@ -20,6 +20,7 @@ struct HomeFeature {
   
   @ObservableState
   struct State {
+    var isCheckingClipboard = false
     var articleList = ArticleListFeature.State()
     var categoryList = CategoryListFeature.State()
     var alertBanner: AlertBannerState?
@@ -37,12 +38,13 @@ struct HomeFeature {
   
   enum Action {
     case onAppear
+    case scenePhaseChangedToActive
     case clipboardResponded(String?)
     case dismissAlertBanner
+    case alertBannerTapped
     case articleList(ArticleListFeature.Action) //TODO: 정말 필요한지 확인이 필요함
     case categoryList(CategoryListFeature.Action) //TODO: 정말 필요한지 확인이 필요함
     case floatingButtonTapped
-    case alertBannerTapped
     case fetchArticles
     case articlesResponse(Result<[ArticleItem], Error>)
     case searchButtonTapped
@@ -65,9 +67,46 @@ struct HomeFeature {
       switch action {
       case .onAppear:
         return .run { send in
-          await send(.clipboardResponded(clipboard.getString()))
           await send(.fetchArticles)
         }
+        
+      case .scenePhaseChangedToActive:
+        state.isCheckingClipboard = true
+        return .run { send in
+          await send(.clipboardResponded(clipboard.getString()))
+        }
+        
+      case let .clipboardResponded(copiedText):
+        state.isCheckingClipboard = false
+        guard let copiedText,
+              let url = URL(string: copiedText),
+              let _ = url.host else {
+          return .none
+        }
+        
+        guard state.lastShownClipboardLink != copiedText else {
+          return .none
+        }
+        
+        state.alertBanner = .init(
+          text: "복사한 링크 바로 추가하기",
+          message: copiedText
+        )
+        state.copiedLink = copiedText
+        state.lastShownClipboardLink = copiedText
+        
+        return .none
+        
+      case .dismissAlertBanner:
+        state.alertBanner = nil
+        return .none
+        
+      case .alertBannerTapped:
+        if let link = state.copiedLink {
+          linkNavigator.push(.addLink, CopiedLink(url: link))
+        }
+        state.alertBanner = nil
+        return .none
         
       case .showToast(let message):
         state.showToast = true
@@ -100,41 +139,10 @@ struct HomeFeature {
           await send(.fetchArticles)
         }
         
-      case let .clipboardResponded(copiedText):
-        guard let copiedText,
-              let url = URL(string: copiedText),
-              let _ = url.host else {
-          return .none
-        }
-        
-        guard state.lastShownClipboardLink != copiedText else {
-          return .none
-        }
-        
-        state.alertBanner = .init(
-          text: "복사한 링크 바로 추가하기",
-          message: copiedText
-        )
-        state.copiedLink = copiedText
-        state.lastShownClipboardLink = copiedText
-        
-        return .none
-        
-      case .dismissAlertBanner:
-        state.alertBanner = nil
-        return .none
-        
       case .floatingButtonTapped:
         return .run { _ in
           linkNavigator.push(.addLink, nil)
         }
-        
-      case .alertBannerTapped:
-        if let link = state.copiedLink {
-          linkNavigator.push(.addLink, CopiedLink(url: link))
-        }
-        state.alertBanner = nil
-        return .none
         
       case .searchButtonTapped:
         linkNavigator.push(.search, nil)
@@ -149,21 +157,4 @@ struct HomeFeature {
       }
     }
   }
-}
-
-extension DependencyValues {
-  var clipboard: ClipboardClient {
-    get { self[ClipboardClient.self] }
-    set { self[ClipboardClient.self] = newValue }
-  }
-}
-
-struct ClipboardClient {
-  var getString: () -> String?
-}
-
-extension ClipboardClient: DependencyKey {
-  static let liveValue = Self(
-    getString: { UIPasteboard.general.string }
-  )
 }
