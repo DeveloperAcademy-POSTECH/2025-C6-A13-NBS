@@ -60,11 +60,12 @@ extension SearchResultView {
               Button {
                 store.send(.linkCardTapped(result))
               } label: {
-                LinkCard(
+                ArticleCard(
                   title: result.title,
-                  newsCompany : result.newsCompany ?? "언론사 정보 없음",
-                  image: result.imageURL ?? "placeholder_image",
-                  date: result.createAt.formattedKoreanDate()
+                  categoryName: result.category?.categoryName,
+                  imageURL: result.imageURL ?? "placeholder_image",
+                  dateString: result.createAt.formattedKoreanDate(),
+                  newsCompany: result.newsCompany ?? "언론사 정보 없음"
                 )
               }
               .buttonStyle(.plain)
