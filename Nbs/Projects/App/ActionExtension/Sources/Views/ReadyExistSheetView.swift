@@ -26,23 +26,30 @@ extension ReadyExistSheetView {
           Spacer()
         }
         headerView
-        Spacer()
-        MainButton("닫기") {
+        
+        HStack {
+          Spacer()
+          DesignSystemAsset.resavedImage.swiftUIImage
+            .frame(width: 97, height: 89)
+            .padding(.vertical, 10)
+          Spacer()
+        }
+        .padding(.bottom, 16)
+      
+        MainButton("앱으로 바로가기") {
           NotificationCenter.default.post(name: .closeShareExtension, object: nil)
         }
         .buttonStyle(.plain)
         .padding(.vertical, 8)
-        .padding(.horizontal, 20)
         .padding(.bottom, 16)
       }
       .padding(.top, 8)
     }
-    .frame(minHeight: 308)
     .clipShape(RoundedRectangle(cornerRadius: 16))
   }
   
   private var headerView: some View {
-    Text("이미 저장된 링크예요!")
+    Text("저장된 링크는 앱에서 수정이 가능해요")
       .font(.B1_SB)
       .foregroundStyle(.text1)
       .padding(.horizontal, 20)
