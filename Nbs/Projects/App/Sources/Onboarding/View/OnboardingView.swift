@@ -14,9 +14,9 @@ struct OnboardingView {
   @Bindable var store: StoreOf<OnboardingFeature>
   
   @StateObject private var pip: SimplePiPController = {
-    guard let url = Bundle.main.url(forResource: "SafariSettingVideo1080", withExtension: "mp4") else {
-      fatalError("Video file not found")
-    }
+    guard
+      let url = Bundle.main.url(forResource: "SafariSettingVideo1080", withExtension: "mp4")
+    else { fatalError("Video file not found") }
     return SimplePiPController(url: url)
   }()
 }
@@ -78,7 +78,7 @@ extension OnboardingView {
   private func startPipThenOpenSetting() {
     pip.play()
     
-    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+    DispatchQueue.main.asyncAfter(deadline: .now()) {
       self.pip.startPiP()
       
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
