@@ -47,7 +47,9 @@ extension AppRouterGroup {
       SettingRouteBuilder().generate(),
       PolicyDetailRouteBuilder().generate(),
       OpenSourceListRouteBuilder().generate(),
-      FavoriteSettingRouteBuilder().generate()
+      FavoriteSettingRouteBuilder().generate(),
+      ExtensionSettingRouteBuilder().generate(),
+      ShareSettingRouteBuilder().generate()
     ]
   }
 }
