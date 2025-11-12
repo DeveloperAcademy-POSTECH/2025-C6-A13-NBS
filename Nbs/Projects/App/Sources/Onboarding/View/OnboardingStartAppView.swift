@@ -38,9 +38,11 @@ extension OnboardingStartAppView: View {
         .scaledToFit()
         .padding(.horizontal, 30)
         .padding(.top, 55)
+      Spacer()
       MainButton("시작하기") {
         store.send(.startButtonTapped)
       }
     }
+    .background(Color.background)
   }
 }
