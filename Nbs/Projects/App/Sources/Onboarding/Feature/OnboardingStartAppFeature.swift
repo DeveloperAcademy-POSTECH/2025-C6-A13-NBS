@@ -7,6 +7,8 @@
 
 import ComposableArchitecture
 import LinkNavigator
+import Foundation
+import Feature
 
 @Reducer
 struct OnboardingStartAppFeature {
@@ -23,10 +25,10 @@ struct OnboardingStartAppFeature {
     Reduce { state, action in
       switch action {
       case .startButtonTapped:
-        navigation.push(.home, nil)
+        UserDefaults.standard.set(true, forKey: "onboarding")
+        navigation.replace([.home], nil)
         return .none
       }
     }
   }
 }
-

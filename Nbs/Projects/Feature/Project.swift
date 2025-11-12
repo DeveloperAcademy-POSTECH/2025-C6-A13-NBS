@@ -19,7 +19,8 @@ let protject = Project.project(
       dependencies: [
         .TCA(),
         .domain(),
-        .LinkNavigator()
+        .LinkNavigator(),
+        .Lottie()
       ]
     )
   ]

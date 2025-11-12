@@ -1,17 +1,18 @@
 {
   "images" : [
     {
-      "filename" : "onboardingService.png",
-      "idiom" : "universal",
-      "scale" : "1x"
+      "filename" : "ServiceIntro_Light.png",
+      "idiom" : "universal"
     },
     {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ServiceIntro_Dark.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

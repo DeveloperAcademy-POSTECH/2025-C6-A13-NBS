@@ -15,4 +15,8 @@ extension TargetDependency {
   public static func LinkNavigator() -> TargetDependency {
     .external(name: "LinkNavigator")
   }
+  
+  public static func Lottie() -> TargetDependency {
+    .external(name: "Lottie")
+  }
 }

@@ -5,6 +5,7 @@ import Foundation
 public struct LinkNavigatorClient {
   public var push: (Route, Codable?) -> Void
   public var pop: () async -> Void
+  public var replace: ([Route], Codable?) -> Void
 }
 
 extension LinkNavigatorClient: DependencyKey {
@@ -17,6 +18,11 @@ extension LinkNavigatorClient: DependencyKey {
     pop: {
       #if DEBUG
       print("LinkNavigatorClient.pop called, but not implemented.")
+      #endif
+    },
+    replace: { _, _ in
+      #if DEBUG
+      print("not implemented")
       #endif
     }
   )
@@ -39,6 +45,26 @@ extension LinkNavigatorClient {
     self.pop = {
       await MainActor.run {
         navigator.back(isAnimated: true)
+      }
+    }
+    self.replace = { paths, items in
+      DispatchQueue.main.async {
+        let pathList = paths.map(\.rawValue)
+        guard !pathList.isEmpty else {
+#if DEBUG
+          print("replace 네비 명령어")
+#endif
+          return
+        }
+        if let path = pathList.first {
+          navigator.replace(
+            linkItem: .init(
+              path: path,
+              items: items
+            ),
+            isAnimated: true
+          )
+        }
       }
     }
   }

@@ -21,60 +21,69 @@ struct HomeView {
 
 extension HomeView: View {
   var body: some View {
-    VStack {
-      TopAppBarHome(
-        onTapSearchButton: { store.send(.searchButtonTapped) } ,
-        onTapSettingButton: { store.send(.settingButtonTapped) }
-      )
-      ZStack(alignment: .bottom) {
-        ZStack(alignment: .bottomTrailing) {
-          ScrollView {
-            VStack(spacing: 24) {
-              CategoryListView(
-                store: store.scope(
-                  state: \.categoryList,
-                  action: \.categoryList
-                )
-              )
-              ArticleListView(
-                store: store.scope(
-                  state: \.articleList,
-                  action: \.articleList
-                )
-              )
-            }
-            .padding(.bottom, 80)
-          }
-          .refreshable {
-            store.send(.refresh)
-          }
-          .scrollIndicators(.hidden)
-          
-          AddFloatingButton {
-            store.send(.floatingButtonTapped)
-          }
-          .padding(.trailing, 20)
-          .padding(.bottom, 24)
-        }
-        
-        if let alertBanner = store.state.alertBanner {
-          AlertBanner(
-            text: alertBanner.text,
-            message: alertBanner.message,
-            style: .close {
-              store.send(.dismissAlertBanner)
-            }
+    ZStack {
+      if store.isCheckingClipboard {
+        ProgressView()
+      } else {
+        VStack {
+          TopAppBarHome(
+            onTapSearchButton: { store.send(.searchButtonTapped) } ,
+            onTapSettingButton: { store.send(.settingButtonTapped) }
           )
-          .padding(.horizontal, 20)
-          .onTapGesture {
-            store.send(.alertBannerTapped)
+          ZStack(alignment: .bottom) {
+            ZStack(alignment: .bottomTrailing) {
+              ScrollView {
+                VStack(spacing: 24) {
+                  CategoryListView(
+                    store: store.scope(
+                      state: \.categoryList,
+                      action: \.categoryList
+                    )
+                  )
+                  ArticleListView(
+                    store: store.scope(
+                      state: \.articleList,
+                      action: \.articleList
+                    )
+                  )
+                }
+                .padding(.bottom, 80)
+              }
+              .refreshable {
+                store.send(.refresh)
+              }
+              .scrollIndicators(.hidden)
+              
+              AddFloatingButton {
+                store.send(.floatingButtonTapped)
+              }
+              .padding(.trailing, 20)
+              .padding(.bottom, 24)
+            }
+            
+            if let alertBanner = store.state.alertBanner {
+              AlertBanner(
+                text: alertBanner.text,
+                message: alertBanner.message,
+                style: .close {
+                  store.send(.dismissAlertBanner)
+                }
+              )
+              .padding(.horizontal, 20)
+              .onTapGesture {
+                store.send(.alertBannerTapped)
+              }
+            }
           }
         }
       }
     }
+    .onAppear {
+      store.send(.onAppear)
+    }
     .onChange(of: scenePhase) { _, newPhase in
       if newPhase == .active {
-        store.send(.onAppear)
+        store.send(.scenePhaseChangedToActive)
       }
     }
     .background(Color.background)

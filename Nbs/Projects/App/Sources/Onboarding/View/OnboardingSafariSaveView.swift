@@ -16,21 +16,19 @@ struct OnboardingSafariSaveView {
 
 extension OnboardingSafariSaveView: View {
   var body: some View {
-    ZStack(alignment: .bottom) {
-      VStack(spacing: 0) {
-        TopAppBarDefaultRightIconx(title: "Safari에서 공유하기") {
-          store.send(.backButtonTapped)
-        }
-        OnboardingTitleImage(
-          title: .highlightMemoTitle,
-          description: .highlightMemoDescription,
-          image: DesignSystemAsset.onboardingService.swiftUIImage,
-          showPage: true,
-          currentPage: store.currentPage
-        )
-        .padding(.top, 16)
+    VStack(spacing: 0) {
+      TopAppBarDefaultRightIconx(title: "Safari에서 공유하기") {
+        store.send(.backButtonTapped)
       }
+      Group {
+        Text("Safari에서 공유해 저장하는 과정을")
+        Text("영상을 통해 확인해보세요")
+      }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .font(.B1_SB)
+        .foregroundStyle(.caption1)
       
+      Spacer()
       VStack {
         MainButton("완료", hasGradient: true) {
           store.send(.completeButtonTapped)
@@ -38,8 +36,8 @@ extension OnboardingSafariSaveView: View {
         .buttonStyle(.plain)
       }
       .background(Color.background)
+      .toolbar(.hidden)
     }
     .background(Color.background)
-    .toolbar(.hidden)
   }
 }

@@ -12,33 +12,27 @@ import DesignSystem
 
 struct OnboardingView {
   @Bindable var store: StoreOf<OnboardingFeature>
+  @Environment(\.colorScheme) private var colorScheme
   
-  @StateObject private var pip: SimplePiPController = {
-    guard let url = Bundle.main.url(forResource: "SafariSettingVideo1080", withExtension: "mp4") else {
-      fatalError("Video file not found")
-    }
-    return SimplePiPController(url: url)
-  }()
+  @State private var pip: SimplePiPController?
 }
 
 extension OnboardingView: View {
   var body: some View {
-    ZStack(alignment: .bottom) {
+    VStack(spacing: 0) {
+      OnboardingTitleImage(
+        title: .safariTitle,
+        description: .safariDescription,
+        image: DesignSystemAsset.safariSetting.swiftUIImage,
+        showPage: true,
+        currentPage: store.currentPage
+      )
+      .padding(.top, 72)
+      Spacer()
       VStack(spacing: 0) {
-        OnboardingTitleImage(
-          title: .safariTitle,
-          description: .safariDescription,
-          image: DesignSystemAsset.onboardingService.swiftUIImage,
-          showPage: true,
-          currentPage: store.currentPage
-        )
-        .padding(.top, 72)
-      }
-      
-      VStack {
         MainButton("설정하기", hasGradient: true) {
           store.send(.settingButtonTapped)
-          pip.play()
+//          pip.play()
           startPipThenOpenSetting()
         }
         .buttonStyle(.plain)
@@ -51,7 +45,7 @@ extension OnboardingView: View {
             .foregroundStyle(.caption2)
             .underline()
         }
-        .padding(.top, 8)
+        .padding(.top, 24)
       }
       .background(Color.background)
     }
@@ -76,10 +70,24 @@ extension OnboardingView: View {
 
 extension OnboardingView {
   private func startPipThenOpenSetting() {
-    pip.play()
+    let videoName = (colorScheme == .dark) ? "safariSettingDark" : "safariSettingLight"
     
-    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-      self.pip.startPiP()
+    guard let url = Bundle.main.url(forResource: videoName, withExtension: "mov") else {
+      print("⚠️ video not found: \(videoName)")
+      return
+    }
+    
+    // ✅ pip이 없으면 새로 생성
+    if pip == nil {
+      pip = SimplePiPController(url: url)
+    } else {
+      
+    }
+    
+    pip?.play()
+    
+    DispatchQueue.main.asyncAfter(deadline: .now()) {
+      self.pip?.startPiP()
       
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
         if let url = URL(string: UIApplication.openSettingsURLString) {

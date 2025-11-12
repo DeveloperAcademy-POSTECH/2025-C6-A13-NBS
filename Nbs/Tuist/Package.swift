@@ -10,7 +10,8 @@ let packageSettings = PackageSettings(
   // productTypes: ["Alamofire": .framework,]
   productTypes: [
     "ComposableArchitecture": .framework,
-    "LinkNavigator": .framework
+    "LinkNavigator": .framework,
+    "Lottie": .staticFramework
   ]
 )
 #endif
@@ -25,6 +26,13 @@ let package = Package(
       url: "https://github.com/pointfreeco/swift-composable-architecture.git",
       from: "1.10.0"
     ),
-    .package(url: "https://github.com/interactord/LinkNavigator.git", from: "1.3.1")
+    .package(
+      url: "https://github.com/interactord/LinkNavigator.git",
+      from: "1.3.1"
+    ),
+    .package(
+      url: "https://github.com/airbnb/lottie-spm.git",
+      from: "4.5.2"
+    )
   ]
 )

@@ -42,6 +42,9 @@ public extension Icon {
   static let smallMove = "small-move"
   static let opensource = "opensource"
   static let file = "file"
+  static let checkUnfill = "check-unfill"
+  static let checkFill = "check-fill"
+
 }
 
 public extension Image {

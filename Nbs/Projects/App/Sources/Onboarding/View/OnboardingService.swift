@@ -18,27 +18,23 @@ struct OnboardingServiceView {
 extension OnboardingServiceView: View {
   var body: some View {
     VStack {
-      ZStack(alignment: .bottom) {
-        OnboardingTitleImage(
-          title: .introTitle,
-          description: .introDescription,
-          image: DesignSystemAsset.onboardingService.swiftUIImage,
-          showPage: false,
-          currentPage: 0
-        )
-        .padding(.top, 72)
-        
-        MainButton("시작하기", hasGradient: true) {
-          store.send(.startButtonTapped)
-        }
-        .buttonStyle(.plain)
+      OnboardingTitleImage(
+        title: .introTitle,
+        description: .introDescription,
+        image: DesignSystemAsset.onboardingService.swiftUIImage,
+        showPage: false,
+        currentPage: 0
+      )
+      .padding(.top, 72)
+      
+      Spacer()
+      MainButton("시작하기", hasGradient: true) {
+        store.send(.startButtonTapped)
       }
+      .buttonStyle(.plain)
+      .padding(.bottom, 21)
     }
     .background(Color.background)
     .toolbar(.hidden)
   }
 }
-
-//#Preview {
-//  OnboardingServiceView()
-//}

@@ -16,22 +16,21 @@ struct OnboardingHighlightGuideView {
 
 extension OnboardingHighlightGuideView: View {
   var body: some View {
-    ZStack(alignment: .bottom) {
-      VStack(spacing: 0) {
-        TopAppBarDefaultRightIconx(title: "") {
-          store.send(.backButtonTapped)
-        }
-        OnboardingTitleImage(
-          title: .highlightMemoTitle,
-          description: .highlightMemoDescription,
-          image: DesignSystemAsset.onboardingService.swiftUIImage,
-          showPage: true,
-          currentPage: store.currentPage
-        )
-        .padding(.top, 16)
+    VStack(spacing: 0) {
+      TopAppBarDefaultRightIconx(title: "") {
+        store.send(.backButtonTapped)
       }
+      OnboardingTitleImage(
+        title: .highlightMemoTitle,
+        description: .highlightMemoDescription,
+        image: DesignSystemAsset.highlightMemo.swiftUIImage,
+        showPage: true,
+        currentPage: store.currentPage
+      )
+      .padding(.top, 16)
       
-      VStack {
+      Spacer()
+      VStack(spacing: 0) {
         MainButton("다음", hasGradient: true) {
           store.send(.nextButtonTapped)
         }
@@ -45,11 +44,11 @@ extension OnboardingHighlightGuideView: View {
             .foregroundStyle(.caption2)
             .underline()
         }
-        .padding(.top, 8)
+        .padding(.top, 24)
       }
       .background(Color.background)
+      .toolbar(.hidden)
     }
     .background(Color.background)
-    .toolbar(.hidden)
   }
 }
