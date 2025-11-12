@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "EmptyImage.pdf",
+      "filename" : "EmptyImage.png",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "EmptyImageDark.png",
       "idiom" : "universal"
     }
   ],
