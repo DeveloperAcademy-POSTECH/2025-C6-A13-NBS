@@ -14,6 +14,7 @@ struct SearchSuggestionFeature {
   @ObservableState
   struct State: Equatable {
     var suggestionItem: [ArticleItem] = []
+    var searchText: String = ""
   }
   
   enum Action: Equatable {
