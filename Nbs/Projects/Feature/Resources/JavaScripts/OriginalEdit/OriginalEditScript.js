@@ -56,8 +56,7 @@ function renderCapsules(span) {
         });
         
         if (isAlreadyClicked && memoBoxOpenForThisCapsule) {
-          const existingMemoBox = document.getElementById('memo-box');
-          if (existingMemoBox) existingMemoBox.remove();
+          closeMemoBox();
           return;
         }
         
@@ -81,17 +80,56 @@ function renderCapsules(span) {
   }
 }
 
+function closeMemoBox() {
+    const memoBox = document.getElementById('memo-box');
+    if (!memoBox) return;
+
+    const span = document.querySelector(`[data-id="${memoBox.dataset.highlightId}"]`);
+    if (!span) return;
+
+    const textarea = memoBox.querySelector('textarea');
+    const commentText = textarea.value.trim();
+    let updatedComments = JSON.parse(span.dataset.comments || '[]');
+    const memoId = Number(memoBox.dataset.editingId);
+
+    if (memoId) {
+        const commentIndex = updatedComments.findIndex(m => m.id === memoId);
+        if (commentIndex > -1) {
+            if (commentText) {
+                updatedComments[commentIndex].text = commentText;
+            } else {
+                updatedComments.splice(commentIndex, 1);
+            }
+        }
+    } else {
+        if (commentText) {
+            const newComment = {
+                id: Date.now(),
+                type: span.dataset.highlightType,
+                text: commentText
+            };
+            updatedComments.push(newComment);
+        }
+    }
+
+    span.dataset.comments = JSON.stringify(updatedComments);
+    memoBox.remove();
+    renderCapsules(span);
+
+    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+        c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+    });
+}
+
 function showMemoBox(span, memoId = null) {
-  const existingMemoBox = document.getElementById('memo-box');
-  if (existingMemoBox) {
-    existingMemoBox.remove();
-  }
-  
+  closeMemoBox();
+
   const comments = JSON.parse(span.dataset.comments || '[]');
   const currentComment = memoId ? comments.find(m => m.id === memoId) : null;
   
   const memoBox = document.createElement('div');
   memoBox.id = 'memo-box';
+  memoBox.dataset.highlightId = span.dataset.id; 
   if (memoId) {
     memoBox.dataset.editingId = memoId;
   }
@@ -105,34 +143,7 @@ function showMemoBox(span, memoId = null) {
   textarea.value = existingText;
   memoBox.appendChild(textarea);
   
-  textarea.addEventListener('blur', () => {
-    const commentText = textarea.value.trim();
-    let updatedComments = JSON.parse(span.dataset.comments || '[]');
-    
-    if (memoId) {
-      const commentIndex = updatedComments.findIndex(m => m.id === memoId);
-      if (commentIndex > -1) {
-        if (commentText) {
-          updatedComments[commentIndex].text = commentText;
-        } else {
-          updatedComments.splice(commentIndex, 1);
-        }
-      }
-    } else {
-      if (commentText) {
-        const newComment = { id: Date.now(), type: currentHighlightType, text: commentText };
-        updatedComments.push(newComment);
-      }
-    }
-    
-    span.dataset.comments = JSON.stringify(updatedComments);
-    memoBox.remove();
-    renderCapsules(span);
-    
-    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
-      c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
-    });
-  });
+  textarea.addEventListener('blur', closeMemoBox);
   
   span.after(memoBox);
   textarea.focus();
@@ -437,11 +448,8 @@ document.addEventListener('click', function(event) {
     const memoBox = document.getElementById('memo-box');
     const clickedHighlight = event.target.closest('.highlighted-text');
 
-    if (memoBox) {
-        if (!memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
-            memoBox.querySelector('textarea')?.blur();
-        }
-        return;
+    if (memoBox && !memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
+        closeMemoBox();
     }
 
     if (clickedHighlight) {
