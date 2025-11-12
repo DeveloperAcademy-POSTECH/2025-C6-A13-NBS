@@ -23,14 +23,14 @@ extension OnboardingHighlightGuideView: View {
       OnboardingTitleImage(
         title: .highlightMemoTitle,
         description: .highlightMemoDescription,
-        image: DesignSystemAsset.onboardingService.swiftUIImage,
+        image: DesignSystemAsset.highlightMemo.swiftUIImage,
         showPage: true,
         currentPage: store.currentPage
       )
       .padding(.top, 16)
       
       Spacer()
-      VStack {
+      VStack(spacing: 0) {
         MainButton("다음", hasGradient: true) {
           store.send(.nextButtonTapped)
         }
@@ -44,7 +44,7 @@ extension OnboardingHighlightGuideView: View {
             .foregroundStyle(.caption2)
             .underline()
         }
-        .padding(.top, 8)
+        .padding(.top, 24)
       }
       .background(Color.background)
       .toolbar(.hidden)

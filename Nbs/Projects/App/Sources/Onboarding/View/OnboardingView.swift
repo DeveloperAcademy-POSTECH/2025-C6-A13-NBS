@@ -23,7 +23,7 @@ extension OnboardingView: View {
       OnboardingTitleImage(
         title: .safariTitle,
         description: .safariDescription,
-        image: DesignSystemAsset.onboardingService.swiftUIImage,
+        image: DesignSystemAsset.safariSetting.swiftUIImage,
         showPage: true,
         currentPage: store.currentPage
       )
