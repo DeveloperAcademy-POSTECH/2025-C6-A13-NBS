@@ -26,15 +26,28 @@ extension FavoriteSettingView {
         }
         
         VStack(spacing: 30) {
-          Text("탭탭을 즐겨찾기 설정하여\n더 쉽게 공유할 수 있어요! ")
+          Text("탭탭을 즐겨찾기 설정하여\n더 쉽게 공유할 수 있어요!")
             .font(.B1_M)
             .foregroundStyle(.caption1)
+            .multilineTextAlignment(.center)
           
           ZStack {
-            Color.background
-              .cornerRadius(32)
-              .opacity(isReady ? 0 : 1)
-      
+            ZStack(alignment: .center) {
+              Color.background.ignoresSafeArea()
+              VStack(alignment: .center, spacing: 8) {
+                DesignSystemAsset.wifiOff.swiftUIImage
+                  .resizable()
+                  .scaledToFit()
+                  .frame(width: 48, height: 48)
+                
+                Text("인터넷 연결이 불안정해요")
+                  .font(.B2_M)
+                  .foregroundStyle(.caption2)
+                  .multilineTextAlignment(.center)
+              }
+            }
+            .opacity(isReady ? 0 : 1)
+            
             CustomVideoView(
               url: URL(string: AppConfig.settingFavoriteURL)!,
               onReady: { isReady = true }
@@ -50,14 +63,16 @@ extension FavoriteSettingView {
           }
         }
         .padding(.horizontal, 52)
-        
       }
     }
   }
 }
 
 #Preview {
-  FavoriteSettingView(store: Store(initialState: FavoriteSettingFeature.State(), reducer: {
-    FavoriteSettingFeature()
-  }))
+  FavoriteSettingView(
+    store: Store(
+      initialState: FavoriteSettingFeature.State(),
+      reducer: {
+        FavoriteSettingFeature()
+      }))
 }
