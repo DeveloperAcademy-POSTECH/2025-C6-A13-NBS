@@ -25,9 +25,6 @@ public enum Route: String {
   case editCategory
   case editCategoryNameIcon
   case deleteCategory
-  case setting // 홈 -> 설정
-  case policyDetail // 설정 -> 정책 디테일
-  case openSourceList // 설정 -> 오픈소스 리스트
   case search
   case linkList    // 홈 -> 링크 리스트
   case linkDetail  // 카드 -> 링크 디테일
@@ -35,4 +32,10 @@ public enum Route: String {
   case originalEdit // 원문 보기 -> 원문 편집
   case moveLink    // 링크 이동하기
   case deleteLink  // 링크 삭제하기
+  
+  // MARK: - 설정
+  case setting // 홈 -> 설정
+  case policyDetail // 설정 -> 정책 디테일
+  case openSourceList // 설정 -> 오픈소스 리스트
+  case favoriteSetting
 }
