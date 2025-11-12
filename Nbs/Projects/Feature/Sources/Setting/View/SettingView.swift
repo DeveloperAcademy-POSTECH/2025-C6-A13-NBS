@@ -74,28 +74,28 @@ extension SettingView {
         icon: DesignSystemAsset.settingSafari.swiftUIImage,
         title: "Safari extension 허용하기"
       ) {
-        //        store.send(.safariTipTapped)
+        store.send(.safariTipTapped)
       }
       
       SettingTipCard(
         icon: DesignSystemAsset.settingHighlight.swiftUIImage,
         title: "하이라이트 및 메모 \n연습하기"
       ) {
-        //        store.send(.highlightTipTapped)
+        store.send(.highlightTipTapped)
       }
       
       SettingTipCard(
         icon: DesignSystemAsset.settingShare.swiftUIImage,
         title: "우리앱으로 손쉽게 \n공유하기"
       ) {
-        //        store.send(.shareTipTapped)
+        store.send(.shareTipTapped)
       }
       
       SettingTipCard(
         icon: DesignSystemAsset.settingFavorite.swiftUIImage,
         title: "즐겨찾기 설정하기"
       ) {
-        //        store.send(.favoriteTipTapped)
+        store.send(.favoriteTipTapped)
       }
     }
   }
