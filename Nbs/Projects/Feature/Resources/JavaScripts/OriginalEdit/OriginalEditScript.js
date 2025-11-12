@@ -129,7 +129,7 @@ function showMemoBox(span, memoId = null) {
   
   const memoBox = document.createElement('div');
   memoBox.id = 'memo-box';
-  memoBox.dataset.highlightId = span.dataset.id; 
+  memoBox.dataset.highlightId = span.dataset.id;
   if (memoId) {
     memoBox.dataset.editingId = memoId;
   }
@@ -251,10 +251,11 @@ function showDeleteConfirmationModal(onConfirm) {
   modalContent.addEventListener('click', e => e.stopPropagation());
 
   const title = document.createElement('h3');
-  title.textContent = '하이라이트 삭제';
+  title.textContent = '해당 하이라이트를 삭제할까요?';
   
   const message = document.createElement('p');
-  message.textContent = '이 하이라이트와 모든 메모를 삭제하시겠습니까?';
+  message.textContent = '메모도 함께 삭제되며,\n삭제한 하이라이트는 복구할 수 없어요';
+  message.style.whiteSpace = 'pre-line';
 
   const separator = document.createElement('div');
   separator.className = 'modal-separator';
