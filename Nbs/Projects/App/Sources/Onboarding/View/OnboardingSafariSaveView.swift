@@ -20,14 +20,13 @@ extension OnboardingSafariSaveView: View {
       TopAppBarDefaultRightIconx(title: "Safari에서 공유하기") {
         store.send(.backButtonTapped)
       }
-      OnboardingTitleImage(
-        title: .highlightMemoTitle,
-        description: .highlightMemoDescription,
-        image: DesignSystemAsset.onboardingService.swiftUIImage,
-        showPage: true,
-        currentPage: store.currentPage
-      )
-      .padding(.top, 16)
+      Group {
+        Text("Safari에서 공유해 저장하는 과정을")
+        Text("영상을 통해 확인해보세요")
+      }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .font(.B1_SB)
+        .foregroundStyle(.caption1)
       
       Spacer()
       VStack {
