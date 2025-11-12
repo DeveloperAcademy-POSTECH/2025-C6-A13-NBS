@@ -176,6 +176,11 @@ function showTulipMenu(span) {
     }
     
     button.dataset.highlightType = buttonInfo.type;
+    
+    if (buttonInfo.type === span.dataset.highlightType) {
+      button.classList.add('selected');
+    }
+
     button.addEventListener('click', (event) => {
       event.stopPropagation();
       if (buttonInfo.type === 'memo') {
@@ -196,6 +201,10 @@ function showTulipMenu(span) {
           renderCapsules(span)
         }
         updateDraft(span);
+        
+        menu.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+
         setTimeout(() => { isTulipMenuClick = false; }, 100);
         lastSelectedHighlightType = newType;
       }
@@ -382,7 +391,6 @@ document.addEventListener('dblclick', function(event) {
   sentenceRange.setStart(textNode, sentenceStart);
   sentenceRange.setEnd(textNode, sentenceEnd);
 
-  // Adjust range to exclude leading whitespace
   let extractedText = sentenceRange.toString();
   const leadingWhitespaceLength = extractedText.length - extractedText.trimStart().length;
   if (leadingWhitespaceLength > 0) {
