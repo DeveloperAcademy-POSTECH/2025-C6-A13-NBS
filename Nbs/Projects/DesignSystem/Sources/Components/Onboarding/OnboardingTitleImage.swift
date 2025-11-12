@@ -40,6 +40,7 @@ extension OnboardingTitleImage: View {
           Text("\(currentPage)/\(3)")
             .font(.C2)
             .foregroundStyle(.caption1)
+            .offset(y: 5)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
@@ -60,3 +61,7 @@ extension OnboardingTitleImage: View {
     }
   }
 }
+
+#Preview(body: {
+  OnboardingTitleImage(title: .highlightMemoTitle, description: .highlightMemoDescription, image: DesignSystemAsset.onboardingService.swiftUIImage, showPage: true, currentPage: 1)
+})
