@@ -27,6 +27,7 @@ Temporary Items
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+AppConfig.swift
 
 ## User settings
 xcuserdata/
