@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import LinkNavigator
+import Feature
 
 @Reducer
 struct OnboardingHighlightFeature {
@@ -15,6 +16,7 @@ struct OnboardingHighlightFeature {
   @ObservableState
   struct State {
     var currentPage: Int = 2
+    var entryPoint: Route? = .home
   }
   
   enum Action {
@@ -30,8 +32,14 @@ struct OnboardingHighlightFeature {
           await navigation.pop()
         }
       case .finishButtonTapped:
-        navigation.push(.safariShare, nil)
-        return .none
+        if state.entryPoint == .home {
+          return .run { send in
+            await navigation.pop()
+          }
+        } else {
+          navigation.push(.safariShare, nil)
+          return .none
+        }
       }
     }
   }

@@ -16,9 +16,10 @@ public struct OnboardingHighlightRouteBuilder {
   @MainActor
   public func generate() -> RouteBuilderOf<SingleLinkNavigator> {
     let matchPath = Route.onboardingHighlight.rawValue
-    return .init(matchPath: matchPath) { navigator, _, _ -> RouteViewController? in
+    return .init(matchPath: matchPath) { navigator, item, _ -> RouteViewController? in
+      let path: Route? = item.decoded()
       return WrappingController(matchPath: matchPath) {
-        OnboardingHighlightView(store: Store(initialState: OnboardingHighlightFeature.State()) {
+        OnboardingHighlightView(store: Store(initialState: OnboardingHighlightFeature.State(entryPoint: path)) {
           OnboardingHighlightFeature()
             .dependency(\.linkNavigator, .init(navigator: navigator))
         })
