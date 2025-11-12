@@ -63,7 +63,7 @@ struct SettingFeature {
         return .none
         
       case .highlightTipTapped:
-        //TODO: 연결해야함
+        linkNavigator.push(.onboardingHighlight, Route.home)
         return .none
         
       case .shareTipTapped:
