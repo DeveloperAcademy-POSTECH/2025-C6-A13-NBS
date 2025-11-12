@@ -5,7 +5,7 @@
 //  Created by 홍 on 10/27/25.
 //
 
-public enum Route: String {
+public enum Route: String, Codable {
   
   //MARK: 온보딩
   case onboardingService
