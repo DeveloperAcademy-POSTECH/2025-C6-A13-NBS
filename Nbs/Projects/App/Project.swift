@@ -26,6 +26,12 @@ let appTarget = Target.target(
       ],
       "UIBackgroundModes": [
         "audio"
+      ],
+      
+      "CFBundleURLTypes": [
+        [
+          "CFBundleURLSchemes": ["nbs"]
+        ]
       ]
     ]
   ),

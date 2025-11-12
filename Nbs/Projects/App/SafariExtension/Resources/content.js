@@ -62,8 +62,7 @@ function renderCapsules(span) {
         });
 
         if (isAlreadyClicked && memoBoxOpenForThisCapsule) {
-          const existingMemoBox = document.getElementById('memo-box');
-          if (existingMemoBox) existingMemoBox.remove();
+          closeMemoBox();
           return;
         }
 
@@ -90,17 +89,57 @@ function renderCapsules(span) {
   }
 }
 
+function closeMemoBox() {
+    const memoBox = document.getElementById('memo-box');
+    if (!memoBox) return;
+
+    const span = document.querySelector(`[data-draft-id="${memoBox.dataset.highlightId}"]`);
+    if (!span) return;
+
+    const textarea = memoBox.querySelector('textarea');
+    const commentText = textarea.value.trim();
+    let updatedComments = JSON.parse(span.dataset.comments || '[]');
+    const memoId = Number(memoBox.dataset.editingId);
+
+    if (memoId) {
+        const commentIndex = updatedComments.findIndex(m => m.id === memoId);
+        if (commentIndex > -1) {
+            if (commentText) {
+                updatedComments[commentIndex].text = commentText;
+            } else {
+                updatedComments.splice(commentIndex, 1);
+            }
+        }
+    } else {
+        if (commentText) {
+            const newComment = {
+                id: Date.now(),
+                type: span.dataset.highlightType,
+                text: commentText
+            };
+            updatedComments.push(newComment);
+        }
+    }
+
+    span.dataset.comments = JSON.stringify(updatedComments);
+    memoBox.remove();
+    renderCapsules(span);
+    updateDraft(span);
+
+    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
+        c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
+    });
+}
+
 function showMemoBox(span, memoId = null) {
-  const existingMemoBox = document.getElementById('memo-box');
-  if (existingMemoBox) {
-    existingMemoBox.remove();
-  }
-  
+  closeMemoBox();
+
   const comments = JSON.parse(span.dataset.comments || '[]');
   const currentComment = memoId ? comments.find(m => m.id === memoId) : null;
   
   const memoBox = document.createElement('div');
   memoBox.id = 'memo-box';
+  memoBox.dataset.highlightId = span.dataset.draftId;
   if (memoId) {
     memoBox.dataset.editingId = memoId;
   }
@@ -114,41 +153,10 @@ function showMemoBox(span, memoId = null) {
   textarea.value = existingText;
   memoBox.appendChild(textarea);
 
-  textarea.addEventListener('blur', () => {
-    const commentText = textarea.value.trim();
-    let updatedComments = JSON.parse(span.dataset.comments || '[]');
-
-    if (memoId) {
-      const commentIndex = updatedComments.findIndex(m => m.id === memoId);
-      if (commentIndex > -1) {
-        if (commentText) {
-          updatedComments[commentIndex].text = commentText;
-        } else {
-          updatedComments.splice(commentIndex, 1);
-        }
-      }
-    } else {
-      if (commentText) {
-        const newComment = {
-          id: Date.now(),
-          type: currentHighlightType,
-          text: commentText
-        };
-        updatedComments.push(newComment);
-      }
-    }
-
-    span.dataset.comments = JSON.stringify(updatedComments);
-    memoBox.remove();
-    renderCapsules(span);
-    updateDraft(span);
-
-    document.querySelectorAll('.memo-capsule.clicked-what, .memo-capsule.clicked-why, .memo-capsule.clicked-detail').forEach(c => {
-      c.classList.remove('clicked-what', 'clicked-why', 'clicked-detail');
-    });
-  });
+  textarea.addEventListener('blur', closeMemoBox);
   
   span.after(memoBox);
+  textarea.focus(); 
 }
 
 function showTulipMenu(span) {
@@ -176,6 +184,11 @@ function showTulipMenu(span) {
     }
     
     button.dataset.highlightType = buttonInfo.type;
+    
+    if (buttonInfo.type === span.dataset.highlightType) {
+      button.classList.add('selected');
+    }
+
     button.addEventListener('click', (event) => {
       event.stopPropagation();
       if (buttonInfo.type === 'memo') {
@@ -196,6 +209,10 @@ function showTulipMenu(span) {
           renderCapsules(span)
         }
         updateDraft(span);
+        
+        menu.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+
         setTimeout(() => { isTulipMenuClick = false; }, 100);
         lastSelectedHighlightType = newType;
       }
@@ -253,10 +270,11 @@ function showDeleteConfirmationModal(onConfirm) {
   modalContent.addEventListener('click', e => e.stopPropagation());
 
   const title = document.createElement('h3');
-  title.textContent = '하이라이트 삭제';
+  title.textContent = '해당 하이라이트를 삭제할까요?';
   
   const message = document.createElement('p');
-  message.textContent = '이 하이라이트와 모든 메모를 삭제하시겠습니까?';
+  message.textContent = '메모도 함께 삭제되며,\n삭제한 하이라이트는 복구할 수 없어요';
+  message.style.whiteSpace = 'pre-line';
 
   const separator = document.createElement('div');
   separator.className = 'modal-separator';
@@ -382,7 +400,6 @@ document.addEventListener('dblclick', function(event) {
   sentenceRange.setStart(textNode, sentenceStart);
   sentenceRange.setEnd(textNode, sentenceEnd);
 
-  // Adjust range to exclude leading whitespace
   let extractedText = sentenceRange.toString();
   const leadingWhitespaceLength = extractedText.length - extractedText.trimStart().length;
   if (leadingWhitespaceLength > 0) {
@@ -583,11 +600,8 @@ document.addEventListener('click', function(event) {
     const memoBox = document.getElementById('memo-box');
     const clickedHighlight = event.target.closest('.highlighted-text');
 
-    if (memoBox) {
-        if (!memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
-            memoBox.querySelector('textarea')?.blur();
-        }
-        return;
+    if (memoBox && !memoBox.contains(event.target) && !event.target.closest('.memo-capsule')) {
+        closeMemoBox();
     }
 
     if (clickedHighlight) {

@@ -17,6 +17,10 @@
 #tulip-menu button[data-highlight-type="detail"] { background-color: rgba(219, 243, 255, 1); color: rgba(21, 172, 229, 1); }
 #tulip-menu button[data-highlight-type="memo"] { background-color: rgba(222, 222, 227, 1); color: rgba(21, 172, 229, 1); }
 
+#tulip-menu button.selected[data-highlight-type="what"] { border-color: rgba(242, 71, 237, 1); }
+#tulip-menu button.selected[data-highlight-type="why"] { border-color: rgba(222, 146, 16, 1); }
+#tulip-menu button.selected[data-highlight-type="detail"] { border-color: rgba(21, 172, 229, 1); }
+
 #memo-box { background: rgba(246, 246, 246, 1); border-radius: 8px; display: flex; flex-direction: column; margin-top: 10px; margin-bottom: 10px; height: 113px; }
 #memo-box textarea { background: rgba(246, 246, 246, 1); border-radius: 8px; width: 100%; height: 100%; font-family: sans-serif; font-size: 16px; resize: vertical; box-sizing: border-box; border: none; padding: 16px; }
 #memo-box .memo-buttons { display: flex; justify-content: flex-end; gap: 10px; }
@@ -41,7 +45,7 @@
 
 /* 삭제 확인 모달 스타일 */
 #delete-confirm-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%;  display: flex; justify-content: center; align-items: center; z-index: 2147483647;}
-#delete-confirm-modal .modal-content { background: white; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; height: 169px; width: 100%; margin: 0 31px;}
+#delete-confirm-modal .modal-content { background: white; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; height: 190px; width: 100%; margin: 0 44.5px;}
 #delete-confirm-modal h3 { margin-top: 28px; font-size: 16px; }
 #delete-confirm-modal p { margin-top: 8px; font-size: 14px; color: #555; }
 .modal-buttons { display: flex; justify-content: center; gap: 48px; }
@@ -77,6 +81,10 @@
     #tulip-menu button[data-highlight-type="memo"] { background-color: rgba(27, 27, 34, 1); color: rgba(21, 172, 229, 1); }
     #tulip-menu button:not([data-highlight-type]) { background-color: #444; }
 
+    #tulip-menu button.selected[data-highlight-type="what"] { border-color: rgba(178, 60, 174, 1); }
+    #tulip-menu button.selected[data-highlight-type="why"] { border-color: rgba(208, 157, 0, 1); }
+    #tulip-menu button.selected[data-highlight-type="detail"] { border-color: rgba(16, 134, 178, 1); }
+    
     #memo-box { background: rgba(42, 42, 50, 1); color: rgba(236, 236, 237, 1); }
     #memo-box textarea { background: rgba(42, 42, 50, 1); color: rgba(236, 236, 237, 1); border: none; }
 

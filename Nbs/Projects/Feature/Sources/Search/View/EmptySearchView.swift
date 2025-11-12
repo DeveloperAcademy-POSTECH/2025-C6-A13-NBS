@@ -33,8 +33,9 @@ extension EmptySearchView {
   var body: some View {
     HStack(alignment: .center) {
       VStack(alignment: .center) {
-        Image(icon: "emptyLinkIcon")
+        DesignSystemAsset.emptySearchImage.swiftUIImage
           .frame(width: 120, height: 120)
+          .padding(.top, 60)
           .padding(.bottom, 20)
         Text(title)
           .font(.B1_M)
@@ -47,7 +48,6 @@ extension EmptySearchView {
     .frame(maxWidth: .infinity)
     .frame(maxHeight: .infinity)
     .padding(.top, 8)
-
   }
 }
 

@@ -20,6 +20,8 @@ struct SearchResultFeature {
     var filteredSearchResult: [ArticleItem] = []
     var query: String = ""
     var selectedCategoryTitle: String = "카테고리"
+    var filteredCategories: [CategoryItem] = []
+    var originalSearchResults: [ArticleItem] = []
     
     @Presents var selectBottomSheet: SelectBottomSheetFeature.State?
   }
@@ -31,8 +33,6 @@ struct SearchResultFeature {
     case categoryButtonTapped
     
     case selectBottomSheet(PresentationAction<SelectBottomSheetFeature.Action>)
-    case fetchAllCategories
-    case responseCategoryItems([CategoryItem])
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -52,6 +52,7 @@ struct SearchResultFeature {
       case .searchResponse(let item):
         state.searchResult = item
         state.filteredSearchResult = item
+        state.selectedCategoryTitle = "카테고리"
         return .none
         
       case .linkCardTapped(let item):
@@ -59,20 +60,15 @@ struct SearchResultFeature {
         return .none
         
       case .categoryButtonTapped:
-        return .send(.fetchAllCategories)
+        let categoriesFromResults = state.searchResult.compactMap { $0.category }
+        var uniqueCategories = Array(Set(categoriesFromResults))
+        uniqueCategories.sort { $0.categoryName < $1.categoryName }
         
-      case .fetchAllCategories:
-        return .run { send in
-          let categoryItems = try swiftDataClient.fetchCategories()
-          await send(.responseCategoryItems(categoryItems))
-        }
+        var categoryProps = uniqueCategories.map { CategoryProps(id: $0.id, title: $0.categoryName) }
         
-      case .responseCategoryItems(let items):
         let allCategory = CategoryProps(id: uuid(), title: "전체")
-        var categoryProps: [CategoryProps] = items.map { item in
-          CategoryProps(id: uuid(), title: item.categoryName)
-        }
         categoryProps.insert(allCategory, at: 0)
+        
         let allCategories = IdentifiedArray(uniqueElements: categoryProps)
         
         state.selectBottomSheet = SelectBottomSheetFeature.State(
