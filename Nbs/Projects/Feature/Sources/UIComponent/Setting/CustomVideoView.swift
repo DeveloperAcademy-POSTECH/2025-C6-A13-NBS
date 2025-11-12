@@ -8,12 +8,18 @@
 import SwiftUI
 import AVKit
 
-struct CustomVideoView: UIViewControllerRepresentable {
+public struct CustomVideoView: UIViewControllerRepresentable {
   let url: URL
   var onReady: (() -> Void)? = nil
   var videoGravity: AVLayerVideoGravity = .resizeAspectFill
   
-  func makeUIViewController(context: Context) -> AVPlayerViewController {
+  public init(url: URL, onReady: (() -> Void)? = nil, videoGravity: AVLayerVideoGravity) {
+    self.url = url
+    self.onReady = onReady
+    self.videoGravity = videoGravity
+  }
+  
+  public func makeUIViewController(context: Context) -> AVPlayerViewController {
     let controller = AVPlayerViewController()
     let player = AVPlayer(url: url)
     player.isMuted = true
@@ -57,15 +63,15 @@ struct CustomVideoView: UIViewControllerRepresentable {
     return controller
   }
   
-  func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {}
+  public func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {}
   
-  func makeCoordinator() -> Coordinator { Coordinator() }
+  public func makeCoordinator() -> Coordinator { Coordinator() }
    
-   class Coordinator: NSObject {
+  public class Coordinator: NSObject {
        var player: AVPlayer?
        var onReady: (() -> Void)?
        
-       override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+       public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
            if keyPath == "status",
               let item = object as? AVPlayerItem,
               item.status == .readyToPlay {

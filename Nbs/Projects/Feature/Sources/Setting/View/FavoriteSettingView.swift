@@ -50,7 +50,7 @@ extension FavoriteSettingView {
             
             CustomVideoView(
               url: URL(string: AppConfig.settingFavoriteURL)!,
-              onReady: { isReady = true }
+              onReady: { isReady = true }, videoGravity: .resizeAspectFill
             )
             .opacity(isReady ? 1: 0)
             .cornerRadius(32)
