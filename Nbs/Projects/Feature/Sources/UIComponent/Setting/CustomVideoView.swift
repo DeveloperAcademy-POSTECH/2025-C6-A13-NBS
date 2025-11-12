@@ -11,11 +11,17 @@ import AVKit
 struct CustomVideoView: UIViewControllerRepresentable {
   let url: URL
   var onReady: (() -> Void)? = nil
+  var videoGravity: AVLayerVideoGravity = .resizeAspectFill
   
   func makeUIViewController(context: Context) -> AVPlayerViewController {
     let controller = AVPlayerViewController()
     let player = AVPlayer(url: url)
+    player.isMuted = true
+    
     controller.player = player
+    
+    try? AVAudioSession.sharedInstance().setCategory(.ambient, options: [.mixWithOthers])
+    try? AVAudioSession.sharedInstance().setActive(false)
     
     /// 비율 유지하며 화면 꽉 채우기
     controller.videoGravity = .resizeAspectFill
@@ -25,6 +31,9 @@ struct CustomVideoView: UIViewControllerRepresentable {
     
     /// 사용자 인터랙션 차단 (터치 불가능)
     controller.view.isUserInteractionEnabled = false
+    
+    controller.videoGravity = videoGravity
+    controller.view.backgroundColor = .clear
     
     /// 반복 재생 설정
     NotificationCenter.default.addObserver(
