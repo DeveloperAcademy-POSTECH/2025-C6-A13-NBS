@@ -27,7 +27,7 @@ ContentExtractor.prototype = {
   },
   
   extractThumbnailImage: function() {
-    let imageURL = null;
+    let imageURL = "";
     
     let ogImage = document.querySelector('meta[property="og:image"]');
     if (ogImage && ogImage.content) {
@@ -69,7 +69,7 @@ ContentExtractor.prototype = {
   },
   
   extractMediaCompany: function() {
-    let mediaCompany = null;
+    let mediaCompany = "";
     let logoImg = document.querySelector('.media_end_head_top_logo_img.light_type');
     if (logoImg && logoImg.alt) {
       mediaCompany = logoImg.alt;
