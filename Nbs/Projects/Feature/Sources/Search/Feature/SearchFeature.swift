@@ -72,6 +72,7 @@ struct SearchFeature {
           }
         case .searchQueryChanged(let query):
           state.isSearchSubmitted = false
+          state.searchSuggestion.searchText = query
           return .run { send in
             await send(.searchSuggestion(.loadSuggestionItem(query)))
           }
