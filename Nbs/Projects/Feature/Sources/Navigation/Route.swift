@@ -38,4 +38,6 @@ public enum Route: String {
   case policyDetail // 설정 -> 정책 디테일
   case openSourceList // 설정 -> 오픈소스 리스트
   case favoriteSetting
+  case extensionSetting
+  case shareSetting
 }

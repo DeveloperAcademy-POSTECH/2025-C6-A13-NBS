@@ -59,7 +59,7 @@ struct SettingFeature {
         return .none
         
       case .safariTipTapped:
-        //TODO: 연결해야함
+        linkNavigator.push(.extensionSetting, nil)
         return .none
         
       case .highlightTipTapped:
@@ -67,7 +67,7 @@ struct SettingFeature {
         return .none
         
       case .shareTipTapped:
-        //TODO: 연결해야함
+        linkNavigator.push(.shareSetting, nil)
         return .none
         
       case .favoriteTipTapped:

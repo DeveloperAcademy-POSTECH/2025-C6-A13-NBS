@@ -1,5 +1,5 @@
 //
-//  FavoriteSettingView.swift
+//  ExtensionSettingView.swift
 //  Feature
 //
 //  Created by 이안 on 11/12/25.
@@ -11,22 +11,23 @@ import AVKit
 import ComposableArchitecture
 import DesignSystem
 
-struct FavoriteSettingView: View {
-  let store: StoreOf<FavoriteSettingFeature>
+struct ExtensionSettingView: View {
+  let store: StoreOf<ExtensionSettingFeature>
+  @Environment(\.colorScheme) private var colorScheme
   @State private var isReady = false
 }
 
-extension FavoriteSettingView {
+extension ExtensionSettingView {
   var body: some View {
     ZStack {
       Color.background.ignoresSafeArea()
       VStack(spacing: 16) {
-        TopAppBarDefaultRightIconx(title: "즐겨찾기 설정하기") {
+        TopAppBarDefaultRightIconx(title: "Safari 익스텐션 허용하기") {
           store.send(.backButtonTapped)
         }
         
-        VStack(spacing: 30) {
-          Text("탭탭을 즐겨찾기 설정하여\n더 쉽게 공유할 수 있어요!")
+        VStack(spacing: 0) {
+          Text("Safari 익스텐션을 허용해\n하이라이트와 메모 기능을 사용해보세요")
             .font(.B1_M)
             .foregroundStyle(.caption1)
             .multilineTextAlignment(.center)
@@ -47,32 +48,30 @@ extension FavoriteSettingView {
               }
             }
             .opacity(isReady ? 0 : 1)
+      
+            let url = (colorScheme == .dark)
+                ? AppConfig.settingExtensionURL_dark
+                : AppConfig.settingExtensionURL_light
             
             CustomVideoView(
-              url: URL(string: AppConfig.settingFavoriteURL)!,
+              url: URL(string: url)!,
               onReady: { isReady = true }
             )
             .opacity(isReady ? 1: 0)
-            .cornerRadius(32)
+            .scaleEffect(1.02)
             .clipped()
-            .overlay {
-              RoundedRectangle(cornerRadius: 32)
-                .stroke(Color.divider2, lineWidth: 3)
-            }
-            .padding(14)
+            .frame(width: 300, height: 400)
+            .padding(.bottom, 130)
           }
         }
-        .padding(.horizontal, 52)
+        .padding(.horizontal, 20)
       }
     }
   }
 }
 
 #Preview {
-  FavoriteSettingView(
-    store: Store(
-      initialState: FavoriteSettingFeature.State(),
-      reducer: {
-        FavoriteSettingFeature()
-      }))
+  ExtensionSettingView(store: Store(initialState: ExtensionSettingFeature.State(), reducer: {
+    ExtensionSettingFeature()
+  }))
 }
