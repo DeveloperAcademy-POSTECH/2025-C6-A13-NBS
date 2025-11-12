@@ -130,6 +130,17 @@ struct AddLinkView: View {
         store.send(.checkURLExists(store.linkURL))
       }
     }
+    .overlay {
+      if store.isSheet {
+        BottomSheetContainerView {
+          store.send(.setSheetPresented(false))
+        } content: {
+          SafariInfoView {
+            store.send(.setSheetPresented(false))
+          }
+        }
+      }
+    }
   }
 }
 

@@ -36,6 +36,7 @@ struct AddLinkFeature {
     var toastMessage: String = ""
     var totalLinksCount: Int = 0
     var isLoading: Bool = false
+    var isSheet: Bool = false
     
     init(linkURL: String = "") {
       self.linkURL = linkURL
@@ -60,6 +61,7 @@ struct AddLinkFeature {
     case didFetchArticleItems(Result<[ArticleItem], Error>)
     case navigateToLinkDetail(ArticleItem)
     case showArticleButtonTapped
+    case setSheetPresented(Bool)
   }
   
   @Dependency(\.swiftDataClient) var swiftDataClient
@@ -72,6 +74,9 @@ struct AddLinkFeature {
     Reduce { state, action in
       switch action {
       case .onAppear:
+        if !UserDefaults.standard.bool(forKey: "safariInfo") {
+          return .send(.setSheetPresented(true))
+        }
         return .run { send in
           await send(.didFetchArticleItems(Result { try swiftDataClient.fetchLinks() }))
         }
@@ -111,6 +116,7 @@ struct AddLinkFeature {
         guard
           let url = URL(string: state.linkURL)
         else {
+          state.isLoading = false
           //TODO: 에러 처리하기..
           return .none
         }
@@ -211,6 +217,9 @@ struct AddLinkFeature {
         state.showToast = false
         return .none
       case .fetchArticleItem:
+        return .none
+      case let .setSheetPresented(isPresented):
+        state.isSheet = isPresented
         return .none
       }
     }
