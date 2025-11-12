@@ -85,6 +85,7 @@ private extension ShareViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(dismissKeyboard), name: .dismissKeyboard, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(closeExtensionSelector), name: .closeShareExtension, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleNewCategorySave), name: .newCategoryDidSave, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(openAppAndCloseExtension), name: .openAppAndCloseExtension, object: nil)
   }
   
   @objc func dismissKeyboard() { view.endEditing(true) }
@@ -96,6 +97,20 @@ private extension ShareViewController {
       self.saveActionTriggered = true
       self.saveAllData()
     }
+  }
+  
+  @objc func openAppAndCloseExtension(_ notification: Notification) {
+    if let url = URL(string: "nbs://") {
+      var responder: UIResponder? = self
+      while responder != nil {
+        if let app = responder as? UIApplication {
+          app.open(url, options: [:], completionHandler: nil)
+          break
+        }
+        responder = responder?.next
+      }
+    }
+    self.closeExtension(clearDrafts: true)
   }
 }
 
@@ -283,4 +298,5 @@ extension Notification.Name {
   static let dismissKeyboard = Notification.Name("dismissKeyboardNotification")
   static let newCategoryDidSave = Notification.Name("newCategoryDidSave")
   static let closeShareExtension = Notification.Name("closeShareExtension")
+  static let openAppAndCloseExtension = Notification.Name("openAppAndCloseExtension")
 }

@@ -37,7 +37,7 @@ extension ReadyExistSheetView {
         .padding(.bottom, 16)
       
         MainButton("앱으로 바로가기") {
-          NotificationCenter.default.post(name: .closeShareExtension, object: nil)
+          NotificationCenter.default.post(name: .openAppAndCloseExtension, object: nil)
         }
         .buttonStyle(.plain)
         .padding(.vertical, 8)
