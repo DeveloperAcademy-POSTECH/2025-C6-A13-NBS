@@ -40,11 +40,14 @@ extension AppRouterGroup {
       LinkDetailRouteBuilder().generate(),
       OriginalArticleRouteBuilder().generate(),
       OriginalEditRouteBuilder().generate(),
+      MoveLinkRouteBuilder().generate(),
+      DeleteLinkRouteBuilder().generate(),
+      
+      // MARK: - 설정
       SettingRouteBuilder().generate(),
       PolicyDetailRouteBuilder().generate(),
       OpenSourceListRouteBuilder().generate(),
-      MoveLinkRouteBuilder().generate(),
-      DeleteLinkRouteBuilder().generate()
+      FavoriteSettingRouteBuilder().generate()
     ]
   }
 }
