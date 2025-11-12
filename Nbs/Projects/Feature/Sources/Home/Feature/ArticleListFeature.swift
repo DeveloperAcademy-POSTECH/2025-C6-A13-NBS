@@ -25,6 +25,7 @@ struct ArticleListFeature {
     case moreLinkButtonTapped
     case listCellTapped(ArticleItem)
     case toggleTipCard
+    case tipCardTapped
   }
   
   var body: some ReducerOf<Self> {
@@ -37,6 +38,10 @@ struct ArticleListFeature {
         
       case .listCellTapped(let article):
         linkNavigator.push(.linkDetail, article)
+        return .none
+        
+      case .tipCardTapped:
+        linkNavigator.push(.setting, nil)
         return .none
         
       case .toggleTipCard:

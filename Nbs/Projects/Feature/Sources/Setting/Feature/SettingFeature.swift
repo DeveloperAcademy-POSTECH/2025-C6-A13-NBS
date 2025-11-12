@@ -20,6 +20,10 @@ struct SettingFeature {
     case privacyPolicyTapped
     case termsOfServiceTapped
     case openSourceTapped
+    case safariTipTapped
+    case highlightTipTapped
+    case shareTipTapped
+    case favoriteTipTapped
   }
   
   var body: some ReducerOf<Self> {
@@ -52,6 +56,22 @@ struct SettingFeature {
         
       case .openSourceTapped:
         linkNavigator.push(.openSourceList, nil)
+        return .none
+        
+      case .safariTipTapped:
+        //TODO: 연결해야함
+        return .none
+        
+      case .highlightTipTapped:
+        //TODO: 연결해야함
+        return .none
+        
+      case .shareTipTapped:
+        //TODO: 연결해야함
+        return .none
+        
+      case .favoriteTipTapped:
+        linkNavigator.push(.favoriteSetting, nil)
         return .none
       }
     }

@@ -31,11 +31,12 @@ extension RecentLinkListView {
             Button {
               store.send(.recentLinkTapped(item))
             } label: {
-              LinkCard(
+              ArticleCard(
                 title: item.title,
-                newsCompany: item.newsCompany ?? "언론사 정보 없음",
-                image: item.imageURL ?? "placeholder_image",
-                date: item.createAt.formattedKoreanDate()
+                categoryName: item.category?.categoryName ?? "언론사 정보 없음",
+                imageURL: item.imageURL ?? "placeholder_image",
+                dateString: item.createAt.formattedKoreanDate(),
+                newsCompany: item.newsCompany
               )
             }
             .buttonStyle(.plain)

@@ -13,7 +13,7 @@ public struct InfoListItem: View {
   // MARK: - Trailing Type
   public enum TrailingType {
     case chevron
-    case text(String)
+    case text(() -> String)
     case none
   }
   
@@ -56,7 +56,6 @@ extension InfoListItem {
           .foregroundStyle(.text1)
           .multilineTextAlignment(.leading)
           .lineLimit(1)
-          .frame(maxWidth: .infinity, alignment: .leading)
           .layoutPriority(1) 
         
         Spacer()
@@ -83,7 +82,7 @@ extension InfoListItem {
         .frame(maxWidth: .infinity, alignment: .trailing)
       
     case .text(let value):
-      Text(value)
+      Text(value())
         .font(.B1_M)
         .foregroundStyle(.caption1)
         .padding(.trailing, 8)
@@ -96,7 +95,7 @@ extension InfoListItem {
 
 #Preview {
   VStack(spacing: .zero) {
-    InfoListItem(icon: Icon.info, title: "앱 버전", trailing: .text("1.0.0"))
+    InfoListItem(icon: Icon.info, title: "앱 버전", trailing: .text { "1.0.0" } )
     InfoListItem(icon: Icon.shield, title: "개인정보 처리방침")
   }
   .padding()

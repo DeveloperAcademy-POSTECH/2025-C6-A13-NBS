@@ -95,6 +95,7 @@ extension LinkDetailView: View {
     VStack(alignment: .leading, spacing: 24) {
       // 기사 타이틀
       HStack(alignment: .firstTextBaseline, spacing: 12) {
+        // 편집중 일때
         if store.isEditingTitle || titleFocused {
           TextField(
             "제목",
@@ -107,28 +108,36 @@ extension LinkDetailView: View {
           .submitLabel(.done)
           .onSubmit { titleFocused = false }
         } else {
-          Text(store.link.title)
-            .font(.H1)
-            .foregroundStyle(.text1)
-            .multilineTextAlignment(.leading)
-            .lineLimit(nil)
+          Button {
+            store.send(.editButtonTapped)
+            DispatchQueue.main.async { titleFocused = true }
+          } label: {
+            Text(store.link.title)
+              .font(.H1)
+              .foregroundStyle(.text1)
+              .multilineTextAlignment(.leading)
+              .lineLimit(nil)
+          }
+          .buttonStyle(.plain)
         }
         
         Spacer()
         
-        Button {
-          store.send(.editButtonTapped)
-          DispatchQueue.main.async { titleFocused = true }
-        } label: {
-          Image(icon: Icon.edit)
-            .resizable()
-            .renderingMode(.template)
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 24, height: 24)
-            .contentShape(Rectangle())
-            .foregroundStyle(.iconGray)
+        if !store.isEditingTitle && !titleFocused {
+          Button {
+            store.send(.editButtonTapped)
+            DispatchQueue.main.async { titleFocused = true }
+          } label: {
+            Image(icon: Icon.edit)
+              .resizable()
+              .renderingMode(.template)
+              .aspectRatio(contentMode: .fit)
+              .frame(width: 24, height: 24)
+              .contentShape(Rectangle())
+              .foregroundStyle(.iconGray)
+          }
+          .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
       }
       
       // 정보 섹션
@@ -146,14 +155,10 @@ extension LinkDetailView: View {
       store.send(.originalArticleTapped)
     } label: {
       HStack(spacing: 12) {
-        Image(store.link.imageURL ?? "notImage")
-          .resizable()
-          .scaledToFit()
-          .frame(width: 48, height: 48)
-          .cornerRadius(8)
+        articleImage
         
         VStack(alignment: .leading, spacing: 4) {
-          Text("링크 원문 보기")
+          Text("원문 보기 및 수정하기")
             .font(.B1_M)
             .foregroundStyle(.text1)
             .lineLimit(1)
@@ -181,6 +186,34 @@ extension LinkDetailView: View {
       }
     }
     .buttonStyle(.plain)
+  }
+  
+  private var articleImage: some View {
+    AsyncImage(url: URL(string: store.link.imageURL ?? "")) { phase in
+      switch phase {
+      case .empty:
+        ProgressView()
+          .frame(width: 48, height: 48)
+          .cornerRadius(8)
+      case .success(let image):
+        image
+          .resizable()
+          .scaledToFill()
+          .frame(width: 48, height: 48)
+          .cornerRadius(8)
+          .clipped()
+          .clipShape(RoundedRectangle(cornerRadius: 6))
+      case .failure:
+        DesignSystemAsset.notImage.swiftUIImage
+          .resizable()
+          .scaledToFit()
+          .frame(width: 48, height: 48)
+          .cornerRadius(8)
+          .foregroundColor(.gray)
+      @unknown default:
+        EmptyView()
+      }
+    }
   }
   
   private var bottomContents: some View {
