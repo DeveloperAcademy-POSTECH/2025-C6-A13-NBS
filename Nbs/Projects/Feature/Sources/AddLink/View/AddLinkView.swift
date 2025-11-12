@@ -95,6 +95,13 @@ struct AddLinkView: View {
         )
     }
     .overlay {
+      if store.isLoading {
+        Color.dim
+          .ignoresSafeArea()
+        ProgressView()
+      }
+    }
+    .overlay {
       if store.isConfirmAlertPresented {
         ZStack {
           Color.dim.ignoresSafeArea()

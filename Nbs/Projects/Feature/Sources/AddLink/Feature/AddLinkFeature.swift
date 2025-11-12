@@ -35,6 +35,7 @@ struct AddLinkFeature {
     var showToast: Bool = false
     var toastMessage: String = ""
     var totalLinksCount: Int = 0
+    var isLoading: Bool = false
     
     init(linkURL: String = "") {
       self.linkURL = linkURL
@@ -106,6 +107,7 @@ struct AddLinkFeature {
         return .send(.checkURLExists(url))
         
       case .saveButtonTapped:
+        state.isLoading = true
         guard
           let url = URL(string: state.linkURL)
         else {
@@ -162,13 +164,18 @@ struct AddLinkFeature {
         return .run { _ in await linkNavigator.pop() }
         
       case .saveLinkResponse(.success(let savedArticle)):
+        state.isLoading = false
         NotificationCenter.default.post(
           name: .linkSaved,
           object: savedArticle.category
         )
-        return .run { _ in await linkNavigator.pop() }
+        return .run { _ in
+          try await Task.sleep(nanoseconds: 2_000_000_000)
+          await linkNavigator.pop()
+        }
         
       case .saveLinkResponse(.failure(let error)):
+        state.isLoading = false
         //TODO: 링크 저장 실패시 에러 알럿?
         print("\(error)")
         return .none
