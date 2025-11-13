@@ -19,6 +19,7 @@ extension MemoChipView: View {
     VStack {
       HStack {
         Text("하이라이트 문장을...")
+          .lineLimit(1)
         Spacer()
         DesignSystemAsset.x.swiftUIImage
           .resizable()

@@ -15,6 +15,7 @@ struct OnboardingSafariSaveFeature {
   @ObservableState
   struct State {
     var currentPage: Int = 3
+    var isReady: Bool = false
   }
   
   enum Action {

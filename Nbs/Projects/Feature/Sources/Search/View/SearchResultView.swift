@@ -62,10 +62,10 @@ extension SearchResultView {
               } label: {
                 ArticleCard(
                   title: result.title,
-                  categoryName: result.category?.categoryName,
-                  imageURL: result.imageURL ?? "placeholder_image",
+                  categoryName: result.category?.categoryName ?? "카테고리 없음",
+                  imageURL: result.imageURL ?? "notImage",
                   dateString: result.createAt.formattedKoreanDate(),
-                  newsCompany: result.newsCompany ?? "언론사 정보 없음"
+                  newsCompany: result.newsCompany ?? "언론사 없음"
                 )
               }
               .buttonStyle(.plain)

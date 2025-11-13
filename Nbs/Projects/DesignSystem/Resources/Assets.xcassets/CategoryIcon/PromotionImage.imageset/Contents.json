@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "PromotionImage.pdf",
+      "filename" : "PromotionImage.png",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "PromotionImage_Dark.png",
       "idiom" : "universal"
     }
   ],

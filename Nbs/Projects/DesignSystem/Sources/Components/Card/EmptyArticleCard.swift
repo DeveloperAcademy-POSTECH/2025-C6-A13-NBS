@@ -28,7 +28,7 @@ public struct EmptyArticleCard {
 extension EmptyArticleCard: View {
   public var body: some View {
     VStack(spacing: 20) {
-      Image(uiImage: DesignSystemAsset.emptyLinkIcon.image)
+      Image(uiImage: DesignSystemAsset.emptyImage.image)
         .resizable()
         .frame(width: 120, height: 120)
       Text("아직 저장한 링크가 없어요")

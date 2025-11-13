@@ -55,7 +55,7 @@ extension ExtensionSettingView {
             
             CustomVideoView(
               url: URL(string: url)!,
-              onReady: { isReady = true }
+              onReady: { isReady = true }, videoGravity: .resizeAspectFill
             )
             .opacity(isReady ? 1: 0)
             .scaleEffect(1.02)

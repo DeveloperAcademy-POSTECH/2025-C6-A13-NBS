@@ -50,7 +50,7 @@ extension EditCategoryView: View {
     .overlay(alignment: .bottom) {
       if store.showToast {
         AlertIconBanner(
-          icon: Image(icon: Icon.check),
+          icon: Image(icon: Icon.badgeCheck),
           title: store.toastMessage,
           iconColor: .bl3
         )

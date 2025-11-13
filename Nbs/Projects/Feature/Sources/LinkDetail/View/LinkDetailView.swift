@@ -61,10 +61,14 @@ extension LinkDetailView: View {
       VStack {
         Spacer()
         if(store.showToast) {
-          AlertBanner(text: "링크를 수정했어요", style: .common)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
-            .transition(.opacity)
+          AlertIconBanner(
+            icon: Image(icon: Icon.badgeCheck),
+            title: "링크를 수정했어요",
+            iconColor: .bl3
+          )
+          .zIndex(1)
+          .padding(.horizontal, 20)
+          .padding(.bottom, 92)
         }
       }
       .animation(.easeInOut, value: store.showToast)

@@ -115,10 +115,10 @@ extension MoveLinkView {
         
         ArticleCard(
           title: link.title,
-          categoryName: link.category?.categoryName,
-          imageURL: link.imageURL,
+          categoryName: link.category?.categoryName ?? "카테고리 없음",
+          imageURL: link.imageURL ?? "notImage",
           dateString: link.createAt.formattedKoreanDate(),
-          newsCompany: link.newsCompany,
+          newsCompany: link.newsCompany ?? "언론사 없음",
           isSelected: binding,
           editMode: .active
         )

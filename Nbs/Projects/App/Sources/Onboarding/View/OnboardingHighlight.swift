@@ -90,29 +90,21 @@ extension OnboardingHighlightView: View {
             )
             .onTapGesture(count: 1) {
               if isTextHighlighted {
-                withAnimation {
                   showHighlightTip = true
-                }
               }
             }
             .onTapGesture(count: 2) {
               if showDimming {
-                withAnimation(.easeInOut) {
                   showDimming = false
                   isTextHighlighted = true
                   tooltipText = "해당 문장이 하이라이트 돼요"
-                }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                  withAnimation {
                     showTooltip = false
-                  }
                   
                   DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
-                    withAnimation {
                       showTooltip = true
-                    }
                   }
                 }
               }
@@ -210,17 +202,15 @@ extension OnboardingHighlightView: View {
             store.send(.finishButtonTapped)
           }
         }
-        .transition(.opacity.animation(.easeInOut))
+//        .transition(.opacity.animation(.easeInOut))
       }
     }
     .background(Color.background)
     .toolbar(.hidden)
     .onAppear {
       DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-        withAnimation {
           showDimming = true
           tooltipText = "하이라이트 치고 싶은 부분을 \n’두 번’ 탭해요"
-        }
       }
     }
   }
