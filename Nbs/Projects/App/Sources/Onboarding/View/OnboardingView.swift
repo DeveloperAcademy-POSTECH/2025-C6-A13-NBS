@@ -12,7 +12,9 @@ import DesignSystem
 
 struct OnboardingView {
   @Bindable var store: StoreOf<OnboardingFeature>
+  @State private var videoChecked: Bool = false
   @Environment(\.colorScheme) private var colorScheme
+  @Environment(\.scenePhase) private var scenePhase
   
   @State private var pip: SimplePiPController?
 }
@@ -27,15 +29,15 @@ extension OnboardingView: View {
         showPage: true,
         currentPage: store.currentPage
       )
-      .padding(.top, 72)
+      .padding(.top, 60)
       Spacer()
       VStack(spacing: 0) {
         MainButton("설정하기", hasGradient: true) {
           store.send(.settingButtonTapped)
-//          pip.play()
           startPipThenOpenSetting()
         }
         .buttonStyle(.plain)
+        .padding(.bottom, 24)
         
         Button(action: {
           store.send(.skipButtonTapped)
@@ -45,9 +47,9 @@ extension OnboardingView: View {
             .foregroundStyle(.caption2)
             .underline()
         }
-        .padding(.top, 24)
       }
       .background(Color.background)
+      .padding(.bottom, 8)
     }
     .background(Color.background)
     .toolbar(.hidden)
@@ -65,15 +67,25 @@ extension OnboardingView: View {
         }
       }
     }
+    .onChange(of: scenePhase) { _, newValue in
+      if newValue == .active && videoChecked {
+        store.send(.naviPush)
+      }
+    }
+    .onAppear {
+      videoChecked = false
+    }
   }
 }
 
 extension OnboardingView {
   private func startPipThenOpenSetting() {
     let videoName = (colorScheme == .dark) ? "safariSettingDark" : "safariSettingLight"
-    
-    guard let url = Bundle.main.url(forResource: videoName, withExtension: "mov") else {
-      print("⚠️ video not found: \(videoName)")
+    videoChecked = true
+    guard
+      let url = Bundle.main.url(forResource: videoName, withExtension: "mov")
+    else {
+      print("video not found: \(videoName)")
       return
     }
     
