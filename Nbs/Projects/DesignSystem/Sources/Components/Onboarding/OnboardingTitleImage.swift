@@ -57,11 +57,18 @@ extension OnboardingTitleImage: View {
         .resizable()
         .scaledToFit()
         .padding(.horizontal, 30)
-        .padding(.top, 55)
+        .padding(.top, 60)
     }
   }
 }
 
-#Preview(body: {
-  OnboardingTitleImage(title: .highlightMemoTitle, description: .highlightMemoDescription, image: DesignSystemAsset.onboardingService.swiftUIImage, showPage: true, currentPage: 1)
+#Preview(
+  body: {
+    OnboardingTitleImage(
+      title: .highlightMemoTitle,
+      description: .highlightMemoDescription,
+      image: DesignSystemAsset.onboardingService.swiftUIImage,
+      showPage: true,
+      currentPage: 1
+    )
 })
