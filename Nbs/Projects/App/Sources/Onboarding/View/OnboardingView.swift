@@ -64,6 +64,7 @@ extension OnboardingView: View {
             onCancel: { store.send(.alertCancelButtonTapped) },
             buttonType: .move(title: "건너뛰기", action: { store.send(.alertSkipButtonTapped) })
           )
+          .offset(y: 4)
         }
       }
     }

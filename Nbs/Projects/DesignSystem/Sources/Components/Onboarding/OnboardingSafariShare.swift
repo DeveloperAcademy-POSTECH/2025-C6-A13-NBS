@@ -30,7 +30,7 @@ extension OnboardingSafariShare: View {
           
           DesignSystemAsset.safariShareLight.swiftUIImage
             .resizable()
-            .scaledToFit()
+            .frame(width: 132, height: 200)
             .padding(.horizontal)
             .padding(.vertical)
         }
@@ -54,14 +54,13 @@ extension OnboardingSafariShare: View {
           
           DesignSystemAsset.safariShare.swiftUIImage
             .resizable()
-            .scaledToFit()
+            .frame(width: 132, height: 200)
             .padding(.horizontal)
             .padding(.vertical)
         }
         .background(Color.c14)
         .clipShape(RoundedRectangle(cornerRadius: 16))
       }
-
     }
   }
 }

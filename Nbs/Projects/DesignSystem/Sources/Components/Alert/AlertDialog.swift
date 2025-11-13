@@ -122,7 +122,7 @@ public extension AlertDialog {
         .frame(height: 44)
         .contentShape(Rectangle())
     }
-    .padding(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
+    .padding(EdgeInsets(top: 3, leading: 16, bottom: 12, trailing: 16))
   }
   
   /// 버튼 모음

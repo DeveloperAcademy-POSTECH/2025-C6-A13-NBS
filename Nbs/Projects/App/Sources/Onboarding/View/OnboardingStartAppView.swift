@@ -24,7 +24,7 @@ extension OnboardingStartAppView: View {
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.leading, 20)
-      .padding(.top, 72)
+      .padding(.top, 60)
       
       Text("읽고, 밑줄 긋고, 기록하며 만들어가는 시사 습관\n탭탭을 통해 만들어가요")
         .font(.C1)
@@ -42,6 +42,7 @@ extension OnboardingStartAppView: View {
       MainButton("시작하기") {
         store.send(.startButtonTapped)
       }
+      .padding(.bottom, 8)
     }
     .background(Color.background)
   }
