@@ -16,6 +16,7 @@ struct OnboardingFeature {
   struct State {
     var currentPage: Int = 1
     var isAlert: Bool = false
+    var appForground: Bool = false
   }
   
   enum Action {
@@ -24,6 +25,7 @@ struct OnboardingFeature {
     case skipButtonTapped
     case alertCancelButtonTapped
     case alertSkipButtonTapped
+    case naviPush
   }
   
   var body: some ReducerOf<Self> {
@@ -37,13 +39,15 @@ struct OnboardingFeature {
           await navigation.pop()
         }
       case .settingButtonTapped:
-//        navigation.push(.highlightMemoGuide, nil)
         return .none
       case .alertCancelButtonTapped:
         state.isAlert = false
         return .none
       case .alertSkipButtonTapped:
         state.isAlert = false
+        navigation.push(.highlightMemoGuide, nil)
+        return .none
+      case .naviPush:
         navigation.push(.highlightMemoGuide, nil)
         return .none
       }
