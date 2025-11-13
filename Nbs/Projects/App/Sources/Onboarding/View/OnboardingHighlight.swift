@@ -23,7 +23,7 @@ struct OnboardingHighlightView {
   @State private var showDimming: Bool = false
   @State private var showTooltip: Bool = true
   @State private var showHighlightTip: Bool = false
-  @State private var highlightColor: Color = .chipPink
+  @State private var highlightColor: Color = .highlightWhat
   @State private var highlightRect: CGRect = .zero
   @State private var tooltipText: String = "하이라이트 치는 방법을 배워볼게요"
   @State private var isTextHighlighted: Bool = false
@@ -129,7 +129,7 @@ extension OnboardingHighlightView: View {
           }
           
           if showDimming {
-            Color.black.opacity(0.7)
+            Color.dim
               .mask(
                 Rectangle()
                   .overlay(
@@ -289,7 +289,7 @@ extension OnboardingHighlightView {
         .fill(.n40)
         .frame(maxWidth: .infinity)
         .padding(.leading, 20)
-        .padding(.trailing, 170)
+        .padding(.trailing, 100)
         .frame(height: 16)
     }
   }
