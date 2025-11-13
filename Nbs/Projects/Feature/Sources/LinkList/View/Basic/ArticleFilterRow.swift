@@ -18,10 +18,10 @@ struct ArticleRowView: View {
   var body: some View {
     ArticleCard(
       title: article.title,
-      categoryName: article.category?.categoryName,
+      categoryName: article.category?.categoryName ?? "카테고리 없음",
       imageURL: article.imageURL ?? "notImage",
       dateString: article.createAt.formattedKoreanDate(), 
-      newsCompany: article.newsCompany
+      newsCompany: article.newsCompany ?? "언론사 없음"
     )
     .contentShape(Rectangle())
     .background(Color.clear)
