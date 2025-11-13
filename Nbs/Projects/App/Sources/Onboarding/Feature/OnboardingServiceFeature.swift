@@ -25,7 +25,7 @@ struct OnboardingServiceFeature {
     Reduce { state, action in
       switch action {
       case .startButtonTapped:
-        navigation.push(.onboarding, nil)
+        navigation.replace([.onboarding], nil)
         return .none
       }
     }

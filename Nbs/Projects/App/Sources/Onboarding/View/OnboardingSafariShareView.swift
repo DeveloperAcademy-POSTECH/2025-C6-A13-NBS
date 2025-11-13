@@ -46,7 +46,6 @@ extension OnboardingSafariShareView: View {
           .frame(maxWidth: .infinity, alignment: .leading)
           .padding(.leading, 20)
       }
-      .padding(.top, 16)
       
       OnboardingSafariShare()
         .padding(.top, 60)
@@ -58,6 +57,7 @@ extension OnboardingSafariShareView: View {
           store.send(.nextButtonTapped)
         }
         .buttonStyle(.plain)
+        .padding(.bottom, 24)
         
         Button(action: {
           store.send(.skipButtonTapped)
@@ -67,11 +67,11 @@ extension OnboardingSafariShareView: View {
             .foregroundStyle(.caption2)
             .underline()
         }
-        .padding(.top, 24)
       }
       .background(Color.background)
-      .toolbar(.hidden)
+      .padding(.bottom, 8)
     }
     .background(Color.background)
+    .toolbar(.hidden)
   }
 }

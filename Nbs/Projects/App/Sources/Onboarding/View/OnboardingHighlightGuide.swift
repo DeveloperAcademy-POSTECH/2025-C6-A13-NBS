@@ -27,14 +27,13 @@ extension OnboardingHighlightGuideView: View {
         showPage: true,
         currentPage: store.currentPage
       )
-      .padding(.top, 16)
-      
       Spacer()
       VStack(spacing: 0) {
         MainButton("다음", hasGradient: true) {
           store.send(.nextButtonTapped)
         }
         .buttonStyle(.plain)
+        .padding(.bottom, 24)
         
         Button(action: {
           store.send(.skipButtonTapped)
@@ -44,11 +43,11 @@ extension OnboardingHighlightGuideView: View {
             .foregroundStyle(.caption2)
             .underline()
         }
-        .padding(.top, 24)
       }
       .background(Color.background)
-      .toolbar(.hidden)
+      .padding(.bottom, 8)
     }
     .background(Color.background)
+    .toolbar(.hidden)
   }
 }
