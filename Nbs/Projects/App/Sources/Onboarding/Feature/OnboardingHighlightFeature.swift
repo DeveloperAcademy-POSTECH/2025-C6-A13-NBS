@@ -17,16 +17,23 @@ struct OnboardingHighlightFeature {
   struct State {
     var currentPage: Int = 2
     var entryPoint: Route? = .home
+    var showDimming: Bool = false
+    var isTextHighlighted: Bool = false
   }
   
   enum Action {
     case backButtonTapped
     case finishButtonTapped
+    case onAppear
+    case taptap
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .onAppear:
+        state.showDimming = true
+        return .none
       case .backButtonTapped:
         return .run { send in
           await navigation.pop()
@@ -40,6 +47,9 @@ struct OnboardingHighlightFeature {
           navigation.push(.safariShare, nil)
           return .none
         }
+      case .taptap:
+        state.showDimming = false
+        return .none
       }
     }
   }

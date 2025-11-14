@@ -20,7 +20,6 @@ struct HighlightRectPreferenceKey: PreferenceKey {
 
 struct OnboardingHighlightView {
   let store: StoreOf<OnboardingHighlightFeature>
-  @State private var showDimming: Bool = false
   @State private var showTooltip: Bool = true
   @State private var showHighlightTip: Bool = false
   @State private var highlightColor: Color = .highlightWhat
@@ -94,8 +93,8 @@ extension OnboardingHighlightView: View {
               }
             }
             .onTapGesture(count: 2) {
-              if showDimming {
-                  showDimming = false
+              if store.showDimming {
+                store.send(.taptap)
                   isTextHighlighted = true
                   tooltipText = "해당 문장이 하이라이트 돼요"
                 
@@ -128,7 +127,7 @@ extension OnboardingHighlightView: View {
               .padding(.bottom, -20)
           }
           
-          if showDimming {
+          if store.showDimming {
             Color.dim
               .mask(
                 Rectangle()
@@ -209,7 +208,8 @@ extension OnboardingHighlightView: View {
     .toolbar(.hidden)
     .onAppear {
       DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-          showDimming = true
+//          showDimming = true
+        store.send(.onAppear)
           tooltipText = "하이라이트 치고 싶은 부분을 \n’두 번’ 탭해요"
       }
     }
