@@ -45,7 +45,6 @@
   padding: 16px;
   outline: none;
 }
-
 #memo-box textarea:focus {
   outline: none;
 }
