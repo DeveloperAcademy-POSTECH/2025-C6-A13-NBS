@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 import ComposableArchitecture
 import DesignSystem
 import Domain
@@ -28,7 +29,13 @@ extension LinkDetailView: View {
         ScrollView(.vertical, showsIndicators: false) {
           LazyVStack(spacing: 24) {
             articleContensts
-            bottomContents
+            LazyVStack(pinnedViews: [.sectionHeaders]) {
+              Section(header:  LinkDetailSegment(selectedTab: $selectedTab)) {
+                VStack {
+                  bottomContents
+                }
+              }
+            }
           }
         }
         .scrollIndicators(.hidden)
@@ -41,6 +48,7 @@ extension LinkDetailView: View {
       .onChange(of: store.isDeleted) { _, deleted in
         if deleted { dismiss() }
       }
+      
       if showAlertDialog {
         Color.dim
           .ignoresSafeArea()
@@ -192,6 +200,7 @@ extension LinkDetailView: View {
     .buttonStyle(.plain)
   }
   
+  /// 기사 이미지
   private var articleImage: some View {
     AsyncImage(url: URL(string: store.link.imageURL ?? "")) { phase in
       switch phase {
@@ -220,11 +229,9 @@ extension LinkDetailView: View {
     }
   }
   
+  /// 하이라이트 + 추가메모
   private var bottomContents: some View {
     VStack {
-      LinkDetailSegment(selectedTab: $selectedTab)
-        .frame(height: 45)
-      
       switch selectedTab {
       case .summary:
         if store.link.highlights.isEmpty {
