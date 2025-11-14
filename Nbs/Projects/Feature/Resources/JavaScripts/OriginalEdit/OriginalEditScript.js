@@ -210,7 +210,7 @@ function showTulipMenu(span) {
   const spaceAvailableAbove = spanRect.top - fixedHeaderHeight;
   if (menuRect.height + 10 > spaceAvailableAbove) {
       const scrollAmount = menuRect.height + 10 - spaceAvailableAbove;
-      window.scrollBy({ top: -scrollAmount, behavior: 'instant' });
+      //window.scrollBy({ top: -scrollAmount, behavior: 'instant' });
   }
 
   const newSpanRect = span.getBoundingClientRect();
