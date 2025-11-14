@@ -25,9 +25,7 @@ let appTarget = Target.target(
       "NSAppTransportSecurity": [
         "NSAllowsArbitraryLoads": true
       ],
-      "UIBackgroundModes": [
-        "audio"
-      ],
+      "UIBackgroundModes": [],
       
       "CFBundleURLTypes": [
         [
