@@ -8,9 +8,32 @@
 .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); }
 
 #tulip-menu { position: absolute; background: white; border: 0px solid #ccc; border-radius: 30px; padding: 5px; display: flex; gap: 5px; z-index: 2147483647; font-family: sans-serif; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
-#tulip-menu:after, #tulip-menu:before { top: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; }
-#tulip-menu:after { border-color: transparent; border-top-color: #fff; border-width: 8px; margin-left: -8px; }
-#tulip-menu:before { border-color: transparent; border-top-color: transparent; border-width: 9px; margin-left: -9px; }
+#tulip-menu:after, #tulip-menu:before {
+  top: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+#tulip-menu:after {
+  all: initial;
+  display: block;
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  transform: translateX(-50%) rotate(45deg);
+  border-bottom-right-radius: 2px;
+  left: 50%;
+  top: calc(100% - 7px);
+}
+#tulip-menu:before {
+  display: none;
+}
 #tulip-menu button { border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 20px; padding: 5px 10px; cursor: pointer; font-size: 18px; width: 50px; height: 40px; }
 #tulip-menu button[data-highlight-type="what"] { background-color: rgba(255, 224, 247, 1); }
 #tulip-menu button[data-highlight-type="why"] { background-color: rgba(254, 248, 205, 1); }
@@ -96,9 +119,8 @@
   .highlighted-text[data-highlight-type="detail"] { background-color: rgba(31, 180, 255, 0.2); color: inherit; }
     
     #tulip-menu { background: rgba(34, 34, 42, 1); }
-    #tulip-menu:after { border-top-color: rgba(34, 34, 42, 1); }
-    #tulip-menu:before { border-top-color: rgba(34, 34, 42, 1); }
-    #tulip-menu button { border-color: rgba(255, 255, 255, 0.08); }
+    #tulip-menu:after { background: rgba(34, 34, 42, 1); }
+        #tulip-menu:before { display: none; }    #tulip-menu button { border-color: rgba(255, 255, 255, 0.08); }
     #tulip-menu button[data-highlight-type="what"] { background-color: rgba(51, 17, 50, 1); }
     #tulip-menu button[data-highlight-type="why"] { background-color: rgba(53, 40, 6, 1); }
     #tulip-menu button[data-highlight-type="detail"] { background-color: rgba(6, 36, 51, 1); }

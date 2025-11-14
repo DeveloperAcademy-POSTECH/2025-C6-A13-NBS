@@ -233,7 +233,7 @@ function showTulipMenu(span) {
   if (left + newMenuRect.width > window.scrollX + window.innerWidth)
       left = window.scrollX + window.innerWidth - newMenuRect.width - 10;
 
-  let top = window.scrollY + newSpanRect.top - newMenuRect.height - 10;
+  let top = window.scrollY + newSpanRect.top - newMenuRect.height - 14;
 
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
