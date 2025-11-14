@@ -115,7 +115,7 @@ extension MoveLinkView {
         
         ArticleCard(
           title: link.title,
-          categoryName: link.category?.categoryName ?? "카테고리 없음",
+          categoryName: link.category?.categoryName ?? "전체",
           imageURL: link.imageURL ?? "notImage",
           dateString: link.createAt.formattedKoreanDate(),
           newsCompany: link.newsCompany ?? "언론사 없음",
@@ -133,7 +133,7 @@ extension MoveLinkView {
     .padding(.bottom, 100)
   }
   
-  /// 취소 + 이동하기 버튼 모음
+  /// 이동하기 버튼 모음
   private var bottomContents: some View {
     MainButton(
       "\(store.selectedLinks.isEmpty ? "" : "\(store.selectedLinks.count)개 ")이동하기",

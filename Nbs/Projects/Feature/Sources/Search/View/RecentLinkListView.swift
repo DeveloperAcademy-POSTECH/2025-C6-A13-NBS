@@ -33,7 +33,7 @@ extension RecentLinkListView {
             } label: {
               ArticleCard(
                 title: item.title,
-                categoryName: item.category?.categoryName ?? "카테고리 없음",
+                categoryName: item.category?.categoryName ?? "전체",
                 imageURL: item.imageURL ?? "notImage",
                 dateString: item.createAt.formattedKoreanDate(),
                 newsCompany: item.newsCompany ?? "언론사 없음"
