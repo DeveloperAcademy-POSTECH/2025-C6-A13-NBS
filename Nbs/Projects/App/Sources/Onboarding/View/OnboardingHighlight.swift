@@ -18,6 +18,13 @@ struct HighlightRectPreferenceKey: PreferenceKey {
   }
 }
 
+struct TooltipHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = .zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
+}
+
 struct OnboardingHighlightView {
   let store: StoreOf<OnboardingHighlightFeature>
   @State private var showTooltip: Bool = true
@@ -31,6 +38,8 @@ struct OnboardingHighlightView {
   @State private var didChangeColor: Bool = false
   @State private var showMemo: Bool = false
   @State private var showMemoChip: Bool = false
+  @State private var tooltipHeight: CGFloat = .zero
+  @State private var highlightTipHeight: CGFloat = .zero
 }
 
 extension OnboardingHighlightView: View {
@@ -145,7 +154,13 @@ extension OnboardingHighlightView: View {
           
           if showTooltip && highlightRect != .zero && !showHighlightTip {
             OnboardingToolTipBox(text: tooltipText)
-              .position(x: highlightRect.midX, y: highlightRect.maxY + 30)
+              .background(GeometryReader {
+                  Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
+              })
+              .onPreferenceChange(TooltipHeightPreferenceKey.self) {
+                  tooltipHeight = $0
+              }
+              .position(x: highlightRect.midX, y: highlightRect.maxY + 8 + tooltipHeight / 2)
               .transition(.opacity)
           }
           
@@ -179,7 +194,13 @@ extension OnboardingHighlightView: View {
                 }
               }
             }
-            .position(x: highlightRect.midX, y: highlightRect.minY - 60)
+            .background(GeometryReader {
+                Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
+            })
+            .onPreferenceChange(TooltipHeightPreferenceKey.self) {
+                highlightTipHeight = $0
+            }
+            .position(x: highlightRect.midX, y: highlightRect.minY - 60 - highlightTipHeight / 2)
             .transition(.opacity)
           }
         }
@@ -201,14 +222,12 @@ extension OnboardingHighlightView: View {
             store.send(.finishButtonTapped)
           }
         }
-//        .transition(.opacity.animation(.easeInOut))
       }
     }
     .background(Color.background)
     .toolbar(.hidden)
     .onAppear {
       DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-//          showDimming = true
         store.send(.onAppear)
           tooltipText = "하이라이트 치고 싶은 부분을 \n’두 번’ 탭해요"
       }
