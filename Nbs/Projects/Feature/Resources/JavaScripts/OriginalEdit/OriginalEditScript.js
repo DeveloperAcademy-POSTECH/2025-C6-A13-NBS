@@ -49,6 +49,11 @@ function renderCapsules(span) {
       capsule.addEventListener('click', (e) => {
         e.stopPropagation();
         
+        const tulipMenu = document.getElementById('tulip-menu');
+        if (tulipMenu) {
+          tulipMenu.remove();
+        }
+        
         const isAlreadyClicked = capsule.classList.contains(`clicked-${comment.type}`);
         const memoBoxOpenForThisCapsule = document.getElementById('memo-box') && Number(document.getElementById('memo-box').dataset.editingId) === comment.id;
         
