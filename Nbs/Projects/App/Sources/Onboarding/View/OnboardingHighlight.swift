@@ -28,6 +28,7 @@ struct TooltipHeightPreferenceKey: PreferenceKey {
 
 struct OnboardingHighlightView {
   let store: StoreOf<OnboardingHighlightFeature>
+  @State private var showDimmingWithAnimation: Bool = false
   @State private var showTooltip: Bool = true
   @State private var showHighlightTip: Bool = false
   @State private var highlightColor: Color = .highlightWhat
@@ -139,7 +140,7 @@ extension OnboardingHighlightView: View {
             }
           }
           
-          if store.showDimming {
+          if showDimmingWithAnimation {
             Color.dim
               .mask(
                 Rectangle()
@@ -151,7 +152,6 @@ extension OnboardingHighlightView: View {
                   )
               )
               .ignoresSafeArea()
-              .transition(.opacity)
               .allowsHitTesting(false)
           }
           
@@ -237,6 +237,11 @@ extension OnboardingHighlightView: View {
         store.send(.onAppear)
           tooltipText = "하이라이트 치고 싶은 부분을 \n’두 번’ 탭해요"
       }
+    }
+    .onChange(of: store.showDimming) { showDimming in
+        withAnimation(.easeInOut(duration: 0.3)) {
+            self.showDimmingWithAnimation = showDimming
+        }
     }
   }
 }
