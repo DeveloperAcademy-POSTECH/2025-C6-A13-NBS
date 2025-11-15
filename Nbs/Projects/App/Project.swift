@@ -25,8 +25,12 @@ let appTarget = Target.target(
       "NSAppTransportSecurity": [
         "NSAllowsArbitraryLoads": true
       ],
-      "UIBackgroundModes": [],
-      
+      "UIBackgroundModes": [
+        "audio"
+      ],
+      "UISupportedInterfaceOrientations": [
+        "UIInterfaceOrientationPortrait"
+      ],
       "CFBundleURLTypes": [
         [
           "CFBundleURLSchemes": ["nbs"]
