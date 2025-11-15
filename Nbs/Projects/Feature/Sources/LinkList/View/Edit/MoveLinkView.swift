@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 import ComposableArchitecture
 import Domain
 import DesignSystem
@@ -65,7 +66,7 @@ extension MoveLinkView {
   
   private var middleContents: some View {
     ScrollView(.vertical, showsIndicators: false) {
-      VStack {
+      VStack(spacing: 0) {
         Color.clear
           .frame(height: 0)
           .id("moveTop")
@@ -101,12 +102,12 @@ extension MoveLinkView {
         .font(.B2_M)
         .foregroundStyle(.caption3)
     }
-    .padding(EdgeInsets(top: 8, leading: 20, bottom: 12, trailing: 20))
+    .padding(EdgeInsets(top: 8, leading: 24, bottom: 12, trailing: 24))
   }
   
   /// 아티클카드
   private var articleListView: some View {
-    LazyVStack(spacing: 12) {
+    LazyVStack(spacing: 10) {
       ForEach(store.allLinks) { link in
         let binding = Binding<Bool>(
           get: { store.selectedLinks.contains(link.id) },
@@ -143,6 +144,7 @@ extension MoveLinkView {
     ) {
       store.send(.confirmMoveTapped)
     }
+    .padding(.bottom, 8)
   }
 }
 
