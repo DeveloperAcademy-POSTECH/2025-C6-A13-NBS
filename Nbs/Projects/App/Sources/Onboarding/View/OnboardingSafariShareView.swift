@@ -53,7 +53,7 @@ extension OnboardingSafariShareView: View {
       
       Spacer()
       VStack(spacing: 0) {
-        MainButton("저장 방법 알아보기", hasGradient: true) {
+        MainButton("다음", hasGradient: true) {
           store.send(.nextButtonTapped)
         }
         .buttonStyle(.plain)
