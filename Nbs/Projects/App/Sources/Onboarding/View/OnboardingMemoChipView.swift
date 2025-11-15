@@ -21,7 +21,7 @@ extension MemoChipView: View {
         Text("하이라이트 문장을...")
           .lineLimit(1)
           .font(.B2_M)
-//          .foregroundStyle(selectedColor)
+          .foregroundStyle(strokeColor)
         Spacer()
         DesignSystemAsset.x.swiftUIImage
           .resizable()
