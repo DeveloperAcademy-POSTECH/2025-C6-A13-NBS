@@ -85,15 +85,15 @@ public extension ChipButton {
         .font(.B2_SB)
         .foregroundStyle(textColor)
         .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .frame(minHeight: 36)
+//        .padding(.vertical, )
+        .frame(height: 36)
         .background(
           RoundedRectangle(cornerRadius: 24, style: .continuous)
             .fill(backgroundColor)
         )
         .overlay(
           RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .stroke(borderColor, lineWidth: 1)
+            .stroke(borderColor, lineWidth: 2)
         )
         .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))

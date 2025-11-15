@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 import ComposableArchitecture
 import Domain
 import DesignSystem
@@ -34,7 +35,7 @@ extension LinkListView: View {
           )
         }
       }
-			.toolbar(.hidden)
+      .toolbar(.hidden)
       .task { store.send(.onAppear) }
       .sheet(item: $store.scope(state: \.selectBottomSheet, action: \.selectBottomSheet)
       ) { selectStore in
@@ -116,6 +117,7 @@ extension LinkListView: View {
         onTapSearchButton: { store.send(.searchButtonTapped) },
         onTapSettingButton: { store.send(.editButtonTapped) }
       )
+      .padding(.bottom, 8)
       
       CategoryChipList(
         store: store.scope(
@@ -127,7 +129,7 @@ extension LinkListView: View {
         }
       )
       .frame(height: 36)
-      .padding(.bottom, 16)
+      .padding(.bottom, 20)
       
       // 하단 스크롤뷰 모음
       scrollViewContents
@@ -137,25 +139,32 @@ extension LinkListView: View {
   /// 카테고리 칩버튼 스크롤 + 기사 필터 스크롤
   private var scrollViewContents: some View {
     ScrollView(.vertical, showsIndicators: false) {
+//      LazyVStack(spacing: .zero, pinnedViews: [.sectionHeaders]) {
+//        Section {
       VStack(spacing: 4) {
-        Color.clear
-          .frame(height: 0)
-          .id("top")
-        
-        ArticleFilterList(
-          store: store.scope(
-            state: \.articleList,
-            action: \.articleList
-          )
-        )
-        GeometryReader { geo in
           Color.clear
-            .preference(
-              key: ScrollOffsetPreferenceKey.self,
-              value: geo.frame(in: .named("scroll")).minY
+            .frame(height: 0)
+            .id("top")
+          
+          ArticleFilterList(
+            store: store.scope(
+              state: \.articleList,
+              action: \.articleList
             )
-        }
-        .frame(height: 0)
+          )
+          
+          GeometryReader { geo in
+            Color.clear
+              .preference(
+                key: ScrollOffsetPreferenceKey.self,
+                value: geo.frame(in: .named("scroll")).minY
+              )
+          }
+          .frame(height: 0)
+          
+//        } header: {
+//          gradientBar
+//        }
       }
     }
     .coordinateSpace(name: "scroll")
@@ -163,15 +172,36 @@ extension LinkListView: View {
       if initialOffsetY == nil {
         initialOffsetY = offsetY
       }
-
+      
       guard let base = initialOffsetY else { return }
-
+      
       withAnimation(.easeInOut(duration: 0.2)) {
         showScrollToTopButton = offsetY < base + 300
       }
     }
     .refreshable {
       await store.send(.refresh)
+    }
+  }
+  
+  /// 그라데이션 바
+  private var gradientBar: some View {
+    VStack {
+      Rectangle()
+        .foregroundStyle(.clear)
+        .background(
+          LinearGradient(
+            stops: [
+              Gradient.Stop(color: .bgButtonGrad1, location: 0.00),
+              Gradient.Stop(color: .bgButtonGrad2, location: 0.16),
+              Gradient.Stop(color: .bgButtonGrad3, location: 0.73),
+              Gradient.Stop(color: .bgButtonGrad4, location: 1.00),
+            ],
+            startPoint: UnitPoint(x: 0, y: 0.5),
+            endPoint: UnitPoint(x: 1, y: 0.5)
+          )
+        )
+        .frame(height: 16)
     }
   }
   

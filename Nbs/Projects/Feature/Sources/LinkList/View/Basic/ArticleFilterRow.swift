@@ -40,5 +40,6 @@ struct ArticleRowView: View {
           store.send(.listCellLongPressed(article))
         }
     )
+    .padding(.bottom, 10)
   }
 }

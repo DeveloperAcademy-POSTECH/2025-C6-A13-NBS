@@ -77,13 +77,14 @@ public extension CheckboxButton {
           .fill(fillColor)
           .overlay(
             Circle()
-              .stroke(borderColor, lineWidth: 1.5)
+              .strokeBorder(borderColor, lineWidth: 1.5)
           )
+        
         Image(icon: Icon.check)
           .renderingMode(.template)
           .resizable()
           .scaledToFit()
-          .frame(width: 12, height: 12)
+          .frame(width: 18, height: 18)
           .foregroundStyle(checkmarkColor)
       }
       .contentShape(Circle())

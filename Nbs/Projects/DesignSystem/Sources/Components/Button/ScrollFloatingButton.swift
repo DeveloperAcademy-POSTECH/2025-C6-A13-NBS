@@ -44,7 +44,7 @@ public struct ScrollFloatingButton: View {
     isVisible: Binding<Bool>,
     proxy: ScrollViewProxy,
     targetID: String = "top",
-    bottomPadding: CGFloat = 40,
+    bottomPadding: CGFloat = 20, 
     trailingPadding: CGFloat = 20,
     onTap: (() -> Void)? = nil
   ) {

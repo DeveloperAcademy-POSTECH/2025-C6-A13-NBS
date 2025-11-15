@@ -20,9 +20,10 @@ extension ArticleFilterList: View {
     ZStack {
       Color.background
         .ignoresSafeArea()
-      VStack(spacing: 12) {
+      VStack(spacing: .zero) {
         
         infoContents
+          .padding(.bottom, 16)
         articleList
       }
       .padding(.horizontal, 20)
@@ -33,22 +34,23 @@ extension ArticleFilterList: View {
   private var infoContents: some View {
     HStack(spacing: .zero) {
       HStack(spacing: 0) {
-            Text("총 ")
-              .font(.B1_M)
-              .foregroundStyle(.caption1)
-
-            Text("\(store.link.count)")
-              .font(.B1_SB)
-              .foregroundStyle(.caption1)
-
-            Text("개")
-              .font(.B1_M)
-              .foregroundStyle(.caption1)
-          }
+        Text("총 ")
+          .font(.B1_M)
+          .foregroundStyle(.caption1)
+        
+        Text("\(store.link.count)")
+          .font(.B1_SB)
+          .foregroundStyle(.caption1)
+        
+        Text("개")
+          .font(.B1_M)
+          .foregroundStyle(.caption1)
+      }
       Spacer()
       
       buttonContents
     }
+    .padding(.horizontal, 4)
   }
   
   private var buttonContents: some View {
@@ -83,7 +85,7 @@ extension ArticleFilterList: View {
   private var articleList: some View {
     if store.link.isEmpty {
       EmptyLinkView()
-        .padding(.top, 140)
+        .padding(.top, 120)
     } else {
       ForEach(store.link) { article in
         ArticleRowView(article: article, store: store)

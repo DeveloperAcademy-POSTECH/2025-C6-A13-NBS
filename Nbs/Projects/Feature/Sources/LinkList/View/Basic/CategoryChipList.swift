@@ -22,11 +22,11 @@ extension CategoryChipList: View {
     ZStack {
       Color.background
         .ignoresSafeArea()
-      HStack(spacing: 8) {
+      ZStack(alignment: .trailing) {
         categoryChipList
+//          .padding(.horizontal, 20)
         bottomSheetButton
       }
-      .padding(.horizontal, 20)
       .task { store.send(.onAppear) }
     }
   }
@@ -36,6 +36,8 @@ extension CategoryChipList: View {
     ScrollViewReader { proxy in
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 6) {
+          Color.clear
+            .frame(width: 14)
           ForEach(store.categories, id: \.categoryName) { category in
             let isOn = store.selectedCategory?.categoryName == category.categoryName
             ChipButton(
@@ -50,6 +52,9 @@ extension CategoryChipList: View {
             }
             .id(category.categoryName)
           }
+          Color.clear
+            .frame(width: 60)
+            .id("endPadding")
         }
         .frame(minHeight: 36)
       }
@@ -57,6 +62,14 @@ extension CategoryChipList: View {
         guard let newValue else { return }
         withAnimation(.easeInOut(duration: 0.25)) {
           proxy.scrollTo(newValue, anchor: .center)
+          
+          if newValue == store.categories.last?.categoryName {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+              withAnimation(.easeInOut(duration: 0.25)) {
+                proxy.scrollTo("endPadding", anchor: .trailing)
+              }
+            }
+          }
         }
       }
       .onChange(of: store.categories.map(\.categoryName)) { _, _ in
@@ -77,23 +90,39 @@ extension CategoryChipList: View {
   
   /// 바텀시트 버튼
   private var bottomSheetButton: some View {
-    Button {
-      onTap?()
-    } label: {
-      ZStack {
+    ZStack {
+      HStack(spacing: .zero) {
         Rectangle()
-          .fill(.clear) // 이후 그라데이션 넣을 예정
-          .frame(width: 32, height: 32)
+          .fill(
+            LinearGradient(
+              stops: [
+                Gradient.Stop(color: .bgButtonGrad1, location: 0.00),
+                Gradient.Stop(color: .bgButtonGrad2, location: 0.16),
+                Gradient.Stop(color: .bgButtonGrad3, location: 0.73),
+                Gradient.Stop(color: .bgButtonGrad4, location: 1.00)
+              ],
+              startPoint: UnitPoint(x: 1, y: 0.5),
+              endPoint: UnitPoint(x: 0, y: 0.5)
+            )
+          )
+          .frame(width: 27, height: 36)
         
+        Rectangle()
+          .fill(Color.background)
+          .frame(width: 49, height: 36)
+      }
+      
+      Button {
+        onTap?()
+      } label: {
         Image(icon: Icon.smallChevronDown)
           .resizable()
           .scaledToFit()
           .frame(width: 24, height: 24)
           .foregroundStyle(.iconDisabled)
       }
-      .contentShape(Rectangle())
+      .buttonStyle(.plain)
     }
-    .buttonStyle(.plain)
   }
 }
 
