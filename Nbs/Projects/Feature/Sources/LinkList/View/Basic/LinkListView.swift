@@ -102,7 +102,7 @@ extension LinkListView: View {
           iconColor: bannerColor(alert.tint)
         )
         .padding(.horizontal, 20)
-        .padding(.bottom, 20)
+        .padding(.bottom, 12)
       }
     }
   }

@@ -28,6 +28,6 @@ struct LinkEditSheetView: View {
         }
       }
     }
-    .padding(.bottom, 80)
+    .padding(.bottom, 58)
   }
 }
