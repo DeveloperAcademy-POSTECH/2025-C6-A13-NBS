@@ -5,6 +5,8 @@
 //  Created by 홍 on 11/8/25.
 //
 
+import Foundation
+
 import ComposableArchitecture
 import LinkNavigator
 import Feature
@@ -19,6 +21,8 @@ struct OnboardingHighlightFeature {
     var entryPoint: Route? = .home
     var showDimming: Bool = false
     var isTextHighlighted: Bool = false
+    var showToolTip: Bool = true
+    var showMemo = false
   }
   
   enum Action {
@@ -26,6 +30,8 @@ struct OnboardingHighlightFeature {
     case finishButtonTapped
     case onAppear
     case taptap
+    case memoButtonTapped
+    case hideMemo
   }
   
   var body: some ReducerOf<Self> {
@@ -45,10 +51,20 @@ struct OnboardingHighlightFeature {
           }
         } else {
           navigation.push(.safariShare, nil)
+          navigation.remove(.onboardingHighlight)
           return .none
         }
       case .taptap:
         state.showDimming = false
+        return .none
+      case .memoButtonTapped:
+        state.showMemo = true
+        return .run { send in
+          try await Task.sleep(nanoseconds: 500_000_000)
+          await send(.hideMemo)
+        }
+      case .hideMemo:
+        state.showMemo = true
         return .none
       }
     }
