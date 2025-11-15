@@ -98,7 +98,7 @@ extension OnboardingHighlightView: View {
               }
             )
             .onTapGesture(count: 1) {
-              if isTextHighlighted {
+              if isTextHighlighted && !store.showMemo {
                   showHighlightTip = true
               }
             }
@@ -121,7 +121,7 @@ extension OnboardingHighlightView: View {
             
             if showMemoChip {
               MemoChipView(selectedColor: $highlightColor)
-                .padding(.top, 20)
+                .offset(y: 20)
             }
             
             articleScript3
@@ -131,10 +131,12 @@ extension OnboardingHighlightView: View {
             articleScript
               .padding(.top, 40)
             Spacer()
-            DesignSystemAsset.toolbarBottom.swiftUIImage
-              .resizable()
-              .scaledToFit()
-              .padding(.bottom, -20)
+            if !showMemoChip {
+              DesignSystemAsset.toolbarBottom.swiftUIImage
+                .resizable()
+                .scaledToFit()
+                .padding(.bottom, -20)
+            }
           }
           
           if store.showDimming {
@@ -180,13 +182,16 @@ extension OnboardingHighlightView: View {
                     }
                   })
                 }
+                .offset(y: -20)
               } else {
                 VStack(alignment: .trailing) {
                   OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")
+                    .offset(y: -13)
                   OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
                     showMemo = true
                     showHighlightTip = false
                     showTooltip = false
+                    store.send(.memoButtonTapped)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                       showMemo = false
                       showMemoChip = true
@@ -221,6 +226,7 @@ extension OnboardingHighlightView: View {
           MainButton("완료") {
             store.send(.finishButtonTapped)
           }
+          .padding(.bottom, 8)
         }
       }
     }
