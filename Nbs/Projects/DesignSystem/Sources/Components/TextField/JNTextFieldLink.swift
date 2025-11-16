@@ -5,13 +5,6 @@
 //  Created by 홍 on 10/30/25.
 //
 
-//
-//  TextField.swift
-//  DesignSystem
-//
-//  Created by 홍 on 10/16/25.
-//
-
 import SwiftUI
 import Combine
 
@@ -82,8 +75,8 @@ public struct JNTextFieldLink: View {
         .font(.B2_SB)
         .foregroundStyle(.caption1)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 8)
         .padding(.leading, 4)
+        .padding(.bottom, 8)
       
       ZStack(alignment: .leading) {
         TextField("", text: textProxy)
@@ -95,6 +88,15 @@ public struct JNTextFieldLink: View {
           .frame(height: 56)
           .background(style.backgroundColor)
           .cornerRadius(12)
+          .submitLabel(.done)
+          .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+              Spacer()
+              Button("완료") {
+                isFocused = false
+              }
+            }
+          }
           .overlay(
             RoundedRectangle(cornerRadius: 12)
               .stroke(style == .errorCaption ? JNTextFieldStyle.errorCaption.strokeColor : (isFocused ? JNTextFieldStyle.foucsed.strokeColor : style.strokeColor), lineWidth: 1)
