@@ -51,6 +51,7 @@ extension ScrollViewHeader: View {
         }
       }
     }
+    .frame(height: 32)
   }
 }
 
