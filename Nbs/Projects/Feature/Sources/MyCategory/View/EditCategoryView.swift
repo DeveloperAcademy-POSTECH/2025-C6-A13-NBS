@@ -16,7 +16,7 @@ struct EditCategoryView {
 
 extension EditCategoryView: View {
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       TopAppBarDefaultRightIconxFeatureView(
         store: store.scope(
           state: \.topAppBar,
@@ -29,9 +29,11 @@ extension EditCategoryView: View {
           action: \.categoryGrid
         )
       )
+      .padding(.bottom, 10)
       MainButton(
         "수정하기",
-        isDisabled: store.selectedCategory == nil
+        isDisabled: store.selectedCategory == nil,
+        hasGradient: true
       ) {
         store.send(.editButtonTapped)
       }
