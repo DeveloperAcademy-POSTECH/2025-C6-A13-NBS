@@ -20,14 +20,11 @@ fileprivate struct Shake: GeometryEffect {
 
 public struct JNTextField: View {
   @Binding var text: String
-  
   @Binding var style: JNTextFieldStyle
   let placeholder: String
   let caption: String
   let header: String
-  
   @FocusState private var isFocused: Bool
-  
   @State private var shakeCount: CGFloat = 0
   
   public init(

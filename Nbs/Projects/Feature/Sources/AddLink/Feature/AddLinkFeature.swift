@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 import ComposableArchitecture
 import Domain
-import SwiftData
+import DesignSystem
 
 extension Notification.Name {
   static let linkSaved = Notification.Name("linkSaved")
@@ -20,6 +21,7 @@ extension Notification.Name {
 struct AddLinkFeature {
   
   @Dependency(\.linkNavigator) var linkNavigator
+  @Dependency(\.swiftDataClient) var swiftDataClient
   
   @ObservableState
   struct State: Equatable {
@@ -37,6 +39,7 @@ struct AddLinkFeature {
     var totalLinksCount: Int = 0
     var isLoading: Bool = false
     var isSheet: Bool = false
+    var textFieldStyle: JNTextFieldStyle = .default
     
     init(linkURL: String = "") {
       self.linkURL = linkURL
@@ -48,6 +51,7 @@ struct AddLinkFeature {
     case backGestureSwiped
     case setLinkURL(String)
     case saveButtonTapped
+    case setTextFieldStyle(JNTextFieldStyle)
     case addNewCategoryButtonTapped
     case categoryGrid(CategoryGridFeature.Action)
     case confirmAlertDismissed
@@ -64,8 +68,6 @@ struct AddLinkFeature {
     case setSheetPresented(Bool)
   }
   
-  @Dependency(\.swiftDataClient) var swiftDataClient
-  
   var body: some ReducerOf<Self> {
     Scope(state: \.categoryGrid, action: \.categoryGrid) {
       CategoryGridFeature()
@@ -80,7 +82,10 @@ struct AddLinkFeature {
         return .run { send in
           await send(.didFetchArticleItems(Result { try swiftDataClient.fetchLinks() }))
         }
-        
+      case let .setTextFieldStyle(style):
+        state.textFieldStyle = style
+        return .none
+
       case .showArticleButtonTapped:
         guard
           let article = state.articles.first(where: { $0.urlString == state.linkURL })
