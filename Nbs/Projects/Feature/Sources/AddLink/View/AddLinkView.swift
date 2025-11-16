@@ -25,7 +25,7 @@ struct AddLinkView: View {
         
         JNTextFieldLink(
           text: $store.linkURL.sending(\.setLinkURL),
-          style: isValidURL ? .default : .errorCaption,
+          style: $store.textFieldStyle.sending(\.setTextFieldStyle),
           placeholder: "링크를 입력해주세요",
           header: "추가할 링크",
           isValidURL: $isValidURL
