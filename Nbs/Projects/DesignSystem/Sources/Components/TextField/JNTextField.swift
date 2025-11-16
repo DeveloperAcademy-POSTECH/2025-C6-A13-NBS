@@ -76,6 +76,14 @@ public struct JNTextField: View {
           .frame(height: 56)
           .background(style.backgroundColor)
           .cornerRadius(12)
+          .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+              Spacer()
+              Button("완료") {
+                isFocused = false
+              }
+            }
+          }
           .overlay(
             RoundedRectangle(cornerRadius: 12)
               .stroke(isFocused ? JNTextFieldStyle.foucsed.strokeColor : style.strokeColor, lineWidth: 1)
