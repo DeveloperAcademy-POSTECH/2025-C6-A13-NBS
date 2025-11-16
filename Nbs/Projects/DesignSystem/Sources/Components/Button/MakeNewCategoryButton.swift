@@ -31,7 +31,7 @@ extension MakeNewCategoryButton: View {
       onTap?()
     } label: {
       HStack(spacing: 12) {
-        DesignSystemAsset.categoryIcon(number: 14)
+        DesignSystemAsset.promotionImage.swiftUIImage
           .resizable()
           .frame(width: 28, height: 28)
         Text("새 카테고리 만들기")
