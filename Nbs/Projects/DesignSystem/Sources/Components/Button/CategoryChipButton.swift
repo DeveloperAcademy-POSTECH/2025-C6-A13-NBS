@@ -61,6 +61,7 @@ extension CategoryChipButton: View {
       .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
     .buttonStyle(.plain)
+    .frame(height: 56)
   }
 }
 
