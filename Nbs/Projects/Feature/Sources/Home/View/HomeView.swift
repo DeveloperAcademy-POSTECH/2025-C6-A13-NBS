@@ -25,7 +25,7 @@ extension HomeView: View {
       if store.isCheckingClipboard {
         ProgressView()
       } else {
-        VStack {
+        VStack(spacing: 0) {
           TopAppBarHome(
             onTapSearchButton: { store.send(.searchButtonTapped) } ,
             onTapSettingButton: { store.send(.settingButtonTapped) }
@@ -58,7 +58,7 @@ extension HomeView: View {
                 store.send(.floatingButtonTapped)
               }
               .padding(.trailing, 20)
-              .padding(.bottom, 24)
+              .padding(.bottom, 12)
             }
             
             if let alertBanner = store.state.alertBanner {
@@ -70,6 +70,7 @@ extension HomeView: View {
                 }
               )
               .padding(.horizontal, 20)
+              .padding(.bottom, 8)
               .onTapGesture {
                 store.send(.alertBannerTapped)
               }
@@ -108,7 +109,7 @@ extension HomeView: View {
           style: .common
         )
         .padding(.horizontal, 20)
-        .padding(.bottom, 20)
+        .padding(.bottom, 8)
       }
     }
     .animation(.easeInOut(duration: 0.3), value: store.showToast)
