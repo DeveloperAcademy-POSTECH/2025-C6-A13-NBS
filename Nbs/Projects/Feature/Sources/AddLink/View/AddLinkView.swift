@@ -10,12 +10,13 @@ import SwiftUI
 import ComposableArchitecture
 import DesignSystem
 
-struct AddLinkView: View {
-  
+struct AddLinkView {
   @Bindable var store: StoreOf<AddLinkFeature>
   @FocusState private var isFocused: Bool
   @State private var isValidURL: Bool = true
-  
+}
+
+extension AddLinkView: View {
   var body: some View {
     ZStack(alignment: .topLeading) {
       VStack(spacing: 8) {
@@ -115,7 +116,7 @@ struct AddLinkView: View {
       if store.showToast {
         AlertBanner(text: "이미 저장된 링크예요", style: .action(title: "보러가기") { store.send(.showArticleButtonTapped)} )
           .padding(.horizontal, 20)
-          .padding(.bottom, 93)
+          .padding(.bottom, 68)
       }
     }
     .onAppear {
