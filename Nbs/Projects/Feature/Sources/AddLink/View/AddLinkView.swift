@@ -18,7 +18,7 @@ struct AddLinkView: View {
   
   var body: some View {
     ZStack(alignment: .topLeading) {
-      VStack {
+      VStack(spacing: 8) {
         TopAppBarDefaultRightIconx(title: "링크 추가하기") {
           store.send(.backGestureSwiped)
         }
@@ -31,14 +31,6 @@ struct AddLinkView: View {
           isValidURL: $isValidURL
         )
         .focused($isFocused)
-        .toolbar {
-          ToolbarItemGroup(placement: .keyboard) {
-            Spacer()
-            Button("완료") {
-              isFocused = false
-            }
-          }
-        }
         
         VStack {
           HStack {
@@ -52,8 +44,9 @@ struct AddLinkView: View {
             }
           }
           .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.horizontal, 24)
-          .padding(.top, 24)
+          .padding(.leading, 24)
+          .padding(.trailing, 20)
+          .padding(.top)
           
           CategoryGridView(
             store: store.scope(
@@ -69,6 +62,7 @@ struct AddLinkView: View {
           ) {
             store.send(.saveButtonTapped)
           }
+          .padding(.bottom, 8)
         }
         .overlay(isFocused ? Color.bgDimCard : Color.clear)
       }
@@ -142,10 +136,4 @@ struct AddLinkView: View {
       }
     }
   }
-}
-
-#Preview {
-  AddLinkView(store: Store(initialState: AddLinkFeature.State()) {
-    AddLinkFeature()
-  })
 }
