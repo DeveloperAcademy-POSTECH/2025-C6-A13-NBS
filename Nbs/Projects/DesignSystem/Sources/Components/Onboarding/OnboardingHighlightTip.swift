@@ -59,10 +59,8 @@ extension OnboardingHighlightTip: View {
             Capsule()
               .fill(Color.chipMemo)
               .overlay(
-                Capsule().strokeBorder(
-                  .stateDefaultLine,
-                  lineWidth: 2
-                )
+                Capsule()
+                  .strokeBorder(.stateDefaultLine, lineWidth: 2)
               )
             DesignSystemAsset.memo.swiftUIImage
               .resizable()
@@ -80,8 +78,8 @@ extension OnboardingHighlightTip: View {
         .fill(.stateTooltipbackground)
         .frame(width: 16, height: 10)
     }
-    .shadow(color: Color(red: 0.22, green: 0.2, blue: 0.37).opacity(0.07), radius: 3, x: 0, y: 2)
-    .shadow(color: Color(red: 0.32, green: 0.32, blue: 0.43).opacity(0.25), radius: 10, x: 0, y: 0)
+    .shadow(color: Color.bgShadow4, radius: 3, x: 0, y: 2)
+    .shadow(color: Color.bgShadow5, radius: 10, x: 0, y: 0)
   }
 }
 
