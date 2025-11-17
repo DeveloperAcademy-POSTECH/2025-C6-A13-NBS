@@ -4,7 +4,6 @@
 //
 //  Created by 여성일 on 10/18/25.
 //
-
 import SwiftUI
 
 import SwiftData
@@ -26,24 +25,22 @@ struct ShareSelectIconView: View {
 extension ShareSelectIconView {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      Color.background.ignoresSafeArea()
       VStack(alignment: .center, spacing: 0) {
         Separator()
           .padding(.bottom, 8)
         HeaderView
           .padding(.bottom, 8)
         selectCategoryIconView
+        Spacer()
         MainButton("추가하기", isDisabled: isSaveButtonDisabled) {
           saveCategory()
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 20)
         .padding(.bottom, 16)
       }
       .padding(.top, 8)
     }
-    .navigationBarBackButtonHidden()
     .frame(minHeight: 308)
+    .navigationBarBackButtonHidden()
     .clipShape(RoundedRectangle(cornerRadius: 16))
   }
   
@@ -95,6 +92,7 @@ extension ShareSelectIconView {
           }
         }
       }
+      .frame(height: 80)
     }
     .padding(.horizontal, 20)
   }
