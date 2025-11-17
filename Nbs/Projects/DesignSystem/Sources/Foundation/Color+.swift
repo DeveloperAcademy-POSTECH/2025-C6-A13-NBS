@@ -39,6 +39,8 @@ public extension ShapeStyle where Self == Color {
   static var bgShadow1: Color { DesignSystemAsset.bgShadow1.swiftUIColor }
   static var bgShadow2: Color { DesignSystemAsset.bgShadow2.swiftUIColor }
   static var bgShadow3: Color { DesignSystemAsset.bgShadow3.swiftUIColor }
+  static var bgShadow4: Color { DesignSystemAsset.bgShadow4.swiftUIColor }
+  static var bgShadow5: Color { DesignSystemAsset.bgShadow5.swiftUIColor }
   static var bgWhat: Color { DesignSystemAsset.bgWhat.swiftUIColor }
   static var bgWhy: Color { DesignSystemAsset.bgWhy.swiftUIColor }
   
