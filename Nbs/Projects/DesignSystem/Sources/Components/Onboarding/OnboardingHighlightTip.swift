@@ -96,11 +96,26 @@ extension OnboardingHighlightTip: View {
 }
 
 fileprivate struct Triangle: Shape {
+  var cornerRadius: CGFloat = 2
+  
   func path(in rect: CGRect) -> Path {
     var path = Path()
-    path.move(to: CGPoint(x: rect.midX, y: rect.maxY))
-    path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
-    path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+    
+    let top = CGPoint(x: rect.midX, y: rect.maxY)
+    let bottomLeft = CGPoint(x: rect.minX, y: rect.minY)
+    let bottomRight = CGPoint(x: rect.maxX, y: rect.minY)
+    
+    path.move(to: bottomLeft)
+    
+    path.addArc(
+      tangent1End: top,
+      tangent2End: bottomRight,
+      radius: cornerRadius
+    )
+    
+    path.addLine(to: bottomRight)
+    path.addLine(to: bottomLeft)
+    
     path.closeSubpath()
     return path
   }
