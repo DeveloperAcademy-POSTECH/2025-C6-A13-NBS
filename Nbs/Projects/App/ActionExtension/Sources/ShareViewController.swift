@@ -22,12 +22,13 @@ final class ShareViewController: UIViewController {
   private var pageTitle: String = ""
   private var pageURL: String = ""
   private var pageImageURL: String?
-  private var pageMediaCompany: String? 
+  private var pageMediaCompany: String?
   private var draftHighlights: [[String: Any]]? = []
   private var currentLinkItem: ArticleItem?
   private var categoryToSave: CategoryItem? = nil
   private var saveActionTriggered: Bool = false
   private var isURLExisting: Bool = false
+  private var isSaveComplete: Bool = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -46,18 +47,29 @@ private extension ShareViewController {
   func configureHostingController() {
     let container = AppGroupContainer.shared
     
-    let rootView = RootWrapperView(container: container, isURLExisting: isURLExisting) { [weak self] selectedCategory in
-      guard let self = self else { return }
-      self.categoryToSave = selectedCategory
-      self.saveActionTriggered = true
-      
-      self.saveAllData()
+    let newRootView: AnyView
+    
+    if isSaveComplete {
+      newRootView = AnyView(SaveLottieView())
+    } else {
+      let originalRootView = RootWrapperView(container: container, isURLExisting: isURLExisting) { [weak self] selectedCategory in
+        guard let self = self else { return }
+        self.categoryToSave = selectedCategory
+        self.saveActionTriggered = true
+        self.saveAllData()
+      }
+      newRootView = AnyView(originalRootView)
     }
     
     DispatchQueue.main.async { [weak self] in
       guard let self = self else { return }
       
-      let hostingController = UIHostingController(rootView: rootView)
+      if let existingHostingController = self.hostingController {
+        existingHostingController.willMove(toParent: nil)
+        existingHostingController.view.removeFromSuperview()
+        existingHostingController.removeFromParent()
+      }
+      let hostingController = UIHostingController(rootView: newRootView)
       self.hostingController = hostingController
       
       guard let hostingController = self.hostingController else { return }
@@ -68,12 +80,21 @@ private extension ShareViewController {
       view.addSubview(hostingController.view)
       
       hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-      NSLayoutConstraint.activate([
-        hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-        hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-      ])
       
+      if self.isSaveComplete {
+        NSLayoutConstraint.activate([
+          hostingController.view.topAnchor.constraint(equalTo: self.view.topAnchor),
+          hostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+          hostingController.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+          hostingController.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+        ])
+      } else {
+        NSLayoutConstraint.activate([
+          hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+          hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+          hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+      }
       hostingController.didMove(toParent: self)
     }
   }
@@ -268,7 +289,14 @@ private extension ShareViewController {
     
     do {
       try context.save()
-      self.closeExtension(clearDrafts: true)
+      DispatchQueue.main.async {
+        self.isSaveComplete = true
+        self.configureHostingController()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+          self.closeExtension(clearDrafts: true)
+        }
+      }
     } catch {
       self.closeExtension(clearDrafts: false)
     }

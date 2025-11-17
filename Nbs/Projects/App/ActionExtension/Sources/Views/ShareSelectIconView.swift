@@ -111,7 +111,6 @@ private extension ShareSelectIconView {
     do {
       try modelContext.save()
       NotificationCenter.default.post(name: .newCategoryDidSave, object: nil, userInfo: ["newCategory": newCategory])
-      NotificationCenter.default.post(name: .closeShareExtension, object: nil)
     } catch {
       print("새 카테고리 저장 실패")
     }
