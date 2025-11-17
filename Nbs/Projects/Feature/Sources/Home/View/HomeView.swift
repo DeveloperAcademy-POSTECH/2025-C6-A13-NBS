@@ -100,6 +100,16 @@ extension HomeView: View {
         store.send(.showToast(message))
       }
     }
+    .task {
+      NotificationCenter.default.addObserver(
+        forName: .linkDeleted,
+        object: nil,
+        queue: .main
+      ) { notification in
+        store.send(.showDeleteAlert("링크를 삭제했어요"))
+        store.send(.fetchArticles)
+      }
+    }
     .overlay(alignment: .bottom) {
       if store.showToast {
         AlertBanner(
@@ -110,7 +120,17 @@ extension HomeView: View {
         .padding(.horizontal, 20)
         .padding(.bottom, 20)
       }
+      if let message = store.deleteAlert {
+        AlertIconBanner(
+          icon: Image(icon: Icon.info),
+          title: message,
+          iconColor: .danger
+        )
+        .padding(.horizontal, 20)
+        .padding(.bottom, 20)
+      }
     }
     .animation(.easeInOut(duration: 0.3), value: store.showToast)
+    .animation(.easeInOut(duration: 0.3), value: store.deleteAlert)
   }
 }

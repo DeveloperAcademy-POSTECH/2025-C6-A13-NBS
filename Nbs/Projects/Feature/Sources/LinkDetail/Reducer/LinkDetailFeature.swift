@@ -174,6 +174,10 @@ struct LinkDetailFeature {
         
       case .deleteResponse(.success):
         state.isDeleted = true
+        NotificationCenter.default.post(
+          name: .linkDeleted,
+          object: ["deletedCount": 1]
+        )
         return .none
         
         

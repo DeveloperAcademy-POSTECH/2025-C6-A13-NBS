@@ -72,7 +72,8 @@ extension LinkListView: View {
           queue: .main
         ) { notification in
           let count = (notification.object as? [String: Int])?["deletedCount"] ?? 0
-          store.send(.showAlert(title: "\(count)개의 링크를 삭제했어요", tint: .danger))
+          let message = count == 1 ? "링크를 삭제했어요" : "\(count)개의 링크를 삭제했어요"
+          store.send(.showAlert(title: message, tint: .danger))
           store.send(.fetchLinks)
         }
       }

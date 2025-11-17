@@ -28,6 +28,7 @@ struct HomeFeature {
     var myCategoryCollection = MyCategoryCollectionFeature.State()
     var lastShownClipboardLink: String?
     var showToast: Bool = false
+    var deleteAlert: String? = nil
     var toastMessage: String = ""
     
     struct AlertBannerState: Equatable {
@@ -51,6 +52,8 @@ struct HomeFeature {
     case settingButtonTapped
     case refresh
     case showToast(String)
+    case showDeleteAlert(String)
+    case hideDeleteAlert
     case hideToast
   }
   
@@ -119,6 +122,17 @@ struct HomeFeature {
       case .hideToast:
         state.showToast = false
         state.toastMessage = ""
+        return .none
+        
+      case .showDeleteAlert(let message):
+        state.deleteAlert = message
+        return .run { send in
+          try await Task.sleep(for: .seconds(2))
+          await send(.hideDeleteAlert)
+        }
+        
+      case .hideDeleteAlert:
+        state.deleteAlert = nil
         return .none
         
       case .fetchArticles:
