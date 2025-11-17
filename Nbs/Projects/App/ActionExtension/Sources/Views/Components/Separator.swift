@@ -11,7 +11,7 @@ struct Separator: View {
   var body: some View {
     Rectangle()
       .frame(width: 44, height: 4)
-      .foregroundStyle(.gray)
+      .foregroundStyle(.n50)
       .clipShape(.capsule)
   }
 }
