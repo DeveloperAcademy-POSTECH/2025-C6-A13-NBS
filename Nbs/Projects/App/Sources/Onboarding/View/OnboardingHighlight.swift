@@ -182,7 +182,6 @@ extension OnboardingHighlightView: View {
                     }
                   })
                 }
-                .offset(y: -20)
               } else {
                 VStack(alignment: .trailing) {
                   OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")
@@ -206,7 +205,7 @@ extension OnboardingHighlightView: View {
             .onPreferenceChange(TooltipHeightPreferenceKey.self) {
                 highlightTipHeight = $0
             }
-            .position(x: highlightRect.midX, y: highlightRect.minY - 60 - highlightTipHeight / 2)
+            .position(x: highlightRect.midX, y: highlightRect.minY - 84)
             .transition(.opacity)
           }
         }
