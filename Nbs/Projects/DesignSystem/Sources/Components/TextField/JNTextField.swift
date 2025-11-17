@@ -136,16 +136,17 @@ public struct JNTextField: View {
   }
 }
 
-//#Preview {
-//  VStack(spacing: 30) {
-//    Spacer()
-//    JNTextField(text: .constant(""), style: .default)
+#Preview {
+  VStack(spacing: 30) {
+    Spacer()
+    JNTextField(text: .constant(""), style: .constant(.default), header: "String")
+      .background(Color.green)
 //    JNTextField(text: .constant("hello"), style: .filled)
 //    JNTextField(text: .constant("hello"), style: .foucsed)
 //    JNTextField(text: .constant(""), style: .disabled)
 //    JNTextField(text: .constant("error"), style: .error)
 //    JNTextField(text: .constant("errorCapation"), style: .errorCaption, caption: "에러 발생")
-//    Spacer()
-//  }
-//  .background(Color.background)
-//}
+    Spacer()
+  }
+  .background(Color.background)
+}
