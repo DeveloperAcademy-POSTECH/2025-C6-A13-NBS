@@ -29,7 +29,6 @@ extension ShareBottomSheetView {
           HeaderView
           Spacer()
           CategoryListView
-            .padding(.horizontal, 20)
             .frame(height: 109)
           Spacer()
           MainButton("저장") {
@@ -107,6 +106,7 @@ extension ShareBottomSheetView {
           )
         }
       }
+      .padding(.horizontal, 20)
     }
   }
 }

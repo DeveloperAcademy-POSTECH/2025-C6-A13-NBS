@@ -73,6 +73,7 @@ extension ShareSelectIconView {
       Text("카테고리 아이콘")
         .font(.B2_SB)
         .foregroundStyle(.caption1)
+        .padding(.leading, 20)
       
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 16) {
@@ -91,10 +92,10 @@ extension ShareSelectIconView {
             )
           }
         }
+        .padding(.horizontal, 20)
       }
       .frame(height: 80)
     }
-    .padding(.horizontal, 20)
   }
 }
 
