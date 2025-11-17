@@ -72,13 +72,15 @@ extension ArticleCard {
         .padding(.top, 10)
       
       HStack(spacing: 0) {
-        Text("\(dateString)  ·  ")
+        Text("\(dateString)")
           .font(.B2_M)
           .foregroundStyle(.caption2)
         
-        Text(newsCompany ?? "NBS")
-          .font(.B2_M)
-          .foregroundStyle(.caption2)
+        if let company = newsCompany, !company.isEmpty {
+          Text("  ·  \(company)")
+            .font(.B2_M)
+            .foregroundStyle(.caption2)
+        }
       }
       .padding(.leading, 2)
       

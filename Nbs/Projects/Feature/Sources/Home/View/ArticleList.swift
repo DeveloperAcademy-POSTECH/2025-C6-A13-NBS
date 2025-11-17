@@ -48,7 +48,7 @@ extension ArticleListView: View {
                 categoryName: article.category?.categoryName ?? "전체",
                 imageURL: article.imageURL ?? "notImage",
                 dateString: article.createAt.formattedKoreanDate(),
-                newsCompany: article.newsCompany ?? "언론사 없음"
+                newsCompany: article.newsCompany ?? ""
               )
             }
             .buttonStyle(.plain)

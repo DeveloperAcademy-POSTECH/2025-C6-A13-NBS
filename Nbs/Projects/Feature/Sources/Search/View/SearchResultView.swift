@@ -65,7 +65,7 @@ extension SearchResultView {
                   categoryName: result.category?.categoryName ?? "전체",
                   imageURL: result.imageURL ?? "notImage",
                   dateString: result.createAt.formattedKoreanDate(),
-                  newsCompany: result.newsCompany ?? "언론사 없음"
+                  newsCompany: result.newsCompany ?? ""
                 )
               }
               .buttonStyle(.plain)
