@@ -114,9 +114,13 @@ extension AddLinkView: View {
     }
     .overlay(alignment: .bottom) {
       if store.showToast {
-        AlertBanner(text: "이미 저장된 링크예요", style: .action(title: "보러가기") { store.send(.showArticleButtonTapped)} )
+        AlertBanner(
+          text: "이미 저장된 링크예요",
+          style: .action(title: "보러가기") {
+            store.send(.showArticleButtonTapped)
+          })
           .padding(.horizontal, 20)
-          .padding(.bottom, 68)
+          .padding(.bottom, 70)
       }
     }
     .onAppear {

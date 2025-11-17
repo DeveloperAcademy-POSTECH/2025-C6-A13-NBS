@@ -68,6 +68,7 @@ extension AddCategoryView: View {
                       .resizable()
                       .frame(width: 56, height: 56)
                   )
+                  .animation(.easeInOut(duration: 0.2), value: isSelected)
               }
               .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
               .buttonStyle(.plain)
@@ -75,10 +76,11 @@ extension AddCategoryView: View {
             }
           }
           .padding(.horizontal, 20)
+          .padding(.bottom, 32)
         }
         .scrollDisabled(isFocused)
         .scrollIndicators(.hidden)
-        .padding(.top, 4)
+        
         MainButton(
           CategoryNamespace.addCategory,
           isDisabled: store.categoryName.isEmpty,

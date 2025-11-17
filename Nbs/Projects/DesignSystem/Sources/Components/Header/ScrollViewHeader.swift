@@ -48,6 +48,7 @@ extension ScrollViewHeader: View {
               .resizable()
               .frame(width: 20, height: 20)
           }
+          .frame(height: 32)
         }
       }
     }

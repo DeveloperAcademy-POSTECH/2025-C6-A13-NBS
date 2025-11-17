@@ -88,7 +88,7 @@ extension OnboardingHighlightView: View {
                   .opacity(showMemo ? 1 : 0)
                   .frame(height: showMemo ? nil : 0)
               }
-              .background(showMemo ? .n20 : .clear)
+              .background(showMemo ? .n30 : .clear)
               .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .padding(.horizontal, 20)

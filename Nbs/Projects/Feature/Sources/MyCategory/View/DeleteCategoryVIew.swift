@@ -16,7 +16,7 @@ struct DeleteCategoryView {
 
 extension DeleteCategoryView: View {
   var body: some View {
-    VStack {
+    VStack(spacing: 15) {
       TopAppBarDefaultRightIconxFeatureView(
         store: store.scope(
           state: \.topAppBar,

@@ -36,7 +36,7 @@ extension MyCategoryGridView: View {
                     .lineLimit(2)
                   Text("\(category.links.count)개")
                     .font(.B2_M)
-                    .foregroundStyle(.caption1)
+                    .foregroundStyle(.caption2)
                   Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -57,6 +57,7 @@ extension MyCategoryGridView: View {
           }
         }
         .padding(.horizontal, 20)
+        .padding(.bottom, 32)
         .onAppear {
           viewStore.send(.onAppear)
         }

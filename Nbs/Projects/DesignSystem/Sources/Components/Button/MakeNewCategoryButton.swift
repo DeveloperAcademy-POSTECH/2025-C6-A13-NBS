@@ -43,8 +43,8 @@ extension MakeNewCategoryButton: View {
           .font(.B1_SB)
           .foregroundStyle(.text1)
       }
-      .padding(.leading)
-      .padding(.vertical, 12)
+      .padding(.leading, 18)
+      .padding(.vertical, 14)
       .padding(.trailing, 20)
       .background(
         RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -55,4 +55,8 @@ extension MakeNewCategoryButton: View {
     }
     .buttonStyle(.plain)
   }
+}
+
+#Preview {
+  MakeNewCategoryButton()
 }

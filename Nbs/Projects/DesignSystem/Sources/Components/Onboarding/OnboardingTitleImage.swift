@@ -67,6 +67,7 @@ extension OnboardingTitleImage: View {
           .padding(.top, 60)
       }
     }
+    .background(Color.background)
   }
 }
 

@@ -16,6 +16,7 @@ struct OnboardingSafariSaveView {
   @State private var isReady: Bool = false
 }
 
+//TODO: 다시 만들기
 extension OnboardingSafariSaveView: View {
   var body: some View {
     ZStack(alignment: .bottom) {
@@ -87,6 +88,7 @@ extension OnboardingSafariSaveView: View {
           }
         }
       }
+      Spacer()
       MainButton("완료") {
         store.send(.completeButtonTapped)
       }

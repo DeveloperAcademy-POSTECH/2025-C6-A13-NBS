@@ -16,13 +16,14 @@ struct CategoryIconScrollView {
 
 extension CategoryIconScrollView: View {
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       Text("카테고리 아이콘")
         .font(.B2_SB)
         .foregroundStyle(.caption1)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.leading, 24)
         .padding(.top, 24)
+        .padding(.bottom, 8)
       
       ScrollView {
         LazyVGrid(columns: columns, spacing: 16) {
@@ -58,6 +59,7 @@ extension CategoryIconScrollView: View {
           }
         }
         .padding(.horizontal, 20)
+        .padding(.bottom, 32)
       }
       .scrollIndicators(.hidden)
     }
