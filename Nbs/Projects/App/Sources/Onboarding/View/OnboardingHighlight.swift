@@ -20,10 +20,10 @@ struct HighlightRectPreferenceKey: PreferenceKey {
 }
 
 struct TooltipHeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = .zero
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
+  static var defaultValue: CGFloat = .zero
+  static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+    value = nextValue()
+  }
 }
 
 struct OnboardingHighlightView {
@@ -101,17 +101,17 @@ extension OnboardingHighlightView: View {
             )
             .onTapGesture(count: 1) {
               if isTextHighlighted && !store.showMemo {
-                  showHighlightTip = true
+                showHighlightTip = true
               }
             }
             .onTapGesture(count: 2) {
               if store.showDimming {
                 store.send(.taptap)
-                  isTextHighlighted = true
-                  tooltipText = "해당 문장이 하이라이트 돼요"
+                isTextHighlighted = true
+                tooltipText = "해당 문장이 하이라이트 돼요"
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    showTooltip = false
+                  showTooltip = false
                   
                   DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
@@ -161,10 +161,10 @@ extension OnboardingHighlightView: View {
           if showTooltip && highlightRect != .zero && !showHighlightTip {
             OnboardingToolTipBox(text: tooltipText)
               .background(GeometryReader {
-                  Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
+                Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
               })
               .onPreferenceChange(TooltipHeightPreferenceKey.self) {
-                  tooltipHeight = $0
+                tooltipHeight = $0
               }
               .position(x: highlightRect.midX, y: highlightRect.maxY + 8 + tooltipHeight / 2)
               .transition(.opacity)
@@ -204,12 +204,12 @@ extension OnboardingHighlightView: View {
                 }
               }
             }
-//            .background(GeometryReader {
-//                Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
-//            })
-//            .onPreferenceChange(TooltipHeightPreferenceKey.self) {
-//                highlightTipHeight = $0
-//            }
+            //            .background(GeometryReader {
+            //                Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
+            //            })
+            //            .onPreferenceChange(TooltipHeightPreferenceKey.self) {
+            //                highlightTipHeight = $0
+            //            }
             .position(x: highlightRect.midX, y: highlightRect.minY - 78)
             .transition(.opacity)
           }
@@ -239,13 +239,13 @@ extension OnboardingHighlightView: View {
     .onAppear {
       DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
         store.send(.onAppear)
-          tooltipText = "하이라이트 치고 싶은 부분을 \n’두 번’ 탭해요"
+        tooltipText = "하이라이트 치고 싶은 부분을 \n’두 번’ 탭해요"
       }
     }
     .onChange(of: store.showDimming) { _, showDimming in
-        withAnimation(.easeInOut(duration: 0.3)) {
-            self.showDimmingWithAnimation = showDimming
-        }
+      withAnimation(.easeInOut(duration: 0.3)) {
+        self.showDimmingWithAnimation = showDimming
+      }
     }
   }
 }
