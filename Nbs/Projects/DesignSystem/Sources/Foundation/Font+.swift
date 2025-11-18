@@ -212,9 +212,9 @@ public extension TypeStyle {
   
   /// Medium 14pt
   static let B3_R_HLM = TypeStyle(
-    font: .Pretendard.medium.swiftUIFont(size: 14),
-    uiFont: .pretendard(type: .medium, size: 14),
-    size: 14,
+    font: .Pretendard.regular.swiftUIFont(size: 16),
+    uiFont: .pretendard(type: .regular, size: 16),
+    size: 16,
     lineHeight: 1.7,
     letterSpacing: -0.02
   )
