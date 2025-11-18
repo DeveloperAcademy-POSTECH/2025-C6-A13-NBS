@@ -62,10 +62,9 @@ extension OnboardingTitleImage: View {
       } else {
         image
           .resizable()
-          .frame(width: 244, height: 380)
-          .padding(.horizontal, 30)
-          .padding(.top, 60)
-      }
+          .scaledToFit()
+          .padding(.horizontal, 56)
+          .padding(.top, 60)      }
     }
     .background(Color.background)
   }

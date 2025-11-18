@@ -16,7 +16,7 @@ public struct CategoryIcon: Codable, Hashable {
   }
   
   public var name: String {
-    "primaryCategory\(self.number)"
+    "primaryCategoryIcon\(self.number)"
   }
 }
 

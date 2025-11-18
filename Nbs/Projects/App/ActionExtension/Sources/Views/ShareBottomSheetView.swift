@@ -82,7 +82,7 @@ extension ShareBottomSheetView {
       LazyHStack(spacing: 16) {
         CategoryButton(
           title: "전체",
-          icon: "primaryCategory14",
+          icon: "primaryCategoryIcon16",
           isOn: Binding(
             get: { self.selectedCategory == nil},
             set: { isOn in
