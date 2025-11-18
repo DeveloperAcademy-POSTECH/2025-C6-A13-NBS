@@ -10,35 +10,28 @@ import SwiftUI
 import ComposableArchitecture
 import DesignSystem
 
-struct AddLinkView: View {
-  
+struct AddLinkView {
   @Bindable var store: StoreOf<AddLinkFeature>
   @FocusState private var isFocused: Bool
   @State private var isValidURL: Bool = true
-  
+}
+
+extension AddLinkView: View {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      VStack {
+      VStack(spacing: 8) {
         TopAppBarDefaultRightIconx(title: "링크 추가하기") {
           store.send(.backGestureSwiped)
         }
         
         JNTextFieldLink(
           text: $store.linkURL.sending(\.setLinkURL),
-          style: isValidURL ? .default : .errorCaption,
+          style: $store.textFieldStyle.sending(\.setTextFieldStyle),
           placeholder: "링크를 입력해주세요",
           header: "추가할 링크",
           isValidURL: $isValidURL
         )
         .focused($isFocused)
-        .toolbar {
-          ToolbarItemGroup(placement: .keyboard) {
-            Spacer()
-            Button("완료") {
-              isFocused = false
-            }
-          }
-        }
         
         VStack {
           HStack {
@@ -52,8 +45,9 @@ struct AddLinkView: View {
             }
           }
           .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.horizontal, 24)
-          .padding(.top, 24)
+          .padding(.leading, 24)
+          .padding(.trailing, 20)
+          .padding(.top)
           
           CategoryGridView(
             store: store.scope(
@@ -69,6 +63,7 @@ struct AddLinkView: View {
           ) {
             store.send(.saveButtonTapped)
           }
+          .padding(.bottom, 8)
         }
         .overlay(isFocused ? Color.bgDimCard : Color.clear)
       }
@@ -119,9 +114,13 @@ struct AddLinkView: View {
     }
     .overlay(alignment: .bottom) {
       if store.showToast {
-        AlertBanner(text: "이미 저장된 링크예요", style: .action(title: "보러가기") { store.send(.showArticleButtonTapped)} )
+        AlertBanner(
+          text: "이미 저장된 링크예요",
+          style: .action(title: "보러가기") {
+            store.send(.showArticleButtonTapped)
+          })
           .padding(.horizontal, 20)
-          .padding(.bottom, 93)
+          .padding(.bottom, 70)
       }
     }
     .onAppear {
@@ -142,10 +141,4 @@ struct AddLinkView: View {
       }
     }
   }
-}
-
-#Preview {
-  AddLinkView(store: Store(initialState: AddLinkFeature.State()) {
-    AddLinkFeature()
-  })
 }

@@ -26,7 +26,7 @@ struct EditCategoryIconNameView {
 extension EditCategoryIconNameView: View {
   var body: some View {
     ZStack(alignment: .leading) {
-      VStack {
+      VStack(spacing: 0) {
         TopAppBarDefaultRightIconx(title: "카테고리 수정하기") {
           store.send(.topAppBar(.tapBackButton))
         }
@@ -39,14 +39,7 @@ extension EditCategoryIconNameView: View {
           header: "카테고리명"
         )
         .focused($isFocused)
-        .toolbar {
-          ToolbarItemGroup(placement: .keyboard) {
-            Spacer()
-            Button("완료") {
-              isFocused = false
-            }
-          }
-        }
+
         CategoryIconScrollView(selectedIcon: $store.selectedIcon.sending(\.selectIcon))
         MainButton(
           "완료",

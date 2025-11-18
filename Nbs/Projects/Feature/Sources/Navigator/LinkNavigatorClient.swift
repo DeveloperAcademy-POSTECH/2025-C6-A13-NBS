@@ -6,6 +6,7 @@ public struct LinkNavigatorClient {
   public var push: (Route, Codable?) -> Void
   public var pop: () async -> Void
   public var replace: ([Route], Codable?) -> Void
+  public var remove: (Route) -> Void
 }
 
 extension LinkNavigatorClient: DependencyKey {
@@ -24,6 +25,9 @@ extension LinkNavigatorClient: DependencyKey {
       #if DEBUG
       print("not implemented")
       #endif
+    },
+    remove: { _ in
+      
     }
   )
 }
@@ -66,6 +70,9 @@ extension LinkNavigatorClient {
           )
         }
       }
+    }
+    self.remove = { path in
+        navigator.remove(pathList: [path.rawValue])
     }
   }
 }

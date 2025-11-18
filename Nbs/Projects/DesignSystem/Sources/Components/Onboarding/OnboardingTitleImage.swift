@@ -53,15 +53,31 @@ extension OnboardingTitleImage: View {
         .padding(.leading, 20)
         .padding(.top, 8)
       
-      image
-        .resizable()
-        .scaledToFit()
-        .padding(.horizontal, 30)
-        .padding(.top, 55)
+      if image == DesignSystemAsset.onboardingService.swiftUIImage {
+        DesignSystemAsset.onboardingService.swiftUIImage
+          .resizable()
+          .scaledToFit()
+          .padding(.horizontal, 30)
+          .padding(.top, 60)
+      } else {
+        image
+          .resizable()
+          .frame(width: 244, height: 380)
+          .padding(.horizontal, 30)
+          .padding(.top, 60)
+      }
     }
+    .background(Color.background)
   }
 }
 
-#Preview(body: {
-  OnboardingTitleImage(title: .highlightMemoTitle, description: .highlightMemoDescription, image: DesignSystemAsset.onboardingService.swiftUIImage, showPage: true, currentPage: 1)
+#Preview(
+  body: {
+    OnboardingTitleImage(
+      title: .highlightMemoTitle,
+      description: .highlightMemoDescription,
+      image: DesignSystemAsset.onboardingService.swiftUIImage,
+      showPage: true,
+      currentPage: 1
+    )
 })

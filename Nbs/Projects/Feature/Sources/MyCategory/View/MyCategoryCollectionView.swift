@@ -45,6 +45,7 @@ extension MyCategoryCollectionView: View {
               .renderingMode(.template)
               .frame(width: 24, height: 24)
               .foregroundStyle(.text1)
+              .padding(.leading, 4)
           }
           .padding(.horizontal)
           .padding(.vertical, 20)
@@ -110,7 +111,7 @@ extension MyCategoryCollectionView: View {
         )
         .zIndex(1)
         .padding(.horizontal, 20)
-        .padding(.bottom, 20)
+        .padding(.bottom, 8)
       }
     }
     .animation(.easeInOut(duration: 0.3), value: store.showToast)

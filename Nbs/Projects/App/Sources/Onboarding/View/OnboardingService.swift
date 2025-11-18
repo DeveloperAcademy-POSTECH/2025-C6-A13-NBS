@@ -25,14 +25,14 @@ extension OnboardingServiceView: View {
         showPage: false,
         currentPage: 0
       )
-      .padding(.top, 72)
+      .padding(.top, 60)
       
       Spacer()
       MainButton("시작하기", hasGradient: true) {
         store.send(.startButtonTapped)
       }
       .buttonStyle(.plain)
-      .padding(.bottom, 21)
+      .padding(.bottom, 8)
     }
     .background(Color.background)
     .toolbar(.hidden)

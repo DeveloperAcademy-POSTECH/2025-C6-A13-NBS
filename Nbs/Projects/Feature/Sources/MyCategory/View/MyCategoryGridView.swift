@@ -36,16 +36,16 @@ extension MyCategoryGridView: View {
                     .lineLimit(2)
                   Text("\(category.links.count)개")
                     .font(.B2_M)
-                    .foregroundStyle(.caption1)
+                    .foregroundStyle(.caption2)
                   Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top)
-                .padding(.leading)
+                .padding(.horizontal)
                 DesignSystemAsset.primaryCategoryIcon(number: category.icon.number)
                   .resizable()
-                  .frame(width: 56, height: 56)
-                  .padding(.trailing, 12)
+                  .frame(width: 52, height: 52)
+                  .padding(.trailing, 14)
                   .padding(.bottom, 12)
               }
               .frame(maxWidth: .infinity, minHeight: 116)
@@ -57,6 +57,7 @@ extension MyCategoryGridView: View {
           }
         }
         .padding(.horizontal, 20)
+        .padding(.bottom, 32)
         .onAppear {
           viewStore.send(.onAppear)
         }

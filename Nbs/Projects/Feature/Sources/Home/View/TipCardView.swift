@@ -16,28 +16,14 @@ struct TipCardView {
 
 extension TipCardView: View {
   var body: some View {
-      VStack {
-        HStack {
-          Text("Safari에서 바로 메모하고\n링크를 남겨보세요")
-            .font(.H3)
-            .foregroundStyle(.text1)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, 20)
-            .padding(.top, 24)
-          
-          Button {
-            closeTap()
-          } label: {
-            Image(icon: Icon.x)
-              .resizable()
-              .renderingMode(.template)
-              .foregroundStyle(.iconGray)
-              .frame(width: 24, height: 24)
-              .frame(width: 44, height: 44)
-              .contentShape(Rectangle())
-              .padding(.trailing, 6)
-          }
-        }
+    ZStack(alignment: .topTrailing) {
+      VStack(spacing: 0) {
+        Text("Safari에서 바로 메모하고\n링크를 남겨보세요")
+          .font(.H3)
+          .foregroundStyle(.text1)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .padding(.leading, 20)
+          .padding(.top, 20)
         
         Text("저장한 내용은 이곳에서 한눈에 볼 수 있어요")
           .font(.B2_M)
@@ -57,5 +43,27 @@ extension TipCardView: View {
         .padding(.bottom, 24)
       }
       .background(.bl2)
+      Button {
+        closeTap()
+      } label: {
+        Image(icon: Icon.x)
+          .resizable()
+          .renderingMode(.template)
+          .foregroundStyle(.iconGray)
+          .frame(width: 24, height: 24)
+          .frame(width: 44, height: 44)
+          .contentShape(Rectangle())
+          .padding(.trailing, 6)
+      }
+      .padding(.top, 12)
+    }
+  }
+}
+
+#Preview {
+  TipCardView() {
+    
+  } closeTap: {
+    
   }
 }

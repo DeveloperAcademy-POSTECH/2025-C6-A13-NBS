@@ -5,20 +5,12 @@
 //  Created by 홍 on 10/30/25.
 //
 
-//
-//  TextField.swift
-//  DesignSystem
-//
-//  Created by 홍 on 10/16/25.
-//
-
 import SwiftUI
 import Combine
 
 public struct JNTextFieldLink: View {
   @Binding var text: String
-  
-  @State var style: JNTextFieldStyle
+  @Binding var style: JNTextFieldStyle
   let placeholder: String
   @State var internalCaption: String
   let header: String
@@ -28,14 +20,14 @@ public struct JNTextFieldLink: View {
   
   public init(
     text: Binding<String>,
-    style: JNTextFieldStyle = .default,
+    style: Binding<JNTextFieldStyle> = .constant(.default),
     placeholder: String = "링크를 입력해주세요",
     caption: String = "",
     header: String = "",
     isValidURL: Binding<Bool> = .constant(true)
   ) {
     self._text = text
-    self._style = State(initialValue: style)
+    self._style = style
     self.placeholder = placeholder
     self._internalCaption = State(initialValue: caption)
     self.header = header
@@ -82,8 +74,8 @@ public struct JNTextFieldLink: View {
         .font(.B2_SB)
         .foregroundStyle(.caption1)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 8)
         .padding(.leading, 4)
+        .padding(.bottom, 8)
       
       ZStack(alignment: .leading) {
         TextField("", text: textProxy)
@@ -95,6 +87,15 @@ public struct JNTextFieldLink: View {
           .frame(height: 56)
           .background(style.backgroundColor)
           .cornerRadius(12)
+          .submitLabel(.done)
+          .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+              Spacer()
+              Button("완료") {
+                isFocused = false
+              }
+            }
+          }
           .overlay(
             RoundedRectangle(cornerRadius: 12)
               .stroke(style == .errorCaption ? JNTextFieldStyle.errorCaption.strokeColor : (isFocused ? JNTextFieldStyle.foucsed.strokeColor : style.strokeColor), lineWidth: 1)
@@ -129,16 +130,16 @@ public struct JNTextFieldLink: View {
   }
 }
 
-#Preview {
-  VStack(spacing: 30) {
-    Spacer()
-    JNTextFieldLink(text: .constant(""), style: .default)
-    JNTextFieldLink(text: .constant("hello"), style: .filled)
-    JNTextFieldLink(text: .constant("hello"), style: .foucsed)
-    JNTextFieldLink(text: .constant(""), style: .disabled)
-    JNTextFieldLink(text: .constant("error"), style: .error)
-    JNTextFieldLink(text: .constant("errorCapation"), style: .errorCaption, caption: "에러 발생")
-    Spacer()
-  }
-  .background(Color.background)
-}
+//#Preview {
+//  VStack(spacing: 30) {
+//    Spacer()
+//    JNTextFieldLink(text: .constant(""), style: .default)
+//    JNTextFieldLink(text: .constant("hello"), style: .filled)
+//    JNTextFieldLink(text: .constant("hello"), style: .foucsed)
+//    JNTextFieldLink(text: .constant(""), style: .disabled)
+//    JNTextFieldLink(text: .constant("error"), style: .error)
+//    JNTextFieldLink(text: .constant("errorCapation"), style: .errorCaption, caption: "에러 발생")
+//    Spacer()
+//  }
+//  .background(Color.background)
+//}

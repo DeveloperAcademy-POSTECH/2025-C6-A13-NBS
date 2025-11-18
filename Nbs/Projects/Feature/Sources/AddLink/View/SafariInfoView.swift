@@ -32,7 +32,7 @@ struct SafariInfoView: View {
       Button {
         isOn.toggle()
       } label: {
-        HStack(spacing: 14) {
+        HStack(spacing: 8) {
           Image(icon: isOn ? Icon.checkFill : Icon.checkUnfill)
             .resizable()
             .scaledToFit()
@@ -42,6 +42,7 @@ struct SafariInfoView: View {
             .foregroundStyle(.caption1)
         }
       }
+      .frame(height: 32)
       .padding(.vertical, 24)
 
       MainButton("확인했어요", hasGradient: true) {
