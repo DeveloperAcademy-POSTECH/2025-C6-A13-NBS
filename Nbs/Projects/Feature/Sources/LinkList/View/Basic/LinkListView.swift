@@ -211,7 +211,7 @@ extension LinkListView: View {
     case .danger:
       return .danger
     case .info:
-      return .bl3
+      return .badgeColor
     case .alert:
       return .bl3
     }

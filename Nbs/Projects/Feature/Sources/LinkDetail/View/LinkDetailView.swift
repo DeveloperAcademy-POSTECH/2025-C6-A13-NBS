@@ -72,7 +72,7 @@ extension LinkDetailView: View {
           AlertIconBanner(
             icon: Image(icon: Icon.badgeCheck),
             title: "링크를 수정했어요",
-            iconColor: .bl3
+            iconColor: .badgeColor
           )
           .zIndex(1)
           .padding(.horizontal, 20)
@@ -219,10 +219,11 @@ extension LinkDetailView: View {
       case .failure:
         DesignSystemAsset.notImage.swiftUIImage
           .resizable()
-          .scaledToFit()
+          .aspectRatio(contentMode: .fill)
           .frame(width: 48, height: 48)
-          .cornerRadius(8)
           .foregroundColor(.gray)
+          .clipped()
+          .clipShape(RoundedRectangle(cornerRadius: 6))
       @unknown default:
         EmptyView()
       }
