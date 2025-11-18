@@ -58,7 +58,7 @@ extension MemoChipView {
     case .chipPink:
       return .chipPinkLine
     default:
-      return .white
+      return .text1
     }
   }
 }
