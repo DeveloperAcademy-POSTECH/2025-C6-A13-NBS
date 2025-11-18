@@ -74,12 +74,16 @@ extension OnboardingHighlightTip: View {
       .padding(.all, 4)
       .background(.stateTooltipbackground)
       .clipShape(RoundedRectangle(cornerRadius: 30))
+      .shadow(color: Color.bgShadow4, radius: 3, x: 0, y: 2)
+      .shadow(color: Color.bgShadow5, radius: 10, x: 0, y: 0)
       Triangle()
         .fill(.stateTooltipbackground)
         .frame(width: 16, height: 10)
+        .shadow(color: Color.bgShadow4, radius: 8, x: 0, y: 6)
+        .shadow(color: Color.bgShadow5, radius: 4, x: 0, y: 6)
     }
-    .shadow(color: Color.bgShadow4, radius: 3, x: 0, y: 2)
-    .shadow(color: Color.bgShadow5, radius: 10, x: 0, y: 0)
+//    .shadow(color: Color.bgShadow4, radius: 3, x: 0, y: 2)
+//    .shadow(color: Color.bgShadow5, radius: 10, x: 0, y: 0)
   }
 }
 

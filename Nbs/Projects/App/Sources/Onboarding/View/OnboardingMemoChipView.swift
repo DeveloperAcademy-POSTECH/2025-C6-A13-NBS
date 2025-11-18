@@ -58,11 +58,7 @@ extension MemoChipView {
     case .chipPink:
       return .chipPinkLine
     default:
-      return .text1
+      return .chipPinkLine
     }
   }
 }
-
-#Preview(body: {
-  MemoChipView(selectedColor: .constant(.chipBlue))
-})

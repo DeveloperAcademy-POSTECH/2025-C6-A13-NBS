@@ -88,7 +88,7 @@ extension OnboardingToolTipBoxBottomTrailing: View {
           Triangle()
             .fill(.bl6)
             .frame(width: 18, height: 12)
-            .padding(.trailing, 14)
+            .padding(.trailing, 28)
             .padding(.bottom, -15)
         }
     }

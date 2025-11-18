@@ -90,6 +90,7 @@ extension OnboardingHighlightView: View {
               }
               .background(showMemo ? .n30 : .clear)
               .clipShape(RoundedRectangle(cornerRadius: 12))
+              .offset(y: 12)
             }
             .padding(.horizontal, 20)
             .background(
@@ -109,12 +110,14 @@ extension OnboardingHighlightView: View {
                   isTextHighlighted = true
                   tooltipText = "해당 문장이 하이라이트 돼요"
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     showTooltip = false
                   
-                  DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     tooltipText = "하이라이트 된 문장을 ‘한 번’ 탭하여 \n툴팁을 꺼내요"
+                    withAnimation(.easeIn(duration: 0.1)) {
                       showTooltip = true
+                    }
                   }
                 }
               }
@@ -176,6 +179,7 @@ extension OnboardingHighlightView: View {
                     showMemo = true
                     showHighlightTip = false
                     showTooltip = false
+                    store.send(.memoButtonTapped)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                       showMemo = false
                       showMemoChip = true
@@ -183,9 +187,9 @@ extension OnboardingHighlightView: View {
                   })
                 }
               } else {
-                VStack(alignment: .trailing) {
+                VStack {
                   OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")
-                    .offset(y: -13)
+                    .offset(y: 6)
                   OnboardingHighlightTip(selectedColor: $highlightColor, onMemoTapped: {
                     showMemo = true
                     showHighlightTip = false
@@ -196,16 +200,17 @@ extension OnboardingHighlightView: View {
                       showMemoChip = true
                     }
                   })
+                  .offset(y: 18)
                 }
               }
             }
-            .background(GeometryReader {
-                Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
-            })
-            .onPreferenceChange(TooltipHeightPreferenceKey.self) {
-                highlightTipHeight = $0
-            }
-            .position(x: highlightRect.midX, y: highlightRect.minY - 84)
+//            .background(GeometryReader {
+//                Color.clear.preference(key: TooltipHeightPreferenceKey.self, value: $0.size.height)
+//            })
+//            .onPreferenceChange(TooltipHeightPreferenceKey.self) {
+//                highlightTipHeight = $0
+//            }
+            .position(x: highlightRect.midX, y: highlightRect.minY - 78)
             .transition(.opacity)
           }
         }
@@ -237,7 +242,7 @@ extension OnboardingHighlightView: View {
           tooltipText = "하이라이트 치고 싶은 부분을 \n’두 번’ 탭해요"
       }
     }
-    .onChange(of: store.showDimming) { showDimming in
+    .onChange(of: store.showDimming) { _, showDimming in
         withAnimation(.easeInOut(duration: 0.3)) {
             self.showDimmingWithAnimation = showDimming
         }
