@@ -19,7 +19,7 @@ struct LinkEditSheetView: View {
       }
       
       VStack(spacing: 24) {
-        ActionSheetButton(icon: Icon.move, title: "이동하기") {
+        ActionSheetButton(icon: Icon.moveThin, title: "이동하기") {
           store.send(.moveButtonTapped)
         }
         

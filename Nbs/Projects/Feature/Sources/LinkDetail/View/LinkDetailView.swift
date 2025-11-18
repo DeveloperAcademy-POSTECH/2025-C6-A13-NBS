@@ -29,11 +29,9 @@ extension LinkDetailView: View {
         ScrollView(.vertical, showsIndicators: false) {
           LazyVStack(spacing: 24) {
             articleContensts
-            LazyVStack(pinnedViews: [.sectionHeaders]) {
+            LazyVStack(spacing: .zero, pinnedViews: [.sectionHeaders]) {
               Section(header:  LinkDetailSegment(selectedTab: $selectedTab)) {
-                VStack {
-                  bottomContents
-                }
+                bottomContents
               }
             }
           }
@@ -55,7 +53,7 @@ extension LinkDetailView: View {
           .onTapGesture { showAlertDialog = false }
         
         AlertDialog(
-          title: "이 링크를 삭제하시겠어요?",
+          title: "해당 링크를 삭제할까요?",
           subtitle: "삭제한 링크는 복구할 수 없어요",
           cancelTitle: "취소",
           onCancel: { showAlertDialog = false },
@@ -76,7 +74,7 @@ extension LinkDetailView: View {
           )
           .zIndex(1)
           .padding(.horizontal, 20)
-          .padding(.bottom, 92)
+          .padding(.bottom, 12)
         }
       }
       .animation(.easeInOut, value: store.showToast)
@@ -242,16 +240,37 @@ extension LinkDetailView: View {
           SummaryView(link: store.link, store: store.scope(state: \.summary, action: \.summary))
         }
       case .memo:
-        AddMemoView(
-          text: Binding(
-            get: { store.editedMemo },
-            set: { store.send(.memoChanged($0)) }
-          ),
-          onFocusChanged: { hasFocus in
-            store.send(.memoFocusChanged(hasFocus))
-          }
-        )
-        .padding(20)
+        ZStack(alignment: .bottom) {
+          AddMemoView(
+            text: Binding(
+              get: { store.editedMemo },
+              set: { store.send(.memoChanged($0)) }
+            ),
+            onFocusChanged: { hasFocus in
+              store.send(.memoFocusChanged(hasFocus))
+            },
+            onDone: {
+              store.send(.memoFocusChanged(false))
+            }
+          )
+          .padding(20)
+          
+          Rectangle()
+          //            .foregroundStyle(.clear)
+            .fill(
+              LinearGradient(
+                stops: [
+                  Gradient.Stop(color: .bgButtonGrad1, location: 0.00),
+                  Gradient.Stop(color: .bgButtonGrad2, location: 0.16),
+                  Gradient.Stop(color: .bgButtonGrad3, location: 0.73),
+                  Gradient.Stop(color: .bgButtonGrad4, location: 1.00),
+                ],
+                startPoint: UnitPoint(x: 0.47, y: 1),
+                endPoint: UnitPoint(x: 0.47, y: 0.15)
+              )
+            )
+            .frame(height: 60)
+        }
       }
     }
   }

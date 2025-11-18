@@ -59,7 +59,7 @@ extension SettingView {
       
       tipGrid
     }
-    .padding(.bottom, 34)
+    .padding(.bottom, 24)
   }
   
   private var tipGrid: some View {
@@ -109,8 +109,10 @@ extension SettingView {
         .frame(height: 32)
       
       infoList
+        .padding(.bottom, 16)
+      teamInfo
     }
-    .padding(.top, 24)
+    .padding(.top, 12)
   }
   
   private var infoList: some View {
@@ -122,18 +124,53 @@ extension SettingView {
       )
       
       InfoListItem(
-        icon: Icon.shield, title: "개인정보 처리방침", trailing: .chevron) {
+        icon: Icon.shield, title: "개인정보 처리방침",
+        trailing: .chevron
+      ) {
         store.send(.privacyPolicyTapped)
       }
       
-      InfoListItem(icon: Icon.file, title: "서비스 이용약관", trailing: .chevron) {
+      InfoListItem(
+        icon: Icon.file, title: "서비스 이용약관",
+        trailing: .chevron
+      ) {
         store.send(.termsOfServiceTapped)
       }
       
-      InfoListItem(icon: Icon.opensource, title: "사용된 오픈 소스", trailing: .chevron) {
+      InfoListItem(
+        icon: Icon.opensource,
+        title: "사용된 오픈 소스",
+        trailing: .chevron
+      ) {
         store.send(.openSourceTapped)
       }
+      
+      InfoListItem(
+        icon: Icon.heart,
+        title: "탭탭 서비스 소개",
+        trailing: .chevron
+      ) {
+        store.send(.backButtonTapped)
+      }
     }
+  }
+  
+  private var teamInfo: some View {
+    VStack(alignment: .leading, spacing: .zero) {
+      Rectangle()
+        .fill(.divider1)
+        .frame(height: 1)
+        .padding(.bottom, 24)
+      
+      Group{
+        Text("Designed by 조혜준, 진서영.")
+        Text("Developed by 김윤홍, 여성일, 이승진.")
+        Text("Managed by 신지현.")
+      }
+      .font(.C2)
+      .foregroundStyle(.caption3)
+    }
+    .padding(.bottom, 68)
   }
 }
 

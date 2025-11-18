@@ -27,7 +27,7 @@ extension HighlightEditSheetView {
         switch store.context {
         case .comment:
           VStack(spacing: 8) {
-            ActionSheetButton(icon: Icon.edit, title: "수정하기") {
+            ActionSheetButton(icon: Icon.edit2, title: "수정하기") {
               store.send(.editButtonTapped)
             }
             .padding(.vertical, 8)
@@ -39,7 +39,7 @@ extension HighlightEditSheetView {
           .padding(.bottom, 12)
         case .highlight:
           VStack(spacing: 8) {
-            ActionSheetButton(icon: Icon.edit, title: "메모 추가하기") {
+            ActionSheetButton(icon: Icon.edit2, title: "메모 추가하기") {
               store.send(.editButtonTapped)
             }
             .padding(.vertical, 8)
@@ -54,7 +54,7 @@ extension HighlightEditSheetView {
       }
     }
     .fullScreenCover(isPresented: .constant(store.isShowDeleteModal)) {
-      ZStack {
+      ZStack(alignment: .center) {
         Color.dim.ignoresSafeArea()
         
         AlertDialog(

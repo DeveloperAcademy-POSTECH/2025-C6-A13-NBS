@@ -55,7 +55,14 @@ public extension AlertIconBanner {
     .padding(.horizontal, 16)
     .padding(.vertical, 18)
     .frame(maxWidth: .infinity, minHeight: 60)
-    .background(.alert)
+    .background(
+      ZStack {
+        Color.clear
+          .background(.ultraThinMaterial)
+        
+        Color.alert
+      }
+    )
     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
   }
 }
