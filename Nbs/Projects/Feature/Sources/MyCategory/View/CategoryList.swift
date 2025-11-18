@@ -16,7 +16,7 @@ struct CategoryListView {
 
 extension CategoryListView: View {
   var body: some View {
-    VStack(spacing: 10) {
+    VStack(spacing: 8) {
       ScrollViewHeader(
         headerTitle: .showCategory,
         buttonTitle: .showMore,
@@ -52,10 +52,4 @@ extension CategoryListView: View {
     }
     .onAppear { store.send(.onAppear) }
   }
-}
-
-#Preview {
-  CategoryListView(store: Store(initialState: CategoryListFeature.State()) {
-    CategoryListFeature()
-  })
 }

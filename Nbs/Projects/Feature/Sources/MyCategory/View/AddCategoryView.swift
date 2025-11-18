@@ -14,89 +14,81 @@ struct AddCategoryView {
     GridItem(.flexible(), spacing: 16)
   ]
 }
-  
+
 extension AddCategoryView: View {
   var body: some View {
     ZStack(alignment: .leading) {
-      VStack {
+      VStack(spacing: 8) {
         TopAppBarDefaultRightIconx(title: CategoryNamespace.newCategoryNavTitle) {
           store.send(.cancelButtonTapped)
         }
-        VStack {
-          VStack(alignment: .leading, spacing: 4) {
-            JNTextField(
-              text: $store.categoryName,
-              style: $store.textFieldStyle.sending(\.setTextFieldStyle),
-              placeholder: "카테고리명을 입력해주세요",
-              caption: "이미 존재하는 카테고리예요",
-              header: "카테고리명"
-            )
-            .focused($isFocused)
-            .toolbar {
-              ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("완료") {
-                  isFocused = false
-                }
+        
+        JNTextField(
+          text: $store.categoryName,
+          style: $store.textFieldStyle.sending(\.setTextFieldStyle),
+          placeholder: "카테고리명을 입력해주세요",
+          caption: "이미 존재하는 카테고리예요",
+          header: "카테고리명"
+        )
+        .focused($isFocused)
+        
+        Text(CategoryNamespace.categoryIcon)
+          .font(.B2_SB)
+          .foregroundStyle(.caption1)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .padding(.leading, 24)
+          .padding(.top)
+        
+        //TODO: 컴포넌트 대체하기
+        ScrollView {
+          LazyVGrid(columns: columns, spacing: 16) {
+            ForEach(1..<16, id: \.self) { index in
+              let isSelected = store.selectedIcon.number == index
+              Button {
+                store.selectedIcon = .init(number: index)
+              } label: {
+                RoundedRectangle(cornerRadius: 12)
+                  .fill(
+                    isSelected
+                    ? DesignSystemAsset.bl1.swiftUIColor
+                    : DesignSystemAsset.n0.swiftUIColor
+                  )
+                  .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                      .strokeBorder(
+                        isSelected
+                        ? DesignSystemAsset.bl6.swiftUIColor
+                        : Color.clear,
+                        lineWidth: 1.25
+                      )
+                  )
+                  .aspectRatio(1, contentMode: .fit)
+                  .overlay(
+                    DesignSystemAsset.primaryCategoryIcon(number: index)
+                      .resizable()
+                      .frame(width: 56, height: 56)
+                  )
+                  .animation(.easeInOut(duration: 0.2), value: isSelected)
               }
+              .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
+              .buttonStyle(.plain)
+              .disabled(isFocused)
             }
           }
-          
-          Text(CategoryNamespace.categoryIcon)
-            .font(.B2_SB)
-            .foregroundStyle(.caption1)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, 24)
-            .padding(.top, 24)
-          
-          //TODO: 컴포넌트 대체하기
-          ScrollView {
-            LazyVGrid(columns: columns, spacing: 16) {
-              ForEach(1..<16, id: \.self) { index in
-                let isSelected = store.selectedIcon.number == index
-                Button {
-                  store.selectedIcon = .init(number: index)
-                } label: {
-                  RoundedRectangle(cornerRadius: 12)
-                    .fill(
-                      isSelected
-                      ? DesignSystemAsset.bl1.swiftUIColor
-                      : DesignSystemAsset.n0.swiftUIColor
-                    )
-                    .overlay(
-                      RoundedRectangle(cornerRadius: 12)
-                        .strokeBorder(
-                          isSelected
-                          ? DesignSystemAsset.bl6.swiftUIColor
-                          : Color.clear,
-                          lineWidth: 1.25
-                        )
-                    )
-                    .aspectRatio(1, contentMode: .fit)
-                    .overlay(
-                      DesignSystemAsset.primaryCategoryIcon(number: index)
-                        .resizable()
-                        .frame(width: 56, height: 56)
-                    )
-                }
-                .shadow(color: .bgShadow3, radius: 4, x: 0, y: 0)
-                .buttonStyle(.plain)
-                .disabled(isFocused)
-              }
-            }
-            .padding(.horizontal, 20)
-          }
-          .scrollDisabled(isFocused)
-          .scrollIndicators(.hidden)
-          .padding(.top, 4)
-          MainButton(
-            CategoryNamespace.addCategory,
-            isDisabled: store.categoryName.isEmpty,
-            hasGradient: true
-          ) {
-            store.send(.saveButtonTapped)
-          }
+          .padding(.horizontal, 20)
+          .padding(.bottom, 32)
         }
+        .scrollDisabled(isFocused)
+        .scrollIndicators(.hidden)
+        
+        MainButton(
+          CategoryNamespace.addCategory,
+          isDisabled: store.categoryName.isEmpty,
+          hasGradient: true
+        ) {
+          store.send(.saveButtonTapped)
+        }
+        .padding(.bottom, 8)
       }
       .contentShape(Rectangle())
       .onTapGesture {

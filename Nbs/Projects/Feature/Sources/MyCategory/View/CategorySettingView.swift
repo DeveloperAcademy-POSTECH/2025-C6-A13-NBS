@@ -27,8 +27,7 @@ struct BottomSheetContainerView<Content: View>: View {
   
   var body: some View {
     ZStack {
-      Color.black
-        .opacity(0.3)
+      Color.dim
         .ignoresSafeArea(.all)
         .onTapGesture {
           dismiss()
@@ -68,7 +67,7 @@ struct CategorySettingView {
 
 extension CategorySettingView: View {
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       HStack {
         Color.clear
           .frame(width: 44, height: 44)
@@ -90,9 +89,11 @@ extension CategorySettingView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .padding(.trailing, 2)
       }
       .frame(height: 48)
       .padding(.top, 8)
+      .padding(.bottom, 8)
       
       Button {
         store.send(.editButtonTapped)
@@ -110,10 +111,12 @@ extension CategorySettingView: View {
             .foregroundStyle(.text1)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(height: 40)
         .buttonStyle(.plain)
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.leading)
+      .padding(.bottom, 4)
       
       Button {
         store.send(.addButtonTapped)
@@ -131,9 +134,11 @@ extension CategorySettingView: View {
             .foregroundStyle(.text1)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(height: 40)
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.leading)
+      .padding(.vertical, 4)
 
       Button {
         store.send(.deleteButtonTapped)
@@ -151,10 +156,12 @@ extension CategorySettingView: View {
             .foregroundStyle(.danger)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(height: 40)
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(.leading)
-      .padding(.bottom, 44)
+      .padding(.vertical, 4)
+      .padding(.bottom, 40)
     }
   }
 }

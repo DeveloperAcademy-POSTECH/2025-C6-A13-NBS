@@ -20,6 +20,8 @@ extension MemoChipView: View {
       HStack {
         Text("하이라이트 문장을...")
           .lineLimit(1)
+          .font(.B2_M)
+          .foregroundStyle(strokeColor)
         Spacer()
         DesignSystemAsset.x.swiftUIImage
           .resizable()
@@ -56,11 +58,7 @@ extension MemoChipView {
     case .chipPink:
       return .chipPinkLine
     default:
-      return .white
+      return .chipPinkLine
     }
   }
 }
-
-#Preview(body: {
-  MemoChipView(selectedColor: .constant(.chipBlue))
-})

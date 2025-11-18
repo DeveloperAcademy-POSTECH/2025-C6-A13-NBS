@@ -28,7 +28,9 @@ let appTarget = Target.target(
       "UIBackgroundModes": [
         "audio"
       ],
-      
+      "UISupportedInterfaceOrientations": [
+        "UIInterfaceOrientationPortrait"
+      ],
       "CFBundleURLTypes": [
         [
           "CFBundleURLSchemes": ["nbs"]

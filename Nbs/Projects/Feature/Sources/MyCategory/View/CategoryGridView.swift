@@ -67,6 +67,7 @@ extension CategoryGridView: View {
           }
         }
         .padding(.horizontal, 20)
+        .padding(.bottom, 32)
         .onAppear {
           viewStore.send(.onAppear)
         }

@@ -59,10 +59,8 @@ extension OnboardingHighlightTip: View {
             Capsule()
               .fill(Color.chipMemo)
               .overlay(
-                Capsule().strokeBorder(
-                  .stateDefaultLine,
-                  lineWidth: 2
-                )
+                Capsule()
+                  .strokeBorder(.stateDefaultLine, lineWidth: 2)
               )
             DesignSystemAsset.memo.swiftUIImage
               .resizable()
@@ -76,12 +74,16 @@ extension OnboardingHighlightTip: View {
       .padding(.all, 4)
       .background(.stateTooltipbackground)
       .clipShape(RoundedRectangle(cornerRadius: 30))
+      .shadow(color: Color.bgShadow4, radius: 3, x: 0, y: 2)
+      .shadow(color: Color.bgShadow5, radius: 10, x: 0, y: 0)
       Triangle()
         .fill(.stateTooltipbackground)
         .frame(width: 16, height: 10)
+        .shadow(color: Color.bgShadow4, radius: 8, x: 0, y: 6)
+        .shadow(color: Color.bgShadow5, radius: 4, x: 0, y: 6)
     }
-    .shadow(color: Color(red: 0.22, green: 0.2, blue: 0.37).opacity(0.07), radius: 3, x: 0, y: 2)
-    .shadow(color: Color(red: 0.32, green: 0.32, blue: 0.43).opacity(0.25), radius: 10, x: 0, y: 0)
+//    .shadow(color: Color.bgShadow4, radius: 3, x: 0, y: 2)
+//    .shadow(color: Color.bgShadow5, radius: 10, x: 0, y: 0)
   }
 }
 
@@ -96,11 +98,26 @@ extension OnboardingHighlightTip: View {
 }
 
 fileprivate struct Triangle: Shape {
+  var cornerRadius: CGFloat = 2
+  
   func path(in rect: CGRect) -> Path {
     var path = Path()
-    path.move(to: CGPoint(x: rect.midX, y: rect.maxY))
-    path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
-    path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+    
+    let top = CGPoint(x: rect.midX, y: rect.maxY)
+    let bottomLeft = CGPoint(x: rect.minX, y: rect.minY)
+    let bottomRight = CGPoint(x: rect.maxX, y: rect.minY)
+    
+    path.move(to: bottomLeft)
+    
+    path.addArc(
+      tangent1End: top,
+      tangent2End: bottomRight,
+      radius: cornerRadius
+    )
+    
+    path.addLine(to: bottomRight)
+    path.addLine(to: bottomLeft)
+    
     path.closeSubpath()
     return path
   }

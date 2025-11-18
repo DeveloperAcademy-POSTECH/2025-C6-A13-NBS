@@ -22,7 +22,7 @@ extension OnboardingSafariShare: View {
         VStack(spacing: 0) {
           Group {
             Text("하이라이트와 메모가")
-              .padding(.top)
+              .padding(.top, 24)
             Text("모두 저장돼요")
           }
           .font(.B2_M)
@@ -30,7 +30,7 @@ extension OnboardingSafariShare: View {
           
           DesignSystemAsset.safariShareLight.swiftUIImage
             .resizable()
-            .scaledToFit()
+            .frame(width: 132, height: 200)
             .padding(.horizontal)
             .padding(.vertical)
         }
@@ -46,7 +46,7 @@ extension OnboardingSafariShare: View {
         VStack(spacing: 0) {
           Group {
             Text("하이라이트와 메모 없이")
-              .padding(.top)
+              .padding(.top, 24)
             Text("링크 주소만 저장돼요")
           }
           .font(.B2_M)
@@ -54,14 +54,13 @@ extension OnboardingSafariShare: View {
           
           DesignSystemAsset.safariShare.swiftUIImage
             .resizable()
-            .scaledToFit()
+            .frame(width: 132, height: 200)
             .padding(.horizontal)
             .padding(.vertical)
         }
         .background(Color.c14)
         .clipShape(RoundedRectangle(cornerRadius: 16))
       }
-
     }
   }
 }

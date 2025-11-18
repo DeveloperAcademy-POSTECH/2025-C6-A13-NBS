@@ -51,7 +51,7 @@ extension CategoryChipButton: View {
           .frame(minHeight: 36)
       }
       .padding(.leading)
-      .padding(.vertical, 12)
+      .padding(.vertical, 14)
       .padding(.trailing, 20)
       .background(
         RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -61,6 +61,7 @@ extension CategoryChipButton: View {
       .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
     .buttonStyle(.plain)
+    .frame(height: 56)
   }
 }
 
