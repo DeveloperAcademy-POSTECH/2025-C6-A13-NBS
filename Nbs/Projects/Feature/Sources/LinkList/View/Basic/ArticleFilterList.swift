@@ -27,7 +27,7 @@ extension ArticleFilterList: View {
         articleList
       }
       .padding(.horizontal, 20)
-      .padding(.bottom, 100)
+      .padding(.bottom, 66)
     }
   }
   
@@ -50,7 +50,7 @@ extension ArticleFilterList: View {
       
       buttonContents
     }
-    .padding(.horizontal, 4)
+    .padding(.leading, 4)
   }
   
   private var buttonContents: some View {
@@ -63,7 +63,9 @@ extension ArticleFilterList: View {
           .foregroundStyle(
             store.sortOrder == .oldest ? .caption1 : .caption2
           )
+          .padding(.horizontal, 4)
       }
+      .frame(height: 32)
       
       Rectangle()
         .fill(.divider2)
@@ -77,7 +79,9 @@ extension ArticleFilterList: View {
           .foregroundStyle(
             store.sortOrder == .latest ? .caption1 : .caption2
           )
+          .padding(.horizontal, 4)
       }
+      .frame(height: 32)
     }
   }
   
@@ -86,6 +90,7 @@ extension ArticleFilterList: View {
     if store.link.isEmpty {
       EmptyLinkView()
         .padding(.top, 120)
+
     } else {
       ForEach(store.link) { article in
         ArticleRowView(article: article, store: store)

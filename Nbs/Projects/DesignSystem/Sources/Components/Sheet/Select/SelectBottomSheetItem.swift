@@ -56,6 +56,7 @@ extension SelectBottomSheetItem {
       .padding(.vertical, 4)
     }
     .buttonStyle(.plain)
+    .background(.clear)
   }
 }
 

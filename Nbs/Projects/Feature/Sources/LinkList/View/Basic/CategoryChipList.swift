@@ -53,7 +53,7 @@ extension CategoryChipList: View {
             .id(category.categoryName)
           }
           Color.clear
-            .frame(width: 60)
+            .frame(width: 56)
             .id("endPadding")
         }
         .frame(minHeight: 36)
@@ -90,7 +90,7 @@ extension CategoryChipList: View {
   
   /// 바텀시트 버튼
   private var bottomSheetButton: some View {
-    ZStack {
+    ZStack(alignment: .trailing) {
       HStack(spacing: .zero) {
         Rectangle()
           .fill(
@@ -105,11 +105,11 @@ extension CategoryChipList: View {
               endPoint: UnitPoint(x: 0, y: 0.5)
             )
           )
-          .frame(width: 27, height: 36)
+          .frame(width: 28, height: 36)
         
         Rectangle()
           .fill(Color.background)
-          .frame(width: 49, height: 36)
+          .frame(width: 44, height: 36)
       }
       
       Button {
@@ -122,6 +122,7 @@ extension CategoryChipList: View {
           .foregroundStyle(.iconDisabled)
       }
       .buttonStyle(.plain)
+      .padding(.trailing, 18)
     }
   }
 }

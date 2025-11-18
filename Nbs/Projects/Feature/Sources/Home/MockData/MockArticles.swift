@@ -20,7 +20,7 @@ struct MockArticle: ArticleDisplayable, Identifiable, Equatable {
 //    let formatter = DateFormatter()
 //    formatter.dateFormat = "yyyy년 M월 d일"
 //    return formatter.string(from: createAt)
-    return dateToString
+    return ""
   }
   
   static let mockArticles: [MockArticle] = [

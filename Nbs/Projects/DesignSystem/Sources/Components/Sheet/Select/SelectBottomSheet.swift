@@ -79,6 +79,10 @@ extension SelectBottomSheet {
                 action: { categoryButtonTapped(item.title) }
               )
             }
+            
+            Rectangle()
+              .fill(.clear)
+              .frame(height: 12)
           }
         }
         .padding(.horizontal, 20)
@@ -88,6 +92,7 @@ extension SelectBottomSheet {
           hasGradient: true,
           action: { selectButtonTapped() }
         )
+        .padding(.bottom, 8)
       }
       .padding(.top, 8)
     }

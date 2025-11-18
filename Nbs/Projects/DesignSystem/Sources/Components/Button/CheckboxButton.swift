@@ -89,7 +89,7 @@ public extension CheckboxButton {
       }
       .contentShape(Circle())
     }
-    .frame(width: 24, height: 24)
+    .frame(width: 24, height: 24) // 20 size로 하나더 만들기
     .buttonStyle(.plain)
   }
 }

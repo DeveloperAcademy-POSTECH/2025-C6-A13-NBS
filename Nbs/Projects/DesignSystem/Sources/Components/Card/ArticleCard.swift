@@ -131,9 +131,11 @@ private extension ArticleCard {
       case .failure:
         DesignSystemAsset.notImage.swiftUIImage
           .resizable()
-          .scaledToFit()
+          .aspectRatio(contentMode: .fill)
           .frame(width: 84, height: 112)
           .foregroundColor(.gray)
+          .clipped()
+          .clipShape(RoundedRectangle(cornerRadius: 6))
       @unknown default:
         EmptyView()
       }
