@@ -186,6 +186,7 @@ extension OnboardingHighlightView: View {
                     }
                   })
                 }
+                .offset(y: -20)
               } else {
                 VStack {
                   OnboardingToolTipBoxBottomTrailing(text: "메모를 탭 해 메모를 남겨보아요")

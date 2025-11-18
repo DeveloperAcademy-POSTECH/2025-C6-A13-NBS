@@ -33,6 +33,7 @@ extension OnboardingSafariSaveView: View {
             .font(.B1_M)
             .foregroundStyle(.caption1)
             .multilineTextAlignment(.center)
+            .padding(.top, 28)
           
           ZStack {
             ZStack(alignment: .center) {
