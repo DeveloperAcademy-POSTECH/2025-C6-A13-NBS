@@ -23,13 +23,13 @@ extension SearchView {
   var body: some View {
     ZStack(alignment: .topLeading) {
       Color.background.ignoresSafeArea()
-      VStack(alignment: .leading) {
+      VStack(alignment: .leading, spacing: .zero) {
         TopAppBarSearchView(
           store: store.scope(state: \.topAppBar, action: \.topAppBar)
         )
         
         ScrollView(.vertical, showsIndicators: false) {
-          VStack(alignment: .leading) {
+          VStack(alignment: .leading, spacing: .zero) {
             if store.topAppBar.searchText.isEmpty {
               let recentSearchesExist = !store.recentSearch.searches.isEmpty
               let recentLinksExist = !store.recentLink.recentLinkItem.isEmpty
@@ -46,7 +46,8 @@ extension SearchView {
                     .frame(height: 1)
                     .foregroundStyle(.divider1)
                     .padding(.horizontal, 20)
-                    .padding(.vertical, 8)
+                    .padding(.top, 20)
+                    .padding(.bottom, 12)
                 }
                 
                 if recentLinksExist {

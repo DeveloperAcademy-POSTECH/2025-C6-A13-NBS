@@ -8,6 +8,7 @@
 import SwiftUI
 
 import ComposableArchitecture
+import DesignSystem
 
 //MARK: - Properties
 struct RecentSearchListView: View {
@@ -17,7 +18,7 @@ struct RecentSearchListView: View {
 //MARK: - View
 extension RecentSearchListView {
   var body: some View {
-    VStack(spacing: 16) {
+    VStack(spacing: .zero) {
       HStack {
         Text("최근 검색어")
           .font(.B2_SB)
@@ -26,13 +27,15 @@ extension RecentSearchListView {
         Button {
           store.send(.clear)
         } label: {
-          Text("전체삭제")
+          Text("전체 삭제")
             .font(.B2_M)
             .foregroundStyle(.caption2)
         }
         .buttonStyle(.plain)
+        .frame(width: 62, height: 32)
       }
-      .padding(.horizontal, 20)
+      .padding(.horizontal, 24)
+      .padding(.bottom, 16)
       
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 6) {
@@ -44,14 +47,14 @@ extension RecentSearchListView {
             )
           }
         }
-        .padding(.leading, 20)
+        .padding(.horizontal, 20)
       }
       .frame(height: 40)
     }
     .onAppear {
       store.send(.onAppear)
     }
-    .padding(.vertical, 8)
+    .padding(.top, 8)
     .background(Color.background)
   }
 }

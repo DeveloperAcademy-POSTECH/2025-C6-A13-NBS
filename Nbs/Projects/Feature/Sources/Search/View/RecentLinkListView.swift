@@ -24,9 +24,10 @@ extension RecentLinkListView {
       Text("최근 본 링크")
         .font(.B2_SB)
         .foregroundStyle(.caption2)
+        .padding(.horizontal, 4)
       
       ScrollView(.vertical, showsIndicators: false) {
-        LazyVStack {
+        LazyVStack(spacing: 10) {
           ForEach(store.recentLinkItem) { item in
             Button {
               store.send(.recentLinkTapped(item))

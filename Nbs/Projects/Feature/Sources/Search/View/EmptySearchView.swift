@@ -32,11 +32,12 @@ struct EmptySearchView: View {
 extension EmptySearchView {
   var body: some View {
     HStack(alignment: .center) {
-      VStack(alignment: .center) {
+      VStack(alignment: .center, spacing: .zero) {
         DesignSystemAsset.emptySearchImage.swiftUIImage
           .frame(width: 120, height: 120)
           .padding(.top, 60)
           .padding(.bottom, 20)
+        
         Text(title)
           .font(.B1_M)
           .multilineTextAlignment(.center)

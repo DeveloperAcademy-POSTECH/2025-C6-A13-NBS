@@ -31,7 +31,7 @@ extension RecentSearchChipButton {
         Button {
           deleteAction()
         } label: {
-          Image(icon: Icon.x)
+          DesignSystemAsset.xThin.swiftUIImage
             .renderingMode(.template)
             .foregroundStyle(.iconDisabled)
         }
