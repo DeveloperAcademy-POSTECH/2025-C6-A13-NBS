@@ -24,7 +24,7 @@ extension SummaryView {
       ForEach(groupedHighlights.keys.sorted(by: sortOrder), id: \.self) { key in
         if let items = groupedHighlights[key],
            let displayType = displayType(forModelKey: key) {
-          VStack(alignment: .leading, spacing: 24) {
+          VStack(alignment: .leading, spacing: 16) {
             SummaryTypeItem(type: displayType)
             
             // 같은 모델 타입에 묶인 하이라이트들
@@ -36,7 +36,8 @@ extension SummaryView {
       }
     }
     .padding(.horizontal, 20)
-    .padding(.vertical, 24)
+    .padding(.top, 24)
+    .padding(.bottom, 16)
     .background(Color.background)
     .sheet(item: $store.scope(state: \.hightlightEditSheet, action: \.hightlightEditSheet)) { store in
       HighlightEditSheetView(
@@ -51,7 +52,7 @@ extension SummaryView {
   
   /// 하이라이트 섹션
   private func highlightContents(for item: HighlightItem, type: SummaryTypeItem.SummaryType) -> some View {
-    VStack(alignment: .leading, spacing: 16) {
+    VStack(alignment: .leading, spacing: .zero) {
       // 문장 (하이라이팅)
       Text(item.sentence)
         .font(.B1_M_HL)
@@ -67,7 +68,7 @@ extension SummaryView {
         }
       
       // 코멘트 리스트
-      VStack(alignment: .leading, spacing: 8) {
+      VStack(alignment: .leading, spacing: .zero) {
         if !item.comments.isEmpty {
           ForEach(item.comments, id: \.id) { comment in
             if store.editingCommentId == comment.id {
@@ -90,22 +91,29 @@ extension SummaryView {
                   }
                 }
             } else {
-              Text("\(comment.text)")
-                .font(.B3_R_HLM)
-                .foregroundStyle(.text1)
-                .padding(16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(.n20)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .onLongPressGesture(minimumDuration: 0.5) {
-                  let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
-                  impactFeedback.impactOccurred()
-                  store.send(.commentLongpress(comment))
-                }
+              VStack(spacing: .zero) {
+                Text("\(comment.text)")
+                  .font(.B3_R_HLM)
+                  .foregroundStyle(.text1)
+                  .padding(16)
+                  .frame(maxWidth: .infinity, alignment: .leading)
+                  .background(.n20)
+                  .clipShape(RoundedRectangle(cornerRadius: 12))
+                  .onLongPressGesture(minimumDuration: 0.5) {
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
+                    impactFeedback.impactOccurred()
+                    store.send(.commentLongpress(comment))
+                  }
+                  .padding(.vertical, 16)
+                
+                Rectangle()
+                  .fill(.divider1)
+                  .frame(height: 1)
+              }
             }
           }
         }
-      
+        
         if store.addingCommentToHighlightId == item.id {
           TextEditor(text: $store.newCommentText.sending(\.newCommentTextChanged))
             .font(.B3_R_HLM)
@@ -127,10 +135,6 @@ extension SummaryView {
             }
         }
       }
-      
-      Rectangle()
-        .fill(.divider1)
-        .frame(height: 1)
     }
   }
   

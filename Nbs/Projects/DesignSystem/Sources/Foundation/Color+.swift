@@ -108,6 +108,7 @@ public extension ShapeStyle where Self == Color {
   static var bl8:  Color { DesignSystemAsset.bl8.swiftUIColor }
   static var bl9:  Color { DesignSystemAsset.bl9.swiftUIColor }
   static var bl10: Color { DesignSystemAsset.bl10.swiftUIColor }
+  static var badgeColor: Color { DesignSystemAsset.badgeColor.swiftUIColor}
   
   static var c1:  Color { DesignSystemAsset.c1.swiftUIColor }
   static var c2:  Color { DesignSystemAsset.c2.swiftUIColor }

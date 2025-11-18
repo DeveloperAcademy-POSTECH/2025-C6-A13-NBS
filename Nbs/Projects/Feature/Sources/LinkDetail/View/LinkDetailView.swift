@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 import ComposableArchitecture
 import DesignSystem
 import Domain
@@ -28,7 +29,11 @@ extension LinkDetailView: View {
         ScrollView(.vertical, showsIndicators: false) {
           LazyVStack(spacing: 24) {
             articleContensts
-            bottomContents
+            LazyVStack(spacing: .zero, pinnedViews: [.sectionHeaders]) {
+              Section(header:  LinkDetailSegment(selectedTab: $selectedTab)) {
+                bottomContents
+              }
+            }
           }
         }
         .scrollIndicators(.hidden)
@@ -41,13 +46,14 @@ extension LinkDetailView: View {
       .onChange(of: store.isDeleted) { _, deleted in
         if deleted { dismiss() }
       }
+      
       if showAlertDialog {
         Color.dim
           .ignoresSafeArea()
           .onTapGesture { showAlertDialog = false }
         
         AlertDialog(
-          title: "이 링크를 삭제하시겠어요?",
+          title: "해당 링크를 삭제할까요?",
           subtitle: "삭제한 링크는 복구할 수 없어요",
           cancelTitle: "취소",
           onCancel: { showAlertDialog = false },
@@ -64,11 +70,11 @@ extension LinkDetailView: View {
           AlertIconBanner(
             icon: Image(icon: Icon.badgeCheck),
             title: "링크를 수정했어요",
-            iconColor: .bl3
+            iconColor: .badgeColor
           )
           .zIndex(1)
           .padding(.horizontal, 20)
-          .padding(.bottom, 92)
+          .padding(.bottom, 12)
         }
       }
       .animation(.easeInOut, value: store.showToast)
@@ -192,6 +198,7 @@ extension LinkDetailView: View {
     .buttonStyle(.plain)
   }
   
+  /// 기사 이미지
   private var articleImage: some View {
     AsyncImage(url: URL(string: store.link.imageURL ?? "")) { phase in
       switch phase {
@@ -210,21 +217,20 @@ extension LinkDetailView: View {
       case .failure:
         DesignSystemAsset.notImage.swiftUIImage
           .resizable()
-          .scaledToFit()
+          .aspectRatio(contentMode: .fill)
           .frame(width: 48, height: 48)
-          .cornerRadius(8)
           .foregroundColor(.gray)
+          .clipped()
+          .clipShape(RoundedRectangle(cornerRadius: 6))
       @unknown default:
         EmptyView()
       }
     }
   }
   
+  /// 하이라이트 + 추가메모
   private var bottomContents: some View {
     VStack {
-      LinkDetailSegment(selectedTab: $selectedTab)
-        .frame(height: 45)
-      
       switch selectedTab {
       case .summary:
         if store.link.highlights.isEmpty {
@@ -234,16 +240,37 @@ extension LinkDetailView: View {
           SummaryView(link: store.link, store: store.scope(state: \.summary, action: \.summary))
         }
       case .memo:
-        AddMemoView(
-          text: Binding(
-            get: { store.editedMemo },
-            set: { store.send(.memoChanged($0)) }
-          ),
-          onFocusChanged: { hasFocus in
-            store.send(.memoFocusChanged(hasFocus))
-          }
-        )
-        .padding(20)
+        ZStack(alignment: .bottom) {
+          AddMemoView(
+            text: Binding(
+              get: { store.editedMemo },
+              set: { store.send(.memoChanged($0)) }
+            ),
+            onFocusChanged: { hasFocus in
+              store.send(.memoFocusChanged(hasFocus))
+            },
+            onDone: {
+              store.send(.memoFocusChanged(false))
+            }
+          )
+          .padding(20)
+          
+          Rectangle()
+          //            .foregroundStyle(.clear)
+            .fill(
+              LinearGradient(
+                stops: [
+                  Gradient.Stop(color: .bgButtonGrad1, location: 0.00),
+                  Gradient.Stop(color: .bgButtonGrad2, location: 0.16),
+                  Gradient.Stop(color: .bgButtonGrad3, location: 0.73),
+                  Gradient.Stop(color: .bgButtonGrad4, location: 1.00),
+                ],
+                startPoint: UnitPoint(x: 0.47, y: 1),
+                endPoint: UnitPoint(x: 0.47, y: 0.15)
+              )
+            )
+            .frame(height: 60)
+        }
       }
     }
   }

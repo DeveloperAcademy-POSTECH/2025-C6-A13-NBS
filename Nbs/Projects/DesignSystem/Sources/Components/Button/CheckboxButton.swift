@@ -77,18 +77,19 @@ public extension CheckboxButton {
           .fill(fillColor)
           .overlay(
             Circle()
-              .stroke(borderColor, lineWidth: 1.5)
+              .strokeBorder(borderColor, lineWidth: 1.5)
           )
+        
         Image(icon: Icon.check)
           .renderingMode(.template)
           .resizable()
           .scaledToFit()
-          .frame(width: 12, height: 12)
+          .frame(width: 18, height: 18)
           .foregroundStyle(checkmarkColor)
       }
       .contentShape(Circle())
     }
-    .frame(width: 24, height: 24)
+    .frame(width: 24, height: 24) // 20 size로 하나더 만들기
     .buttonStyle(.plain)
   }
 }

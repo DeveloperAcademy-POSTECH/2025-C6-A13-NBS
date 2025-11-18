@@ -25,7 +25,8 @@ extension SearchResultView {
           .font(.B2_M)
           .foregroundStyle(.caption2)
           .lineLimit(1)
-          .padding(.vertical, 6)
+          .frame(height: 32)
+          .padding(.horizontal, 4)
         
         Spacer()
         
@@ -33,14 +34,14 @@ extension SearchResultView {
           Button {
             store.send(.categoryButtonTapped)
           } label: {
-            HStack(spacing: 6) {
+            HStack(spacing: 8) {
               Text(store.selectedCategoryTitle.truncatedString(count: 5))
                 .padding(.leading, 18)
                 .foregroundStyle(.caption1)
                 .font(.B2_M)
               Image(icon: Icon.smallChevronDown)
                 .frame(width: 20, height: 20)
-                .padding(.trailing, 12)
+                .padding(.trailing, 8)
             }
             .padding(.vertical, 6)
             .clipShape(.capsule)
@@ -52,20 +53,21 @@ extension SearchResultView {
           .buttonStyle(.plain)
         }
       }
+      .padding(.top, 8)
       
       if !store.searchResult.isEmpty {
         ScrollView(.vertical, showsIndicators: false) {
-          LazyVStack {
+          LazyVStack(spacing: 10) {
             ForEach(store.filteredSearchResult) { result in
               Button {
                 store.send(.linkCardTapped(result))
               } label: {
                 ArticleCard(
                   title: result.title,
-                  categoryName: result.category?.categoryName ?? "카테고리 없음",
+                  categoryName: result.category?.categoryName ?? "전체",
                   imageURL: result.imageURL ?? "notImage",
                   dateString: result.createAt.formattedKoreanDate(),
-                  newsCompany: result.newsCompany ?? "언론사 없음"
+                  newsCompany: result.newsCompany ?? ""
                 )
               }
               .buttonStyle(.plain)

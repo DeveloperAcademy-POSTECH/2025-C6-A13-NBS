@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 import ComposableArchitecture
 import Domain
 import DesignSystem
@@ -34,12 +35,12 @@ extension MoveLinkView {
             targetID: "moveTop"
           )
           .zIndex(1)
-          .padding(.bottom, 50)
+          .padding(.bottom, 72)
         }
         .onPreferenceChange(MoveScrollOffsetKey.self) { offsetY in
           withAnimation(.easeInOut(duration: 0.2)) {
-            showScrollToTopButton = offsetY < -50
-//            showScrollToTopButton = true
+//            showScrollToTopButton = offsetY < -50
+            showScrollToTopButton = true
           }
         }
         .sheet(item: $store.scope(state: \.selectBottomSheet, action: \.selectBottomSheet)
@@ -65,7 +66,7 @@ extension MoveLinkView {
   
   private var middleContents: some View {
     ScrollView(.vertical, showsIndicators: false) {
-      VStack {
+      VStack(spacing: 0) {
         Color.clear
           .frame(height: 0)
           .id("moveTop")
@@ -88,25 +89,25 @@ extension MoveLinkView {
   
   /// 링크 개수 + 선택
   private var linkSelectView: some View {
-    HStack(spacing: 4) {
-      CheckboxButton(isOn: $store.isSelectAll, style: .clear)
+    HStack(spacing: 10) {
+      Text("\(store.categoryName) (\(store.allLinks.count)개)")
+        .font(.B2_M)
+        .foregroundStyle(.caption3)
+      
+      Spacer()
       
       Text("모두 선택")
         .font(.B2_SB)
         .foregroundStyle(.caption1)
       
-      Spacer()
-      
-      Text("\(store.categoryName) (\(store.allLinks.count)개)")
-        .font(.B2_M)
-        .foregroundStyle(.caption3)
+      CheckboxButton(isOn: $store.isSelectAll, style: .clear)
     }
-    .padding(EdgeInsets(top: 8, leading: 20, bottom: 12, trailing: 20))
+    .padding(EdgeInsets(top: 8, leading: 24, bottom: 12, trailing: 24))
   }
   
   /// 아티클카드
   private var articleListView: some View {
-    LazyVStack(spacing: 12) {
+    LazyVStack(spacing: 10) {
       ForEach(store.allLinks) { link in
         let binding = Binding<Bool>(
           get: { store.selectedLinks.contains(link.id) },
@@ -115,10 +116,10 @@ extension MoveLinkView {
         
         ArticleCard(
           title: link.title,
-          categoryName: link.category?.categoryName ?? "카테고리 없음",
+          categoryName: link.category?.categoryName ?? "전체",
           imageURL: link.imageURL ?? "notImage",
           dateString: link.createAt.formattedKoreanDate(),
-          newsCompany: link.newsCompany ?? "언론사 없음",
+          newsCompany: link.newsCompany ?? "",
           isSelected: binding,
           editMode: .active
         )
@@ -133,7 +134,7 @@ extension MoveLinkView {
     .padding(.bottom, 100)
   }
   
-  /// 취소 + 이동하기 버튼 모음
+  /// 이동하기 버튼 모음
   private var bottomContents: some View {
     MainButton(
       "\(store.selectedLinks.isEmpty ? "" : "\(store.selectedLinks.count)개 ")이동하기",
@@ -143,6 +144,7 @@ extension MoveLinkView {
     ) {
       store.send(.confirmMoveTapped)
     }
+    .padding(.bottom, 8)
   }
 }
 

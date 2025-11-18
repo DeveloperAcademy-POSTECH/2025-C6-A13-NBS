@@ -50,12 +50,12 @@ extension ArticleCard {
       rightContents
     }
     .frame(maxWidth: .infinity)
-    .frame(maxHeight: 132)
+    .frame(height: 132)
     .overlay(overlayLayer)
     .background(.n0)
+    .clipShape(RoundedRectangle(cornerRadius: 12))
     .shadow(color: .bgShadow1, radius: 3, x: 0, y: 2)
     .shadow(color: .bgShadow2, radius: 2, x: 0, y: 2)
-    .clipShape(RoundedRectangle(cornerRadius: 12))
     .animation(.easeInOut(duration: 0.2), value: editMode)
     .animation(.easeInOut(duration: 0.15), value: isSelected)
   }
@@ -72,13 +72,15 @@ extension ArticleCard {
         .padding(.top, 10)
       
       HStack(spacing: 0) {
-        Text("\(dateString)  ·  ")
+        Text("\(dateString)")
           .font(.B2_M)
           .foregroundStyle(.caption2)
         
-        Text(newsCompany ?? "NBS")
-          .font(.B2_M)
-          .foregroundStyle(.caption2)
+        if let company = newsCompany, !company.isEmpty {
+          Text("  ·  \(company)")
+            .font(.B2_M)
+            .foregroundStyle(.caption2)
+        }
       }
       .padding(.leading, 2)
       
@@ -129,9 +131,11 @@ private extension ArticleCard {
       case .failure:
         DesignSystemAsset.notImage.swiftUIImage
           .resizable()
-          .scaledToFit()
+          .aspectRatio(contentMode: .fill)
           .frame(width: 84, height: 112)
           .foregroundColor(.gray)
+          .clipped()
+          .clipShape(RoundedRectangle(cornerRadius: 6))
       @unknown default:
         EmptyView()
       }
@@ -146,7 +150,7 @@ private extension ArticleCard {
             .fill(Color.bgDimSelect)
             .overlay(
               RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.bl6, lineWidth: 1.25)
+                .stroke(Color.bl6, lineWidth: 2)
             )
         } else {
           RoundedRectangle(cornerRadius: 12)

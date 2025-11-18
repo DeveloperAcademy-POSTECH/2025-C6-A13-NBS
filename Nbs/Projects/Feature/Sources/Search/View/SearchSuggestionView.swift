@@ -18,7 +18,7 @@ struct SearchSuggestionView: View {
 extension SearchSuggestionView {
   var body: some View {
     ScrollView {
-      LazyVStack(alignment: .leading, spacing: 16) {
+      LazyVStack(alignment: .leading, spacing: 12) {
         ForEach(store.suggestionItem) { result in
           Button {
             store.send(.suggestionTapped(result))
@@ -29,10 +29,12 @@ extension SearchSuggestionView {
               .lineLimit(1)
           }
           .buttonStyle(.plain)
+          .frame(height: 32)
         }
       }
     }
     .padding(.horizontal, 20)
+    .padding(.top, 12)
   }
 }
 

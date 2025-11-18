@@ -18,10 +18,10 @@ struct ArticleRowView: View {
   var body: some View {
     ArticleCard(
       title: article.title,
-      categoryName: article.category?.categoryName ?? "카테고리 없음",
+      categoryName: article.category?.categoryName ?? "전체",
       imageURL: article.imageURL ?? "notImage",
       dateString: article.createAt.formattedKoreanDate(), 
-      newsCompany: article.newsCompany ?? "언론사 없음"
+      newsCompany: article.newsCompany ?? ""
     )
     .contentShape(Rectangle())
     .background(Color.clear)
@@ -40,5 +40,6 @@ struct ArticleRowView: View {
           store.send(.listCellLongPressed(article))
         }
     )
+    .padding(.bottom, 10)
   }
 }

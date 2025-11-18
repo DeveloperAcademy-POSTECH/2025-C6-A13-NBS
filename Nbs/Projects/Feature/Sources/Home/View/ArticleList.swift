@@ -45,10 +45,10 @@ extension ArticleListView: View {
             } label: {
               ArticleCard(
                 title: article.title,
-                categoryName: article.category?.categoryName ?? "카테고리 없음",
+                categoryName: article.category?.categoryName ?? "전체",
                 imageURL: article.imageURL ?? "notImage",
                 dateString: article.createAt.formattedKoreanDate(),
-                newsCompany: article.newsCompany ?? "언론사 없음"
+                newsCompany: article.newsCompany ?? ""
               )
             }
             .buttonStyle(.plain)

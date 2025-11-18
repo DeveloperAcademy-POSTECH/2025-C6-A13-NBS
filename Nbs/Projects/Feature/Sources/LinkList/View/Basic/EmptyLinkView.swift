@@ -10,7 +10,7 @@ import DesignSystem
 
 struct EmptyLinkView: View {
   var body: some View {
-    VStack(alignment: .center, spacing: 20) {
+    VStack(alignment: .center, spacing: 12) {
       Spacer()
       DesignSystemAsset.emptyImage.swiftUIImage
         .resizable()
@@ -20,6 +20,10 @@ struct EmptyLinkView: View {
       Text("아직 저장한 링크가 없어요")
         .font(.B1_M)
         .foregroundStyle(.caption3)
+      
+      Rectangle()
+        .fill(.clear)
+        .frame(height: 60)
     }
   }
 }

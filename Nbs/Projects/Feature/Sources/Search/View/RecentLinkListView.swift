@@ -24,19 +24,20 @@ extension RecentLinkListView {
       Text("최근 본 링크")
         .font(.B2_SB)
         .foregroundStyle(.caption2)
+        .padding(.horizontal, 4)
       
       ScrollView(.vertical, showsIndicators: false) {
-        LazyVStack {
+        LazyVStack(spacing: 10) {
           ForEach(store.recentLinkItem) { item in
             Button {
               store.send(.recentLinkTapped(item))
             } label: {
               ArticleCard(
                 title: item.title,
-                categoryName: item.category?.categoryName ?? "카테고리 없음",
+                categoryName: item.category?.categoryName ?? "전체",
                 imageURL: item.imageURL ?? "notImage",
                 dateString: item.createAt.formattedKoreanDate(),
-                newsCompany: item.newsCompany ?? "언론사 없음"
+                newsCompany: item.newsCompany ?? ""
               )
             }
             .buttonStyle(.plain)

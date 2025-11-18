@@ -20,35 +20,37 @@ extension ArticleFilterList: View {
     ZStack {
       Color.background
         .ignoresSafeArea()
-      VStack(spacing: 12) {
+      VStack(spacing: .zero) {
         
         infoContents
+          .padding(.bottom, 16)
         articleList
       }
       .padding(.horizontal, 20)
-      .padding(.bottom, 100)
+      .padding(.bottom, 66)
     }
   }
   
   private var infoContents: some View {
     HStack(spacing: .zero) {
       HStack(spacing: 0) {
-            Text("총 ")
-              .font(.B1_M)
-              .foregroundStyle(.caption1)
-
-            Text("\(store.link.count)")
-              .font(.B1_SB)
-              .foregroundStyle(.caption1)
-
-            Text("개")
-              .font(.B1_M)
-              .foregroundStyle(.caption1)
-          }
+        Text("총 ")
+          .font(.B1_M)
+          .foregroundStyle(.caption1)
+        
+        Text("\(store.link.count)")
+          .font(.B1_SB)
+          .foregroundStyle(.caption1)
+        
+        Text("개")
+          .font(.B1_M)
+          .foregroundStyle(.caption1)
+      }
       Spacer()
       
       buttonContents
     }
+    .padding(.leading, 4)
   }
   
   private var buttonContents: some View {
@@ -61,7 +63,9 @@ extension ArticleFilterList: View {
           .foregroundStyle(
             store.sortOrder == .oldest ? .caption1 : .caption2
           )
+          .padding(.horizontal, 4)
       }
+      .frame(height: 32)
       
       Rectangle()
         .fill(.divider2)
@@ -75,7 +79,9 @@ extension ArticleFilterList: View {
           .foregroundStyle(
             store.sortOrder == .latest ? .caption1 : .caption2
           )
+          .padding(.horizontal, 4)
       }
+      .frame(height: 32)
     }
   }
   
@@ -83,7 +89,8 @@ extension ArticleFilterList: View {
   private var articleList: some View {
     if store.link.isEmpty {
       EmptyLinkView()
-        .padding(.top, 140)
+        .padding(.top, 120)
+
     } else {
       ForEach(store.link) { article in
         ArticleRowView(article: article, store: store)

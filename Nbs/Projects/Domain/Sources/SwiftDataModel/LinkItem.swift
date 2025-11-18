@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-public final class ArticleItem: Codable {
+public final class ArticleItem: Codable, Sendable {
   @Attribute(.unique) public var id: String
   @Attribute(.unique) public var urlString: String // URL
   public var title: String // 기사 제목

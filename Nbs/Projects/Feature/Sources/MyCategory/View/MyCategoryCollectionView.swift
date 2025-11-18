@@ -106,7 +106,7 @@ extension MyCategoryCollectionView: View {
         AlertIconBanner(
           icon: Image(icon: Icon.badgeCheck),
           title: store.toastMessage,
-          iconColor: .bl3
+          iconColor: .badgeColor
         )
         .zIndex(1)
         .padding(.horizontal, 20)

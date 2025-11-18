@@ -84,7 +84,8 @@ extension MainButton {
       Text(title.uppercased())
         .font(.B1_SB)
         .foregroundStyle(foregroundColor)
-        .frame(maxWidth: .infinity, minHeight: 54)
+        .frame(maxWidth: .infinity)
+        .frame(height: 54)
         .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
@@ -97,34 +98,44 @@ extension MainButton {
   
   /// 그라데이션 파트
   private var gradientPart: some View {
-    Rectangle()
-      .foregroundColor(.clear)
-      .frame(height: 32)
-      .overlay(
-        LinearGradient(
-          stops: [
-            Gradient.Stop(color: .bgButtonGrad1, location: 0.00),
-            Gradient.Stop(color: .bgButtonGrad2, location: 0.16),
-            Gradient.Stop(color: .bgButtonGrad3, location: 0.73),
-            Gradient.Stop(color: .bgButtonGrad4, location: 1.00),
-          ],
-          startPoint: UnitPoint(x: 0.47, y: 1),
-          endPoint: UnitPoint(x: 0.47, y: 0.15)
+    VStack(spacing: .zero) {
+      Rectangle()
+        .foregroundColor(.clear)
+        .frame(height: 32)
+        .overlay(
+          LinearGradient(
+            stops: [
+              Gradient.Stop(color: .bgButtonGrad1, location: 0.00),
+              Gradient.Stop(color: .bgButtonGrad2, location: 0.16),
+              Gradient.Stop(color: .bgButtonGrad3, location: 0.73),
+              Gradient.Stop(color: .bgButtonGrad4, location: 1.00),
+            ],
+            startPoint: UnitPoint(x: 0.47, y: 1),
+            endPoint: UnitPoint(x: 0.47, y: 0.15)
+          )
         )
-      )
-      .blur(radius: 0)
-      .frame(height: 40)
-      .offset(y: -36)
-      .allowsHitTesting(false)
+        .blur(radius: 0)
+        .frame(height: 40)
+        .offset(y: -44)
+        .allowsHitTesting(false)
+      
+      Rectangle()
+        .fill(Color.background)
+        .frame(height: 8)
+        .offset(y: -48)
+    }
   }
 }
 
 // MARK: - Preview
 #Preview {
+  ZStack {
+    Color.black.ignoresSafeArea()
     MainButton(
       "BUTTON",
       style: .deep,
       isDisabled: false,
       hasGradient: true
     ) { print("버튼입니다") }
+  }
 }

@@ -80,14 +80,14 @@ extension TopAppBarSearch: View {
             Image(icon: Icon.smallxCircleFilled)
               .foregroundColor(.n80)
           }
-          .padding(.trailing, 8)
+          .padding(.trailing, 12)
         }
       }
-      .padding(.leading, 8)
+      .padding(.leading, 12)
       .frame(height: 40)
       .background(
         RoundedRectangle(cornerRadius: 12)
-          .fill(Color(.systemGray6))
+          .fill(Color(.n30))
       )
       .frame(maxWidth: .infinity)
       .padding(.trailing, 20)
