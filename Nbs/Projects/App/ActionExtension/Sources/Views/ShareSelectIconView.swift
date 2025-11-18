@@ -4,7 +4,6 @@
 //
 //  Created by 여성일 on 10/18/25.
 //
-
 import SwiftUI
 
 import SwiftData
@@ -26,24 +25,22 @@ struct ShareSelectIconView: View {
 extension ShareSelectIconView {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      Color.background.ignoresSafeArea()
       VStack(alignment: .center, spacing: 0) {
         Separator()
           .padding(.bottom, 8)
         HeaderView
           .padding(.bottom, 8)
         selectCategoryIconView
+        Spacer()
         MainButton("추가하기", isDisabled: isSaveButtonDisabled) {
           saveCategory()
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 20)
         .padding(.bottom, 16)
       }
       .padding(.top, 8)
     }
-    .navigationBarBackButtonHidden()
     .frame(minHeight: 308)
+    .navigationBarBackButtonHidden()
     .clipShape(RoundedRectangle(cornerRadius: 16))
   }
   
@@ -76,6 +73,7 @@ extension ShareSelectIconView {
       Text("카테고리 아이콘")
         .font(.B2_SB)
         .foregroundStyle(.caption1)
+        .padding(.leading, 20)
       
       ScrollView(.horizontal, showsIndicators: false) {
         LazyHStack(spacing: 16) {
@@ -94,9 +92,10 @@ extension ShareSelectIconView {
             )
           }
         }
+        .padding(.horizontal, 20)
       }
+      .frame(height: 80)
     }
-    .padding(.horizontal, 20)
   }
 }
 
@@ -112,7 +111,6 @@ private extension ShareSelectIconView {
     do {
       try modelContext.save()
       NotificationCenter.default.post(name: .newCategoryDidSave, object: nil, userInfo: ["newCategory": newCategory])
-      NotificationCenter.default.post(name: .closeShareExtension, object: nil)
     } catch {
       print("새 카테고리 저장 실패")
     }

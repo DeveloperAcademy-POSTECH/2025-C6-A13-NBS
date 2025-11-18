@@ -24,18 +24,16 @@ extension ShareBottomSheetView {
   var body: some View {
     NavigationStack {
       ZStack(alignment: .topLeading) {
-        Color.background.ignoresSafeArea()
         VStack(alignment: .center, spacing: 0) {
           Separator()
           HeaderView
+          Spacer()
           CategoryListView
-            .padding(.horizontal, 20)
-            .padding(.bottom, 16)
+            .frame(height: 109)
+          Spacer()
           MainButton("저장") {
             saveAction(selectedCategory)
           }
-          .padding(.horizontal, 20)
-          .padding(.vertical, 8)
           .padding(.bottom, 16)
         }
         .padding(.top, 8)
@@ -75,7 +73,7 @@ extension ShareBottomSheetView {
         }
       }
     }
-    .padding(.vertical, 16)
+    .padding(.top, 16)
     .padding(.horizontal, 20)
   }
   
@@ -88,10 +86,10 @@ extension ShareBottomSheetView {
           isOn: Binding(
             get: { self.selectedCategory == nil},
             set: { isOn in
-            if isOn {
-              self.selectedCategory = nil
-            }
-          })
+              if isOn {
+                self.selectedCategory = nil
+              }
+            })
         )
         ForEach(categories) { category in
           CategoryButton(
@@ -108,6 +106,7 @@ extension ShareBottomSheetView {
           )
         }
       }
+      .padding(.horizontal, 20)
     }
   }
 }

@@ -13,16 +13,16 @@ import Domain
 // MARK: - Properties
 struct ShareInputTitleView: View {
   @Query private var categories: [CategoryItem]
-
+  
   @Environment(\.dismiss) var dismiss
   @FocusState private var isTitleFieldFocused: Bool
   @State var title: String = ""
   @State private var showNextScreen: Bool = false
   
   private var isDuplicate: Bool {
-      let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-      return !trimmedTitle.isEmpty && categories.contains(where: { $0.categoryName == trimmedTitle })
-    }
+    let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+    return !trimmedTitle.isEmpty && categories.contains(where: { $0.categoryName == trimmedTitle })
+  }
   
   private var isNextButtonDisabled: Bool {
     let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -36,19 +36,16 @@ struct ShareInputTitleView: View {
 extension ShareInputTitleView {
   var body: some View {
     ZStack(alignment: .topLeading) {
-      Color.background.ignoresSafeArea()
       VStack(alignment: .center, spacing: 0) {
         Separator()
           .padding(.bottom, 8)
         HeaderView
           .padding(.bottom, 8)
         inputTitleView
-          .padding(.bottom, 38)
+        Spacer()
         MainButton("다음", isDisabled: isNextButtonDisabled) {
           nextButtonTapped()
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 20)
         .padding(.bottom, 16)
       }
       .padding(.top, 8)
@@ -57,7 +54,6 @@ extension ShareInputTitleView {
       isTitleFieldFocused = true
     }
     .navigationBarBackButtonHidden()
-    .frame(minHeight: 308)
     .clipShape(RoundedRectangle(cornerRadius: 16))
     .navigationDestination(isPresented: $showNextScreen) {
       ShareSelectIconView(title: title)
@@ -103,15 +99,22 @@ extension ShareInputTitleView {
                 title = String(newValue.prefix(14))
               }
             }
+            .toolbar {
+              ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("완료") {isTitleFieldFocused = false
+                }
+              }
+            }
             .font(.B1_M)
             .padding(16)
           
           HStack(spacing: 0) {
             Text("\(title.count)")
-              .font(.C1)
+              .font(.C3)
               .foregroundStyle(.text1)
             Text("/14")
-              .font(.C1)
+              .font(.C3)
               .foregroundStyle(.caption2)
           }
           .padding(.trailing, 16)
@@ -131,7 +134,9 @@ extension ShareInputTitleView {
           .font(.C3)
           .foregroundStyle(.danger)
           .padding(.leading, 6)
+          .padding(.top, -8)
       }
+      
     }
     .padding(.horizontal, 20)
   }

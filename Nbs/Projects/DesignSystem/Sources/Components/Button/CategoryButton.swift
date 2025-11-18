@@ -47,7 +47,7 @@ public struct CategoryButton: View {
   }
   
   private var backgroundColor: Color {
-    isOn ? .bl1 : .n30
+    isOn ? .bl1 : .n10
   }
   
   private var strokeColor: Color {

@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftData
 
 import Domain
+import DesignSystem
 
 struct RootWrapperView: View {
   let container: ModelContainer
@@ -17,13 +18,14 @@ struct RootWrapperView: View {
   let saveAction: (CategoryItem?) -> Void
   
   var body: some View {
-    VStack {
+    ZStack(alignment: .topLeading) {
       if isURLExisting {
         ReadyExistSheetView()
       } else {
         ShareBottomSheetView(saveAction: saveAction)
       }
     }
+    .clipShape(RoundedRectangle(cornerRadius: 16))
     .modelContainer(container)
     .ignoresSafeArea(edges: .bottom)
   }
