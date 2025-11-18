@@ -144,7 +144,7 @@ extension OnboardingHighlightView: View {
           }
           
           if showDimmingWithAnimation {
-            Color.dim
+            Color.bgDimOnboarding
               .mask(
                 Rectangle()
                   .overlay(
