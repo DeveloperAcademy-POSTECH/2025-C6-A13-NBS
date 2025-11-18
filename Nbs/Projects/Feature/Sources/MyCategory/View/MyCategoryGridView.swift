@@ -41,11 +41,11 @@ extension MyCategoryGridView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top)
-                .padding(.leading)
+                .padding(.horizontal)
                 DesignSystemAsset.primaryCategoryIcon(number: category.icon.number)
                   .resizable()
-                  .frame(width: 56, height: 56)
-                  .padding(.trailing, 12)
+                  .frame(width: 52, height: 52)
+                  .padding(.trailing, 14)
                   .padding(.bottom, 12)
               }
               .frame(maxWidth: .infinity, minHeight: 116)
