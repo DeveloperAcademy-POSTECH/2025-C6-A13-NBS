@@ -2,26 +2,19 @@ import SwiftUI
 import SwiftData
 
 import Domain
+import DesignSystem
 import Feature
 import LinkNavigator
 
 @main
 struct NbsApp: App {
-  @State private var showSplash = true
+  @State private var launchState: LaunchState = .splash
+  @State private var showUpdateAlert = false
   
   let singleNavigator = SingleLinkNavigator(
     routeBuilderItemList: AppRouterGroup().routers(),
     dependency: AppDependency()
   )
-  
-  var launchState: LaunchState {
-    if showSplash {
-      return .splash
-    }
-    
-    let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
-    return hasSeen ? .home : .onboarding
-  }
   
   var body: some Scene {
     WindowGroup {
@@ -32,8 +25,17 @@ struct NbsApp: App {
             .transition(.opacity)
             .onAppear {
               DispatchQueue.main.asyncAfter(deadline: .now() + 1.55) {
-                self.showSplash = false
+                checkAppVersion()
               }
+            }
+            .alert(isPresented: $showUpdateAlert) {
+              Alert(
+                title: Text("업데이트 필요"),
+                message: Text("새로운 버전이 있습니다.\n업데이트 후 다시 이용해주세요."),
+                dismissButton: .default(Text("업데이트하기")) {
+                  AppVersionCheck.appUpdate()
+                }
+              )
             }
           
         case .onboarding:
@@ -51,9 +53,28 @@ struct NbsApp: App {
           )
           .ignoresSafeArea()
           .transition(.opacity)
+        }      }
+      .animation(.easeInOut(duration: 0.3), value: launchState)
+    }
+  }
+}
+
+extension NbsApp {
+  func checkAppVersion() {
+    do {
+      try AppVersionCheck.isUpdateAvailable { needUpdate, error in
+        DispatchQueue.main.async {
+          if let needUpdate = needUpdate, needUpdate == true {
+            showUpdateAlert = true
+          } else {
+            let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
+            launchState = hasSeen ? .home : .onboarding
+          }
         }
       }
-      .animation(.easeInOut(duration: 0.3), value: launchState)
+    } catch {
+      let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
+      launchState = hasSeen ? .home : .onboarding
     }
   }
 }
