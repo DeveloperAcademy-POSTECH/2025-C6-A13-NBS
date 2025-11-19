@@ -440,7 +440,13 @@ document.addEventListener('dblclick', function(event) {
   let extractedText = sentenceRange.toString();
   const leadingWhitespaceLength = extractedText.length - extractedText.trimStart().length;
   if (leadingWhitespaceLength > 0) {
-    sentenceRange.setStart(textNode, sentenceStart + leadingWhitespaceLength);
+    const newSentenceStart = sentenceStart + leadingWhitespaceLength;
+    for (const m of map) {
+        if (newSentenceStart >= m.start && newSentenceStart <= m.end) {
+            sentenceRange.setStart(m.node, newSentenceStart - m.start);
+            break;
+        }
+    }
   }
   
   if (sentenceRange.toString().trim().length < 3) return;
