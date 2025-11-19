@@ -376,8 +376,19 @@ document.addEventListener('dblclick', function(event) {
     if (textNode.nodeType !== Node.TEXT_NODE) return;
   }
 
-  const text = textNode.textContent;
-  const clickPosition = range.startOffset;
+  // 전체 텍스트를 만들고 클릭 위치를 fullText 상의 index로 변환
+  const { fullText, map } = buildUnifiedText(textNode);
+
+  let clickIndex = 0;
+  for (const m of map) {
+    if (m.node === textNode) {
+      clickIndex = m.start + range.startOffset;
+      break;
+    }
+  }
+
+  const text = fullText;          // 기존 변수 재활용 → 최소 변경
+  const clickPosition = clickIndex;
 
   let sentenceStart = 0;
   for (let i = clickPosition - 1; i >= 0; i--) {
@@ -407,8 +418,22 @@ document.addEventListener('dblclick', function(event) {
   }
 
   const sentenceRange = document.createRange();
-  sentenceRange.setStart(textNode, sentenceStart);
-  sentenceRange.setEnd(textNode, sentenceEnd);
+
+  // 문장 시작 위치 → 어느 node인지 찾기
+  for (const m of map) {
+    if (sentenceStart >= m.start && sentenceStart <= m.end) {
+      sentenceRange.setStart(m.node, sentenceStart - m.start);
+      break;
+    }
+  }
+
+  // 문장 끝 위치 → 어느 node인지 찾기
+  for (const m of map) {
+    if (sentenceEnd >= m.start && sentenceEnd <= m.end) {
+      sentenceRange.setEnd(m.node, sentenceEnd - m.start);
+      break;
+    }
+  }
 
   let extractedText = sentenceRange.toString();
   const leadingWhitespaceLength = extractedText.length - extractedText.trimStart().length;
@@ -626,3 +651,34 @@ document.addEventListener('click', function(event) {
         tulipMenu.remove();
     }
 });
+
+function buildUnifiedText(clickedNode) {
+  let container = clickedNode;
+
+  // 문장 컨테이너 찾기 (최소 수정 → 기존 구조 유지)
+  while (container && container !== document.body) {
+    if (container.matches?.('span.article_p, p, div')) break;
+    container = container.parentNode;
+  }
+  if (!container) container = document.body;
+
+  // 모든 텍스트 노드 모으기
+  const textNodes = [];
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  let node;
+  while (node = walker.nextNode()) {
+    if (node.textContent.trim().length > 0) textNodes.push(node);
+  }
+
+  // 하나의 문자열로 병합 + 매핑 정보 생성
+  let fullText = '';
+  const map = [];
+  for (const tn of textNodes) {
+    const start = fullText.length;
+    const end = start + tn.textContent.length;
+    map.push({ node: tn, start, end });
+    fullText += tn.textContent;
+  }
+
+  return { fullText, map };
+}
