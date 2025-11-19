@@ -67,6 +67,7 @@ public extension CategoryButton {
       } label: {
         ZStack {
           Image(icon: icon)
+            .resizable()
             .frame(width: 45, height: 45)
         }
         .frame(width: 80, height: 80)

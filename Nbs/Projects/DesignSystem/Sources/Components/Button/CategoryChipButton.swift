@@ -48,7 +48,7 @@ extension CategoryChipButton: View {
         Text(title)
           .font(.B1_SB)
           .foregroundStyle(.text1)
-          .frame(minHeight: 36)
+          .frame(minHeight: 24)
       }
       .padding(.leading)
       .padding(.vertical, 14)
