@@ -349,7 +349,9 @@ document.addEventListener('dblclick', function(event) {
       if (existingMemoBox) existingMemoBox.remove();
       const capsuleContainer = existingHighlight.nextElementSibling;
       if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) capsuleContainer.remove();
+      const parent = existingHighlight.parentNode;
       existingHighlight.replaceWith(...existingHighlight.childNodes);
+      if (parent) parent.normalize();
       deleteDraft(draftId);
     };
     if (comments.length > 0) showDeleteConfirmationModal(deleteHighlight);
