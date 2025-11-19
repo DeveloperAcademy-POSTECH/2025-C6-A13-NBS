@@ -14,38 +14,46 @@ struct NbsApp: App {
     dependency: AppDependency()
   )
   
-  let hasSeen = UserDefaults.standard.bool(forKey: "onboarding")
+  var launchState: LaunchState {
+    if showSplash {
+      return .splash
+    }
+    
+    let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
+    return hasSeen ? .home : .onboarding
+  }
   
   var body: some Scene {
     WindowGroup {
       ZStack {
-        if showSplash {
+        switch launchState {
+        case .splash:
           SplashView()
             .transition(.opacity)
-            .zIndex(1)
             .onAppear {
               DispatchQueue.main.asyncAfter(deadline: .now() + 1.55) {
                 self.showSplash = false
               }
             }
-        } else {
-          if hasSeen {
-            LinkNavigationView(
-              linkNavigator: singleNavigator,
-              item: .init(path: Route.home.rawValue))
-            .ignoresSafeArea()
-            .transition(.opacity)
-          } else {
-            LinkNavigationView(
-              linkNavigator: singleNavigator,
-              item: .init(path: Route.onboardingService.rawValue))
-            .ignoresSafeArea()
-            .transition(.opacity)
-          }
+          
+        case .onboarding:
+          LinkNavigationView(
+            linkNavigator: singleNavigator,
+            item: .init(path: Route.onboardingService.rawValue)
+          )
+          .ignoresSafeArea()
+          .transition(.opacity)
+          
+        case .home:
+          LinkNavigationView(
+            linkNavigator: singleNavigator,
+            item: .init(path: Route.home.rawValue)
+          )
+          .ignoresSafeArea()
+          .transition(.opacity)
         }
       }
-      .animation(.easeInOut(duration: 0.3), value: showSplash)
+      .animation(.easeInOut(duration: 0.3), value: launchState)
     }
   }
 }
-
