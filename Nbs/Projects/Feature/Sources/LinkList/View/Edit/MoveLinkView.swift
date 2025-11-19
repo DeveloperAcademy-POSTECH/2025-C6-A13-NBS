@@ -100,7 +100,11 @@ extension MoveLinkView {
         .font(.B2_SB)
         .foregroundStyle(.caption1)
       
-      CheckboxButton(isOn: $store.isSelectAll, style: .clear)
+      CheckboxButton(
+        isOn: $store.isSelectAll,
+        style: .clear,
+        size: .small
+      )
     }
     .padding(EdgeInsets(top: 8, leading: 24, bottom: 12, trailing: 24))
   }

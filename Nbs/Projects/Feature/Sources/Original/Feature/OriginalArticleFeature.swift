@@ -28,6 +28,7 @@ struct OriginalArticleFeature {
       case .editButtonTapped:
         let payload = OriginalPayload(articleItem: state.articleItem)
         linkNavigator.push(.originalEdit, payload)
+        linkNavigator.remove(.originalArticle)
         return .none
       }
     }

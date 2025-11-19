@@ -48,8 +48,7 @@ struct OriginalEditFeature {
               )
             }
             try swiftDataClient.updateHighlightsForLink(linkID, highlights)
-            
-            await linkNavigator.pop()
+
             await linkNavigator.pop()
             
             try await Task.sleep(for: .milliseconds(300))

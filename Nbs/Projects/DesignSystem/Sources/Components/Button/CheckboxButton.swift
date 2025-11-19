@@ -14,28 +14,38 @@ import SwiftUI
 /// - Parameters:
 ///   - isOn: 현재 선택 상태 (Binding)
 ///   - style: 표시 스타일 (.dim / .clear)
+///   - size: 버튼 크기 (.big / .small)
 ///   - onTap: 선택 상태 변경 후 실행할 클로저 (선택)
 public struct CheckboxButton: View {
   
-  // MARK: Style
+  // MARK: - Style
   public enum Style {
-     case dim
-     case clear
-   }
+    case dim
+    case clear
+  }
+  
+  // MARK: - Size
+  public enum Size {
+    case big
+    case small
+  }
   
   // MARK: - Properties
   @Binding var isOn: Bool
   private let style: Style
+  private let size: Size
   private let onTap: (() -> Void)?
   
   // MARK: - Init
   public init(
     isOn: Binding<Bool>,
     style: Style = .dim,
+    size: Size = .big,
     onTap: (() -> Void)? = nil
   ) {
     self._isOn = isOn
     self.style = style
+    self.size = size
     self.onTap = onTap
   }
   
@@ -60,6 +70,16 @@ public struct CheckboxButton: View {
   
   private var checkmarkColor: Color {
     isOn ? .textw : .clear
+  }
+  
+  // MARK: - Size
+  private var checkboxSize: CGFloat {
+    switch size {
+    case .big:
+      return 24
+    case .small:
+      return 22
+    }
   }
 }
 
@@ -89,7 +109,7 @@ public extension CheckboxButton {
       }
       .contentShape(Circle())
     }
-    .frame(width: 24, height: 24) // 20 size로 하나더 만들기
+    .frame(width: checkboxSize, height: checkboxSize)
     .buttonStyle(.plain)
   }
 }

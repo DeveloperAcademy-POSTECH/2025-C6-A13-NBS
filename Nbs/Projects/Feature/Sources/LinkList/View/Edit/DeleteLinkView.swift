@@ -96,13 +96,6 @@ extension DeleteLinkView {
   /// 링크 개수 + 선택
   private var linkSelectView: some View {
     HStack(spacing: 10) {
-//      CheckboxButton(isOn: $store.isSelectAll, style: .clear)
-//      
-//      Text("모두 선택")
-//        .font(.B2_SB)
-//        .foregroundStyle(.caption1)
-      
-      
       Text("\(store.categoryName) (\(store.allLinks.count)개)")
         .font(.B2_M)
         .foregroundStyle(.caption3)
@@ -113,7 +106,11 @@ extension DeleteLinkView {
         .font(.B2_SB)
         .foregroundStyle(.caption1)
       
-      CheckboxButton(isOn: $store.isSelectAll, style: .clear)
+      CheckboxButton(
+        isOn: $store.isSelectAll,
+        style: .clear,
+        size: .small
+      )
     }
     .padding(EdgeInsets(top: 8, leading: 24, bottom: 12, trailing: 24))
   }
