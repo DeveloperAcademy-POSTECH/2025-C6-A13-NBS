@@ -349,7 +349,9 @@ document.addEventListener('dblclick', function(event) {
       if (existingMemoBox) existingMemoBox.remove();
       const capsuleContainer = existingHighlight.nextElementSibling;
       if (capsuleContainer && capsuleContainer.classList.contains('capsule-container')) capsuleContainer.remove();
+      const parent = existingHighlight.parentNode;
       existingHighlight.replaceWith(...existingHighlight.childNodes);
+      if (parent) parent.normalize();
       deleteDraft(draftId);
     };
     if (comments.length > 0) showDeleteConfirmationModal(deleteHighlight);
@@ -438,7 +440,13 @@ document.addEventListener('dblclick', function(event) {
   let extractedText = sentenceRange.toString();
   const leadingWhitespaceLength = extractedText.length - extractedText.trimStart().length;
   if (leadingWhitespaceLength > 0) {
-    sentenceRange.setStart(textNode, sentenceStart + leadingWhitespaceLength);
+    const newSentenceStart = sentenceStart + leadingWhitespaceLength;
+    for (const m of map) {
+        if (newSentenceStart >= m.start && newSentenceStart <= m.end) {
+            sentenceRange.setStart(m.node, newSentenceStart - m.start);
+            break;
+        }
+    }
   }
   
   if (sentenceRange.toString().trim().length < 3) return;
