@@ -94,7 +94,7 @@ extension ShareInputTitleView {
         HStack(spacing: 8) {
           TextField("카테고리명을 입력해주세요", text: $title)
             .focused($isTitleFieldFocused)
-            .onChange(of: title) { newValue in
+            .onChange(of: title) { _, newValue in
               if newValue.count > 14 {
                 title = String(newValue.prefix(14))
               }
