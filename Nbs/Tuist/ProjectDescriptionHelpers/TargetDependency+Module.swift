@@ -24,3 +24,15 @@ extension TargetDependency {
     .target(name: TargetName.SafariExtension.rawValue)
   }
 }
+
+extension TargetDependency {
+  public static func actionEx() -> TargetDependency {
+    .target(name: TargetName.ActionExtension.rawValue)
+  }
+}
+
+extension TargetDependency {
+  public static func domain() -> TargetDependency {
+    .project(target: Module.Domain.rawValue, path: .relativeToRoot("Projects/Domain"))
+  }
+}

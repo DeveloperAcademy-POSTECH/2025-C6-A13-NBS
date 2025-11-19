@@ -1,0 +1,64 @@
+//
+//  ArticleFilterFeature.swift
+//  Feature
+//
+//  Created by 이안 on 10/18/25.
+//
+
+import ComposableArchitecture
+import Domain
+
+@Reducer
+struct ArticleFilterFeature {
+  @Dependency(\.linkNavigator) var linkNavigator
+  
+  @ObservableState
+  struct State {
+    var link: [ArticleItem] = []
+    var sortOrder: SortOrder = .latest
+    var selectedLink: ArticleItem? = nil
+  }
+  
+  enum SortOrder: Equatable {
+    case latest
+    case oldest
+  }
+  
+  enum Action {
+    case listCellTapped(ArticleItem)
+    case listCellLongPressed(ArticleItem)
+    case sortOrderChanged(SortOrder)
+    case delegate(Delegate)
+    enum Delegate {
+      case openLinkDetail(ArticleItem)
+      case longPressed(ArticleItem)
+    }
+  }
+  
+  var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .listCellTapped(let article):
+        linkNavigator.push(.linkDetail, article)
+        return .none
+        
+      case let .listCellLongPressed(link):
+        return .send(.delegate(.longPressed(link)))
+        
+      case let .sortOrderChanged(order):
+        state.sortOrder = order
+        
+        switch order {
+        case .latest:
+          state.link.sort { $0.createAt > $1.createAt }
+        case .oldest:
+          state.link.sort { $0.createAt < $1.createAt }
+        }
+        return .none
+        
+      case .delegate:
+        return .none
+      }
+    }
+  }
+}

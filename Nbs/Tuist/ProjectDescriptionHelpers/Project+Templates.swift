@@ -8,7 +8,7 @@
 import ProjectDescription
 
 extension Project {
-  public static let bundleID = "com.Nbs.ADA"
+  public static let bundleID = "com.Nbs.dev.ADA"
   public static let iosVersion = "17.0"
   public static let appName = "Nbs"
 }

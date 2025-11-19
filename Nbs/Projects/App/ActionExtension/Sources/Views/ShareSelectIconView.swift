@@ -1,0 +1,131 @@
+//
+//  ShareSelectIconView.swift
+//  Nbs
+//
+//  Created by 여성일 on 10/18/25.
+//
+import SwiftUI
+
+import SwiftData
+
+import DesignSystem
+import Domain
+
+// MARK: - Properties
+struct ShareSelectIconView: View {
+  @Environment(\.dismiss) var dismiss
+  @Environment(\.modelContext) private var modelContext
+  @State private var selectedIcon: CategoryIcon? = nil
+  
+  private var isSaveButtonDisabled: Bool { selectedIcon == nil }
+  let title: String
+}
+
+// MARK: - View
+extension ShareSelectIconView {
+  var body: some View {
+    ZStack(alignment: .topLeading) {
+      VStack(alignment: .center, spacing: 0) {
+        Separator()
+          .padding(.bottom, 8)
+        HeaderView
+          .padding(.bottom, 8)
+        selectCategoryIconView
+        Spacer()
+        MainButton("추가하기", isDisabled: isSaveButtonDisabled) {
+          saveCategory()
+        }
+        .padding(.bottom, 16)
+      }
+      .padding(.top, 8)
+    }
+    .frame(minHeight: 308)
+    .navigationBarBackButtonHidden()
+    .clipShape(RoundedRectangle(cornerRadius: 16))
+  }
+  
+  private var HeaderView: some View {
+    ZStack{
+      HStack {
+        Button {
+          dismiss()
+        } label: {
+          Image(icon: Icon.chevronLeft)
+            .renderingMode(.template)
+            .frame(width: 24, height: 24)
+            .tint(.icon)
+        }
+        .padding(10)
+        Spacer()
+      }
+      Text("새 카테고리")
+        .font(.H4_SB)
+        .foregroundStyle(.text1)
+      Spacer()
+    }
+    .padding(.vertical, 8)
+    .padding(.leading, 4)
+    .padding(.trailing, 20)
+  }
+  
+  private var selectCategoryIconView: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      Text("카테고리 아이콘")
+        .font(.B2_SB)
+        .foregroundStyle(.caption1)
+        .padding(.leading, 20)
+      
+      ScrollView(.horizontal, showsIndicators: false) {
+        LazyHStack(spacing: 16) {
+          ForEach(1..<16, id: \.self) { icon in
+            let icon = CategoryIcon(number: icon)
+            
+            CategoryButton(
+              type: .nontitle,
+              icon: icon.name,
+              isOn: Binding(
+                get: { selectedIcon == icon },
+                set: { isOn in
+                  if isOn { selectedIcon = icon }
+                }
+              )
+            )
+          }
+        }
+        .padding(.horizontal, 20)
+      }
+      .frame(height: 80)
+    }
+  }
+}
+
+// MARK: - SwiftData
+private extension ShareSelectIconView {
+  func saveCategory() {
+    guard let selectedIcon = selectedIcon else { return }
+    
+    let newCategory = CategoryItem(categoryName: title, icon: selectedIcon)
+    
+    modelContext.insert(newCategory)
+    
+    do {
+      try modelContext.save()
+      NotificationCenter.default.post(name: .newCategoryDidSave, object: nil, userInfo: ["newCategory": newCategory])
+    } catch {
+      print("새 카테고리 저장 실패")
+    }
+  }
+}
+
+// MARK: - Preview
+private struct ShareSelectIconViewPreviw: View {
+  @State private var title: String = ""
+  
+  var body: some View {
+    ShareSelectIconView(title:"세계")
+  }
+}
+
+#Preview {
+  ShareSelectIconViewPreviw()
+}

@@ -11,12 +11,14 @@ public enum TargetName: String {
   case Nbs
   case NbsTests
   case SafariExtension
+  case ActionExtension
   
   public var sourcesPath: String {
     switch self {
     case .Nbs: return "Nbs/Sources/**"
     case .NbsTests: return "Nbs/Tests/**"
     case .SafariExtension: return "SafariExtension/Sources/**"
+    case .ActionExtension: return "ActionExtension/Sources/**"
     }
   }
   
@@ -25,6 +27,7 @@ public enum TargetName: String {
     case .Nbs: return "Nbs/Resources/**"
     case .NbsTests: return ""
     case .SafariExtension: return "SafariExtension/Resources/**"
+    case .ActionExtension: return "ActionExtension/Resources/**"
     }
   }
 }

@@ -11,6 +11,7 @@ public enum Module: String {
   case App
   case Feature
   case DesignSystem
+  case Domain
 }
 
 extension Module: CaseIterable {}
