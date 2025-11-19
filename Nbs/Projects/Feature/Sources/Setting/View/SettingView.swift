@@ -12,12 +12,14 @@ import DesignSystem
 import Domain
 
 /// 앱 메인 설정뷰
-struct SettingView: View {
+struct SettingView {
+  @Environment(\.openURL) private var openURL
+  
   let store: StoreOf<SettingFeature>
 }
 
 // MARK: View
-extension SettingView {
+extension SettingView: View {
   var body: some View {
     ZStack {
       Color.background.ignoresSafeArea()
@@ -150,7 +152,11 @@ extension SettingView {
         title: "탭탭 서비스 소개",
         trailing: .chevron
       ) {
-        store.send(.backButtonTapped)
+        if let url = URL(string: Constants.notionLink) {
+          openURL(url)
+        }
+        
+        store.send(.openLinkTapped)
       }
     }
   }

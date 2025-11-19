@@ -5,6 +5,8 @@
 //  Created by 이안 on 11/5/25.
 //
 
+import Foundation
+
 import ComposableArchitecture
 import Domain
 
@@ -24,6 +26,7 @@ struct SettingFeature {
     case highlightTipTapped
     case shareTipTapped
     case favoriteTipTapped
+    case openLinkTapped
   }
   
   var body: some ReducerOf<Self> {
@@ -72,6 +75,9 @@ struct SettingFeature {
         
       case .favoriteTipTapped:
         linkNavigator.push(.favoriteSetting, nil)
+        return .none
+        
+      case .openLinkTapped:
         return .none
       }
     }
