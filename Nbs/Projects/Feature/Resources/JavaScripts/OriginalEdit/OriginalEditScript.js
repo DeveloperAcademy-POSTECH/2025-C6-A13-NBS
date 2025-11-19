@@ -358,9 +358,22 @@ document.addEventListener('dblclick', function(event) {
     if (textNode.nodeType !== Node.TEXT_NODE) return;
   }
   
-  const text = textNode.textContent;
-  const clickPosition = range.startOffset;
+//  const text = textNode.textContent;
+//  const clickPosition = range.startOffset;
+  const { fullText, map } = buildUnifiedText(textNode);
   
+  const text = fullText;
+   let clickIndex = 0;
+   for (const m of map) {
+     if (m.node === textNode) {
+       clickIndex = m.start + range.startOffset;
+       break;
+     }
+   }
+  
+  const clickPosition = clickIndex;
+  
+  /// 문장 시작 탐색
   let sentenceStart = 0;
   for (let i = clickPosition - 1; i >= 0; i--) {
     const char = text[i];
@@ -374,6 +387,7 @@ document.addEventListener('dblclick', function(event) {
     }
   }
   
+  /// 문장 끝 탐색
   let sentenceEnd = text.length;
   for (let i = clickPosition; i < text.length; i++) {
     const char = text[i];
@@ -386,18 +400,43 @@ document.addEventListener('dblclick', function(event) {
     }
   }
   
+  /// range 생성 (노드 매핑 기반)
   const sentenceRange = document.createRange();
-  sentenceRange.setStart(textNode, sentenceStart);
-  sentenceRange.setEnd(textNode, sentenceEnd);
+//  sentenceRange.setStart(textNode, sentenceStart);
+//  sentenceRange.setEnd(textNode, sentenceEnd);
+  for (const m of map) {
+    if (sentenceStart >= m.start && sentenceStart <= m.end) {
+      sentenceRange.setStart(m.node, sentenceStart - m.start);
+      break;
+    }
+  }
+
+  /// 문장 끝 설정
+  for (const m of map) {
+    if (sentenceEnd >= m.start && sentenceEnd <= m.end) {
+      sentenceRange.setEnd(m.node, sentenceEnd - m.start);
+      break;
+    }
+  }
   
   let extractedText = sentenceRange.toString();
   const leadingWhitespaceLength = extractedText.length - extractedText.trimStart().length;
+  
   if (leadingWhitespaceLength > 0) {
-    sentenceRange.setStart(textNode, sentenceStart + leadingWhitespaceLength);
+//    sentenceRange.setStart(textNode, sentenceStart + leadingWhitespaceLength);
+    const newSentenceStart = sentenceStart + leadingWhitespaceLength;
+    for (const m of map) {
+      if (newSentenceStart >= m.start && newSentenceStart <= m.end) {
+        sentenceRange.setStart(m.node, newSentenceStart - m.start);
+        break;
+      }
+    }
   }
 
+  /// 최소 길이 제한
   if (sentenceRange.toString().trim().length < 3) return;
   
+  /// 기존 하이라이트 충돌 체크
   const allHighlights = document.querySelectorAll('.highlighted-text');
   for (const highlight of allHighlights) {
     const highlightRange = document.createRange();
@@ -406,6 +445,7 @@ document.addEventListener('dblclick', function(event) {
         sentenceRange.compareBoundaryPoints(Range.START_TO_END, highlightRange) > 0) return;
   }
   
+  /// 최종 하이라이트 생성
   const span = document.createElement('span');
   span.className = 'highlighted-text';
   span.dataset.highlightType = lastSelectedHighlightType;
@@ -493,4 +533,32 @@ function getAllHighlightsData() {
   } else {
     console.error("WebKit message handler 'editHandler' not found.");
   }
+}
+
+function buildUnifiedText(clickedNode) {
+  let container = clickedNode;
+
+  while (container && container !== document.body) {
+    if (container.matches?.('span.article_p, p, div')) break;
+    container = container.parentNode;
+  }
+  if (!container) container = document.body;
+
+  const textNodes = [];
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  let node;
+  while (node = walker.nextNode()) {
+    if (node.textContent.trim().length > 0) textNodes.push(node);
+  }
+
+  let fullText = '';
+  const map = [];
+  for (const tn of textNodes) {
+    const start = fullText.length;
+    const end = start + tn.textContent.length;
+    map.push({ node: tn, start, end });
+    fullText += tn.textContent;
+  }
+
+  return { fullText, map };
 }
