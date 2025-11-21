@@ -35,23 +35,16 @@ extension ExtensionSettingView {
           ZStack {
             ZStack(alignment: .center) {
               Color.background.ignoresSafeArea()
-              VStack(alignment: .center, spacing: 8) {
-                DesignSystemAsset.wifiOff.swiftUIImage
-                  .resizable()
-                  .scaledToFit()
-                  .frame(width: 48, height: 48)
-                
-                Text("인터넷 연결이 불안정해요")
-                  .font(.B2_M)
-                  .foregroundStyle(.caption2)
-                  .multilineTextAlignment(.center)
-              }
+              Image(systemName: "progress.indicator")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 24, height: 24)
             }
             .opacity(isReady ? 0 : 1)
-      
+            
             let url = (colorScheme == .dark)
-                ? AppConfig.settingExtensionURL_dark
-                : AppConfig.settingExtensionURL_light
+            ? AppConfig.settingExtensionURL_dark
+            : AppConfig.settingExtensionURL_light
             
             CustomVideoView(
               url: URL(string: url)!,
