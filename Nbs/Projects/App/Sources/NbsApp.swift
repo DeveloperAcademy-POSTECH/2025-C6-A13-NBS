@@ -25,7 +25,9 @@ struct NbsApp: App {
             .transition(.opacity)
             .onAppear {
               DispatchQueue.main.asyncAfter(deadline: .now() + 1.55) {
-                checkAppVersion()
+//                checkAppVersion()
+                let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
+                launchState = hasSeen ? .home : .onboarding
               }
             }
             .alert(isPresented: $showUpdateAlert) {
