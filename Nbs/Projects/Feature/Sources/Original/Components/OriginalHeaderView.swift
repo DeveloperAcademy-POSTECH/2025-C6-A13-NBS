@@ -32,40 +32,45 @@ struct OriginalHeaderView: View {
 // MARK: - View
 extension OriginalHeaderView {
   var body: some View {
-    HStack {
-      Button {
-        dismiss()
-      } label: {
-        Image(icon: Icon.chevronLeft)
-          .renderingMode(.template)
-          .foregroundStyle(.icon)
-          .frame(width: 24, height: 24)
-          .padding(10)
-      }
-      .padding(.leading, 4)
-      .contentShape(Rectangle())
-      Spacer()
-      Button {
-        switch headerType {
-        case .edit:
-          onCompleteTapped?()
-        case .article:
-          onEditTapped?()
+    ZStack {
+      Text(headerType == .edit ? "수정 모드" : "원문 보기 모드")
+        .font(.H4_SB)
+        .foregroundStyle(.text1)
+      HStack {
+        Button {
+          dismiss()
+        } label: {
+          Image(icon: Icon.chevronLeft)
+            .renderingMode(.template)
+            .foregroundStyle(.icon)
+            .frame(width: 24, height: 24)
+            .padding(10)
         }
-      } label: {
-        Text(headerType == .edit ? "완료" : "수정")
-          .font(.B2_SB)
-          .foregroundStyle(.textw)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 8)
-          .background(.bl6)
-          .clipShape(.capsule)
+        .padding(.leading, 4)
+        .contentShape(Rectangle())
+        Spacer()
+        Button {
+          switch headerType {
+          case .edit:
+            onCompleteTapped?()
+          case .article:
+            onEditTapped?()
+          }
+        } label: {
+          Text(headerType == .edit ? "완료" : "수정하기")
+            .font(.B2_SB)
+            .foregroundStyle(.textw)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(.bl6)
+            .clipShape(.capsule)
+        }
+        .buttonStyle(.plain)
+        .padding(.trailing, 20)
       }
-      .buttonStyle(.plain)
-      .padding(.trailing, 20)
+      .frame(maxWidth: .infinity)
+      .padding(.vertical, 8)
     }
-    .frame(maxWidth: .infinity)
-    .padding(.vertical, 8)
   }
 }
 
