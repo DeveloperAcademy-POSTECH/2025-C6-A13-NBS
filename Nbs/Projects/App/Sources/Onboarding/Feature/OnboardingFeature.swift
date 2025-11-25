@@ -17,22 +17,32 @@ struct OnboardingFeature {
     var currentPage: Int = 1
     var isAlert: Bool = false
     var appForground: Bool = false
+    var videoChecked: Bool = false
   }
   
   enum Action {
     case settingButtonTapped
     case backButtonTapped
-    case skipButtonTapped
     case alertCancelButtonTapped
     case alertSkipButtonTapped
     case naviPush
+    case nextButtonTapped
+    case onAppear
+    case showVideo
   }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .skipButtonTapped:
+      case .showVideo:
+        state.videoChecked = true
+        return .none
+      case .onAppear:
+        state.videoChecked = false
+        return .none
+      case .nextButtonTapped:
         state.isAlert = true
+        
         return .none
       case .backButtonTapped:
         return .run { send in
