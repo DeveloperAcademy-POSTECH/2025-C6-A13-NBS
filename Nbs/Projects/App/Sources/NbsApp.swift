@@ -25,9 +25,7 @@ struct NbsApp: App {
             .transition(.opacity)
             .onAppear {
               DispatchQueue.main.asyncAfter(deadline: .now() + 1.55) {
-//                checkAppVersion()
-                let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
-                launchState = hasSeen ? .home : .onboarding
+                checkAppVersion()
               }
             }
             .alert(isPresented: $showUpdateAlert) {
@@ -64,13 +62,12 @@ struct NbsApp: App {
 extension NbsApp {
   func checkAppVersion() {
     do {
-      try AppVersionCheck.isUpdateAvailable { needUpdate, error in
+      let _ = try AppVersionCheck.isUpdateAvailable { needUpdate, error in
         DispatchQueue.main.async {
           if let needUpdate = needUpdate, needUpdate == true {
             showUpdateAlert = true
           } else {
-            let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
-            launchState = hasSeen ? .home : .onboarding
+            moveToNextState()
           }
         }
       }
@@ -78,5 +75,10 @@ extension NbsApp {
       let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
       launchState = hasSeen ? .home : .onboarding
     }
+  }
+  
+  func moveToNextState() {
+    let hasSeen = UserDefaults.standard.bool(forKey: UserDefaultsKey.onboarding)
+    launchState = hasSeen ? .home : .onboarding
   }
 }
