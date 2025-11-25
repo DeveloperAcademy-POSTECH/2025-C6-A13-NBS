@@ -108,6 +108,35 @@
     height: 44px;
     background-color: rgba(236, 236, 237, 1);
 }
+.share-toast {
+  display: flex;
+  padding: 18px 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: fixed;
+  bottom: 16px;
+  background-color: rgba(72, 66, 98, 1);
+  color: rgba(246, 246, 246, 1);
+  z-index: 10000;
+  left: 20px;
+  right: 20px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%;
+  letter-spacing: -0.32px;
+  border-radius: 12px;
+  opacity: 0;
+}
+.share-toast.show {
+  opacity: 1;
+}
+.toast-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
 
 #delete-confirm-modal button { color: rgba(99, 99, 108, 1); font-size: 16px; font-weight: bold; border: none;  }
 #delete-confirm-modal .delete-btn {  color: rgba(255, 72, 72, 1); border: none;  }
@@ -156,6 +185,10 @@
     }
     .vertical-separator {
         background-color: rgba(44, 44, 57, 1);
+    }
+    
+    .share-toast {
+      background-color: rgba(37, 32, 64, 1);
     }
 }
 

@@ -1,6 +1,109 @@
+function removeAds() {
+  const adSelectors = [
+    // 기본 ad 패턴
+    '.ad', '.ads', '.ad-box', '.ad-container', '.ad-wrapper',
+    '.advert', '.advertisement', '.advert-container',
+
+    // class 포함 패턴
+    '[class*="ad-"]',
+    '[class*="ads-"]',
+    '[class*="advert"]',
+    '[class*="sponsor"]',
+    '[class*="banner"]',
+
+    // 네이버 뉴스/커뮤니티 광고
+    '.r_group_comp.ad_box._da_banner',
+    '.ad_area', '.ad_wrap', '.banner_ad', '.ad_item', '.adarea',
+    '.ad_unit', '.ad_div', '.media_end_ad', '.ad_block',
+
+    // data-* 광고
+    '[data-ad]', '[data-ad-unit]', '[data-ad-type]','[data-ad-name]',
+    '[data-ad-container]', '[data-google-query-id]',
+
+    // id 패턴
+    '[id*="ad"]',
+    '[id*="ads"]',
+    '[id*="ad-"]',
+    '[id*="ad_"]',
+    '[id*="banner"]',
+    '[id*="sponsor"]',
+    '[id^="nmap_"]',         // 네이버 광고
+    '[id*="_tgtLREC"]',      // 네이버 iframe 광고
+
+    // iframe
+    'iframe[src*="ad"]',
+    'iframe[src*="ads"]',
+    'iframe[src*="doubleclick"]',
+    'iframe[src*="googlesyndication"]',
+
+    // 구글 광고
+    '.google-ads', '.adsbygoogle', '[aria-label="advertisement"]',
+
+    // 뉴스 기사형 광고
+    '.ad_banner_area',
+    '.news_ad',
+    '.article_ad',
+    '.ad_sidebar',
+    '.ad_section',
+
+    // 이미지 광고
+    'img[src*="ad"]',
+    'img[src*="banner"]',
+    'img[src*="sponsor"]',
+  ];
+
+  adSelectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(node => {
+      node.remove();
+    });
+  });
+}
+
+removeAds();
+
 let isTulipMenuClick = false;
-let lastSelectedHighlightType = 'what'; 
-const isDark = window.matchMedia('(prefers-color-scheme: dark)').matche;
+let lastSelectedHighlightType = 'what';
+const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+function showFirstHighlightToast(message) {
+  const existingToast = document.querySelector('.share-toast');
+  if (existingToast) {
+    existingToast.remove();
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = 'share-toast';
+  
+  // 아이콘 추가
+  const icon = document.createElement('span');
+  icon.className = 'toast-icon';
+  
+  icon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.0003 20.3337C16.6027 20.3337 20.3337 16.6027 20.3337 12.0003C20.3337 7.39795 16.6027 3.66699 12.0003 3.66699C7.39795 3.66699 3.66699 7.39795 3.66699 12.0003C3.66699 16.6027 7.39795 20.3337 12.0003 20.3337Z" stroke="#BBB4FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 15.3333V12" stroke="#BBB4FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 8.66699H12.0083" stroke="#BBB4FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+  
+  // 텍스트 추가
+  const text = document.createElement('span');
+  text.textContent = message;
+  
+  toast.appendChild(icon);
+  toast.appendChild(text);
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.classList.add('show')
+  }, 100);
+  
+  setTimeout(() => {
+    toast.classList.remove('show')
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 500);
+  }, 3000);
+}
 
 function getFixedHeaderHeight() {
   let fixedHeaderHeight = 0;
@@ -162,7 +265,7 @@ function showMemoBox(span, memoId = null) {
   textarea.addEventListener('blur', closeMemoBox);
   
   span.after(memoBox);
-  textarea.focus(); 
+  textarea.focus();
 }
 
 function showTulipMenu(span) {
@@ -329,7 +432,7 @@ function showDeleteConfirmationModal(onConfirm) {
   document.body.appendChild(modalContainer);
 }
 
-document.addEventListener('dblclick', function(event) {
+document.addEventListener('dblclick', async function(event) {
   if (event.target.closest('.memo-capsule')) {
     event.preventDefault();
     event.stopPropagation();
@@ -466,12 +569,45 @@ document.addEventListener('dblclick', function(event) {
   try {
     span.appendChild(sentenceRange.extractContents());
     sentenceRange.insertNode(span);
+    
+    const hasShown = await getHasShownHighlightToast();
+    if (!hasShown) {
+      showFirstHighlightToast("공유하기를 눌러 탭탭에 저장할 수 있어요!");
+      await setHasShownHighlightToast(true);
+      console.log('NBS[content.js] - "hasShownHighlightToast" 상태를 true로 변경 및 저장했습니다.');
+    }
+    
     showTulipMenu(span);
     saveDraft(span);
   } catch (e) {
     console.error("하이라이트 적용 중 오류 발생:", e);
   }
 });
+
+async function getHasShownHighlightToast() {
+  try {
+    const response = await browser.runtime.sendMessage({
+      action: "getHasShownHighlightToast"
+    });
+    return response?.hasShownHighlightToast || false;
+  } catch (e) {
+    console.error("NBS[content.js] - getHasShownHighlightToast 호출 실패:", e);
+    return false;
+  }
+}
+
+async function setHasShownHighlightToast(value) {
+  try {
+    const response = await browser.runtime.sendMessage({
+      action: "setHasShownHighlightToast",
+      value: value
+    });
+    return response;
+  } catch (e) {
+    console.error("NBS[content.js] - setHasShownHighlightToast 호출 실패:", e);
+    return null;
+  }
+}
 
 async function saveDraft(highlightSpan) {
   const draft = {
