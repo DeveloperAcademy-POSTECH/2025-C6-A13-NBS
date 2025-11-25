@@ -94,7 +94,3 @@ struct SafariPIP: View {
     }
   }
 }
-
-#Preview {
-  SafariPIP()
-}
