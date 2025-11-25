@@ -11,24 +11,30 @@ import Domain
 
 @Reducer
 struct ExtensionSettingFeature {
-  @Dependency(\.linkNavigator) var linkNavigator
+  @Dependency(\.linkNavigator) var navigation
   
   @ObservableState
-  struct State { }
-  
-  enum Action: Equatable {
-    case backButtonTapped
+  struct State {
+    var currentPage: Int = 1
   }
   
-  init() {}
+  enum Action {
+    case settingButtonTapped
+    case backButtonTapped
+    case naviPush
+  }
   
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .backButtonTapped:
-        return .run { _ in
-          await linkNavigator.pop()
+        return .run { send in
+          await navigation.pop()
         }
+      case .settingButtonTapped:
+        return .none
+      case .naviPush:
+        return .none
       }
     }
   }
