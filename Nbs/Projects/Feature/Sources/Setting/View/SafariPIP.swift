@@ -1,14 +1,13 @@
 //
 //  SafariPIP.swift
-//  Nbs
+//  Feature
 //
-//  Created by 홍 on 10/24/25.
+//  Created by 홍 on 11/25/25.
 //
 
 import SwiftUI
 
 import DesignSystem
-import Feature
 
 struct SafariPIP: View {
   @State var showHome = false
@@ -23,13 +22,7 @@ struct SafariPIP: View {
   }()
   
   var body: some View {
-    Group {
-      if showHome {
-//        HomeEntryView()
-      } else {
-        pipView
-      }
-    }
+    pipView
   }
   
   private var pipView: some View {
@@ -49,7 +42,7 @@ struct SafariPIP: View {
       
       Spacer()
       
-      Image(.settingVideo)
+      DesignSystemAsset.onboardingSafariSetting.swiftUIImage
         .resizable()
         .frame(width: 300, height: 400)
       Spacer()

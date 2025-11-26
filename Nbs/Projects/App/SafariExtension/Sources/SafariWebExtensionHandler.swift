@@ -12,6 +12,11 @@ import Domain
 import SwiftData
 
 final class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
+  private let appGroupID = "group.com.nbs.dev.ADA.shared"
+  
+  private var sharedUserDefaults: UserDefaults? {
+    return UserDefaults(suiteName: appGroupID)
+  }
   func beginRequest(with context: NSExtensionContext) {
     guard let item = context.inputItems.first as? NSExtensionItem else {
       context.completeRequest(returningItems: nil, completionHandler: nil)
@@ -43,8 +48,21 @@ final class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
       if let highlights = self.fetchHighlights(for: url) {
           self.sendResponse(to: context, with: ["highlights": highlights])
       } else {
-          self.sendResponse(to: context, with: ["highlights": []]) 
+          self.sendResponse(to: context, with: ["highlights": []])
       }
+    case "getHasShownHighlightToast":
+      let hasShown = sharedUserDefaults?.bool(forKey: "hasShownHighlightToast") ?? false
+      self.sendResponse(to: context, with: ["hasShownHighlightToast": hasShown])
+      
+    case "setHasShownHighlightToast":
+      guard let value = message["value"] as? Bool else {
+        self.sendResponse(to: context, with: ["error": "Value for hasShownHighlightToast not provided"])
+        return
+      }
+      sharedUserDefaults?.set(value, forKey: "hasShownHighlightToast")
+      let success = sharedUserDefaults?.synchronize() ?? false
+      
+      self.sendResponse(to: context, with: ["success": success])
       
     default:
       self.sendResponse(to: context, with: ["error": "Unknown action"])

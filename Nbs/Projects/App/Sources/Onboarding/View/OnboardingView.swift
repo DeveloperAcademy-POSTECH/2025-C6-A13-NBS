@@ -9,72 +9,67 @@ import SwiftUI
 
 import ComposableArchitecture
 import DesignSystem
+import Feature
 
 struct OnboardingView {
   @Bindable var store: StoreOf<OnboardingFeature>
-  @State private var videoChecked: Bool = false
   @Environment(\.colorScheme) private var colorScheme
   @Environment(\.scenePhase) private var scenePhase
-  
+  @State private var currentPage: Int = 0
   @State private var pip: SimplePiPController?
+  @State private var videoChecked: Bool = false
 }
 
 extension OnboardingView: View {
   var body: some View {
     VStack(spacing: 0) {
-      OnboardingTitleImage(
-        title: .safariTitle,
-        description: .safariDescription,
-        image: DesignSystemAsset.safariSetting.swiftUIImage,
-        showPage: true,
-        currentPage: store.currentPage
-      )
+      OnboardingSafariSetting(currentPage: $currentPage)
       .padding(.top, 60)
       Spacer()
-      VStack(spacing: 0) {
-        MainButton("설정하기", hasGradient: true) {
+      HStack(spacing: 8) {
+        MainButton2(
+          "설정하기",
+          style: .soft,
+          hasGradient: false
+        ) {
           store.send(.settingButtonTapped)
           startPipThenOpenSetting()
         }
         .buttonStyle(.plain)
-        .padding(.bottom, 24)
         
-        Button(action: {
-          store.send(.skipButtonTapped)
-        }) {
-          Text("건너뛰기")
-            .font(.C2)
-            .foregroundStyle(.caption2)
-            .underline()
+        MainButton2("다음", isDisabled: currentPage != 3) {
+          store.send(.nextButtonTapped)
         }
+        .buttonStyle(.plain)
       }
       .background(Color.background)
       .padding(.bottom, 8)
+      .padding(.horizontal, 20)
     }
     .background(Color.background)
     .toolbar(.hidden)
     .overlay {
-      if store.isAlert {
+      if store.isAlert && !store.videoChecked {
         ZStack {
           Color.dim.ignoresSafeArea()
           AlertDialog(
-            title: "Safari 권한 설정을 건너뛸까요?",
-            subtitle: "권한을 설정하지 않으면\n제공하는 기능 사용이 제한돼요",
+            title: "Safari 권한 허용을 확인해주세요",
+            subtitle: "권한을 설정하지 않으면\n제공하는 기능 사용이 제한돼요!",
             cancelTitle: "취소",
             onCancel: { store.send(.alertCancelButtonTapped) },
-            buttonType: .move(title: "건너뛰기", action: { store.send(.alertSkipButtonTapped) })
+            buttonType: .move(title: "확인", action: { store.send(.alertSkipButtonTapped) })
           )
           .offset(y: 4)
         }
       }
     }
     .onChange(of: scenePhase) { _, newValue in
-      if newValue == .active && videoChecked {
+      if newValue == .active && store.videoChecked {
         store.send(.naviPush)
       }
     }
     .onAppear {
-      videoChecked = false
+      store.send(.onAppear)
     }
   }
 }
@@ -82,15 +77,13 @@ extension OnboardingView: View {
 extension OnboardingView {
   private func startPipThenOpenSetting() {
     let videoName = (colorScheme == .dark) ? "safariSettingDark" : "safariSettingLight"
-    videoChecked = true
+    store.send(.showVideo)
     guard
-      let url = Bundle.main.url(forResource: videoName, withExtension: "mov")
+      let url = Bundle.main.url(forResource: videoName, withExtension: "MP4")
     else {
-      print("video not found: \(videoName)")
+      print("비디오 찾을 수 없음: \(videoName)")
       return
     }
-    
-    // ✅ pip이 없으면 새로 생성
     if pip == nil {
       pip = SimplePiPController(url: url)
     } else {
@@ -102,8 +95,8 @@ extension OnboardingView {
     DispatchQueue.main.asyncAfter(deadline: .now()) {
       self.pip?.startPiP()
       
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
+      DispatchQueue.main.asyncAfter(deadline: .now()) {
+        if let url = URL(string: "App-prefs:SAFARI") {
           UIApplication.shared.open(url)
         }
       }

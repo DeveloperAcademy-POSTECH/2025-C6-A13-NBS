@@ -20,8 +20,8 @@ let appTarget = Target.target(
       "CFBundleLocalizations": ["ko"],
       "CFBundleVersion": "1",
       "CFBundleDisplayName": "탭탭",
-      "CFBundleShortVersionString": "1.0",
-      
+      "CFBundleShortVersionString": "1.0.2",
+
       "NSAppTransportSecurity": [
         "NSAllowsArbitraryLoads": true
       ],
@@ -54,11 +54,15 @@ let appTarget = Target.target(
     configurations: [
       .debug(name: "Debug", settings: [
         "CODE_SIGN_IDENTITY": "Apple Development: Yunhong Kim (Q7CMJ86WZQ)",
-        "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app"
+        "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app",
+        "CURRENT_PROJECT_VERSION": "1",
+        "VERSIONING_SYSTEM": "apple-generic"
       ]),
       .release(name: "Release", settings: [
         "CODE_SIGN_IDENTITY": "Apple Distribution: Yunhong Kim (WN2B884S76)",
-        "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.Nbs.ADA.app"
+        "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.Nbs.ADA.app",
+        "CURRENT_PROJECT_VERSION": "1",
+        "VERSIONING_SYSTEM": "apple-generic"
       ])
     ]
   )

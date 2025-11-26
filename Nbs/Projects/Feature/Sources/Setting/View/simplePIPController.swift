@@ -1,26 +1,26 @@
 //
-//  simplePiPController.swift
-//  Nbs
+//  simplePi.swift
+//  Feature
 //
-//  Created by 홍 on 10/24/25.
+//  Created by 홍 on 11/25/25.
 //
 
 import AVFoundation
 import AVKit
 import Combine
 
-final class SimplePiPController: NSObject, ObservableObject {
-  let url: URL
+public final class SimplePiPController: NSObject, ObservableObject {
+  public let url: URL
   
-  private(set) var player: AVPlayer!
-  private(set) var playerLayer: AVPlayerLayer!
-  private var pipController: AVPictureInPictureController?
-  private var pipWindow: UIWindow? // 추가: PiP를 위한 hidden window
+  public var player: AVPlayer!
+  public var playerLayer: AVPlayerLayer!
+  public var pipController: AVPictureInPictureController?
+  public var pipWindow: UIWindow? // 추가: PiP를 위한 hidden window
   
-  @Published var pipSupported = false
-  @Published var pipActive = false
+  @Published public var pipSupported = false
+  @Published public var pipActive = false
   
-  init(url: URL) {
+  public init(url: URL) {
     self.url = url
     super.init()
     configure()
@@ -71,11 +71,11 @@ final class SimplePiPController: NSObject, ObservableObject {
 
 // MARK: - Method
 extension SimplePiPController {
-  func play() {
+  public func play() {
     player.play()
   }
   
-  func startPiP() {
+  public func startPiP() {
     guard pipSupported, let pip = pipController else { return }
     
     // PiP 시작 전 플레이어가 재생 중인지 확인
@@ -89,7 +89,7 @@ extension SimplePiPController {
     }
   }
   
-  func stopPiP() {
+  public func stopPiP() {
     pipController?.stopPictureInPicture()
     pipWindow = nil // 윈도우 정리
   }
@@ -97,11 +97,11 @@ extension SimplePiPController {
 
 // MARK: - Delegate
 extension SimplePiPController: AVPictureInPictureControllerDelegate {
-  func pictureInPictureControllerWillStartPictureInPicture(_ controller: AVPictureInPictureController) {
+  public func pictureInPictureControllerWillStartPictureInPicture(_ controller: AVPictureInPictureController) {
     pipActive = true
   }
   
-  func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) {
+  public func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) {
     pipActive = false
     player.pause()
     player.seek(to: .zero)
