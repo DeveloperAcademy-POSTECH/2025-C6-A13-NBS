@@ -50,6 +50,7 @@ struct HomeFeature {
     case articlesResponse(Result<[ArticleItem], Error>)
     case searchButtonTapped
     case settingButtonTapped
+    case logoButtonTapped
     case refresh
     case showToast(String)
     case showDeleteAlert(String)
@@ -164,6 +165,10 @@ struct HomeFeature {
         
       case .settingButtonTapped:
         linkNavigator.push(.setting, nil)
+        return .none
+      
+      case .logoButtonTapped:
+        linkNavigator.replace([.onboardingService], nil)
         return .none
         
       case .categoryList, .articleList:

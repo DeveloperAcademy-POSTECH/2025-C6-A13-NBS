@@ -28,7 +28,8 @@ extension HomeView: View {
         VStack(spacing: 0) {
           TopAppBarHome(
             onTapSearchButton: { store.send(.searchButtonTapped) } ,
-            onTapSettingButton: { store.send(.settingButtonTapped) }
+            onTapSettingButton: { store.send(.settingButtonTapped) },
+            onTapLogoButton: { store.send(.logoButtonTapped) }
           )
           ZStack(alignment: .bottom) {
             ZStack(alignment: .bottomTrailing) {

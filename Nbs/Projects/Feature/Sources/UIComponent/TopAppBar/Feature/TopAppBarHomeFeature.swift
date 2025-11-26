@@ -18,6 +18,7 @@ public struct TopAppBarHomeFeature {
   public enum Action: Equatable {
     case tapSearchButton
     case tapSettingButton
+    case logoButton
   }
   
   public init() {}
@@ -28,6 +29,8 @@ public struct TopAppBarHomeFeature {
       case .tapSearchButton:
         return .none
       case .tapSettingButton:
+        return .none
+      case .logoButton:
         return .none
       }
     }

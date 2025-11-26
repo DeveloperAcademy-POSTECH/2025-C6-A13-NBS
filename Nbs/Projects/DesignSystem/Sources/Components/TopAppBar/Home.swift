@@ -23,27 +23,50 @@ import SwiftUI
 /// }
 /// ```
 public struct TopAppBarHome {
+  @State private var tapCount = 0
+  @State private var lastTapTime = Date()
+  
   public let onTapSearchButton: () -> Void
   public let onTapSettingButton: () -> Void
+  public let onTapLogoButton: () -> Void
   
   public init(
     onTapSearchButton: @escaping () -> Void,
-    onTapSettingButton: @escaping () -> Void
+    onTapSettingButton: @escaping () -> Void,
+    onTapLogoButton: @escaping () -> Void
   ) {
     self.onTapSearchButton = onTapSearchButton
     self.onTapSettingButton = onTapSettingButton
+    self.onTapLogoButton = onTapLogoButton
   }
 }
 
 extension TopAppBarHome: View {
   public var body: some View {
     HStack {
-      DesignSystemAsset.logo.swiftUIImage
-        .resizable()
-        .scaledToFit()
-        .frame(width: 44, height: 22)
-        .padding(.leading, 20)
-        .padding(.vertical, 19)
+      Button {
+        let now = Date()
+        if now.timeIntervalSince(lastTapTime) > 1 {
+          tapCount = 0
+        }
+        lastTapTime = now
+        
+        tapCount += 1
+        
+        if tapCount == 3 {
+          onTapLogoButton()
+          tapCount = 0
+        }
+      } label: {
+        DesignSystemAsset.logo.swiftUIImage
+          .resizable()
+          .scaledToFit()
+          .frame(width: 44, height: 22)
+          .padding(.leading, 20)
+          .padding(.vertical, 19)
+      }
+      .buttonStyle(.plain)
+
       Spacer()
       HStack(spacing: 0) {
         Button(action: onTapSearchButton) {
@@ -74,6 +97,8 @@ extension TopAppBarHome: View {
   TopAppBarHome {
     
   } onTapSettingButton: {
+    
+  } onTapLogoButton: {
     
   }
 }
