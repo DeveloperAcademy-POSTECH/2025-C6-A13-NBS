@@ -23,7 +23,8 @@ extension TopAppBarHomeView: View {
     WithViewStore(store, observe: { $0 }) { viewStore in
       TopAppBarHome(
         onTapSearchButton: { viewStore.send(.tapSearchButton) },
-        onTapSettingButton: { viewStore.send(.tapSettingButton) }
+        onTapSettingButton: { viewStore.send(.tapSettingButton) },
+        onTapLogoButton: { viewStore.send(.logoButton) }
       )
     }
   }
