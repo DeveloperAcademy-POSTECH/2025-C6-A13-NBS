@@ -18,9 +18,9 @@ let appTarget = Target.target(
       ],
       "CFBundleDevelopmentRegion": "ko",
       "CFBundleLocalizations": ["ko"],
-      "CFBundleVersion": "1",
+      "CFBundleVersion": "3",
       "CFBundleDisplayName": "탭탭",
-      "CFBundleShortVersionString": "1.0.2",
+      "CFBundleShortVersionString": "1.0.3",
 
       "NSAppTransportSecurity": [
         "NSAllowsArbitraryLoads": true
