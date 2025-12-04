@@ -59,7 +59,7 @@ function removeAds() {
   });
 }
 
-removeAds();
+//removeAds();
 
 let isTulipMenuClick = false;
 let lastSelectedHighlightType = 'what';
