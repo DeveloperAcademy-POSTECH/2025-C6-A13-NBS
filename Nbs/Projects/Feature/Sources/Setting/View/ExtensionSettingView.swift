@@ -115,8 +115,8 @@ extension ExtensionSettingView {
     DispatchQueue.main.asyncAfter(deadline: .now()) {
       self.pip?.startPiP()
       
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
+      DispatchQueue.main.asyncAfter(deadline: .now()) {
+        if let url = URL(string: "App-prefs:SAFARI") {
           UIApplication.shared.open(url)
         }
       }

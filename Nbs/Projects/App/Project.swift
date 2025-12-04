@@ -20,7 +20,7 @@ let appTarget = Target.target(
       "CFBundleLocalizations": ["ko"],
       "CFBundleVersion": "1",
       "CFBundleDisplayName": "탭탭",
-      "CFBundleShortVersionString": "1.0.2",
+      "CFBundleShortVersionString": "1.0.4",
 
       "NSAppTransportSecurity": [
         "NSAllowsArbitraryLoads": true

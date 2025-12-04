@@ -79,7 +79,7 @@ struct SafariPIP: View {
     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
       self.pip.startPiP()
       
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+      DispatchQueue.main.asyncAfter(deadline: .now()) {
         if let url = URL(string: UIApplication.openSettingsURLString) {
           UIApplication.shared.open(url)
         }

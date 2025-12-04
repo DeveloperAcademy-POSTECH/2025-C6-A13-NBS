@@ -59,65 +59,83 @@ function removeAds() {
   });
 }
 
-removeAds();
+//removeAds();
 
 let isTulipMenuClick = false;
 let lastSelectedHighlightType = 'what';
 const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-function showFirstHighlightToast(message) {
-  const existingToast = document.querySelector('.share-toast');
-  if (existingToast) {
-    existingToast.remove();
-  }
-  
-  const toast = document.createElement('div');
-  toast.className = 'share-toast';
-  
-  // 아이콘 추가
-  const icon = document.createElement('span');
-  icon.className = 'toast-icon';
-  
-  icon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12.0003 20.3337C16.6027 20.3337 20.3337 16.6027 20.3337 12.0003C20.3337 7.39795 16.6027 3.66699 12.0003 3.66699C7.39795 3.66699 3.66699 7.39795 3.66699 12.0003C3.66699 16.6027 7.39795 20.3337 12.0003 20.3337Z" stroke="#BBB4FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 15.3333V12" stroke="#BBB4FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 8.66699H12.0083" stroke="#BBB4FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`;
-  
-  // 텍스트 추가
-  const text = document.createElement('span');
-  text.textContent = message;
-  
-  toast.appendChild(icon);
-  toast.appendChild(text);
-  document.body.appendChild(toast);
-  
-  setTimeout(() => {
-    toast.classList.add('show')
-  }, 100);
-  
-  setTimeout(() => {
-    toast.classList.remove('show')
-    
-    setTimeout(() => {
-      toast.remove();
-    }, 500);
-  }, 3000);
-}
+//function showFirstHighlightToast(message) {
+//  const existingToast = document.querySelector('.share-toast');
+//  if (existingToast) {
+//    existingToast.remove();
+//  }
+//  
+//  const toast = document.createElement('div');
+//  toast.className = 'share-toast';
+//  
+//  // 아이콘 추가
+//  const icon = document.createElement('span');
+//  icon.className = 'toast-icon';
+//  
+//  icon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+//<path d="M12.0003 20.3337C16.6027 20.3337 20.3337 16.6027 20.3337 12.0003C20.3337 7.39795 16.6027 3.66699 12.0003 3.66699C7.39795 3.66699 3.66699 7.39795 3.66699 12.0003C3.66699 16.6027 7.39795 20.3337 12.0003 20.3337Z" stroke="#BBB4FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+//<path d="M12 15.3333V12" stroke="#BBB4FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+//<path d="M12 8.66699H12.0083" stroke="#BBB4FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+//</svg>`;
+//  
+//  // 텍스트 추가
+//  const text = document.createElement('span');
+//  text.textContent = message;
+//  
+//  toast.appendChild(icon);
+//  toast.appendChild(text);
+//  document.body.appendChild(toast);
+//  
+//  setTimeout(() => {
+//    toast.classList.add('show')
+//  }, 100);
+//  
+//  setTimeout(() => {
+//    toast.classList.remove('show')
+//    
+//    setTimeout(() => {
+//      toast.remove();
+//    }, 500);
+//  }, 3000);
+//}
 
 function getFixedHeaderHeight() {
   let fixedHeaderHeight = 0;
   const elements = document.querySelectorAll('body *');
+  const viewportHeight = window.innerHeight;
+
   for (const el of elements) {
+    // Basic visibility check
+    if (el.offsetHeight === 0) {
+      continue;
+    }
+
     const style = window.getComputedStyle(el);
-    if (style.position === 'fixed' && el.offsetHeight > 0) {
-      const rect = el.getBoundingClientRect();
-      if (rect.top >= 0 && rect.top < 50) {
+    if (style.position !== 'fixed' && style.position !== 'sticky') {
+      continue;
+    }
+    
+    const rect = el.getBoundingClientRect();
+
+    // A header should be at the TOP of the viewport.
+    // Let's allow for a small tolerance (e.g., 1px).
+    if (rect.top <= 1) {
+      // It also shouldn't be a full-screen overlay. Let's assume a header
+      // is less than 40% of the viewport height. This is a heuristic.
+      if (rect.height < viewportHeight * 0.4) {
+        // We take the bottom-most edge of all such elements.
         fixedHeaderHeight = Math.max(fixedHeaderHeight, rect.bottom);
       }
     }
   }
-  return fixedHeaderHeight;
+  // Ensure the final value is not negative.
+  return Math.max(0, fixedHeaderHeight);
 }
 
 function getMemoKey(type) {
@@ -297,7 +315,6 @@ function showTulipMenu(span) {
     } else {
       button.textContent = buttonInfo.text;
     }
-    
     button.dataset.highlightType = buttonInfo.type;
     
     if (buttonInfo.type === span.dataset.highlightType) {
@@ -311,6 +328,7 @@ function showTulipMenu(span) {
         const spanRect = span.getBoundingClientRect();
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const targetScrollTop = scrollTop + spanRect.top - headerHeight - 10;
+
         window.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
         setTimeout(() => showMemoBox(span, null), 300);
         menu.remove();
@@ -432,7 +450,7 @@ function showDeleteConfirmationModal(onConfirm) {
   document.body.appendChild(modalContainer);
 }
 
-document.addEventListener('dblclick', async function(event) {
+document.addEventListener('dblclick', function(event) {
   if (event.target.closest('.memo-capsule')) {
     event.preventDefault();
     event.stopPropagation();
@@ -569,13 +587,13 @@ document.addEventListener('dblclick', async function(event) {
   try {
     span.appendChild(sentenceRange.extractContents());
     sentenceRange.insertNode(span);
-    
-    const hasShown = await getHasShownHighlightToast();
-    if (!hasShown) {
-      showFirstHighlightToast("공유하기를 눌러 탭탭에 저장할 수 있어요!");
-      await setHasShownHighlightToast(true);
-      console.log('NBS[content.js] - "hasShownHighlightToast" 상태를 true로 변경 및 저장했습니다.');
-    }
+//    
+//    const hasShown = getHasShownHighlightToast();
+//    if (!hasShown) {
+//      showFirstHighlightToast("공유하기를 눌러 탭탭에 저장할 수 있어요!");
+//      setHasShownHighlightToast(true);
+//      console.log('NBS[content.js] - "hasShownHighlightToast" 상태를 true로 변경 및 저장했습니다.');
+//    }
     
     showTulipMenu(span);
     saveDraft(span);
@@ -584,30 +602,30 @@ document.addEventListener('dblclick', async function(event) {
   }
 });
 
-async function getHasShownHighlightToast() {
-  try {
-    const response = await browser.runtime.sendMessage({
-      action: "getHasShownHighlightToast"
-    });
-    return response?.hasShownHighlightToast || false;
-  } catch (e) {
-    console.error("NBS[content.js] - getHasShownHighlightToast 호출 실패:", e);
-    return false;
-  }
-}
-
-async function setHasShownHighlightToast(value) {
-  try {
-    const response = await browser.runtime.sendMessage({
-      action: "setHasShownHighlightToast",
-      value: value
-    });
-    return response;
-  } catch (e) {
-    console.error("NBS[content.js] - setHasShownHighlightToast 호출 실패:", e);
-    return null;
-  }
-}
+//async function getHasShownHighlightToast() {
+//  try {
+//    const response = await browser.runtime.sendMessage({
+//      action: "getHasShownHighlightToast"
+//    });
+//    return response?.hasShownHighlightToast || false;
+//  } catch (e) {
+//    console.error("NBS[content.js] - getHasShownHighlightToast 호출 실패:", e);
+//    return false;
+//  }
+//}
+//
+//async function setHasShownHighlightToast(value) {
+//  try {
+//    const response = await browser.runtime.sendMessage({
+//      action: "setHasShownHighlightToast",
+//      value: value
+//    });
+//    return response;
+//  } catch (e) {
+//    console.error("NBS[content.js] - setHasShownHighlightToast 호출 실패:", e);
+//    return null;
+//  }
+//}
 
 async function saveDraft(highlightSpan) {
   const draft = {
