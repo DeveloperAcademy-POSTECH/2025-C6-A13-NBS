@@ -27,7 +27,7 @@ extension TargetDependency {
 
 extension TargetDependency {
   public static func actionEx() -> TargetDependency {
-    .target(name: TargetName.ActionExtension.rawValue)
+    .target(name: TargetName.ShareExtension.rawValue)
   }
 }
 
