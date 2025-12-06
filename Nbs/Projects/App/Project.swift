@@ -9,7 +9,7 @@ enum Scheme: String {
 let appTarget = Target.target(
   name: Project.appName,
   product: .app,
-  bundleId: "com.Nbs.dev.ADA.app",
+  bundleId: "com.Nbs.dev.app",
   infoPlist: .extendingDefault(
     with: [
       "UILaunchScreen": [
@@ -45,27 +45,7 @@ let appTarget = Target.target(
     .safariEx(),
     .actionEx(),
     .feature(),
-  ],
-  settings: .settings(
-    base: [
-      "DEVELOPMENT_TEAM": "WN2B884S76",
-      "CODE_SIGN_STYLE": "Automatic"
-    ],
-    configurations: [
-      .debug(name: "Debug", settings: [
-        "CODE_SIGN_IDENTITY": "Apple Development: Yunhong Kim (Q7CMJ86WZQ)",
-        "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app",
-        "CURRENT_PROJECT_VERSION": "1",
-        "VERSIONING_SYSTEM": "apple-generic"
-      ]),
-      .release(name: "Release", settings: [
-        "CODE_SIGN_IDENTITY": "Apple Distribution: Yunhong Kim (WN2B884S76)",
-        "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.Nbs.ADA.app",
-        "CURRENT_PROJECT_VERSION": "1",
-        "VERSIONING_SYSTEM": "apple-generic"
-      ])
-    ]
-  )
+  ]
 )
 
 let safariTarget = Target.target(
@@ -88,8 +68,9 @@ let safariTarget = Target.target(
     ],
     configurations: [
       .debug(name: "Debug", settings: [
+        "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.app.safariExtension",
         "CODE_SIGN_IDENTITY": "Apple Development: Yunhong Kim (Q7CMJ86WZQ)",
-        "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app.safariExtension"
+        "PROVISIONING_PROFILE_SPECIFIER": "com.Nbs.dev.app.safariExtension Development"
       ]),
       .release(name: "Release", settings: [
         "CODE_SIGN_IDENTITY": "Apple Distribution: Yunhong Kim (WN2B884S76)",
@@ -99,16 +80,16 @@ let safariTarget = Target.target(
   )
 )
 
-let actionExtensionTarget = Target.target(
-  name: TargetName.ActionExtension.rawValue,
+let shareExtensionTarget = Target.target(
+  name: TargetName.ShareExtension.rawValue,
   destinations: .iOS,
   product: .appExtension,
-  bundleId: Project.bundleID + ".app.actionExtension",
+  bundleId: Project.bundleID + ".app.shareExtension",
   deploymentTargets: .iOS("17.0"),
-  infoPlist: .file(path: "ActionExtension/info.plist"),
-  sources: [SourceFileGlob(stringLiteral: TargetName.ActionExtension.sourcesPath)],
-  resources: [ResourceFileElement(stringLiteral: TargetName.ActionExtension.resourcesPath)],
-  entitlements: .file(path: "ActionExtension.entitlements"),
+  infoPlist: .file(path: "ShareExtension/info.plist"),
+  sources: [SourceFileGlob(stringLiteral: TargetName.ShareExtension.sourcesPath)],
+  resources: [ResourceFileElement(stringLiteral: TargetName.ShareExtension.resourcesPath)],
+  entitlements: .file(path: "ShareExtension.entitlements"),
   dependencies: [
     .sdk(name: "UniformTypeIdentifiers", type: .framework),
     .designSystem(),
@@ -122,8 +103,9 @@ let actionExtensionTarget = Target.target(
     ],
     configurations: [
       .debug(name: "Debug", settings: [
+        "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.app.shareExtension",
         "CODE_SIGN_IDENTITY": "Apple Development: Yunhong Kim (Q7CMJ86WZQ)",
-        "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app.actionExtension"
+        "PROVISIONING_PROFILE_SPECIFIER": "com.Nbs.dev.app.shareExtension Development"
       ]),
       .release(name: "Release", settings: [
         "CODE_SIGN_IDENTITY": "Apple Distribution: Yunhong Kim (WN2B884S76)",
@@ -138,6 +120,6 @@ let project = Project.project(
   targets: [
     appTarget,
     safariTarget,
-    actionExtensionTarget
+    shareExtensionTarget
   ]
 )

@@ -56,12 +56,14 @@ extension Target {
     case .framework:
       return (
         base: [
-          "CODE_SIGN_STYLE": "Automatic",
+          "CODE_SIGN_STYLE": "Manual",
           "DEVELOPMENT_TEAM": "WN2B884S76"
         ],
         configs: [
           .debug(name: "Debug", settings: [
-            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.\(name.lowercased())"
+            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.app",
+            "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app",
+            "CODE_SIGN_IDENTITY": "$(CODE_SIGN_IDENTITY)"
           ]),
           .release(name: "Release", settings: [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.ADA.\(name.lowercased())"
@@ -77,14 +79,17 @@ extension Target {
         ],
         configs: [
           .debug(name: "Debug", settings: [
-            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.app",
-            "PROVISIONING_PROFILE_SPECIFIER": "match Development com.Nbs.dev.ADA.app",
-            "CODE_SIGN_IDENTITY": "$(CODE_SIGN_IDENTITY)"
+            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.app",
+            "PROVISIONING_PROFILE_SPECIFIER": "com.Nbs.dev.app Development",
+            "CODE_SIGN_IDENTITY": "$(CODE_SIGN_IDENTITY)",
+            "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIconDev",
+            "INFOPLIST_KEY_CFBundleDisplayName": "탭탭Dev",
           ]),
           .release(name: "Release", settings: [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.app",
             "PROVISIONING_PROFILE_SPECIFIER": "match AppStore com.Nbs.dev.ADA.app",
-            "CODE_SIGN_IDENTITY": "Apple Distribution: Yunhong Kim (WN2B884S76)"
+            "CODE_SIGN_IDENTITY": "Apple Distribution: Yunhong Kim (WN2B884S76)",
+            "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon"
           ])
         ]
       )
@@ -97,7 +102,7 @@ extension Target {
         ],
         configs: [
           .debug(name: "Debug", settings: [
-            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.ADA.\(name.lowercased())"
+            "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.dev.\(name.lowercased())"
           ]),
           .release(name: "Release", settings: [
             "PRODUCT_BUNDLE_IDENTIFIER": "com.Nbs.ADA.\(name.lowercased())"
