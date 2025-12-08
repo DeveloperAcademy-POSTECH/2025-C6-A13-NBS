@@ -12,6 +12,7 @@ public enum Module: String {
   case Feature
   case DesignSystem
   case Domain
+  case TapTapMac
 }
 
 extension Module: CaseIterable {}
