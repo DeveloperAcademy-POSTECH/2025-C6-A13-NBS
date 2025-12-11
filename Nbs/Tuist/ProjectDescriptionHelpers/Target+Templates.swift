@@ -10,6 +10,7 @@ import ProjectDescription
 extension Target {
   public static func target (
     name: String,
+    destinations: Destinations? = nil,
     product: Product,
     bundleId: String? = nil,
     infoPlist: InfoPlist? = .default,
@@ -25,7 +26,7 @@ extension Target {
     
     return Target.target(
       name: name,
-      destinations: .init([.iPhone]),
+      destinations: destinations ?? .init([.iPhone]),
       product: product,
       bundleId: bundleId ?? Project.bundleID + "." + name.lowercased(),
       deploymentTargets: .iOS(Project.iosVersion),

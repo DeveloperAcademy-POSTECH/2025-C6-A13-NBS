@@ -6,12 +6,13 @@ let project = Project.project(
   targets: [
     Target.target(
       name: Module.TapTapMac.rawValue,
+      destinations: .init([.iPad, .mac]),
       product: .staticFramework,
       sources: .sources,
       resources: .default,
       dependencies: [
-        .domain(),
-        .designSystem()
+        .TCA(),
+        .Lottie()
       ]
     )
   ]
