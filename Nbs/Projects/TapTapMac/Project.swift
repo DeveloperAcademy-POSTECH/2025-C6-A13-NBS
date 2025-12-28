@@ -6,13 +6,14 @@ let project = Project.project(
   targets: [
     Target.target(
       name: Module.TapTapMac.rawValue,
-      destinations: .init([.iPad, .mac]),
-      product: .staticFramework,
+      destinations: .macOS,
+      product: .app,
+      bundleId: "com.Nbs.dev.mac",
+      infoPlist: .extendingDefault(with: [:]),
       sources: .sources,
       resources: .default,
       dependencies: [
         .TCA(),
-        .Lottie()
       ]
     )
   ]
